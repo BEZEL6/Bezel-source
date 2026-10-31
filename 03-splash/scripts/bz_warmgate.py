@@ -1,8 +1,8 @@
-# WARM GATE (5.33.200): cold-start gate of the WARM system.
+# WARM GATE (5.33.201): cold-start gate of the WARM system.
 # Sequence (Rob): (1) splash first (2) skin windows/layouts/controls build under splash
 # (3) artwork cache (4) splash fades — no pop / no blank.
 # 5.33.199: non-modal BezelWarmGateOverlay (bz_warm_gate) on Startup + Music + Videos.
-# 5.33.200: splash display MIN 5.0 s, CAP/max 15.0 s; dismiss fade-out 3.0 s (overlay Hidden anim).
+# 5.33.201: splash display MIN 5.0 s, CAP/max 15.0 s; dismiss fade-out 3.0 s (overlay Hidden anim).
 # Doc: behaviors/mm-warm.md
 import json, time, threading, xbmc, xbmcgui
 home = xbmcgui.Window(10000); mon = xbmc.Monitor()

@@ -1,5 +1,8 @@
+[B]5.33.201[/B]
+- WarmGate splash timing (clean build): min 5 s hold, max 15 s cap, 3 s fade-out (BezelWarmGateOverlay Hidden 3000 ms). Non-modal overlay from 199 included.
+
 [B]5.33.200[/B]
-- WarmGate splash timing: min 5 s, max 15 s; 3 s fade-out on dismiss (BezelWarmGateOverlay Hidden).
+- WarmGate splash timing draft: min 5 / max 15 / fade 3 (superseded by 5.33.201 clean ship).
 
 [B]5.33.199[/B]
 - WarmGate non-modal splash overlay: no ActivateWindow(1113); BezelWarmGateOverlay on Startup/Music/Videos so underlay builds under splash, then art warm, then fade (fixes 196/197 modal blank).

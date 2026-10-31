@@ -79,7 +79,7 @@ Untouched: section (`!bz_navmenu`) twins, list rows/grids, in-section art.
 - Album slot uses `BzWarmMusicArt`: thumb > album.thumb > MusicPlayer.Cover > Player.Icon > DefaultAlbumCover.png.
 - Toggle Left/Right sets `bz_mushref` (AlarmClock clears after 1s); poster/album images re-latch with a 400 ms Conditional fade. Sway props untouched, so the sway keeps running.
 
-## Warm gate — cold-start splash (Rob approved Oct 31 2026; non-modal overlay 5.33.199; min 5 / max 15 / fade 3 s — 5.33.200)
+## Warm gate — cold-start splash (Rob approved Oct 31 2026; non-modal overlay 5.33.199; min 5 / max 15 / fade 3 s — 5.33.201)
 The splash is the WARM system's cold-start gate. **5.33.199 sequence:** (1) splash draws first (2) main section windows/layouts/controls build **under** the splash (3) artwork cache loads (4) splash fades — no pop, no blank.
 
 **Objects:** `xml/Startup.xml` · include `BezelWarmGateOverlay` + `BezelWarmGate` (`Includes_Bezel.xml`) on Startup, `MyMusicNav.xml`, `MyVideoNav.xml` · `scripts/bz_warmgate.py` · `xml/Custom_1113_WarmGate.xml` (**not opened** — kept only so dialog id 1113 stays reserved)
@@ -89,7 +89,7 @@ The splash is the WARM system's cold-start gate. **5.33.199 sequence:** (1) spla
 |------|----------|
 | 0 — first paint | `Startup.xml` sets `bz_warm_gate=1`, clears `bz_splash_done`, starts `bz_warmgate.py`, then `ReplaceWindow(StartupWindow)`. Splash is `BezelWarmGateOverlay` (property-gated group), **not** modal dialog 1113. |
 | 1 — underlay | Because nothing modal is open, `ReplaceWindow` to Music/Videos **succeeds**. Music or Videos builds layouts/controls while the overlay (same black + logo) continues on that window via `BezelWarmGateOverlay` drawn last in controls. |
-| 2 — screen | Solid black 1920×1080, Bezel logo + `bezel/logoglow` pulse, version label, credit + flag (same `BezelWarmGate` art as before). Overlay Hidden animation = **3000 ms** sine fade-out (5.33.200). |
+| 2 — screen | Solid black 1920×1080, Bezel logo + `bezel/logoglow` pulse, version label, credit + flag (same `BezelWarmGate` art as before). Overlay Hidden animation = **3000 ms** sine fade-out (5.33.201). |
 | 3 — wait land | Script waits until the Startup-highlight section's list 60 has items and is not updating (Music / Movies|sets / TV), or until the 5 s hard cap. |
 | 4 — art warm | **After** land (or late in CAP): `Files.GetDirectory` for focused section first, then the other two, on a **background thread**. Ready flags flip success or fail. |
 | 5 — dismiss | After `MIN`, clear `bz_warm_gate` → **3.0 s** overlay fade, then `bz_splash_done=1`. **Never** `ActivateWindow(1113)`. Ready early still waits until 5 s. |
