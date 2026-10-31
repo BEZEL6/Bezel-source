@@ -7,8 +7,8 @@
 
 **Object:** Main Menu warm underlay (`scripts/bz_flip.py` → `mm_warm`)  
 **Where:** Under `$EXP[bz_navmenu]`, strip `6996` focused  
-**Last updated:** 2026-10-31 · 5.33.194 (catch-up sync to live tree)  
-**Status:** live 5.33.194 — WARM 2.0 through .193 mushide; A/B fixed 1500 ms (.192); FULL restart for .py changes  
+**Last updated:** 2026-10-31 · live 5.33.200 (+ uncommitted: GlobalBackdrop hide during warm gate)  
+**Status:** live 5.33.200 — WARM 2.0 through .193 mushide; A/B fixed 1500 ms (.192); warm-gate overlay 199+; GBD hidden while `bz_warm_gate`  
 **Skin:** skin.bezel2
 
 ## Warm park (unchanged)
@@ -63,7 +63,7 @@ Flow per lane: target settles 0.25 s → staged on hidden side `bz_<p>_a|b` → 
 | MM close | Pending stage dropped (hidden side reset to last shown); last shown art kept; nothing cleared |
 | Lane never fed (`bz_<p>_on` empty) | Original live MM twin (fadetime 3000) shows |
 
-Lanes (order built): 1) `fan` — BezelFanartLayer MM twin → `bz_fan_a/b`, `bz_fan_side`, `bz_fan_on` (chain mirrors BezelFanart browse branches, Container(60)). 2) `pos` — list-60 big poster MM twin → `bz_pos_a/b`, `bz_pos_side`, `bz_pos_on`, `bz_pos_empty` (mirrors BezelPoster60; Default* icons = empty → stand-in). 3) Album browse — music flip faces A/B MM twins reuse `pos` lane only when `!Player.HasAudio + bz_cov_<face>` empty; playing cover (bz_cov_a/b flip) always wins.
+Lanes (order built): 1) `fan` — BezelFanartLayer MM twin → `bz_fan_a/b`, `bz_fan_side`, `bz_fan_on` (chain mirrors BezelFanart browse branches, Container(60)). 2) `pos` — list-60 big poster MM twin → `bz_pos_a/b`, `bz_pos_side`, `bz_pos_on`, `bz_pos_empty` (mirrors BezelPoster60; Default* icons = empty → stand-in). 3) `clr` — TV clearlogo/clearart colour-strip header → `bz_clr_a/b`, `bz_clr_side`, `bz_clr_on`, `bz_clr_empty` (same settle/load + 1500 ms sine as fan/pos). 4) Album browse — music flip faces A/B MM twins reuse `pos` lane only when `!Player.HasAudio + bz_cov_<face>` empty; playing cover (bz_cov_a/b flip) always wins.
 Untouched: section (`!bz_navmenu`) twins, list rows/grids, in-section art.
 
 ## WARM 2.0 (5.33.191)
@@ -97,6 +97,7 @@ The splash is the WARM system's cold-start gate. **5.33.199 sequence:** (1) spla
 
 - `bz_precache.py` stays idle while `bz_warm_gate` is set. `bz_flip.py` still treats visible 1113 as busy (harmless; 1113 is not opened).
 - Keys can reach the underlay while the overlay is up (non-modal).
+- **Startup flash fix (uncommitted):** `BezelGlobalBackdrop` (nested in `BezelBlack` on Home/Music/Videos) stays **hidden** while `Window(Home).Property(bz_warm_gate)` is set — visible rule is `!String.IsEqual(Skin.String(bz_at_gbdsty),off) + String.IsEmpty(Window(Home).Property(bz_warm_gate))` in `Includes_Bezel.xml`. Solid black from `BezelBlack` still paints under the splash; glow backdrop only returns when the gate clears (under the 3 s fade).
 
 ### Tuner toggle: Startup splash (WARM 2.0)
 - Setting `Skin.String(bz_at_warmsplash)` = `On`/`Off`; **default On** (empty = On).

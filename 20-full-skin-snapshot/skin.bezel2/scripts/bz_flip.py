@@ -1270,8 +1270,21 @@ if home.getProperty('bz_flip_running') != 'true':
         if not v and home.getProperty('bz_arthold'): v = home.getProperty('bz_hold_poster')
         if v and os.path.basename(v.rstrip('/')).startswith('Default'): v = ''
         return v
+    def _ab_clear():   # TV clearlogo/clearart — same settle/load as fan/pos so strip logo crossfades with them
+        c = xbmc.getCondVisibility
+        if not c('Window.IsActive(videos)'):
+            return ''
+        if c('Skin.HasSetting(bz_tvclear_off)'):
+            return ''
+        if not c('Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)'):
+            return ''
+        if c('Container(60).ListItem.IsParentFolder'):
+            return ''
+        return _il('Container(60).ListItem.Art(clearlogo)', 'Container(60).ListItem.Art(tvshow.clearlogo)',
+                   'Container(60).ListItem.Art(clearart)', 'Container(60).ListItem.Art(tvshow.clearart)')
     def ab_clock():
-        lanes = ((_ABLane('fan', 0.25, 0.5), _ab_fanart), (_ABLane('pos', 0.25, 0.5, True), _ab_poster))
+        lanes = ((_ABLane('fan', 0.25, 0.5), _ab_fanart), (_ABLane('pos', 0.25, 0.5, True), _ab_poster),
+                 (_ABLane('clr', 0.25, 0.5, True), _ab_clear))
         armed = False
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
             if home.getProperty('bz_nav') == 'true':

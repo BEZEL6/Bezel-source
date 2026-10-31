@@ -21,6 +21,13 @@ None specified.
 ## Code notes
 MyVideoNav.xml
 
+
+## Clearlogo / clearart (colour strip)
+- Header logo at colour-strip top (`Includes_Bezel.xml` t4153 / `BzTVClear`).
+- **MM closed:** single image `fadetime` **300** (same as poster browse).
+- **MM open:** A/B lane `bz_clr_a/b` + `bz_clr_side` / `bz_clr_on` / `bz_clr_empty` from `bz_flip.py` `_ab_clear` — same settle 0.25 s + load 0.5 s as fan/pos; XML Visible/Hidden **1500 ms** sine inout (matches fanart + poster A/B).
+- Title fallback when no clear art / `bz_tvclear_off` / `bz_clr_empty`.
+
 ## Related
 mm-list.md · movies-list.md
 
