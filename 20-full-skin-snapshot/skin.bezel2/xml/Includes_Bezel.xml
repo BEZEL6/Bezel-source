@@ -3594,7 +3594,7 @@
 	<include name="BezelWarmGateOverlay">
 		<control type="group">
 			<visible>!String.IsEmpty(Window(Home).Property(bz_warm_gate)) + !String.IsEqual(Skin.String(bz_at_warmsplash),Off)</visible>
-			<animation effect="fade" start="100" end="0" time="500" tween="sine" easing="inout">Hidden</animation>
+			<animation effect="fade" start="100" end="0" time="3000" tween="sine" easing="inout">Hidden</animation>
 			<include>BezelWarmGate</include>
 		</control>
 	</include>

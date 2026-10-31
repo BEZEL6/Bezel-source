@@ -1,5 +1,5 @@
 [B]5.33.200[/B]
-- WarmGate: minimum splash display 5.0 s — no fade/dismiss before 5 s even if underlay and art are ready earlier.
+- WarmGate splash timing: min 5 s, max 15 s; 3 s fade-out on dismiss (BezelWarmGateOverlay Hidden).
 
 [B]5.33.199[/B]
 - WarmGate non-modal splash overlay: no ActivateWindow(1113); BezelWarmGateOverlay on Startup/Music/Videos so underlay builds under splash, then art warm, then fade (fixes 196/197 modal blank).

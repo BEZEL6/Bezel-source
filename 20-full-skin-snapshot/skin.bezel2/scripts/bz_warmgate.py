@@ -1,14 +1,14 @@
 # WARM GATE (5.33.200): cold-start gate of the WARM system.
 # Sequence (Rob): (1) splash first (2) skin windows/layouts/controls build under splash
 # (3) artwork cache (4) splash fades — no pop / no blank.
-# 5.33.199: do NOT ActivateWindow(1113). Splash is BezelWarmGateOverlay (bz_warm_gate)
-# on Startup + Music + Videos.
-# 5.33.200: MIN splash display 5.0 s — never fade/dismiss before that, even if underlay+art ready early.
+# 5.33.199: non-modal BezelWarmGateOverlay (bz_warm_gate) on Startup + Music + Videos.
+# 5.33.200: splash display MIN 5.0 s, CAP/max 15.0 s; dismiss fade-out 3.0 s (overlay Hidden anim).
 # Doc: behaviors/mm-warm.md
 import json, time, threading, xbmc, xbmcgui
 home = xbmcgui.Window(10000); mon = xbmc.Monitor()
-MIN = 5.0   # splash must stay at least this long before fade
-CAP = 5.0   # hard force-dismiss at same mark if work still incomplete
+MIN = 5.0    # never fade before this
+CAP = 15.0   # force dismiss by this even if work incomplete
+FADE = 3.0   # seconds for overlay Hidden fade after clearing bz_warm_gate
 PATHS = {'music': ('musicdb://artists/', 'music'), 'movies': ('videodb://movies/titles/', 'video'), 'tv': ('videodb://tvshows/titles/', 'video')}
 LAND = {
     'music':  'Window.IsActive(music) + !Container(60).IsUpdating + Integer.IsGreater(Container(60).NumItems,0)',
@@ -26,23 +26,33 @@ def warm(sec):
         pass
     home.setProperty('bz_warm_ready_' + sec, '1')
 
+def hold_until(t0, secs):
+    while not mon.abortRequested():
+        left = secs - (time.time() - t0)
+        if left <= 0:
+            return
+        mon.waitForAbort(min(0.05, left))
+
 def dismiss(vis):
     with _lock:
         if home.getProperty('bz_splash_done') == '1':
             return
+        # Start overlay fade (BezelWarmGateOverlay Hidden = FADE ms in XML)
         home.clearProperty('bz_warm_gate')
         if vis and xbmc.getCondVisibility('Window.IsVisible(1113)'):
             xbmc.executebuiltin('Dialog.Close(1113,true)')
+    # Fade outside lock so watchdog/main don't deadlock; wait for 3 s anim
+    if vis:
+        end = time.time() + FADE
+        while time.time() < end and not mon.abortRequested():
+            if home.getProperty('bz_splash_done') == '1':
+                return
+            mon.waitForAbort(0.05)
+    with _lock:
+        if home.getProperty('bz_splash_done') == '1':
+            return
         home.setProperty('bz_splash_done', '1')
         home.clearProperty('bz_warmgate_running')
-
-def hold_min(t0):
-    """Block until MIN seconds since t0 (5.33.200)."""
-    while not mon.abortRequested():
-        left = MIN - (time.time() - t0)
-        if left <= 0:
-            return
-        mon.waitForAbort(min(0.05, left))
 
 def main():
     if home.getProperty('bz_warmgate_running'):
@@ -64,6 +74,7 @@ def main():
         order = ['music', 'movies', 'tv']
         first = order[r]
         land = LAND[first]
+        ready = False
 
         def watchdog():
             end = t0 + CAP
@@ -72,11 +83,11 @@ def main():
                     return
                 mon.waitForAbort(0.1)
             if home.getProperty('bz_splash_done') != '1':
-                hold_min(t0)
+                hold_until(t0, MIN)
                 dismiss(vis)
         threading.Thread(target=watchdog, daemon=True).start()
 
-        # Phase 2: underlay land (non-modal — ReplaceWindow can succeed)
+        # Phase 2: underlay land (up to CAP)
         while time.time() - t0 < CAP and not mon.abortRequested():
             if home.getProperty('bz_splash_done') == '1':
                 break
@@ -84,7 +95,7 @@ def main():
                 break
             mon.waitForAbort(0.05)
 
-        # Phase 3: art warm after underlay (or late in CAP)
+        # Phase 3: art warm
         if home.getProperty('bz_splash_done') != '1':
             def run_warms():
                 warm(first)
@@ -96,12 +107,14 @@ def main():
                 if home.getProperty('bz_splash_done') == '1':
                     break
                 if all(home.getProperty('bz_warm_ready_' + s) for s in PATHS):
+                    ready = True
                     break
                 mon.waitForAbort(0.05)
     finally:
-        # 5.33.200: never dismiss before MIN, even if ready early
-        hold_min(t0)
+        # Ready early → still hold to MIN; never past CAP (watchdog); then 3 s fade
+        hold_until(t0, MIN)
         dismiss(vis)
+        # Allow late warms to finish quietly after fade started (up to CAP)
         while time.time() - t0 < CAP and not mon.abortRequested():
             if all(home.getProperty('bz_warm_ready_' + s) for s in PATHS):
                 break
