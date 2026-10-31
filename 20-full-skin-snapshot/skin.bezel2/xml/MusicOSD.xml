@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- BEZEL: old fullscreen MusicOSD list removed. Anything that still opens MusicOSD
+     (legacy M / OSD paths) closes it at once and opens BEZEL colour-strip controls 1115 instead.
+     Keeps FS music keys from being hijacked by the duplicate 3.2 list. -->
+<window>
+	<onload>Dialog.Close(musicosd,true)</onload>
+	<onload condition="Player.HasAudio">ActivateWindow(1115)</onload>
+	<controls />
+</window>

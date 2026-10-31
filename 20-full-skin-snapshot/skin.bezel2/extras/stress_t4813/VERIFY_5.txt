@@ -1,0 +1,6 @@
+t4813 verify 2026-10-27 22:14+
+PASS 1 shared sway freeze ABSENT
+PASS 2 Movies already-warmed widened (sets + videodb://movies/); TV untouched
+PASS 3 bz_movposter_hold + BezelPoster60 fallback + stand-in gate
+PASS 4 BezelSecDim mmdim ends 5..100; Tuner 100%=no dim (5.0.12 transplant)
+PASS 5 TV-only BEZEL UADV-TV logs; under_adv timing = 5.0.12 (no t4813b behavior)

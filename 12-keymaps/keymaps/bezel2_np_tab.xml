@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- BEZEL 2.0 BETA 1.1 (installed into the profile keymaps as zz_bezel2_np_tab.xml by bz_cmd.py keymap): Tab / remote Display (FullScreen)
+     open the Now Playing dialog (1112) straight from the music window and close it from the dialog, with plain builtins (no Python start-up delay).
+     The dialog's onload checks music is playing in the list view; otherwise it closes at once and opens Kodi's fullscreen music window as before. -->
+<keymap>
+	<music>
+		<keyboard><m>ActivateWindow(1115)</m><tab>ActivateWindow(1112)</tab><escape>Back</escape></keyboard><!-- BETA 2.3 item 11: Esc = Back, so at the top level it opens the slide menu (list onback) instead of leaving -->
+		<remote><display>ActivateWindow(1112)</display><red>ActivateWindow(1115)</red></remote>
+		<keyboard><red>ActivateWindow(1115)</red></keyboard><!-- BEZEL 3.2.0 item 7: CEC RED (Samsung Frame 123/colour pad; arrives as remote red, or as keyboard red via Android PROG_RED on the Shield) opens the music controls -->
+	</music>
+	<videos>
+		<keyboard><escape>Back</escape></keyboard><!-- BETA 2.3 item 11 -->
+	</videos>
+	<!-- BETA 1.1b: Kodi's busy dialog is up while a song opens (long on the first play after Kodi starts: audio output init), and keys then go to it,
+	     not to the music window. Tab / Display there are remembered (bz_tabq) and bz_flip.py opens Now Playing once the busy dialog is gone. -->
+	<busydialog>
+		<keyboard><tab>SetProperty(bz_tabq,true,home)</tab></keyboard>
+		<remote><display>SetProperty(bz_tabq,true,home)</display></remote>
+	</busydialog>
+	<busydialognocancel>
+		<keyboard><tab>SetProperty(bz_tabq,true,home)</tab></keyboard>
+		<remote><display>SetProperty(bz_tabq,true,home)</display></remote>
+	</busydialognocancel>
+	<window1112>
+		<keyboard><m>ActivateWindow(1115)</m><tab>Dialog.Close(1112)</tab><escape>Back</escape></keyboard><!-- Esc (PreviousMenu) would close the dialog under the slide menu; as Back the menu closes first -->
+		<remote><display>Dialog.Close(1112)</display><red>ActivateWindow(1115)</red></remote><keyboard><red>ActivateWindow(1115)</red></keyboard>
+	</window1112>
+	<!-- BETA 2.6 item 5: hold Select = context menu skin-wide. The Shield remote / game pad centre (DPAD_CENTER) arrives in Kodi as the keyboard key "return"
+	     (some remotes send "enter"); CEC remotes as <remote><select>. Long-press needs Kodi's default long-press delay. -->
+	<window1115><keyboard><m>Dialog.Close(1115)</m><red>Dialog.Close(1115)</red></keyboard><remote><red>Dialog.Close(1115)</red></remote></window1115><!-- BEZEL 3.2.0: M opens / closes the music controls -->
+	<!-- 4.3.0 O67: was <global>; now only the BEZEL windows, so dialogs (e.g. Add video source) and edit fields keep their own keys; bare C removed -->
+	<home>
+		<keyboard><return mod="longpress">NotifyAll(bz,bz_ctx)</return><enter mod="longpress">NotifyAll(bz,bz_ctx)</enter></keyboard>
+		<remote><select mod="longpress">NotifyAll(bz,bz_ctx)</select></remote>
+		<!-- BETA 2.8: Samsung Frame via HDMI-CEC sends a held button as repeats (longpress may never fire): its MENU/TOOLS key arrives as remote menu / contentsmenu / rootmenu / topmenu = ContextMenu. BETA 2.7 item 7: Shield controller / gamepad A and the Android dpad-centre / select key codes. Joystick keymaps take holdtime (ms), not mod="longpress" -->
+		<gamepad><a mod="longpress">NotifyAll(bz,bz_ctx)</a></gamepad>
+		<joystick profile="game.controller.default"><a holdtime="500">NotifyAll(bz,bz_ctx)</a></joystick>
+		<joystick profile="game.controller.shield"><a holdtime="500">NotifyAll(bz,bz_ctx)</a></joystick>
+		<keyboard><key id="61453" mod="longpress">NotifyAll(bz,bz_ctx)</key><key id="61711" mod="longpress">NotifyAll(bz,bz_ctx)</key><key id="61643" mod="longpress">NotifyAll(bz,bz_ctx)</key><menu>NotifyAll(bz,bz_ctx)</menu><menu mod="longpress">NotifyAll(bz,bz_ctx)</menu></keyboard>
+		<remote><menu>NotifyAll(bz,bz_ctx)</menu><title>NotifyAll(bz,bz_ctx)</title><contentsmenu>NotifyAll(bz,bz_ctx)</contentsmenu><rootmenu>NotifyAll(bz,bz_ctx)</rootmenu><topmenu>NotifyAll(bz,bz_ctx)</topmenu><enter mod="longpress">NotifyAll(bz,bz_ctx)</enter></remote>
+	</home>
+	<music>
+		<keyboard><return mod="longpress">NotifyAll(bz,bz_ctx)</return><enter mod="longpress">NotifyAll(bz,bz_ctx)</enter></keyboard>
+		<remote><select mod="longpress">NotifyAll(bz,bz_ctx)</select></remote>
+		<!-- BETA 2.8: Samsung Frame via HDMI-CEC sends a held button as repeats (longpress may never fire): its MENU/TOOLS key arrives as remote menu / contentsmenu / rootmenu / topmenu = ContextMenu. BETA 2.7 item 7: Shield controller / gamepad A and the Android dpad-centre / select key codes. Joystick keymaps take holdtime (ms), not mod="longpress" -->
+		<gamepad><a mod="longpress">NotifyAll(bz,bz_ctx)</a></gamepad>
+		<joystick profile="game.controller.default"><a holdtime="500">NotifyAll(bz,bz_ctx)</a></joystick>
+		<joystick profile="game.controller.shield"><a holdtime="500">NotifyAll(bz,bz_ctx)</a></joystick>
+		<keyboard><key id="61453" mod="longpress">NotifyAll(bz,bz_ctx)</key><key id="61711" mod="longpress">NotifyAll(bz,bz_ctx)</key><key id="61643" mod="longpress">NotifyAll(bz,bz_ctx)</key><menu>NotifyAll(bz,bz_ctx)</menu><menu mod="longpress">NotifyAll(bz,bz_ctx)</menu></keyboard>
+		<remote><menu>NotifyAll(bz,bz_ctx)</menu><title>NotifyAll(bz,bz_ctx)</title><contentsmenu>NotifyAll(bz,bz_ctx)</contentsmenu><rootmenu>NotifyAll(bz,bz_ctx)</rootmenu><topmenu>NotifyAll(bz,bz_ctx)</topmenu><enter mod="longpress">NotifyAll(bz,bz_ctx)</enter></remote>
+	</music>
+	<videos>
+		<keyboard><return mod="longpress">NotifyAll(bz,bz_ctx)</return><enter mod="longpress">NotifyAll(bz,bz_ctx)</enter></keyboard>
+		<remote><select mod="longpress">NotifyAll(bz,bz_ctx)</select></remote>
+		<!-- BETA 2.8: Samsung Frame via HDMI-CEC sends a held button as repeats (longpress may never fire): its MENU/TOOLS key arrives as remote menu / contentsmenu / rootmenu / topmenu = ContextMenu. BETA 2.7 item 7: Shield controller / gamepad A and the Android dpad-centre / select key codes. Joystick keymaps take holdtime (ms), not mod="longpress" -->
+		<gamepad><a mod="longpress">NotifyAll(bz,bz_ctx)</a></gamepad>
+		<joystick profile="game.controller.default"><a holdtime="500">NotifyAll(bz,bz_ctx)</a></joystick>
+		<joystick profile="game.controller.shield"><a holdtime="500">NotifyAll(bz,bz_ctx)</a></joystick>
+		<keyboard><key id="61453" mod="longpress">NotifyAll(bz,bz_ctx)</key><key id="61711" mod="longpress">NotifyAll(bz,bz_ctx)</key><key id="61643" mod="longpress">NotifyAll(bz,bz_ctx)</key><menu>NotifyAll(bz,bz_ctx)</menu><menu mod="longpress">NotifyAll(bz,bz_ctx)</menu></keyboard>
+		<remote><menu>NotifyAll(bz,bz_ctx)</menu><title>NotifyAll(bz,bz_ctx)</title><contentsmenu>NotifyAll(bz,bz_ctx)</contentsmenu><rootmenu>NotifyAll(bz,bz_ctx)</rootmenu><topmenu>NotifyAll(bz,bz_ctx)</topmenu><enter mod="longpress">NotifyAll(bz,bz_ctx)</enter></remote>
+	</videos>
+	<window1112>
+		<keyboard><return mod="longpress">ContextMenu</return><enter mod="longpress">ContextMenu</enter></keyboard>
+		<remote><select mod="longpress">ContextMenu</select></remote>
+		<!-- BETA 2.8: Samsung Frame via HDMI-CEC sends a held button as repeats (longpress may never fire): its MENU/TOOLS key arrives as remote menu / contentsmenu / rootmenu / topmenu = ContextMenu. BETA 2.7 item 7: Shield controller / gamepad A and the Android dpad-centre / select key codes. Joystick keymaps take holdtime (ms), not mod="longpress" -->
+		<gamepad><a mod="longpress">ContextMenu</a></gamepad>
+		<joystick profile="game.controller.default"><a holdtime="500">ContextMenu</a></joystick>
+		<joystick profile="game.controller.shield"><a holdtime="500">ContextMenu</a></joystick>
+		<keyboard><key id="61453" mod="longpress">ContextMenu</key><key id="61711" mod="longpress">ContextMenu</key><key id="61643" mod="longpress">ContextMenu</key><menu>ContextMenu</menu><menu mod="longpress">ContextMenu</menu></keyboard>
+		<remote><menu>ContextMenu</menu><title>ContextMenu</title><contentsmenu>ContextMenu</contentsmenu><rootmenu>ContextMenu</rootmenu><topmenu>ContextMenu</topmenu><enter mod="longpress">ContextMenu</enter></remote>
+	</window1112>
+	<programs>
+		<keyboard><return mod="longpress">ContextMenu</return><enter mod="longpress">ContextMenu</enter></keyboard>
+		<remote><select mod="longpress">ContextMenu</select></remote>
+		<!-- BETA 2.8: Samsung Frame via HDMI-CEC sends a held button as repeats (longpress may never fire): its MENU/TOOLS key arrives as remote menu / contentsmenu / rootmenu / topmenu = ContextMenu. BETA 2.7 item 7: Shield controller / gamepad A and the Android dpad-centre / select key codes. Joystick keymaps take holdtime (ms), not mod="longpress" -->
+		<gamepad><a mod="longpress">ContextMenu</a></gamepad>
+		<joystick profile="game.controller.default"><a holdtime="500">ContextMenu</a></joystick>
+		<joystick profile="game.controller.shield"><a holdtime="500">ContextMenu</a></joystick>
+		<keyboard><key id="61453" mod="longpress">ContextMenu</key><key id="61711" mod="longpress">ContextMenu</key><key id="61643" mod="longpress">ContextMenu</key><menu>ContextMenu</menu><menu mod="longpress">ContextMenu</menu></keyboard>
+		<remote><menu>ContextMenu</menu><title>ContextMenu</title><contentsmenu>ContextMenu</contentsmenu><rootmenu>ContextMenu</rootmenu><topmenu>ContextMenu</topmenu><enter mod="longpress">ContextMenu</enter></remote>
+	</programs>
+	<pictures>
+		<keyboard><return mod="longpress">ContextMenu</return><enter mod="longpress">ContextMenu</enter></keyboard>
+		<remote><select mod="longpress">ContextMenu</select></remote>
+		<!-- BETA 2.8: Samsung Frame via HDMI-CEC sends a held button as repeats (longpress may never fire): its MENU/TOOLS key arrives as remote menu / contentsmenu / rootmenu / topmenu = ContextMenu. BETA 2.7 item 7: Shield controller / gamepad A and the Android dpad-centre / select key codes. Joystick keymaps take holdtime (ms), not mod="longpress" -->
+		<gamepad><a mod="longpress">ContextMenu</a></gamepad>
+		<joystick profile="game.controller.default"><a holdtime="500">ContextMenu</a></joystick>
+		<joystick profile="game.controller.shield"><a holdtime="500">ContextMenu</a></joystick>
+		<keyboard><key id="61453" mod="longpress">ContextMenu</key><key id="61711" mod="longpress">ContextMenu</key><key id="61643" mod="longpress">ContextMenu</key><menu>ContextMenu</menu><menu mod="longpress">ContextMenu</menu></keyboard>
+		<remote><menu>ContextMenu</menu><title>ContextMenu</title><contentsmenu>ContextMenu</contentsmenu><rootmenu>ContextMenu</rootmenu><topmenu>ContextMenu</topmenu><enter mod="longpress">ContextMenu</enter></remote>
+	</pictures>
+	<addonbrowser>
+		<keyboard><return mod="longpress">ContextMenu</return><enter mod="longpress">ContextMenu</enter></keyboard>
+		<remote><select mod="longpress">ContextMenu</select></remote>
+		<!-- BETA 2.8: Samsung Frame via HDMI-CEC sends a held button as repeats (longpress may never fire): its MENU/TOOLS key arrives as remote menu / contentsmenu / rootmenu / topmenu = ContextMenu. BETA 2.7 item 7: Shield controller / gamepad A and the Android dpad-centre / select key codes. Joystick keymaps take holdtime (ms), not mod="longpress" -->
+		<gamepad><a mod="longpress">ContextMenu</a></gamepad>
+		<joystick profile="game.controller.default"><a holdtime="500">ContextMenu</a></joystick>
+		<joystick profile="game.controller.shield"><a holdtime="500">ContextMenu</a></joystick>
+		<keyboard><key id="61453" mod="longpress">ContextMenu</key><key id="61711" mod="longpress">ContextMenu</key><key id="61643" mod="longpress">ContextMenu</key><menu>ContextMenu</menu><menu mod="longpress">ContextMenu</menu></keyboard>
+		<remote><menu>ContextMenu</menu><title>ContextMenu</title><contentsmenu>ContextMenu</contentsmenu><rootmenu>ContextMenu</rootmenu><topmenu>ContextMenu</topmenu><enter mod="longpress">ContextMenu</enter></remote>
+	</addonbrowser>
+	<musicplaylist>
+		<keyboard><return mod="longpress">ContextMenu</return><enter mod="longpress">ContextMenu</enter></keyboard>
+		<remote><select mod="longpress">ContextMenu</select></remote>
+		<!-- BETA 2.8: Samsung Frame via HDMI-CEC sends a held button as repeats (longpress may never fire): its MENU/TOOLS key arrives as remote menu / contentsmenu / rootmenu / topmenu = ContextMenu. BETA 2.7 item 7: Shield controller / gamepad A and the Android dpad-centre / select key codes. Joystick keymaps take holdtime (ms), not mod="longpress" -->
+		<gamepad><a mod="longpress">ContextMenu</a></gamepad>
+		<joystick profile="game.controller.default"><a holdtime="500">ContextMenu</a></joystick>
+		<joystick profile="game.controller.shield"><a holdtime="500">ContextMenu</a></joystick>
+		<keyboard><key id="61453" mod="longpress">ContextMenu</key><key id="61711" mod="longpress">ContextMenu</key><key id="61643" mod="longpress">ContextMenu</key><menu>ContextMenu</menu><menu mod="longpress">ContextMenu</menu></keyboard>
+		<remote><menu>ContextMenu</menu><title>ContextMenu</title><contentsmenu>ContextMenu</contentsmenu><rootmenu>ContextMenu</rootmenu><topmenu>ContextMenu</topmenu><enter mod="longpress">ContextMenu</enter></remote>
+	</musicplaylist>
+	<videoplaylist>
+		<keyboard><return mod="longpress">ContextMenu</return><enter mod="longpress">ContextMenu</enter></keyboard>
+		<remote><select mod="longpress">ContextMenu</select></remote>
+		<!-- BETA 2.8: Samsung Frame via HDMI-CEC sends a held button as repeats (longpress may never fire): its MENU/TOOLS key arrives as remote menu / contentsmenu / rootmenu / topmenu = ContextMenu. BETA 2.7 item 7: Shield controller / gamepad A and the Android dpad-centre / select key codes. Joystick keymaps take holdtime (ms), not mod="longpress" -->
+		<gamepad><a mod="longpress">ContextMenu</a></gamepad>
+		<joystick profile="game.controller.default"><a holdtime="500">ContextMenu</a></joystick>
+		<joystick profile="game.controller.shield"><a holdtime="500">ContextMenu</a></joystick>
+		<keyboard><key id="61453" mod="longpress">ContextMenu</key><key id="61711" mod="longpress">ContextMenu</key><key id="61643" mod="longpress">ContextMenu</key><menu>ContextMenu</menu><menu mod="longpress">ContextMenu</menu></keyboard>
+		<remote><menu>ContextMenu</menu><title>ContextMenu</title><contentsmenu>ContextMenu</contentsmenu><rootmenu>ContextMenu</rootmenu><topmenu>ContextMenu</topmenu><enter mod="longpress">ContextMenu</enter></remote>
+	</videoplaylist>
+
+	<!-- BETA 2.6 item 5 / 2.7 item 3: video playback - Left / Right skip, Select = pause + controls; Back: the first hides the controls, the second stops (bz_cmd vidback) -->
+	<fullscreenvideo>
+		<keyboard><return>RunScript(special://skin/scripts/bz_cmd.py,vidsel)</return><enter>RunScript(special://skin/scripts/bz_cmd.py,vidsel)</enter><backspace>RunScript(special://skin/scripts/bz_cmd.py,vidback)</backspace><escape>RunScript(special://skin/scripts/bz_cmd.py,vidback)</escape></keyboard>
+		<remote><select>RunScript(special://skin/scripts/bz_cmd.py,vidsel)</select><back>RunScript(special://skin/scripts/bz_cmd.py,vidback)</back></remote>
+		<gamepad><b>RunScript(special://skin/scripts/bz_cmd.py,vidback)</b></gamepad>
+		<joystick profile="game.controller.default"><b>RunScript(special://skin/scripts/bz_cmd.py,vidback)</b></joystick>
+	</fullscreenvideo>
+	<videoosd><!-- BETA 2.7 item 3: Back in the OSD = hide it (step 1); vidback notes the time so the next Back stops -->
+		<keyboard><backspace>RunScript(special://skin/scripts/bz_cmd.py,vidback)</backspace><escape>RunScript(special://skin/scripts/bz_cmd.py,vidback)</escape></keyboard>
+		<remote><back>RunScript(special://skin/scripts/bz_cmd.py,vidback)</back></remote>
+	</videoosd>
+  <!-- BETA 2.8: Back in fullscreen video minimises the video (playback continues behind the skin) instead of stopping.
+       The OSD (VideoOSD) and dialogs are separate windows with their own Back, so they still close first. -->
+  <FullscreenVideo>
+    <keyboard><backspace>Action(FullScreen)</backspace><escape>Action(FullScreen)</escape><browser_back>Action(FullScreen)</browser_back></keyboard>
+    <remote><back>Action(FullScreen)</back></remote>
+    <joystick profile="game.controller.default"><b>Action(FullScreen)</b><back>Action(FullScreen)</back></joystick>
+    <joystick profile="game.controller.shield"><b>Action(FullScreen)</b><back>Action(FullScreen)</back></joystick>
+  </FullscreenVideo>
+	<!-- t4427: FS Music from MM stays in visualisation; same nav as FS2 — L/R prev/next via control 6390 -->
+	<visualisation>
+		<remote><left>Left</left><right>Right</right><up>Up</up><down>Down</down><back>SetFocus(6297)</back></remote>
+		<keyboard><left>Left</left><right>Right</right><up>Up</up><down>Down</down><backspace>SetFocus(6297)</backspace><browser_back>SetFocus(6297)</browser_back><escape>Back</escape></keyboard><!-- 5.33.108 t732 -->
+		<!-- 5.33.137 t976: Kodi default viz keymap sends Select/Enter = OSD (MusicOSD -> 1115 controls) so 6390 onclick (pause / double-Select Play Next) never fired;
+		     Shield pad/joystick d-pad = StepBack/StepForward + Up/Down SkipNext (viz-side actions, not 6390). Route all to plain nav so 6390 owns L/R/Select. -->
+		<remote><select>Select</select><enter>Select</enter><menu>Select</menu><contentsmenu>noop</contentsmenu><rootmenu>noop</rootmenu><start>noop</start><left mod="longpress">Left</left><right mod="longpress">Right</right></remote>
+		<keyboard><return>Select</return><enter>Select</enter><return mod="longpress">PlayPause</return><enter mod="longpress">PlayPause</enter><m>noop</m><menu>noop</menu><p>noop</p><left mod="longpress">Left</left><right mod="longpress">Right</right></keyboard>
+		<gamepad><A>Select</A><dpadleft>Left</dpadleft><dpadright>Right</dpadright><dpadup>Up</dpadup><dpaddown>Down</dpaddown><Y>noop</Y><start>noop</start><back>noop</back></gamepad>
+		<joystick profile="game.controller.default"><a>Select</a><b>SetFocus(6297)</b><left>Left</left><right>Right</right><up>Up</up><down>Down</down><y>noop</y><x>noop</x><rightthumb>noop</rightthumb><leftstick direction="left">Left</leftstick><leftstick direction="right">Right</leftstick><leftstick direction="up">Up</leftstick><leftstick direction="down">Down</leftstick></joystick>
+		<joystick profile="game.controller.shield"><a>Select</a><b>SetFocus(6297)</b><left>Left</left><right>Right</right><up>Up</up><down>Down</down><y>noop</y><x>noop</x><leftstick direction="left">Left</leftstick><leftstick direction="right">Right</leftstick></joystick>
+	</visualisation>
+</keymap>

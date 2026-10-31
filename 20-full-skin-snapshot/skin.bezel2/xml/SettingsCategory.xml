@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>3</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<controls>
+		<control type="group"><!-- 4.7.4: SECTION PARENT GROUP — Global Dim fade under MM --><include>BezelSecDim</include>
+		<!-- 2.0a2: BEZEL list style: black bezel, categories as a text list (x 120-570) on the shadow backdrop, colour bar 570-960 with the
+		     description of the highlighted setting, setting controls to the right of the bar -->
+		<include>BezelBlack</include>
+		<!-- 5.33.26 Rob t235: template fanart stage 120,120 840x900 (same as Settings home) -->
+		<control type="group"><left>120</left><top>120</top><control type="image"><left>0</left><top>0</top><width>840</width><height>900</height><aspectratio>scale</aspectratio><texture background="true">$INFO[Window(Home).Property(bz_backdrop)]</texture></control><control type="image"><left>0</left><top>0</top><width>840</width><height>900</height><texture colordiffuse="B4000000">bezel/white.png</texture></control></control>
+		<include content="BezelLogo"><param name="col" value="FFFFFFFF"/></include><!-- t4284 -->
+		<!-- LFUI (Rob approved t3893s12053, mock mockups/lf_skin/after.png): dark settings list 120-570, colour strip 570-960 with categories + DETAIL panel, title bottom right -->
+		<control type="group"><include>BezelOpenCloseSet</include>
+			<!-- 5.33.11 Rob lock: grey card removed; menu lives in colour strip -->
+			<control type="image"><left>570</left><top>120</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture><animation effect="fade" start="100" end="10" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),1)">Conditional</animation><animation effect="fade" start="100" end="20" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),2)">Conditional</animation><animation effect="fade" start="100" end="30" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),3)">Conditional</animation><animation effect="fade" start="100" end="40" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),4)">Conditional</animation><animation effect="fade" start="100" end="50" time="0" condition="String.IsEmpty(Skin.String(bz_at_mmbar)) | String.IsEqual(Skin.String(bz_at_mmbar),5)">Conditional</animation><animation effect="fade" start="100" end="60" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),6)">Conditional</animation><animation effect="fade" start="100" end="70" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),7)">Conditional</animation><animation effect="fade" start="100" end="80" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),8)">Conditional</animation><animation effect="fade" start="100" end="90" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),9)">Conditional</animation></control>
+			<control type="label"><left>604</left><top>132</top><width>330</width><height>40</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>[B]‹  [UPPERCASE]$INFO[Control.GetLabel(2)][/UPPERCASE][/B]</label><visible>ControlGroup(5).HasFocus()</visible></control><!-- 5.33.11 sub-list header (Back/Left = parent) -->
+			<control type="label"><left>1040</left><top>40</top><width>780</width><height>60</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[5] / $INFO[Control.GetLabel(2)]</label></control>
+			<control type="grouplist"><left>1040</left><top>900</top><width>780</width><height>70</height><orientation>horizontal</orientation><itemgap>24</itemgap>
+				<control type="label"><width>auto</width><height>70</height><font>bz_b46</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>$INFO[Control.GetLabel(2)]</label></control>
+				<control type="label"><width>auto</width><height>70</height><font>bz_b26</font><aligny>center</aligny><textcolor>FF7FC4F0</textcolor><label>[UPPERCASE]$LOCALIZE[5][/UPPERCASE]</label></control>
+			</control>
+			<control type="image"><left>1040</left><top>998</top><width>530</width><height>3</height><texture colordiffuse="E6FFFFFF">bezel/white.png</texture></control>
+			<!-- DETAIL panel inside the strip -->
+			<control type="image"><left>590</left><top>560</top><width>350</width><height>370</height><texture border="10" colordiffuse="99101820">bezel/mm_round_a60.png</texture></control>
+			<control type="label"><left>610</left><top>572</top><width>310</width><height>34</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>DETAIL</label></control>
+			<control type="textbox"><left>606</left><top>604</top><width>318</width><height>46</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>[B][UPPERCASE]$INFO[System.CurrentControl][/UPPERCASE][/B]</label><autoscroll delay="2500" time="2000" repeat="5000">true</autoscroll><visible>!Control.HasFocus(20)</visible></control><control type="label"><left>610</left><top>604</top><width>310</width><height>46</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>[B]SETTINGS LEVEL[/B]</label><visible>Control.HasFocus(20)</visible></control><!-- F6 fixb3: wrap instead of clip -->
+		</control>
+		<control type="multiimage">
+			<depth>DepthBackground</depth>
+			<include>FullScreenDimensions</include>
+			<aspectratio>scale</aspectratio>
+			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
+			<animation effect="fade" start="0" end="100" time="400" tween="sine" easing="out">WindowOpen</animation>
+			<animation effect="fade" time="400">VisibleChange</animation>
+			<imagepath colordiffuse="35FFFFFF">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</imagepath>
+			<visible>false</visible>
+		</control>
+		<control type="group">
+			<include>BezelOpenCloseSet</include>
+			<control type="grouplist" id="5">
+				<description>control area — 5.33.11: lives in strip, replaces category list while focused</description>
+				<top>178</top>
+				<left>586</left>
+				<pagecontrol>60</pagecontrol>
+				<width>358</width>
+				<height>370</height>
+				<itemgap>6</itemgap>
+				<onleft>3</onleft>
+				<onright>noop</onright>
+				<onback>3</onback>
+				<onup>5</onup>
+				<ondown>5</ondown>
+				<animation effect="fade" start="100" end="0" time="0" condition="!ControlGroup(5).HasFocus()">Conditional</animation><!-- stays focusable; hidden by fade -->
+			</control>
+			<control type="image">
+				<left>470</left>
+				<top>130</top>
+				<right>0</right>
+				<height>2</height><visible>false</visible>
+				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
+			</control>
+			<control type="image">
+				<left>470</left>
+				<bottom>135</bottom>
+				<right>0</right>
+				<height>2</height><visible>false</visible>
+				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
+			</control>
+		</control>
+		<control type="button" id="7">
+			<description>Default Button</description>
+			<font>bz_mm22</font><textcolor>C8FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><texturefocus border="23" colordiffuse="FFFFFFFF">bezel/mm_pill_ol.png</texturefocus><texturenofocus border="23" colordiffuse="33FFFFFF">bezel/mm_pill_ol.png</texturenofocus><!-- attnqueue #11 L&F outline rows -->
+			<include content="DefaultSettingButton"><param name="height">56</param><param name="textoffsetx">22</param></include><onback>3</onback>
+		</control>
+		<control type="radiobutton" id="8">
+			<description>Default RadioButton</description>
+			<font>bz_mm22</font><textcolor>C8FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><texturefocus border="23" colordiffuse="FFFFFFFF">bezel/mm_pill_ol.png</texturefocus><texturenofocus border="23" colordiffuse="33FFFFFF">bezel/mm_pill_ol.png</texturenofocus><!-- attnqueue #11 L&F outline rows -->
+			<include content="DefaultSettingButton"><param name="height">56</param><param name="textoffsetx">22</param></include><onback>3</onback>
+		</control>
+		<control type="spincontrolex" id="9">
+			<description>Default SpinControlex</description>
+			<font>bz_mm22</font><textcolor>C8FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><texturefocus border="23" colordiffuse="FFFFFFFF">bezel/mm_pill_ol.png</texturefocus><texturenofocus border="23" colordiffuse="33FFFFFF">bezel/mm_pill_ol.png</texturenofocus><!-- attnqueue #11 L&F outline rows -->
+			<include content="DefaultSettingButton"><param name="height">56</param><param name="textoffsetx">22</param></include><onback>3</onback>
+			<aligny>center</aligny>
+		</control>
+		<control type="sliderex" id="13">
+			<description>Default Slider</description>
+			<font>bz_mm22</font><textcolor>C8FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><texturefocus border="23" colordiffuse="FFFFFFFF">bezel/mm_pill_ol.png</texturefocus><texturenofocus border="23" colordiffuse="33FFFFFF">bezel/mm_pill_ol.png</texturenofocus><!-- attnqueue #11 L&F outline rows -->
+			<include content="DefaultSettingButton"><param name="height">56</param><param name="textoffsetx">22</param></include><onback>3</onback>
+			<aligny>center</aligny>
+		</control>
+		<control type="image" id="11">
+			<description>separator image</description>
+			<height>2</height>
+			<texture colordiffuse="30FFFFFF">bezel/white.png</texture>
+		</control>
+		<control type="label" id="14">
+			<description>Default Label</description>
+			<width>418</width>
+			<textoffsetx>12</textoffsetx>
+			<top>0</top>
+			<height>50</height>
+			<label></label>
+			<align>left</align>
+			<aligny>center</aligny>
+			<font>bz_b12</font>
+			<textcolor>99FFFFFF</textcolor>
+			<shadowcolor>black</shadowcolor>
+		</control>
+		<control type="colorbutton" id="15">
+			<description>Default ColorButton</description>
+			<font>bz_mm22</font><textcolor>C8FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><texturefocus border="23" colordiffuse="FFFFFFFF">bezel/mm_pill_ol.png</texturefocus><texturenofocus border="23" colordiffuse="33FFFFFF">bezel/mm_pill_ol.png</texturenofocus><!-- attnqueue #11 L&F outline rows -->
+			<include content="DefaultSettingButton"><param name="height">56</param><param name="textoffsetx">22</param></include><onback>3</onback>
+		</control>
+		<control type="group">
+			<depth>DepthContentPanel</depth>
+			<include>BezelOpenCloseSet</include>
+			<control type="grouplist" id="3">
+				<description>button area</description>
+				<left>586</left>
+				<top>136</top>
+				<width>358</width>
+				<height>410</height>
+				<usecontrolcoords>true</usecontrolcoords>
+				<onleft>noop</onleft>
+				<onright>5</onright>
+				<onup>3</onup>
+				<ondown>20</ondown>
+				<animation effect="fade" start="100" end="0" time="0" condition="ControlGroup(5).HasFocus()">Conditional</animation><!-- 5.33.11: fade not visible, so Back/Left can focus it -->
+			</control>
+			<control type="button" id="10">
+				<description>Default Category Button</description>
+				<left>0</left>
+				<height>52</height>
+				<width>358</width>
+				<textoffsetx>0</textoffsetx><align>center</align>
+				<aligny>center</aligny>
+				<font>bz_mm22</font><textcolor>E6FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor>
+				<texturefocus border="23" colordiffuse="FFFFFFFF">bezel/mm_pill_ol.png</texturefocus>
+				<texturenofocus border="23" colordiffuse="33FFFFFF">bezel/mm_pill_ol.png</texturenofocus>
+			</control>
+		</control>
+		<control type="group">
+			<right>0</right>
+			<top>133</top>
+			<bottom>137</bottom>
+			<width>60</width>
+			<control type="scrollbar" id="60">
+				<visible>false</visible>
+				<right>0</right>
+				<top>0</top>
+				<bottom>0</bottom>
+				<width>12</width>
+				<orientation>vertical</orientation>
+				<texturesliderbackground />
+				<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
+				<onleft>5</onleft>
+				<onright>5</onright>
+				<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+				<animation effect="fade" start="0" end="100" time="400" tween="sine" easing="out">WindowOpen</animation>
+				<hitrect x="0" y="0" w="60" h="100%" />
+			</control>
+		</control>
+		<include>BezelFooter</include>
+		<control type="group">
+			<depth>DepthContentPanel</depth>
+			<include>BezelOpenCloseSet</include>
+			<control type="radiobutton" id="20">
+				<width>358</width>
+				<left>586</left>
+				<top>952</top>
+				<height>56</height><font>bz_mm22</font><textcolor>C8FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><!-- F6 fixb3: dark text was invisible on outline focus -->
+				<aligny>center</aligny>
+				<onclick>SettingsLevelChange</onclick>
+				<textoffsetx>84</textoffsetx>
+				<textoffsety>0</textoffsety>
+				<texturefocus border="23" colordiffuse="FFFFFFFF">bezel/mm_pill_ol.png</texturefocus>
+				<texturenofocus border="23" colordiffuse="33FFFFFF">bezel/mm_pill_ol.png</texturenofocus>
+				<radioposx>40</radioposx>
+				<radioposy>0</radioposy>
+				<radiowidth>40</radiowidth>
+				<radioheight>40</radioheight>
+				<onleft>noop</onleft>
+				<onright>3</onright>
+				<onup>3</onup>
+				<ondown>3</ondown>
+				<textureradioonfocus>icons/settings.png</textureradioonfocus>
+				<textureradioonnofocus>icons/settings.png</textureradioonnofocus>
+				<textureradioofffocus>icons/settings.png</textureradioofffocus>
+				<textureradiooffnofocus>icons/settings.png</textureradiooffnofocus>
+			</control>
+		</control>
+		<control type="group">
+			<include>BezelOpenCloseSet</include>
+			<control type="textbox" id="6">
+				<description>description area</description>
+				<left>610</left>
+				<top>652</top>
+				<width>310</width>
+				<height>264</height>
+				<font>bz_mm17</font>
+				<align>left</align>
+				<textcolor>E6FFFFFF</textcolor>
+				<autoscroll time="3000" delay="5000" repeat="5000">true</autoscroll>
+			</control>
+		</control>
+		<control type="label" id="2">
+			<description>breadcrumbs label</description>
+			<visible>False</visible>
+		</control>
+			<!-- 2.0a3.1: mini player while music plays (not in BEZEL MUSIC LIST) -->
+		</control><!-- 4.7.4 end SECTION PARENT GROUP -->
+		<include content="BezelLogoButton"><param name="col" value="FFFFFFFF"/></include><!-- t4284 -->
+	</controls>
+</window>

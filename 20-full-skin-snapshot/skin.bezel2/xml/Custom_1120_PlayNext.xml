@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 5.33.70: cycle pill 6401 + bz_dfs_mode (sides param). REMOVE: delete grouplist + variable + sides param.
+     5.33.65 (Rob t429-t434): Play Next as a Music-only dialog, separate from Kodi FS (MusicVisualisation).
+     Opened only by Music NP Right (6390, $EXP[bz_pndlg_ok]). The Music window's own playing art (BezelMusicPlayingArt) slides 1140->660 and
+     the NP/fanart stage slides off left (5.0 s sine inout, Conditional on Window.IsActive(1120)) so sway never restarts.
+     This dialog only draws the sides + NP bar (shared BezelFSPlayNext, sides delay 5 s = 5 s slide only (5.33.87 t575: +3 s removed), 3 s fade) and handles keys.
+     REMOVE: delete this file + the 6390 onright condition bz_pndlg_ok + the two "5.33.65 Dialogue FS dialog slide" animations. Tuner off: Skin.SetBool(bz_pndlg_off). -->
+<window type="dialog" id="1120">
+	<defaultcontrol always="true">6400</defaultcontrol>
+	<onload condition="String.IsEmpty(Skin.String(bz_dfs_mode))">Skin.SetString(bz_dfs_mode,album)</onload><!-- 5.33.109: pill defaults to album --><onunload>ClearProperty(bz_pnfoc,home)</onunload><onunload>ClearProperty(bz_pnsel,home)</onunload><onunload condition="String.IsEqual(Skin.String(bz_at_fsslide),1)">AlarmClock(bz_pvret,SetFocus(6368),00:00,silent)</onunload><onunload condition="String.IsEqual(Skin.String(bz_at_fsslide),2)">AlarmClock(bz_pvret,SetFocus(6378),00:00,silent)</onunload><onunload condition="[String.IsEmpty(Skin.String(bz_at_fsslide)) | String.IsEqual(Skin.String(bz_at_fsslide),3)]">AlarmClock(bz_pvret,SetFocus(6398),00:00,silent)</onunload><onunload condition="String.IsEqual(Skin.String(bz_at_fsslide),4)">AlarmClock(bz_pvret,SetFocus(6383),00:00,silent)</onunload><!-- 5.33.90: every 1120 close -> Music focus 6398 (grouplist 6397 scrolls back 0) -> onfocus 6390 -->
+	<controls>
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="600" tween="sine" easing="inout">WindowClose</animation>
+			<control type="group"><animation effect="fade" start="0" end="100" time="600" delay="1000" tween="sine" easing="inout">WindowOpen</animation><!-- NP bar arrives as the album settles -->
+				<include content="BezelFSPlayNext"><param name="vis" value="Player.HasAudio"/><param name="sdelay" value="3000"/><param name="sfade" value="2000"/><param name="sides" value="!String.IsEqual(Skin.String(bz_dfs_mode),album)"/></include>
+			</control>
+		</control>
+		<control type="button" id="6400"><left>660</left><top>220</top><width>600</width><height>600</height><label></label><texturefocus></texturefocus><texturenofocus></texturenofocus>
+			<onfocus>ClearProperty(bz_pnfoc,home)</onfocus><onclick condition="!Player.Paused">SetProperty(bz_pnfoc,6403,home)</onclick><onclick condition="Player.Paused">ClearProperty(bz_pnfoc,home)</onclick><onclick>PlayerControl(Play)</onclick><!-- 5.33.116 t807: Select = pause/resume + pause logo (replaces 5.33.115 bz_pnsel guard) --><!-- 5.33.115 t801: Select only reveals/focuses pause; guard stops the same press (CEC repeat) pausing --><onleft>PlayerControl(Previous)</onleft><onright>PlayerControl(Next)</onright><!-- 5.33.116 t807: L/R = prev/next song --><!-- 5.33.104 t686: Select->pause, Left->prev, Right->next focus -->
+			<onup>6401</onup><ondown>SetProperty(bz_noop,1,home)</ondown>
+			<onback>SetProperty(bz_fsret,true,home)</onback><onback>AlarmClock(bz_fsretclr,ClearProperty(bz_fsret,home),00:01,silent)</onback><onback>Dialog.Close(1120)</onback><!-- 5.33.105 t717: latch holds LeftStage off-frame ~1 s so side fade (600) finishes first, then reverse slide -->
+		</control>
+		<!-- 5.33.70 (Rob t458-t462): cycle pill, clone of FS Music overlay 6391. bz_dfs_mode: album = sides faded; empty = PREV/NEXT. Select/L/R cycle, Down back to 6400. -->
+		<control type="grouplist"><left>1360</left><top>60</top><width>500</width><height>32</height><orientation>horizontal</orientation><align>right</align><usecontrolcoords>false</usecontrolcoords>
+			<animation effect="fade" start="0" end="100" time="600" delay="1000" tween="sine" easing="inout">WindowOpen</animation><animation effect="fade" start="100" end="0" time="600" tween="sine" easing="inout">WindowClose</animation>
+			<control type="button" id="6401"><width>auto</width><height>32</height><label>$VAR[BezelDFSModeName]</label><onfocus>ClearProperty(bz_pnfoc,home)</onfocus><font>bz_b15</font><textoffsetx>16</textoffsetx><align>center</align><aligny>center</aligny><textcolor>$VAR[BzFSCTint]</textcolor><focusedcolor>$VAR[BzFSCTint]</focusedcolor>
+				<texturenofocus border="16" colordiffuse="$VAR[BzFSCTint50]">bezel/np_pill32.png</texturenofocus><texturefocus border="16" colordiffuse="$VAR[BzFSCTint80]">bezel/np_pill32.png</texturefocus>
+				<onclick condition="String.IsEqual(Skin.String(bz_dfs_mode),album)">Skin.Reset(bz_dfs_mode)</onclick><onclick condition="!String.IsEqual(Skin.String(bz_dfs_mode),album)">Skin.SetString(bz_dfs_mode,album)</onclick>
+				<onleft condition="String.IsEqual(Skin.String(bz_dfs_mode),album)">Skin.Reset(bz_dfs_mode)</onleft><onleft condition="!String.IsEqual(Skin.String(bz_dfs_mode),album)">Skin.SetString(bz_dfs_mode,album)</onleft><onright condition="String.IsEqual(Skin.String(bz_dfs_mode),album)">Skin.Reset(bz_dfs_mode)</onright><onright condition="!String.IsEqual(Skin.String(bz_dfs_mode),album)">Skin.SetString(bz_dfs_mode,album)</onright>
+				<ondown>6400</ondown><onup>6400</onup><onback>SetProperty(bz_fsret,true,home)</onback><onback>AlarmClock(bz_fsretclr,ClearProperty(bz_fsret,home),00:01,silent)</onback><onback>Dialog.Close(1120)</onback><!-- 5.33.105 t717: latch holds LeftStage off-frame ~1 s so side fade (600) finishes first, then reverse slide -->
+			</control>
+		</control>
+		<!-- 5.33.117 t815: touch a side album (sides active) = play that song; mouse-only, keys never land here --><control type="button" id="6405"><left>90</left><top>250</top><width>540</width><height>540</height><label></label><texturefocus></texturefocus><texturenofocus></texturenofocus><visible>!String.IsEqual(Skin.String(bz_dfs_mode),album) + !String.IsEmpty(MusicPlayer.offset(-1).Title)</visible><onfocus>SetFocus(6400)</onfocus><onclick>Playlist.PlayOffset(music,-1)</onclick></control><control type="button" id="6406"><left>1290</left><top>250</top><width>540</width><height>540</height><label></label><texturefocus></texturefocus><texturenofocus></texturenofocus><visible>!String.IsEqual(Skin.String(bz_dfs_mode),album) + !String.IsEmpty(MusicPlayer.offset(1).Title)</visible><onfocus>SetFocus(6400)</onfocus><onclick>Playlist.PlayOffset(music,1)</onclick></control>
+	</controls>
+</window>

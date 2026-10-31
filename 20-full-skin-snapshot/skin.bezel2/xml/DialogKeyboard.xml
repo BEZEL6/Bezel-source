@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- BEZEL 4.0.0 item 15: keyboard in the wide Main menu block (mockups/dialogs/keyboard.png). IDs/navigation from the original kept. -->
+<window>
+	<defaultcontrol always="true">300</defaultcontrol>
+	
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthDialog+</depth>
+	<controls>
+		<!-- 5.0.2 Refresh-in-strip: when opened over Music info (Refresh flow) use the strip format -->
+		<include condition="Window.IsVisible(musicinformation)">BzRefreshKeyboard</include>
+		<include condition="![Window.IsVisible(musicinformation)]">BzStdKeyboard</include>
+	</controls>
+</window>

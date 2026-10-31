@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- t4452: old BEZEL power menu deleted. Stock ShutdownMenu (remote power key) redirects to POWER MENU F (1118). -->
+<window>
+	<include>Animation_DialogPopupOpenClose</include><!-- 5.33.8 fork8: pop-in lock -->
+	<onload>Dialog.Close(shutdownmenu,true)</onload>
+	<onload>ActivateWindow(1118)</onload>
+	<controls/>
+</window>

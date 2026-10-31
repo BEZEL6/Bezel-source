@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol>8</defaultcontrol>
+	<controls>
+		<include>DefaultBackground</include>
+		<control type="mover" id="8">
+			<description>top left mover</description>
+			<left>0</left>
+			<top>0</top>
+			<width>128</width>
+			<height>128</height>
+			<texturefocus colordiffuse="button_focus">calibrate/cal_tl.png</texturefocus>
+			<texturenofocus>calibrate/cal_tl.png</texturenofocus>
+			<movingspeed acceleration="180" maxvelocity="300" resettimeout="200" delta="1">
+				<eventconfig type="up" />
+				<eventconfig type="down" />
+				<eventconfig type="left" />
+				<eventconfig type="right" />
+			</movingspeed>
+		</control>
+		<control type="mover" id="9">
+			<description>right bottom mover</description>
+			<left>700</left>
+			<top>500</top>
+			<width>128</width>
+			<height>128</height>
+			<texturefocus colordiffuse="button_focus">calibrate/cal_br.png</texturefocus>
+			<texturenofocus>calibrate/cal_br.png</texturenofocus>
+			<movingspeed acceleration="180" maxvelocity="300" resettimeout="200" delta="1">
+				<eventconfig type="up" />
+				<eventconfig type="down" />
+				<eventconfig type="left" />
+				<eventconfig type="right" />
+			</movingspeed>
+		</control>
+		<control type="resize" id="11">
+			<description>pixel aspect ratio</description>
+			<left>0</left>
+			<top>390</top>
+			<width>500</width>
+			<height>500</height>
+			<texturefocus colordiffuse="button_focus">calibrate/cal_ratio.png</texturefocus>
+			<texturenofocus>calibrate/cal_ratio.png</texturenofocus>
+			<movingspeed acceleration="140" maxvelocity="300" resettimeout="180" delta="1">
+				<eventconfig type="left" />
+				<eventconfig type="right" />
+			</movingspeed>
+		</control>
+		<control type="mover" id="10">
+			<description>subtitle position mover</description>
+			<left>200</left>
+			<top>500</top>
+			<width>380</width>
+			<height>90</height>
+			<!-- NOTE: The image must have 40px of trasparent on top and bottom the bar -->
+			<texturefocus colordiffuse="button_focus">calibrate/cal_sub.png</texturefocus>
+			<texturenofocus>calibrate/cal_sub.png</texturenofocus>
+			<movingspeed acceleration="180" maxvelocity="300" resettimeout="200" delta="1">
+				<eventconfig type="up" />
+				<eventconfig type="down" />
+			</movingspeed>
+		</control>
+		<control type="mover" id="12">
+			<description>reset calibration</description>
+			<left>0</left>
+			<top>900</top>
+			<width>100</width>
+			<height>100</height>
+			<texturefocus colordiffuse="button_focus">calibrate/reset.png</texturefocus>
+			<texturenofocus>calibrate/reset.png</texturenofocus>
+		</control>
+		<!-- BEZEL 4.0.0 item 15: calibration info in a compact Main menu block (mockups/dialogs/calibration.png) -->
+		<control type="group"><left>480</left><top>24</top>
+			<control type="image"><width>960</width><height>250</height><texture colordiffuse="FF000000">bezel/white.png</texture></control>
+			<control type="image"><width>560</width><height>250</height><texture colordiffuse="F50E0F12">bezel/white.png</texture></control>
+			<control type="image"><left>560</left><width>400</width><height>250</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+			<control type="label"><left>30</left><top>20</top><width>500</width><height>62</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[214]</label></control>
+			<control type="label" id="3"><left>30</left><top>90</top><width>500</width><height>110</height><wrapmultiline>true</wrapmultiline><font>bz_mm20</font><textcolor>E6FFFFFF</textcolor><label></label></control>
+			<control type="label"><left>30</left><top>208</top><width>500</width><height>30</height><font>bz_mm17</font><textcolor>8CFFFFFF</textcolor><label>Arrows move   OK next marker   BACK save</label></control>
+			<control type="label"><left>582</left><top>22</top><width>356</width><height>26</height><font>bz_mm17</font><textcolor>C8FFFFFF</textcolor><label>[UPPERCASE]$LOCALIZE[169][/UPPERCASE]</label></control>
+			<control type="label" id="2"><left>582</left><top>56</top><width>356</width><height>60</height><wrapmultiline>true</wrapmultiline><font>bz_mm20</font><textcolor>FFFFFFFF</textcolor><label></label></control>
+			<control type="label" id="4"><left>582</left><top>130</top><width>356</width><height>100</height><wrapmultiline>true</wrapmultiline><font>bz_mm20</font><textcolor>E6FFFFFF</textcolor><label></label></control>
+		</control>
+	</controls>
+</window>

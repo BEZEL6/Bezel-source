@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<onload>RunScript(special://skin/scripts/bz_cmd.py,backdrop)</onload>
+	<onunload>SetProperty(bz_backdrop_last,$INFO[Window(Home).Property(bz_backdrop)],home)</onunload><onunload>ClearProperty(bz_backdrop,home)</onunload><!-- 4.7.5: release the backdrop texture on close (empty path = control drops it; no-repeat via bz_backdrop_last) --><!-- BETA 1.4 item 15: new random backdrop on every load -->
+	<defaultcontrol always="true">60</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<menucontrol>9000</menucontrol>
+	<views>60</views>
+	<onload condition="!String.IsEqual(Window(Home).Property(bz_flip_running),true)">RunScript(special://skin/scripts/bz_flip.py)</onload>
+	<onload>SetProperty(bz_sway_restart,true,home)</onload>
+	<controls>
+		<control type="group"><!-- 4.7.4: SECTION PARENT GROUP — Global Dim fade under MM --><include>BezelSecDim</include>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<include>BezelWindowFade</include><!-- 4.2: the BEZEL view fades with the window change (300 ms sine) -->
+			<include>CommonScrollbars</include>
+			<control type="group">
+				<include>BezelWindowFade</include><!-- 4.2: was OpenClose_Left -->
+				<include>Visible_Left</include>
+				<include>ListThumbInfoPanel</include>
+			</control>
+			<include content="TopBar" condition="Window.IsActive(videoplaylist)">
+				<param name="breadcrumbs_label" value="$LOCALIZE[31065]" />
+				<param name="sublabel">$LOCALIZE[31073] - $INFO[Container.TotalTime,,  ∙  ]$INFO[Container.CurrentItem,,/]$INFO[Container.NumItems]</param>
+			</include>
+			<include content="TopBar" condition="Window.IsActive(musicplaylist)">
+				<param name="breadcrumbs_label" value="$LOCALIZE[31066]" />
+				<param name="sublabel">$LOCALIZE[31074] - $INFO[Container.TotalTime]</param>
+			</include>
+			<include content="BottomBar">
+				<param name="info_visible" value="true" />
+			</include>
+			<control type="group">
+				<visible>!Container.Content(songs)</visible>
+				<depth>DepthBars</depth>
+				<bottom>0</bottom>
+				<height>70</height>
+				<include>BezelWindowFade</include><!-- 4.2: was its own 300 ms (delay 300) / 200 ms fade -->
+				<include condition="!Skin.HasSetting(hide_mediaflags)">MediaFlags</include>
+			</control>
+			<!-- v0.1.21: BEZEL MUSIC LIST in the music playlist / Party Mode (drawn under the side menu) -->
+			<include condition="Window.IsActive(musicplaylist)">BezelFanartCycler</include>
+			<include condition="Window.IsActive(musicplaylist)">BezelArtistHelpers</include>
+			<include>View_60_BezelInfoList</include><include>BezelDtapHint</include><!-- 5.33.18 t203 -->
+			<!-- 2.0a3.4: Estuary mouse-edge overlay removed (it can cover the BEZEL list hit areas) -->
+			<control type="group">
+				<include>MediaMenuCommon</include>
+				<control type="grouplist" id="9000">
+					<top>50</top>
+					<include>MediaMenuListCommon</include>
+					<control type="label" id="203">
+						<description>Actions</description>
+						<include>MediaMenuLabelCommon</include>
+						<label>$LOCALIZE[31020]</label>
+					</control>
+					<control type="radiobutton" id="20">
+						<height>80</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+						<texturenofocus />
+						<radioposx>280</radioposx>
+						<textoffsetx>20</textoffsetx>
+						<label>$LOCALIZE[191]</label>
+					</control>
+					<control type="button" id="26">
+						<height>80</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+						<texturenofocus />
+						<textoffsetx>20</textoffsetx>
+						<label></label>
+					</control>
+					<control type="button" id="21">
+						<height>80</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+						<texturenofocus />
+						<textoffsetx>20</textoffsetx>
+						<label>$LOCALIZE[190]</label>
+					</control>
+					<control type="button" id="22">
+						<height>80</height>
+						<align>left</align>
+						<aligny>center</aligny>
+						<texturefocus colordiffuse="button_focus">lists/focus.png</texturefocus>
+						<texturenofocus />
+						<textoffsetx>20</textoffsetx>
+						<label>$LOCALIZE[192]</label>
+					</control>
+					<include>MediaMenuNowPlaying</include>
+				</control>
+			</control>
+		</control>
+		</control><!-- 4.7.4 end SECTION PARENT GROUP -->
+		<include>BezelLogoButton</include>
+	</controls>
+</window>

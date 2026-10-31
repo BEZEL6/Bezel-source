@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<onload>RunScript(special://skin/scripts/bz_cmd.py,backdrop)</onload>
+	<onunload>SetProperty(bz_backdrop_last,$INFO[Window(Home).Property(bz_backdrop)],home)</onunload><onunload>ClearProperty(bz_backdrop,home)</onunload><!-- 4.7.5: release the backdrop texture on close (empty path = control drops it; no-repeat via bz_backdrop_last) --><!-- BETA 2 item 19 -->
+	<defaultcontrol>9000</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<!-- 4.6.3 Settings mockup A (Rob approved): the Main menu strip (same group 570/120, 390x900, mm_strip_grad + glow, rows 56 px from top 40,
+	     shifted 120 when the mini player shows, bz_mm28, rounded pill + chevron) with the Settings categories; highlighted category + description on the void (Tuner B type). -->
+	<controls>
+		<control type="group"><!-- 4.7.4: SECTION PARENT GROUP — Global Dim fade under MM --><include>BezelSecDim</include>
+		<include>BezelBlack</include>
+		<include content="BezelLogo"><param name="col" value="FFFFFFFF"/></include><!-- t4284 -->
+		<control type="group">
+			<animation effect="fade" start="0" end="100" time="600" tween="sine" easing="inout" condition="!Window.Previous(Settings) + !Window.Previous(playersettings) + !Window.Previous(mediasettings) + !Window.Previous(pvrsettings) + !Window.Previous(servicesettings) + !Window.Previous(systemsettings) + !Window.Previous(interfacesettings) + !Window.Previous(gamesettings)">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="400" tween="sine" easing="inout" condition="!Window.Next(Settings) + !Window.Next(playersettings) + !Window.Next(mediasettings) + !Window.Next(pvrsettings) + !Window.Next(servicesettings) + !Window.Next(systemsettings) + !Window.Next(interfacesettings) + !Window.Next(gamesettings)">WindowClose</animation>
+			<!-- 5.33.22 t226 Rob: fanart stage 120,120 840x900 (strip overlays its right side); void desc @1010 removed -->
+			<control type="group"><left>120</left><top>120</top>
+				<include>BezelOpenCloseSet</include>
+				<control type="image"><left>0</left><top>0</top><width>840</width><height>900</height><aspectratio>scale</aspectratio><texture background="true">$INFO[Window(Home).Property(bz_backdrop)]</texture></control>
+				<control type="image"><left>0</left><top>0</top><width>840</width><height>900</height><texture colordiffuse="B4000000">bezel/white.png</texture></control>
+				<control type="image"><left>40</left><top>50</top><width>130</width><height>130</height><aspectratio>keep</aspectratio><texture>$INFO[Container(9000).ListItem.Property(icon)]</texture></control>
+				<control type="label"><left>40</left><top>210</top><width>400</width><height>30</height><font>bz_b12</font><aligny>center</aligny><textcolor>99FFFFFF</textcolor><label>[UPPERCASE]$LOCALIZE[5][/UPPERCASE]</label></control>
+				<control type="label"><left>40</left><top>244</top><width>400</width><height>56</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><scroll>true</scroll><label>[UPPERCASE]$INFO[Container(9000).ListItem.Label][/UPPERCASE]</label></control>
+				<control type="image"><left>40</left><top>308</top><width>130</width><height>3</height><texture colordiffuse="$VAR[BzMMBarCol]">bezel/white.png</texture></control>
+				<control type="textbox"><left>40</left><top>332</top><width>400</width><height>130</height><font>bz_mm22</font><textcolor>DDFFFFFF</textcolor><label>$INFO[Container(9000).ListItem.Property(desc)]</label></control>
+				<control type="label"><left>40</left><top>480</top><width>400</width><height>30</height><font>bz_b12</font><aligny>center</aligny><textcolor>99FFFFFF</textcolor><label>INSIDE</label></control>
+				<control type="textbox"><left>40</left><top>516</top><width>400</width><height>300</height><font>bz_mm22</font><textcolor>C8FFFFFF</textcolor><label>$INFO[Container(9000).ListItem.Property(subs)]</label></control>
+				<control type="label"><left>40</left><top>840</top><width>400</width><height>30</height><font>bz_mm17</font><aligny>center</aligny><textcolor>8CFFFFFF</textcolor><label>Kodi $INFO[System.BuildVersionShort]$INFO[System.OSVersionInfo,  ·  ]</label></control>
+			</control>
+			<control type="group"><left>570</left><top>120</top>
+				<control type="image"><left>-570</left><top>-120</top><width>1920</width><height>1080</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/mm_glow_behind.png</texture></control>
+				<control type="image"><left>-570</left><top>-120</top><width>1920</width><height>1080</height><texture colordiffuse="26FFFFFF">bezel/mm_glow_behind.png</texture></control>
+				<control type="image"><left>0</left><top>0</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture><animation effect="fade" start="100" end="10" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),1)">Conditional</animation><animation effect="fade" start="100" end="20" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),2)">Conditional</animation><animation effect="fade" start="100" end="30" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),3)">Conditional</animation><animation effect="fade" start="100" end="40" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),4)">Conditional</animation><animation effect="fade" start="100" end="50" time="0" condition="String.IsEmpty(Skin.String(bz_at_mmbar)) | String.IsEqual(Skin.String(bz_at_mmbar),5)">Conditional</animation><animation effect="fade" start="100" end="60" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),6)">Conditional</animation><animation effect="fade" start="100" end="70" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),7)">Conditional</animation><animation effect="fade" start="100" end="80" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),8)">Conditional</animation><animation effect="fade" start="100" end="90" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),9)">Conditional</animation></control>
+				<control type="group"><visible>Player.HasMedia</visible>
+					<control type="image"><left>20</left><top>22</top><width>96</width><height>96</height><aspectratio>keep</aspectratio><texture background="true">$INFO[Player.Art(thumb)]</texture></control>
+					<control type="label"><left>132</left><top>30</top><width>240</width><height>34</height><aligny>center</aligny><font>bz_mm22b</font><textcolor>FFFFFFFF</textcolor><label>$INFO[Player.Title]</label></control>
+					<control type="label"><left>132</left><top>64</top><width>240</width><height>26</height><aligny>center</aligny><font>bz_mm17</font><textcolor>AAFFFFFF</textcolor><label>$INFO[MusicPlayer.Artist]$INFO[VideoPlayer.TVShowTitle]</label></control>
+					<control type="image"><left>20</left><top>140</top><width>350</width><height>2</height><texture colordiffuse="40FFFFFF">bezel/white.png</texture></control>
+				</control>
+				<control type="label"><left>36</left><top>40</top><width>340</width><height>50</height><aligny>center</aligny><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[5]</label><animation effect="slide" start="0,0" end="0,120" time="0" condition="Player.HasMedia">Conditional</animation></control>
+				<control type="list" id="9000">
+					<left>0</left><top>100</top><width>390</width><height>696</height>
+					<animation effect="slide" start="0,0" end="0,120" time="0" condition="Player.HasMedia">Conditional</animation>
+					<orientation>vertical</orientation><scrolltime tween="cubic" easing="out">150</scrolltime>
+					<onleft>noop</onleft><!-- 4.6.3 Rob: Left stays dead on Settings (Back opens Main menu, like the Tuner) --><onright>9000</onright><onup>9000</onup><ondown>9000</ondown>
+					<!-- 4.6.3 Rob: Back returns to Main menu like the Tuner (menu opens over Settings, focus on the strip; a navigation target consumes Back) --><onback>AlarmClock(bz_setmm,SetProperty(bz_nav,true,home),00:01,silent)</onback>
+					<itemlayout height="58" width="390"><!-- 5.33.22 t226 Settings home template: 58 rows, 28px icon inset @36, label @80 -->
+						<control type="image"><left>36</left><top>15</top><width>28</width><height>28</height><aspectratio>keep</aspectratio><texture colordiffuse="C8FFFFFF">$INFO[ListItem.Property(icon)]</texture></control>
+						<control type="label"><left>80</left><top>0</top><width>296</width><height>58</height><aligny>center</aligny><font>bz_mm28</font><textcolor>C8FFFFFF</textcolor><label>$INFO[ListItem.Label]</label></control>
+					</itemlayout>
+					<focusedlayout height="58" width="390">
+						<control type="image"><left>18</left><top>5</top><width>354</width><height>48</height><texture colordiffuse="$VAR[BzMMBarCol]">$VAR[BzATHiTex]</texture><visible>Control.HasFocus(9000)</visible></control>
+						<control type="image"><left>36</left><top>15</top><width>28</width><height>28</height><aspectratio>keep</aspectratio><texture colordiffuse="$VAR[BzMMFocTxt]">$INFO[ListItem.Property(icon)]</texture><visible>Control.HasFocus(9000)</visible></control>
+						<control type="label"><left>80</left><top>0</top><width>276</width><height>58</height><aligny>center</aligny><font>bz_mm28</font><textcolor>$VAR[BzMMFocTxt]</textcolor><label>$INFO[ListItem.Label]</label><visible>Control.HasFocus(9000)</visible></control>
+						<control type="image"><left>36</left><top>15</top><width>28</width><height>28</height><aspectratio>keep</aspectratio><texture colordiffuse="C8FFFFFF">$INFO[ListItem.Property(icon)]</texture><visible>!Control.HasFocus(9000)</visible></control>
+						<control type="label"><left>80</left><top>0</top><width>296</width><height>58</height><aligny>center</aligny><font>bz_mm28</font><textcolor>C8FFFFFF</textcolor><label>$INFO[ListItem.Label]</label><visible>!Control.HasFocus(9000)</visible></control>
+					</focusedlayout>
+					<content>
+					<item><label>$LOCALIZE[10003]</label><property name="icon">icons/settings/filemanager.png</property><property name="subs">Sources[CR]Copy / move / delete[CR]Rename[CR]Make folder</property><property name="desc">Browse sources and copy, move or delete files.</property><onclick>ActivateWindow(filemanager)</onclick></item>
+					<item><label>$LOCALIZE[24001]</label><property name="icon">icons/settings/addons.png</property><property name="subs">My add-ons[CR]Install from repository[CR]Install from zip file[CR]Available updates[CR]Search</property><property name="desc">Install, update and configure add-ons.</property><onclick>ActivateWindow(addonbrowser)</onclick></item>
+					<item><label>$LOCALIZE[138]</label><property name="icon">icons/settings/sysinfo.png</property><property name="subs">Summary[CR]Storage[CR]Network[CR]Video[CR]Hardware</property><property name="desc">Hardware, storage, network and version details.</property><onclick>ActivateWindow(systeminfo)</onclick></item>
+					<item><label>$LOCALIZE[31067]</label><property name="icon">icons/settings/eventlog.png</property><property name="subs">All events[CR]Filter by level</property><property name="desc">Recent events and notifications.</property><onclick>ActivateWindow(eventlog)</onclick></item>
+					<item><label>$LOCALIZE[14200]</label><property name="icon">icons/settings/player.png</property><property name="subs">Videos[CR]Music[CR]Discs[CR]Pictures[CR]Language</property><property name="desc">Video, music, disc and picture playback.</property><onclick>ActivateWindow(PlayerSettings)</onclick></item>
+					<item><label>$LOCALIZE[14211]</label><property name="icon">icons/settings/media.png</property><property name="subs">Library[CR]Videos[CR]Music[CR]Pictures[CR]General</property><property name="desc">Library, sources and media handling.</property><onclick>ActivateWindow(MediaSettings)</onclick></item>
+					<item><label>$LOCALIZE[14036]</label><property name="icon">icons/settings/network.png</property><property name="subs">General[CR]Control[CR]UPnP / DLNA[CR]SMB client[CR]Weather</property><property name="desc">Network services, remote control and sharing.</property><onclick>ActivateWindow(ServiceSettings)</onclick></item>
+					<item><label>$LOCALIZE[15016]</label><property name="icon">icons/settings/games.png</property><property name="subs">General[CR]Controllers[CR]Emulators</property><property name="desc">Emulators, controllers and game playback.</property><onclick>ActivateWindow(GameSettings)</onclick><visible>System.GetBool(gamesgeneral.enable)</visible></item>
+					<item><label>$LOCALIZE[14206]</label><property name="icon">icons/settings/interface.png</property><property name="subs">Skin[CR]Regional[CR]Screensaver[CR]Master lock</property><property name="desc">Skin, regional, screensaver and menu options.</property><onclick>ActivateWindow(InterfaceSettings)</onclick></item>
+					<item><label>$LOCALIZE[13200]</label><property name="icon">icons/settings/profiles.png</property><property name="subs">General[CR]Profiles</property><property name="desc">User profiles and login.</property><onclick>ActivateWindow(Profiles)</onclick></item>
+					<item><label>$LOCALIZE[13000]</label><property name="icon">icons/settings/system.png</property><property name="subs">Display[CR]Audio[CR]Input[CR]Internet access[CR]Power saving[CR]Add-ons[CR]Logging</property><property name="desc">Display, audio, input, power and logging.</property><onclick>ActivateWindow(SystemSettings)</onclick></item>
+					<item><label>LibreELEC</label><property name="icon">icons/settings/libreelec.png</property><property name="subs">System[CR]Network[CR]Connections[CR]Services[CR]Bluetooth[CR]About</property><property name="desc">LibreELEC system configuration.</property><onclick>RunAddon(service.libreelec.settings)</onclick><visible>System.AddonIsEnabled(service.libreelec.settings)</visible></item>
+				</content>
+				</control>
+			</control>
+				</control>
+		<!-- 4.6.3: BezelMiniPlayer dropped here; the strip carries the mini player like Main menu -->
+		</control><!-- 4.7.4 end SECTION PARENT GROUP -->
+		<include content="BezelLogoButton"><param name="col" value="FFFFFFFF"/></include><!-- t4284 -->
+	</controls>
+</window>

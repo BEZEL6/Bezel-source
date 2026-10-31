@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 5.33.40: Smart playlist rule on FileBrowser stage+strip template (form in colour strip). -->
+<window>
+	<defaultcontrol always="true">15</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthDialog+</depth>
+	<controls>
+		<include>BzDlgDim</include>
+		<include content="BzDlgFrame"><param name="bgc" value="01000000" /><param name="darkc" value="01000000" /><param name="sub" value="Smart playlist rule" /><param name="hints" value="OK select   BACK close" /><param name="head" value="Rule" /><param name="stitle" value="$INFO[Control.GetLabel(15)] $INFO[Control.GetLabel(16)]" /><param name="sdesc" value="Pick a field and an operator, then type a value or browse values in your library." /></include>
+		<include content="BezelFanartLayer"><param name="left" value="120"/><param name="top" value="120"/><param name="width" value="840"/><param name="height" value="900"/></include>
+		<control type="image"><left>570</left><top>120</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+		<control type="group">
+			<control type="image"><left>117</left><top>117</top><width>846</width><height>3</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+			<control type="image"><left>117</left><top>1020</top><width>846</width><height>3</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+			<control type="image"><left>117</left><top>117</top><width>3</width><height>906</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+			<control type="image"><left>960</left><top>117</top><width>3</width><height>906</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+		</control>
+		<control type="group"><left>120</left><top>120</top>
+		<!-- stage: title + help -->
+		<control type="image"><left>30</left><top>30</top><width>390</width><height>410</height><texture border="10" colordiffuse="A0000000">bezel/mm_round_a60.png</texture></control>
+		<control type="label" id="2"><left>30</left><top>20</top><width>390</width><height>50</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[21421]</label></control>
+		<control type="textbox"><left>55</left><top>100</top><width>340</width><height>280</height><font>bz_mm20</font><textcolor>C8FFFFFF</textcolor><label>[COLOR white]$INFO[Control.GetLabel(15)][/COLOR][CR]$INFO[Control.GetLabel(16)][CR][CR]Pick a field and an operator, then type a value or browse values already in your library.</label></control>
+		<!-- strip: rule form + OK/Cancel -->
+		<control type="label"><left>480</left><top>20</top><width>360</width><height>50</height><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>RULE</label></control>
+		<control type="label"><left>494</left><top>72</top><width>340</width><height>26</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><label>FIELD · OPERATOR · VALUE</label></control>
+		<control type="grouplist" id="9001">
+			<onup>9000</onup>
+			<ondown>9000</ondown>
+			<onleft>9000</onleft>
+			<onright>9000</onright>
+			<left>470</left><top>112</top><width>350</width><height>400</height><itemgap>4</itemgap><orientation>vertical</orientation>
+			<control type="button" id="15">
+				<description>Rule Field</description>
+				<texturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</texturefocus><alttexturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</alttexturefocus><focusedcolor>FF000000</focusedcolor><include content="BzDlgBtn"><param name="width" value="350" /><param name="height" value="58" /></include></control>
+			<control type="button" id="16">
+				<description>Rule operator</description>
+				<texturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</texturefocus><alttexturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</alttexturefocus><focusedcolor>FF000000</focusedcolor><include content="BzDlgBtn"><param name="width" value="350" /><param name="height" value="58" /></include></control>
+			<control type="grouplist" id="9002"><width>350</width><height>120</height><itemgap>4</itemgap><orientation>vertical</orientation>
+				<control type="edit" id="17">
+					<description>Value Button</description>
+					<hinttext>$LOCALIZE[31103]</hinttext>
+					<texturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</texturefocus><alttexturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</alttexturefocus><focusedcolor>FF000000</focusedcolor><include content="BzDlgBtn"><param name="width" value="350" /><param name="height" value="58" /></include><textwidth>302</textwidth></control>
+				<control type="button" id="20">
+					<description>Browse Button</description>
+					<label>$LOCALIZE[1024]</label>
+					<texturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</texturefocus><alttexturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</alttexturefocus><focusedcolor>FF000000</focusedcolor><include content="BzDlgBtn"><param name="width" value="350" /><param name="height" value="58" /></include></control>
+			</control>
+		</control>
+		<control type="image"><left>480</left><top>638</top><width>330</width><height>2</height><texture colordiffuse="40FFFFFF">bezel/white.png</texture></control>
+		<control type="group"><left>470</left><top>652</top>
+			<control type="image"><left>0</left><top>0</top><width>170</width><height>54</height><texture border="10" colordiffuse="26FFFFFF">bezel/mm_round_a60.png</texture></control>
+			<control type="image"><left>180</left><top>0</top><width>170</width><height>54</height><texture border="10" colordiffuse="26FFFFFF">bezel/mm_round_a60.png</texture></control>
+		</control>
+		<control type="grouplist" id="9000">
+			<onup>9001</onup>
+			<ondown>15</ondown>
+			<onleft>9001</onleft>
+			<onright>9001</onright>
+			<left>470</left><top>652</top><width>350</width><height>58</height><itemgap>10</itemgap><orientation>horizontal</orientation>
+			<control type="button" id="18"><label>$LOCALIZE[186]</label><texturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</texturefocus><alttexturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</alttexturefocus><focusedcolor>FF000000</focusedcolor><include content="BzDlgBtn"><param name="width" value="170" /><param name="height" value="54" /></include><align>center</align></control>
+			<control type="button" id="19"><label>$LOCALIZE[222]</label><texturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</texturefocus><alttexturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</alttexturefocus><focusedcolor>FF000000</focusedcolor><include content="BzDlgBtn"><param name="width" value="170" /><param name="height" value="54" /></include><align>center</align></control>
+		</control>
+		</control>
+	</controls>
+</window>

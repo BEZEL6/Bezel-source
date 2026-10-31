@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<onload>RunScript(special://skin/scripts/bz_cmd.py,backdrop)</onload>
+	<onunload>SetProperty(bz_backdrop_last,$INFO[Window(Home).Property(bz_backdrop)],home)</onunload><onunload>ClearProperty(bz_backdrop,home)</onunload><!-- 4.7.5: release the backdrop texture on close (empty path = control drops it; no-repeat via bz_backdrop_last) --><!-- BETA 1.4 item 15: new random backdrop on every load -->
+	<defaultcontrol always="true">60</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<views>60</views>
+	<menucontrol>9000</menucontrol>
+	<onunload>ClearProperty(bz_minibig,home)</onunload>
+	<include>BezelSecFadeIn</include><!-- 5.33.177 section fade-in standard (was instant) -->
+	<controls>
+		<control type="group"><!-- 4.7.4: SECTION PARENT GROUP — Global Dim fade under MM --><include>BezelSecDim</include>
+		<include>DefaultBackground</include>
+		<control type="group"><!-- 5.33.58 Rob t378-t387: Add-ons on MENU template (list in colour strip, fanart stage clean, all info inside artwork frame, no transition anim) -->
+			<control type="group"><left>120</left><top>120</top><!-- fanart stage: art only, no text -->
+				<control type="image"><left>0</left><top>0</top><width>840</width><height>900</height><aspectratio>scale</aspectratio><texture background="true">$INFO[Window(Home).Property(bz_backdrop)]</texture></control>
+				<control type="image"><left>0</left><top>0</top><width>840</width><height>900</height><texture colordiffuse="66000000">bezel/white.png</texture></control>
+			</control>
+			<control type="group"><left>570</left><top>120</top><!-- colour strip + list -->
+				<control type="image"><left>0</left><top>0</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+				<control type="label"><left>36</left><top>40</top><width>340</width><height>50</height><aligny>center</aligny><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[24001]</label></control>
+				<control type="list" id="60"><onback condition="[String.IsEqual(Container.FolderPath,addons://) | String.IsEmpty(Container.FolderPath)] + !$EXP[bz_navmenu]">SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop --><include>BezelMMFocusBounce</include><include>BezelMMFocusBounceList</include>
+					<left>0</left><top>100</top><width>390</width><height>754</height>
+					<orientation>vertical</orientation><scrolltime tween="cubic" easing="out">150</scrolltime><viewtype label="List">list</viewtype>
+					<onleft condition="$EXP[bz_navok]">SetProperty(bz_nav,true,home)</onleft><onright>9000</onright><onup>60</onup><ondown>60</ondown>
+					<itemlayout height="58" width="390">
+						<control type="image"><left>36</left><top>15</top><width>28</width><height>28</height><aspectratio>keep</aspectratio><texture colordiffuse="C8FFFFFF" fallback="DefaultAddon.png">$INFO[ListItem.Icon]</texture></control>
+						<control type="label"><left>80</left><top>0</top><width>296</width><height>58</height><aligny>center</aligny><font>bz_mm28</font><textcolor>C8FFFFFF</textcolor><label>$INFO[ListItem.Label]</label></control>
+					</itemlayout>
+					<focusedlayout height="58" width="390">
+						<control type="image"><left>18</left><top>5</top><width>354</width><height>48</height><texture colordiffuse="$VAR[BzMMBarCol]">$VAR[BzATHiTex]</texture><visible>Control.HasFocus(60)</visible></control>
+						<control type="image"><left>36</left><top>15</top><width>28</width><height>28</height><aspectratio>keep</aspectratio><texture fallback="DefaultAddon.png">$INFO[ListItem.Icon]</texture></control>
+						<control type="label"><left>80</left><top>0</top><width>276</width><height>58</height><aligny>center</aligny><font>bz_mm28</font><textcolor>$VAR[BzMMFocTxt]</textcolor><label>$INFO[ListItem.Label]</label><visible>Control.HasFocus(60)</visible></control>
+						<control type="label"><left>80</left><top>0</top><width>296</width><height>58</height><aligny>center</aligny><font>bz_mm28</font><textcolor>C8FFFFFF</textcolor><label>$INFO[ListItem.Label]</label><visible>!Control.HasFocus(60)</visible></control>
+					</focusedlayout>
+				</control>
+			</control>
+			<control type="group"><left>1140</left><top>220</top><visible>!$EXP[bz_navmenu] + !String.IsEmpty(Container(60).ListItem.Label) + !Container(60).ListItem.IsParentFolder</visible><!-- artwork window: ALL info inside this frame -->
+				<control type="image"><left>0</left><top>0</top><width>600</width><height>600</height><texture colordiffuse="E6050508">bezel/white.png</texture></control>
+				<control type="image"><left>0</left><top>0</top><width>600</width><height>2</height><texture colordiffuse="66FFFFFF">bezel/white.png</texture></control>
+				<control type="image"><left>0</left><top>598</top><width>600</width><height>2</height><texture colordiffuse="66FFFFFF">bezel/white.png</texture></control>
+				<control type="image"><left>0</left><top>0</top><width>2</width><height>600</height><texture colordiffuse="66FFFFFF">bezel/white.png</texture></control>
+				<control type="image"><left>598</left><top>0</top><width>2</width><height>600</height><texture colordiffuse="66FFFFFF">bezel/white.png</texture></control>
+				<control type="label"><left>30</left><top>18</top><width>540</width><height>26</height><font>bz_b12</font><aligny>center</aligny><textcolor>99FFFFFF</textcolor><label>ARTWORK</label></control>
+				<control type="label"><left>30</left><top>44</top><width>540</width><height>46</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><scroll>true</scroll><label>$INFO[Container(60).ListItem.Label]</label></control>
+				<control type="image"><left>200</left><top>100</top><width>200</width><height>200</height><aspectratio>keep</aspectratio><texture background="true" fallback="DefaultAddon.png">$INFO[Container(60).ListItem.Icon]</texture></control>
+				<control type="image"><left>30</left><top>322</top><width>540</width><height>2</height><texture colordiffuse="40FFFFFF">bezel/white.png</texture></control>
+				<control type="grouplist"><left>0</left><top>332</top><width>200</width><height>110</height><itemgap>2</itemgap><control type="label"><left>40</left><width>140</width><height>24</height><font>bz_mm17</font><aligny>center</aligny><textcolor>99FFFFFF</textcolor><label>Version</label><visible>!String.IsEmpty(Container(60).ListItem.AddonVersion)</visible></control><control type="label"><left>40</left><width>140</width><height>24</height><font>bz_mm17</font><aligny>center</aligny><textcolor>99FFFFFF</textcolor><label>Author</label><visible>!String.IsEmpty(Container(60).ListItem.AddonCreator)</visible></control><control type="label"><left>40</left><width>140</width><height>24</height><font>bz_mm17</font><aligny>center</aligny><textcolor>99FFFFFF</textcolor><label>Type</label><visible>!String.IsEmpty(Container(60).ListItem.AddonType)</visible></control><control type="label"><left>40</left><width>140</width><height>24</height><font>bz_mm17</font><aligny>center</aligny><textcolor>99FFFFFF</textcolor><label>Status</label><visible>!String.IsEmpty(Container(60).ListItem.AddonLifecycleType)</visible></control><control type="label"><left>40</left><width>140</width><height>24</height><font>bz_mm17</font><aligny>center</aligny><textcolor>99FFFFFF</textcolor><label>Updated</label><visible>!String.IsEmpty(Container(60).ListItem.AddonLastUpdated)</visible></control></control>
+				<control type="grouplist"><left>0</left><top>332</top><width>600</width><height>110</height><itemgap>2</itemgap><control type="label"><left>180</left><width>380</width><height>24</height><font>bz_mm17</font><aligny>center</aligny><textcolor>DDFFFFFF</textcolor><label>$INFO[Container(60).ListItem.AddonVersion]</label><visible>!String.IsEmpty(Container(60).ListItem.AddonVersion)</visible></control><control type="label"><left>180</left><width>380</width><height>24</height><font>bz_mm17</font><aligny>center</aligny><textcolor>DDFFFFFF</textcolor><label>$INFO[Container(60).ListItem.AddonCreator]</label><visible>!String.IsEmpty(Container(60).ListItem.AddonCreator)</visible></control><control type="label"><left>180</left><width>380</width><height>24</height><font>bz_mm17</font><aligny>center</aligny><textcolor>DDFFFFFF</textcolor><label>$INFO[Container(60).ListItem.AddonType]</label><visible>!String.IsEmpty(Container(60).ListItem.AddonType)</visible></control><control type="label"><left>180</left><width>380</width><height>24</height><font>bz_mm17</font><aligny>center</aligny><textcolor>DDFFFFFF</textcolor><label>$INFO[Container(60).ListItem.AddonLifecycleType]</label><visible>!String.IsEmpty(Container(60).ListItem.AddonLifecycleType)</visible></control><control type="label"><left>180</left><width>380</width><height>24</height><font>bz_mm17</font><aligny>center</aligny><textcolor>DDFFFFFF</textcolor><label>$INFO[Container(60).ListItem.AddonLastUpdated]</label><visible>!String.IsEmpty(Container(60).ListItem.AddonLastUpdated)</visible></control></control>
+				<control type="textbox"><left>30</left><top>456</top><width>540</width><height>126</height><font>bz_mm17</font><textcolor>C8FFFFFF</textcolor><autoscroll delay="6000" time="3000" repeat="8000">true</autoscroll><label>$INFO[Container(60).ListItem.AddonSummary,[B],[/B][CR]]$INFO[Container(60).ListItem.AddonDescription]</label></control>
+			</control>
+			<include>MediaMenuMouseOverlay</include>
+			<control type="group">
+				<include>MediaMenuCommon</include>
+				<control type="grouplist" id="9000">
+					<top>50</top>
+					<include>MediaMenuListCommon</include>
+					<control type="label" id="201">
+						<include>MediaMenuLabelCommon</include>
+						<label>$LOCALIZE[31021]</label>
+					</control>
+					<control type="radiobutton" id="7">
+						<description>Hide foreign</description>
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[25001]</label>
+						<visible>Control.IsEnabled(7)</visible>
+					</control>
+					<control type="radiobutton" id="8">
+						<description>Hide incompatible</description>
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[24999]</label>
+						<visible>Control.IsEnabled(8)</visible>
+					</control>
+					<control type="button" id="9">
+						<description>Check for repository updates</description>
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[24034]</label>
+					</control>
+					<control type="button" id="5">
+						<description>Addon settings</description>
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[10004]</label>
+					</control>
+					<include>MediaMenuNowPlaying</include>
+				</control>
+			</control>
+			<control type="group">
+				<height>78</height>
+				<bottom>0</bottom>
+				<visible>$EXP[sidebar_visible]</visible>
+				<animation effect="fade" time="300">VisibleChange</animation>
+				<include content="LeftAlignedInfo">
+					<param name="main_label" value="$INFO[Window(AddonBrowser).Property(Updated)]" />
+					<param name="sub_label" value="$LOCALIZE[31069]" />
+				</include>
+			</control>
+		</control>
+		<include>BezelMiniPlayer</include>
+		</control><!-- 4.7.4 end SECTION PARENT GROUP -->
+		<include>BezelLogoButton</include>
+	</controls>
+</window>

@@ -1,0 +1,2 @@
+
+Montserrat (fonts/Montserrat-*.ttf, static instances of the variable font) - Copyright 2011 The Montserrat Project Authors, SIL Open Font License 1.1 (https://openfontlicense.org).

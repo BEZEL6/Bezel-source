@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 4.7.7 setaudit: addon settings in the BEZEL dialog block (matches DialogSettings): categories + level in the dark section, help text in the MM strip, settings on the black block, pill focus -->
+<window>
+	<defaultcontrol>5</defaultcontrol>
+	<include>BezelSecFadeInDialog</include>
+	<controls>
+		<control type="group">
+			<include>BzDlgDim</include>
+			<include content="BzDlgFrame">
+				<param name="blockw" value="1680" />
+				<param name="title" value="" /><param name="sub" value="" />
+				<param name="hints" value="▲▼ move   OK change   ‹ › section" />
+				<param name="head" value="Setting" /><param name="stitle" value="$INFO[System.CurrentControl]" /><param name="sdesc" value="" />
+			</include>
+			<control type="group"><left>120</left><top>120</top>
+				<control type="label" id="2"><left>30</left><top>20</top><width>400</width><height>62</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><scroll>true</scroll><label /></control>
+				<control type="textbox" id="6"><left>472</left><top>140</top><width>346</width><height>600</height><font>bz_mm20</font><textcolor>E6FFFFFF</textcolor><autoscroll delay="6000" time="3000" repeat="10000">true</autoscroll><label /></control>
+				<control type="grouplist" id="3">
+					<left>20</left><top>120</top><width>410</width><height>560</height><itemgap>2</itemgap><orientation>vertical</orientation>
+					<onleft>5</onleft><onright>5</onright><onup>20</onup><ondown>20</ondown>
+				</control>
+				<control type="button" id="10"><include>BzDlgBtn</include></control>
+				<control type="radiobutton" id="20">
+					<left>20</left><top>700</top><width>410</width><height>58</height>
+					<font>bz_mm22</font><textcolor>C8FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><aligny>center</aligny><textoffsetx>72</textoffsetx>
+					<texturefocus border="10" colordiffuse="$VAR[BzMMStrip]">bezel/mm_round_a60.png</texturefocus><texturenofocus />
+					<onclick>SettingsLevelChange</onclick>
+					<radioposx>24</radioposx><radioposy>0</radioposy><radiowidth>34</radiowidth><radioheight>34</radioheight>
+					<textureradioonfocus>icons/settings.png</textureradioonfocus><textureradioonnofocus>icons/settings.png</textureradioonnofocus>
+					<textureradioofffocus>icons/settings.png</textureradioofffocus><textureradiooffnofocus>icons/settings.png</textureradiooffnofocus>
+					<onleft>9000</onleft><onright>5</onright><onup>3</onup><ondown>9000</ondown>
+				</control>
+				<control type="grouplist" id="5">
+					<left>870</left><top>120</top><width>780</width><height>640</height>
+					<pagecontrol>60</pagecontrol><itemgap>2</itemgap>
+					<onleft>3</onleft><onright>60</onright><onup>5</onup><ondown>5</ondown>
+				</control>
+				<control type="button" id="7"><include content="BzDlgBtn"><param name="width" value="780" /></include></control>
+				<control type="radiobutton" id="8"><include content="BzDlgBtn"><param name="width" value="780" /></include><radioposx>710</radioposx></control>
+				<control type="spincontrolex" id="9"><include content="BzDlgBtn"><param name="width" value="780" /></include><textureup /><texturedown /><textureupfocus /><texturedownfocus /><spinwidth>1</spinwidth><spinheight>1</spinheight></control>
+				<control type="image" id="11"><height>2</height><texture colordiffuse="30FFFFFF">bezel/white.png</texture></control>
+				<control type="edit" id="12"><include content="BzDlgBtn"><param name="width" value="780" /></include></control>
+				<control type="sliderex" id="13"><include content="BzDlgBtn"><param name="width" value="780" /></include><textwidth>500</textwidth><sliderwidth>220</sliderwidth><sliderheight>16</sliderheight></control>
+				<control type="label" id="14"><height>46</height><font>bz_mm18b</font><textcolor>A0FFFFFF</textcolor><aligny>bottom</aligny><textoffsetx>24</textoffsetx></control>
+				<control type="colorbutton" id="15"><include content="BzDlgBtn"><param name="width" value="780" /></include></control>
+				<control type="grouplist" id="9000">
+					<left>20</left><top>778</top><width>410</width><height>58</height><orientation>horizontal</orientation><itemgap>6</itemgap>
+					<onup>20</onup><ondown>3</ondown><onright>5</onright>
+					<control type="button" id="28"><include content="BzDlgBtn"><param name="width" value="132" /></include><align>center</align><textoffsetx>8</textoffsetx><label /></control>
+					<control type="button" id="29"><include content="BzDlgBtn"><param name="width" value="132" /></include><align>center</align><textoffsetx>8</textoffsetx><label /></control>
+					<control type="button" id="30"><include content="BzDlgBtn"><param name="width" value="132" /></include><align>center</align><textoffsetx>8</textoffsetx><label /></control>
+				</control>
+				<control type="scrollbar" id="60">
+					<left>1660</left><top>120</top><width>6</width><height>640</height><orientation>vertical</orientation>
+					<texturesliderbackground colordiffuse="1AFFFFFF">bezel/white.png</texturesliderbackground>
+					<texturesliderbar colordiffuse="66FFFFFF">bezel/white.png</texturesliderbar><texturesliderbarfocus colordiffuse="FFFFFFFF">bezel/white.png</texturesliderbarfocus>
+					<onleft>5</onleft><onright>3</onright>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

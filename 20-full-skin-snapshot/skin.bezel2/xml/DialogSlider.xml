@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- BEZEL 4.0.0 item 15: slider in a short Main menu block at the bottom left (mockups/dialogs/slider.png) -->
+<window>
+	<defaultcontrol>11</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthOSD+</depth>
+	<controls>
+		<include content="BzDlgFrame">
+			<param name="top" value="800" /><param name="height" value="220" /><param name="hinty" value="182" />
+			<param name="title" value="" /><param name="sub" value="$VAR[BzDlgPlaySub]" />
+			<param name="hints" value="‹ › adjust   OK / BACK close" />
+			<param name="head" value="Slider" /><param name="stitle" value="$INFO[Control.GetLabel(10)]" /><param name="sdesc" value="Use ‹ › to change the value; it applies straight away." />
+		</include>
+		<control type="group"><left>120</left><top>800</top>
+			<control type="label" id="10"><left>30</left><top>18</top><width>300</width><height>44</height><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><label /></control>
+			<control type="label" id="12"><left>30</left><top>18</top><width>396</width><height>44</height><align>right</align><font>bz_mm24</font><textcolor>FFFFFFFF</textcolor><label /></control>
+			<control type="slider" id="11">
+				<left>30</left><top>104</top><width>396</width><height>30</height>
+				<texturesliderbar border="3" colordiffuse="40FFFFFF">bezel/bz_sliderbar.png</texturesliderbar>
+				<textureslidernib colordiffuse="FFFF7A26">bezel/bz_slidernib.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="FFFF7A26">bezel/bz_slidernib.png</textureslidernibfocus>
+				<onup>11</onup><ondown>11</ondown><onleft>11</onleft><onright>11</onright>
+			</control>
+			<control type="button" id="13"><left>-200</left><top>-200</top><width>1</width><height>1</height><onclick>SetFocus(11)</onclick><onclick>Left</onclick><onclick>SetFocus(13)</onclick><texturefocus /><texturenofocus /><visible>System.GetBool(input.enablemouse)</visible></control>
+			<control type="button" id="14"><left>-200</left><top>-200</top><width>1</width><height>1</height><onclick>SetFocus(11)</onclick><onclick>Right</onclick><onclick>SetFocus(14)</onclick><texturefocus /><texturenofocus /><visible>System.GetBool(input.enablemouse)</visible></control>
+		</control>
+	</controls>
+</window>

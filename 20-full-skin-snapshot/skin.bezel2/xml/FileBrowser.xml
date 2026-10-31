@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+<!-- 5.33.98 t620 Rob: back to classic double pane (list left + button/detail column right), restored from live b300; buttons 9000->9100 (AddonBrowser collision). Template single-pane retired. -->
+	<defaultcontrol always="true">450</defaultcontrol>
+	<include>BezelSecFadeInDialog</include>
+	<controls>
+		<control type="group">
+			<centerleft>50%</centerleft>
+			<centertop>50%</centertop>
+			<width>1300</width>
+			<height>850</height>
+			<include content="DialogBackgroundCommons">
+				<param name="width" value="1300" />
+				<param name="height" value="850" />
+				<param name="header_label" value="" />
+				<param name="header_id" value="411" />
+			</include>
+			<control type="grouplist" id="9100">
+				<left>990</left>
+				<top>85</top>
+				<width>400</width>
+				<height>400</height>
+				<itemgap>dialogbuttons_itemgap</itemgap>
+				<orientation>vertical</orientation>
+				<onleft>450</onleft>
+				<onright>450</onright>
+				<onup>9100</onup>
+				<ondown>9100</ondown>
+				<include content="DefaultDialogButton">
+					<param name="id" value="413" />
+					<param name="label" value="$LOCALIZE[186]" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="414" />
+					<param name="label" value="$LOCALIZE[222]" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="415" />
+					<param name="label" value="$LOCALIZE[119]" />
+					<param name="visible" value="Control.IsEnabled(415)" />
+				</include>
+				<include content="DefaultDialogButton">
+					<param name="id" value="416" />
+					<param name="label" value="$LOCALIZE[749]" />
+					<param name="visible" value="Control.IsEnabled(416)" />
+				</include>
+			</control>
+			<control type="image">
+				<visible>false</visible>
+				<left>1010</left>
+				<top>420</top>
+				<width>260</width>
+				<height>380</height>
+				<aspectratio aligny="bottom">keep</aspectratio>
+				<bordertexture colordiffuse="border_alpha">colors/black.png</bordertexture>
+				<bordersize>4</bordersize>
+				<texture border="4" background="true">$INFO[ListItem.Icon]</texture>
+			</control>
+			<!-- 2.0a2: BEZEL list style: text list on the dark shadow backdrop, colour block with the highlighted file / folder details -->
+			<include content="BezelShadow"><param name="left" value="-12"/><param name="top" value="68"/><param name="width" value="1004"/><param name="height" value="764"/></include>
+			<control type="image"><left>0</left><top>80</top><width>980</width><height>740</height><texture colordiffuse="E6000000">bezel/white.png</texture></control>
+			<control type="image"><left>990</left><top>420</top><width>290</width><height>400</height><texture colordiffuse="$VAR[BezelBlockBF]">bezel/white.png</texture></control>
+			<control type="textbox"><left>1006</left><top>430</top><width>258</width><height>380</height><font>font12</font><textcolor>bz_dimtext</textcolor>
+				<label>[COLOR white]$INFO[Container(450).ListItem.Label]$INFO[Container(451).ListItem.Label][/COLOR][CR]$VAR[BezelFBType][CR]$INFO[Container(450).ListItem.Size,Size: ,[CR]]$INFO[Container(451).ListItem.Size,Size: ,[CR]]$INFO[Container(450).ListItem.Date,Modified: ,[CR]]$INFO[Container(451).ListItem.Date,Modified: ,[CR]]$INFO[Container(450).ListItem.FolderPath]$INFO[Container(451).ListItem.FolderPath]</label></control>
+			<control type="panel" id="450">
+				<left>20</left>
+				<top>100</top>
+				<width>940</width>
+				<height>700</height>
+				<onleft>9100</onleft>
+				<onright>60</onright>
+				<onup>450</onup>
+				<ondown>450</ondown>
+				<pagecontrol>60</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="70" width="940">
+					<control type="image">
+						<left>10</left>
+						<top>10</top>
+						<width>50</width>
+						<height>50</height>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
+					<control type="label">
+						<left>75</left>
+						<top>0</top>
+						<right>20</right>
+						<height>70</height>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout height="70" width="940">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<right>0</right>
+						<height>71</height>
+						<visible>Control.HasFocus(450)</visible>
+						<texture>bezel/white.png</texture>
+					</control>
+					<control type="image">
+						<left>10</left>
+						<top>10</top>
+						<width>50</width>
+						<height>50</height>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
+					<control type="label">
+						<left>75</left>
+						<top>0</top>
+						<right>20</right>
+						<height>70</height>
+						<aligny>center</aligny>
+						<textcolor>FF000000</textcolor><label>$INFO[ListItem.Label]</label>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="panel" id="451">
+				<left>20</left>
+				<top>100</top>
+				<width>940</width>
+				<height>700</height>
+				<onleft>9100</onleft>
+				<onright>60</onright>
+				<onup>451</onup>
+				<ondown>451</ondown>
+				<pagecontrol>60</pagecontrol>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="70" width="940">
+					<control type="image">
+						<left>10</left>
+						<top>10</top>
+						<width>50</width>
+						<height>50</height>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
+					<control type="label">
+						<left>75</left>
+						<top>0</top>
+						<right>20</right>
+						<height>70</height>
+						<aligny>center</aligny>
+						<label>$INFO[ListItem.Label]</label>
+					</control>
+				</itemlayout>
+				<focusedlayout height="70" width="940">
+					<control type="image">
+						<left>0</left>
+						<top>0</top>
+						<right>0</right>
+						<height>71</height>
+						<visible>Control.HasFocus(451)</visible>
+						<texture>bezel/white.png</texture>
+					</control>
+					<control type="image">
+						<left>10</left>
+						<top>10</top>
+						<width>50</width>
+						<height>50</height>
+						<texture>$INFO[ListItem.Icon]</texture>
+						<aspectratio>keep</aspectratio>
+					</control>
+					<control type="label">
+						<left>75</left>
+						<top>0</top>
+						<right>20</right>
+						<height>70</height>
+						<aligny>center</aligny>
+						<textcolor>FF000000</textcolor><label>$INFO[ListItem.Label]</label>
+					</control>
+				</focusedlayout>
+			</control>
+			<control type="scrollbar" id="60">
+				<visible>false</visible><!-- 2.0a2: no scroll bars -->
+				<left>965</left>
+				<top>100</top>
+				<width>12</width>
+				<height>698</height>
+				<onleft>450</onleft>
+				<onright>9100</onright>
+				<orientation>vertical</orientation>
+			</control>
+			<control type="label" id="412">
+				<description>Path label</description>
+				<left>25</left>
+				<bottom>10</bottom>
+				<width>595</width>
+				<height>30</height>
+				<haspath>true</haspath>
+				<font>font12</font>
+				<aligny>bottom</aligny>
+				<textcolor>grey</textcolor>
+			</control>
+			<control type="label">
+				<left>0</left>
+				<bottom>10</bottom>
+				<width>1270</width>
+				<height>30</height>
+				<align>right</align>
+				<aligny>bottom</aligny>
+				<textcolor>grey</textcolor>
+				<font>font12</font>
+				<label>$VAR[FileBrowserSelectLabel]</label>
+			</control>
+		</control>
+		<include content="UpDownArrows">
+			<param name="container_id" value="450" />
+			<param name="posx" value="830" />
+			<param name="up_posy" value="50" />
+			<param name="down_posy" value="980" />
+			<param name="visible" value="!System.HasActiveModalDialog" />
+		</include>
+	</controls>
+</window>

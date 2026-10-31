@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<zorder>3</zorder>
+	<onunload>ClearProperty(bz_tunapplied,Home)</onunload>
+	<controls>
+		<control type="group">
+			<depth>DepthMax</depth>
+			<top>85</top>
+			<right>0</right>
+			<width>640</width>
+			<include>BezelOpenClose</include>
+			<visible>String.IsEmpty(Window(Home).Property(script.cinemavision.running)) + String.IsEmpty(Window(Home).Property(bz_tunapplied))</visible>
+			<control type="image">
+				<left>0</left>
+				<top>0</top>
+				<width>640</width>
+				<height>160</height>
+				<texture colordiffuse="FA0E0F12">colors/white.png</texture><!-- 3.2.1 item 15 -->
+				<bordertexture border="21" infill="false">overlays/shadow.png</bordertexture>
+				<bordersize>20</bordersize>
+			</control>
+			<control type="image" id="400">
+				<description>avatar</description>
+				<left>25</left>
+				<top>25</top>
+				<width>110</width>
+				<height>110</height>
+				<aspectratio>stretch</aspectratio>
+			</control>
+			<control type="fadelabel" id="401">
+				<description>Line 1 Label</description>
+				<left>150</left>
+				<top>40</top>
+				<width>450</width>
+				<height>18</height>
+				<font>font37</font>
+				<aligny>center</aligny>
+				<scrollout>false</scrollout>
+				<pauseatend>2000</pauseatend>
+			</control>
+			<control type="fadelabel" id="402">
+				<description>Line 2 Label</description>
+				<left>151</left>
+				<top>68</top>
+				<width>450</width>
+				<height>60</height>
+				<font>font27_narrow</font>
+				<aligny>center</aligny>
+				<scrollout>false</scrollout>
+				<pauseatend>2000</pauseatend>
+			</control>
+		</control>
+		<!-- t4228 (Rob picked B): Tuner applied = mock B1 pill beside top-left BEZEL logo, then B2 pill fades + logo spins -->
+		<control type="group">
+			<depth>DepthMax</depth>
+			<left>0</left><top>0</top><width>760</width><height>130</height>
+			<visible>!String.IsEmpty(Window(Home).Property(bz_tunapplied))</visible>
+			<animation type="WindowOpen"><effect type="fade" start="0" end="100" time="200"/></animation>
+			<animation type="WindowClose"><effect type="fade" start="100" end="0" time="300"/></animation>
+			<control type="image"><left>14</left><top>14</top><width>92</width><height>92</height><texture colordiffuse="FF000000">bezel/white.png</texture></control>
+			<control type="image"><left>28</left><top>28</top><width>64</width><height>64</height><aspectratio>keep</aspectratio><texture colordiffuse="FFFFFFFF">bezel/logo.png</texture>
+				<animation effect="rotate" end="-360" center="60,60" delay="1400" time="1000" tween="cubic" easing="inout" reversible="false" condition="true">Conditional</animation></control>
+			<control type="group"><left>108</left><top>38</top><width>340</width><height>44</height>
+				<animation type="WindowOpen"><effect type="slide" start="-30,0" end="0,0" time="300" tween="cubic" easing="out"/><effect type="fade" start="100" end="0" delay="1500" time="400"/></animation>
+				<!-- t4233: rectangular pill = white.png outline (2px), t4235 no fill; text centered -->
+				<control type="image"><left>0</left><top>0</top><width>272</width><height>2</height><texture colordiffuse="FFFFFFFF">bezel/white.png</texture></control>
+				<control type="image"><left>0</left><top>42</top><width>272</width><height>2</height><texture colordiffuse="FFFFFFFF">bezel/white.png</texture></control>
+				<control type="image"><left>0</left><top>0</top><width>2</width><height>44</height><texture colordiffuse="FFFFFFFF">bezel/white.png</texture></control>
+				<control type="image"><left>270</left><top>0</top><width>2</width><height>44</height><texture colordiffuse="FFFFFFFF">bezel/white.png</texture></control>
+				<control type="label"><left>0</left><top>0</top><width>272</width><height>44</height><font>font27_narrow</font><textcolor>white</textcolor><align>center</align><aligny>center</aligny><label>TUNING APPLIED</label></control>
+			</control>
+		</control>
+	</controls>
+</window>

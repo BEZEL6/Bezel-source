@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<onload condition="String.IsEmpty(Window(Home).Property(bz_backdrop))">RunScript(special://skin/scripts/bz_cmd.py,backdrop)</onload><!-- 5.33.142: pick once; keep across Music↔Videos / MM section swaps -->
+	<!-- 5.33.142: no onunload clear of bz_backdrop (was flash/repick on section change) -->
+	<defaultcontrol always="true">60</defaultcontrol>
+	<onload condition="!Control.HasFocus(6996) + !String.IsEqual(Window(home).Property(bz_mmpick),true) + !String.IsEmpty(Window(home).Property(bz_mmwarm)) + !String.IsEmpty(Window(home).Property(bz_mmlive))">SetFocus(6996,$INFO[Window(home).Property(bz_mmlive)],absolute)</onload><onload condition="!Control.HasFocus(6996) + !String.IsEqual(Window(home).Property(bz_mmpick),true) + !String.IsEmpty(Window(home).Property(bz_mmwarm)) + String.IsEmpty(Window(home).Property(bz_mmlive))">SetFocus(6996,$INFO[Window(home).Property(bz_mmpos)],absolute)</onload><!-- MMWARM2 t3407 -->
+	<onload condition="$EXP[bz_gridfirst] + Integer.IsGreater(Container(6600).NumItems,0) + !$EXP[bz_navmenu] + String.IsEmpty(Window(home).Property(bz_mmwarm))">SetFocus(6600)</onload><!-- 4.0.1 O22: back from fullscreen music the window opened on the list (60) for ~0.5 s before bz_flip moved focus to the grid, so the list bar flashed in and faded out; the grid now takes the focus on load -->
+	<backgroundcolor>background</backgroundcolor>
+	<menucontrol>6385</menucontrol><!-- 2.0a3.1: M / Menu goes through 6385: player controls in the in-place Now Playing, else the old menu (9000) -->
+	<views>60</views>
+	<!-- 2.0a3.1: no stale flip state from an earlier visit, so the first tap always flips -->
+	<onload>RunScript(special://skin/scripts/bz_cmd.py,keymap)</onload><!-- np3: Tab keymap install / reload, no restart needed -->
+	<onload>ClearProperty(bz_back,home)</onload>
+	<onload>ClearProperty(bz_backanim,home)</onload>
+	<onload>ClearProperty(bz_back_fade,home)</onload>
+	<onload>ClearProperty(bz_back_close,home)</onload>
+	<onload condition="!String.IsEqual(Window(Home).Property(bz_flip_running),true)">RunScript(special://skin/scripts/bz_flip.py)</onload>
+	<onload>SetProperty(bz_sway_restart,true,home)</onload>
+	<onunload>SetProperty(bz_from_music,true,home)</onunload>
+	<onunload>SetProperty(bz_np_was,$INFO[Window(Home).Property(bz_np)],home)</onunload><!-- 2.0a3.4: Tab toggle -->
+	<onunload condition="!Window.Next(visualisation)">ClearProperty(bz_np,home)</onunload><!-- 3.5.2: kept while Kodi's fullscreen window bounces back (Tab), so Tab can close the panel -->
+	<onload>ClearProperty(bz_tv_list,home)</onload>
+	<onload>ClearProperty(bz_tv_up,home)</onload>
+	<!-- 3.5.2: coming back from Kodi's fullscreen music window (Tab) with the Now Playing panel opened: focus the panel -->
+	<onload condition="String.IsEqual(Window(Home).Property(bz_np_focus),true)">SetFocus(6390)</onload>
+	<onload>ClearProperty(bz_np_focus,home)</onload>
+	<controls>
+		<!-- 2.0a3.5: Estuary layers removed (DefaultBackground fanart/visualisation/video window, info/content panels, TopBar, BottomBar, MediaFlags, CommonScrollbars): BEZEL covers them and they only drew behind it -->
+		<include>BezelBlack</include><!-- 4.7: window-level black under the BELOW dust -->
+		<include>BezelAmbientBelow</include><!-- 4.7 Dust 2.0 ambient BELOW (one of two copies; 1114 = ABOVE) -->
+		<control type="group"><!-- 4.7: SECTION PARENT GROUP --><include>BezelSecDim</include><!-- 4.0.1 O25: section content held hidden while it loads behind the Main menu (bz_secload, bz_cmd _bz_load_then_close), then one fade in (bz_secfade) -->
+			<animation effect="fade" start="100" end="0" time="0" condition="!String.IsEmpty(Window(Home).Property(bz_secload))">Conditional</animation>
+			<animation effect="fade" start="0" end="100" time="400" tween="sine" easing="out" condition="!String.IsEmpty(Window(Home).Property(bz_secfade))" reversible="false">Conditional</animation>
+			<include>BezelFanartCycler</include>
+			<include>BezelArtistHelpers</include>
+			<include>View_60_BezelInfoList</include><!-- 5.33.122 t863: BezelDtapHint moved into BezelFSLeftStage -->
+			<include>BezelGridMusic</include>
+		</control>
+		<control type="group"><visible>false + $EXP[bz_covercol]</visible><!-- t4380 mock --><!-- t4148b: UNDIMMED opaque black 990-1080 first; the dimmed mask alone was only ~60% opaque so row text bled through -->
+			<control type="image"><left>bz_list_x</left><top>990</top><width>450</width><height>90</height><texture colordiffuse="FF000000">bezel/white.png</texture></control>
+		</control>
+		<control type="group"><include>BezelSecDim</include><visible>false + $EXP[bz_covercol]</visible><!-- t4380 mock --><!-- t4148: album cover-column list bottom clip. Row TEXT inside the SECTION PARENT GROUP draws above later images in that group, so the Includes_Bezel 990-1020 half-row band and the 1020 black mask never hid row text. Copies sit just outside the section group (same BezelSecDim fade): band 990-1020 (black + fanart layer) and black below 1020. MM / menus still draw above. -->
+			<control type="grouplist"><left>0</left><top>990</top><width>570</width><height>30</height><orientation>vertical</orientation><itemgap>0</itemgap><usecontrolcoords>true</usecontrolcoords><visible>$EXP[bz_covercol]</visible><animation effect="fade" start="100" end="0" time="1000" tween="sine" easing="inout" condition="String.IsEqual(Window(Home).Property(bz_npdlg),true) + String.IsEqual(Window(Home).Property(bz_np),true)">Conditional</animation><!-- 4.7.8: was 590 wide (x 0-590), cut a 20x30 notch out of the colour strip bottom-left (x 570-590, y 990-1020) in album folders -->
+				<control type="group"><width>570</width><height>30</height><control type="group"><left>0</left><top>-990</top>
+					<control type="image"><left>120</left><top>120</top><width>840</width><height>900</height><texture colordiffuse="FF000000">bezel/white.png</texture></control>
+					<include content="BezelFanartLayer"><param name="left" value="120"/><param name="top" value="120"/><param name="width" value="840"/><param name="height" value="900"/><param name="dim" value="99000000"/></include>
+				</control></control>
+			</control>
+		</control>
+		<!-- BEZEL: Estuary side menu moved here so it draws ABOVE the Bezel views -->
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<!-- 2.0a3.4: Estuary mouse-edge overlay removed: its hit area covered BEZEL MUSIC LIST, so taps / wheel / drag never reached the list and controls -->
+			<control type="group">
+				<include>MediaMenuCommon</include>
+				<animation effect="fade" start="0" end="0" time="0" condition="true">Conditional</animation><!-- BEZEL 3.0: the Estuary options blade is never shown; M / Menu lands here and is routed to the BEZEL slide menu -->
+				<control type="grouplist" id="9000">
+					<onfocus condition="!System.HasModalDialog + !Window.IsVisible(mediasource) + !Window.IsVisible(filebrowser) + !Window.IsVisible(contentsettings) + !Window.IsVisible(smartplaylistrule)">SetFocus(60)</onfocus><onfocus condition="$EXP[bz_navok] + !System.HasModalDialog + !Window.IsVisible(mediasource) + !Window.IsVisible(filebrowser) + !Window.IsVisible(contentsettings) + !Window.IsVisible(smartplaylistrule)">SetProperty(bz_navcard2,true,home)</onfocus><onfocus condition="$EXP[bz_navok] + !System.HasModalDialog + !Window.IsVisible(mediasource) + !Window.IsVisible(filebrowser) + !Window.IsVisible(contentsettings) + !Window.IsVisible(smartplaylistrule)">SetProperty(bz_nav,true,home)</onfocus>
+					<top>50</top>
+					<include>MediaMenuListCommon</include>
+					<control type="label" id="203">
+						<description>Actions</description>
+						<include>MediaMenuLabelCommon</include>
+						<label>$LOCALIZE[31020]</label>
+					</control>
+					<control type="togglebutton" id="619">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[653]</label>
+						<onclick>UpdateLibrary(music)</onclick>
+						<visible>!Container.Content(addons)+ String.IsEmpty(Container.PluginName)</visible>
+						<altlabel>$LOCALIZE[13353]</altlabel>
+						<usealttexture>library.isscanningmusic</usealttexture>
+					</control>
+					<control type="radiobutton" id="16">
+						<label>$LOCALIZE[589]</label>
+						<include>MediaMenuItemsCommon</include>
+					</control>
+					<control type="button" id="612">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[31056]</label>
+						<onclick>ActivateWindow(musicplaylist)</onclick>
+						<visible>Integer.IsGreater(Playlist.Length(music),0)</visible>
+					</control>
+					<control type="button" id="621">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[21452]</label>
+						<onclick>ActivateWindow(addonbrowser,addons://more/audio/,return)</onclick>
+						<visible>Container.Content(addons)</visible>
+					</control>
+					<control type="button" id="624">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[10140]</label>
+						<onclick>Addon.OpenSettings($INFO[Container.PluginName])</onclick>
+						<visible>!String.IsEmpty(Container.PluginName)</visible>
+					</control>
+					<control type="button" id="622">
+						<include>MediaMenuItemsCommon</include>
+						<label>$LOCALIZE[31117]</label>
+						<onclick condition="System.AddonIsEnabled(plugin.library.node.editor)">ActivateWindow(programs,plugin://plugin.library.node.editor/?ltype=music,return)</onclick>
+						<onclick condition="System.HasAddon(plugin.library.node.editor) + !System.AddonIsEnabled(plugin.library.node.editor)">EnableAddon(plugin.library.node.editor)</onclick>
+						<onclick condition="!System.HasAddon(plugin.library.node.editor)">InstallAddon(plugin.library.node.editor)</onclick>
+						<visible>String.IsEmpty(Container.FolderPath) + String.IsEmpty(Container.PluginName)</visible>
+					</control>
+					<include>MediaMenuNowPlaying</include>
+				</control>
+			</control>
+		</control>
+		<!-- BEZEL: clickable logo, above the views and the side menu -->
+		<control type="group"><include>BezelSecDim</include><include>BezelRootArtHide</include></control>
+		<include>BezelLogoButton</include>
+		<control type="button" id="6385"><left>-400</left><top>40</top><width>10</width><height>10</height><label></label><texturefocus></texturefocus><texturenofocus></texturenofocus>
+			<onfocus condition="$EXP[bz_np]">SetFocus(6390)</onfocus><onfocus condition="$EXP[bz_np]">RunScript(special://skin/scripts/bz_cmd.py,npctl,toggle)</onfocus><onfocus condition="!$EXP[bz_np]">SetFocus(9000)</onfocus></control>
+		<include>BezelMiniPlayer</include><!-- 3.5.3: music -> video transition band (bz_m2v) -->
+		<control type="group"><include>BezelSecDim</include><include>BezelViewPill</include></control><!-- 4.2 -->
+		<!-- 4.0.1 O36 (Rob): album tap-to-enlarge/shrink target 6188 removed -->
+	</controls>
+</window>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- BETA 2.7 item 1: BEZEL standard view (yes/no, ok, progress confirm). Buttons are rows; No (10) first = the safe default. -->
+	<animation type="WindowOpen"><effect type="fade" start="0" end="100" time="200" tween="cubic" easing="out"/></animation>
+	<animation type="WindowClose"><effect type="fade" start="100" end="0" time="150" tween="cubic" easing="in"/></animation>
+	<depth>DepthDialog+</depth>
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<controls>
+		<!-- 5.0.2 Refresh-in-strip: when opened over Music info (Refresh flow) use the strip format -->
+		<include condition="Window.IsVisible(musicinformation) + Window.IsActive(progressdialog)">BzRefreshProgress</include>
+		<include condition="![Window.IsVisible(musicinformation) + Window.IsActive(progressdialog)]">BzStdProgress</include>
+	</controls>
+</window>

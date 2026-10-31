@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- t4623 POWER MENU (Rob Go): Power list REPLACES the MM list inside the colour strip (same slot 570/160, 390w, 56px MM rows + MM focus bar).
+     MM stays open (bz_nav kept); MM list 6996 hidden while 1118 is visible. Back/close -> focus back to 6996 (POWER row). -->
+<window type="dialog" id="1118">
+	<zorder>2</zorder><!-- 5.33.84 t534: above 1112 (zorder 1, hosts BezelNavMenu/Tuner) so Back-from-Tuner Power list draws on top -->
+	<defaultcontrol always="true">7800</defaultcontrol>
+	<onload>ClearProperty(bz_tunesrc,home)</onload><onload>SetProperty(bz_pwrswap,1,home)</onload><!-- t4943 K52: skip 6996 slides on POWER swap -->
+	<onunload condition="!String.IsEqual(Window(Home).Property(bz_tunesrc),pwr)">AlarmClock(bzpwrf,SetFocus(6996),00:00,silent,false)</onunload>
+	<onunload>AlarmClock(bzpwrsw,ClearProperty(bz_pwrswap,home),00:01,silent,false)</onunload>
+	<include>BezelSecFadeIn</include><!-- 5.33.177 section fade-in standard (was instant) -->
+	<controls>
+		<control type="group"><left>570</left><top>120</top>
+			<!-- t4939 / K48: no open/close transition - instant swap from MM -->
+			<animation effect="slide" start="0,0" end="0,120" time="0" condition="Player.HasMedia">Conditional</animation>
+			<!-- 5.33.150 BUG-005: TUNER is a 4th list row (same focusedlayout BzATHiTex outline); not a separate button -->
+			<control type="list" id="7800"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop --><left>0</left><top>40</top><width>390</width><height>224</height><orientation>vertical</orientation><scrolltime>150</scrolltime>
+				<onleft>noop</onleft><onright>noop</onright>
+				<itemlayout height="56" width="390"><control type="label"><left>36</left><top>0</top><width>340</width><height>56</height><aligny>center</aligny><font>bz_mm28</font><textcolor>C8FFFFFF</textcolor><label>$INFO[ListItem.Label]</label></control></itemlayout>
+				<focusedlayout height="56" width="390"><control type="image"><left>18</left><top>4</top><width>354</width><height>48</height><texture colordiffuse="$VAR[BzMMBarCol]">$VAR[BzATHiTex]</texture><visible>Control.HasFocus(7800)</visible></control><control type="label"><left>40</left><top>0</top><width>310</width><height>56</height><aligny>center</aligny><font>bz_mm28</font><textcolor>$VAR[BzMMFocTxt]</textcolor><label>$INFO[ListItem.Label]</label></control></focusedlayout>
+				<content>
+					<item><label>SHUTDOWN</label><onclick>Shutdown()</onclick></item>
+					<item><label>QUIT KODI</label><onclick>Quit()</onclick></item>
+					<item><label>SUSPEND / SLEEP</label><onclick>Suspend()</onclick></item>
+					<item><label>TUNER</label><onclick>SetProperty(bz_tunesrc,pwr,home)</onclick><onclick>SetProperty(bz_navtune,true,home)</onclick><onclick>ClearProperty(bz_navbez,home)</onclick><onclick>ClearProperty(bz_navset,home)</onclick><onclick>Dialog.Close(1118)</onclick><onclick>AlarmClock(bz_tunp,SetFocus(6970),00:00,silent)</onclick></item>
+				</content>
+			</control>
+			<!-- visual separator between SUSPEND and TUNER (between row 3 and 4) -->
+			<control type="image"><left>36</left><top>206</top><width>318</width><height>2</height><texture colordiffuse="40FFFFFF">bezel/white.png</texture></control>
+			<control type="label"><left>36</left><top>282</top><width>318</width><height>40</height><aligny>center</aligny><font>bz_mm28</font><textcolor>80FFFFFF</textcolor><label>BEZEL $INFO[System.AddonVersion(skin.bezel2)]</label></control><!-- t4940 K49: live addon version -->
+			<!-- t4940 K50: flag hugs design-by text (grouplist, itemgap 10) -->
+			<control type="grouplist"><left>36</left><top>322</top><width>330</width><height>26</height><orientation>horizontal</orientation><itemgap>10</itemgap><usecontrolcoords>true</usecontrolcoords>
+				<control type="label"><width>auto</width><height>26</height><aligny>center</aligny><font>bz_mm17</font><textcolor>80FFFFFF</textcolor><label>design by. Robert Politano</label></control>
+				<control type="image"><top>4</top><width>30</width><height>18</height><aspectratio>stretch</aspectratio><texture colordiffuse="D9FFFFFF">bezel/us_flag.png</texture></control>
+			</control>
+			<!-- t4948 K51: small live Kodi version, bottom-left of power strip -->
+			<control type="label"><left>36</left><top>860</top><width>318</width><height>26</height><aligny>center</aligny><font>bz_mm17</font><textcolor>80FFFFFF</textcolor><label>Kodi $INFO[System.BuildVersionShort]</label></control>
+		</control>
+	</controls>
+</window>

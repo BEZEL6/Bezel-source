@@ -1,0 +1,30 @@
+# TV Shows list
+
+**Object:** `MyVideoNav.xml` · list `60` (tvshows nodes)  
+**Last updated:** 2026-10-31 · 5.33.194 (catch-up sync to live tree)  
+**Status:** draft — matches live 5.33.194 (IDs/files re-verified Oct 31); not Rob-approved, not re-smoked
+
+## Open / close
+Opened from MM TV pill sub. Left/Back at root → MM.
+
+## Keys
+| Key | Behavior |
+|-----|----------|
+| Up | Move up; at top row → ALL button `6098` if visible, else stay (Home `bz_topedge`; no native wrap — 5.33.120) |
+| Down | Move down; at last row → `6098` if visible, else stay (`bz_bottomedge`) |
+| Select | Open season/episode / play |
+| Left / Back at root | Open MM |
+
+## Touch
+None specified.
+
+## Code notes
+MyVideoNav.xml
+
+## Related
+mm-list.md · movies-list.md
+
+## Live notes (5.33.194)
+- Pills: SHOWS→WATCHING→YEARS→ACTORS→RECENT→GENRES (`bz_mm.py SUBS`: titles, inprogresstvshows, years, actors, recentlyaddedepisodes, genres).
+- Shares Movies list grouplist/nav (6098 ALL). Movies poster hold / fanart bridge do not apply to TV art.
+- Known open: Movies→TV highlight can jump back to Movies.

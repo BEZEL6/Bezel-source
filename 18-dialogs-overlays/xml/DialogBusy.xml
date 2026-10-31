@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Busy dialog (no BEZEL logo). WindowOpen delay; the WindowClose animation (500 ms hold + 300 ms fade)
+     keeps it up so a busy moment never flashes (at least ~800 ms on screen once it shows). Progress label 10 kept for Kodi. -->
+<window>
+	<include>BezelATBusyOpen</include><!-- BETA 2.8 tuner: delay 300 ms by default -->
+	<animation effect="fade" start="100" end="0" time="300" delay="500" condition="!Player.HasVideo + !Window.IsActive(fullscreenvideo)">WindowClose</animation><!-- 4.0.1 O32: no hold when a video starts -->
+	<controls>
+		<control type="group">
+			<visible>String.IsEmpty(Window(Home).Property(script.cinemavision.running)) + !Window.IsActive(startup) + !Player.Caching + ![Player.HasAudio + !Player.HasVideo] + String.IsEmpty(Window(Home).Property(bz_flipping)) + !Player.HasVideo + !Window.IsActive(fullscreenvideo) + ![Player.HasMedia + !Player.HasAudio]</visible><!-- 4.0.1 O32 (Rob): the busy logo no longer shows / lingers top right while a video starts --><!-- BETA 2.8 item 1: no second BEZEL logo while music plays (a song change / album flip opens the busy dialog) -->
+			<animation effect="fade" time="300">Visible</animation>
+			<depth>DepthMax</depth>
+			<control type="label" id="10"><visible>false</visible><label></label></control>
+		</control>
+	</controls>
+</window>

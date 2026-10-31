@@ -1,0 +1,77 @@
+[B]5.33.162[/B]
+- WARM 2.0 BUG-012: MM A/B fanart+poster no black-start (outgoing held under incoming); BUG-010 kept; BUG-011 logged (ReloadSkin)
+
+[B]5.33.147[/B]
+- WARM 2.0 (bz_flip mm_warm): in-memory session map per section (row/path/backdrop/timer) cleared on MM close; list row restore + strip bounce after settle; per-section backdrop cache; 10 s gated backdrop cycle while parked (FULL restart)
+
+[B]5.33.146[/B]
+- DUST subsections: Opacity tuners — MENU new (bz_at_mmdbright / BzMMDustA); Distant/Mid/Spin Brightness relabeled Opacity (bz_at_d20fbri/mbri/sbri); Album/Poster lit brightness relabeled opacity (bz_at_d3lit / bz_at_pd3lit)
+
+[B]5.33.145[/B]
+- BUG-002: File Manager context menu — Estuary popup path + BzCtx (match FileBrowser); drop FileManager defaultcontrol always so list 996 keeps focus / Back closes
+
+[B]5.33.143[/B]
+- BezelFSLeftStage / Dialogue FS slides: 5000 ms → 480 ms (viz reverse delay 1000→600); album grouplist scrolltime match
+- File Manager: double-tap Select opens context menu (bz_dtap.py, same path as FileBrowser)
+
+[B]5.33.142[/B]
+- Keep BezelBackdrop across Music↔Videos / MM section swaps (no onunload clear; onload pick only if empty)
+
+[B]5.33.141[/B]
+- Re-push current tree to Downloads (no functional change)
+
+[B]5.33.140[/B]
+- MM: SETTINGS row Select-only (no L/R); Movies pill Titles>Recently Added>Years>Actors>Sets>Genres; TV pill Shows>Watching>Years>Actors>Recent>Genres; behaviors/ docs added
+[B]5.33.60[/B]
+## 5.33.60 (Oct 29 2026) t398-t404 REBUILT (t395 focus-audit edits REVERTED to 5.33.59 bounce)
+- Power 1118: TUNER (blue FF7ACAFE, id 7801) below separator, BEZEL version under it. Opens Tuner (bz_tunesrc=pwr, clears navbez/navset, 1118 onunload skips 6996 focus). Tuner Back -> reopens Power.
+- Nav-right Tuner removed (BEZEL subpanel item gone); Right-from-Settings still opens BEZEL subpanel w/o Tuner.
+- MM: MUSIC VIDEOS + PLAYLISTS removed. Settings focused row: divider/logo/› extras removed.
+- Music FS controls 1115: TUNER row 6413 (blue) above Close; bz_tunesrc=fsctrl, Back -> visualisation + 1115. Music only.
+- bz_nav kept on Power->Tuner (Tuner group visible requires $EXP[bz_navmenu]). XML only -> ReloadSkin.
+
+[B]0.8.5[/B]
+• Updated language files from Transifex
+
+[B]0.8.3[/B]
+• Updated language files from Transifex
+
+[B]0.8.2[/B]
+• Updated language files from Transifex
+
+[B]0.8.1[/B]
+• Updated language files from Transifex
+
+[B]0.7.13[/B]
+• Updated language files from Transifex
+
+[B]0.7.12[/B]
+• Updated language files from Transifex
+
+[B]0.7.11[/B]
+• Updated language files from Transifex
+
+[B]0.7.10[/B]
+• Updated language files from Transifex
+
+[B]0.7.8[/B]
+• Updated language files from Transifex
+
+[B]0.7.7[/B]
+• Updated language files from Transifex
+
+[B]0.7.3[/B]
+• Updated language files from Transifex
+
+[B]0.7.1[/B]
+• Updated language files from Transifex
+
+[B]0.6.2[/B]
+• Updated language files from Transifex
+
+[B]0.6.1[/B]
+• Updated language files from Transifex
+
+﻿[B]0.0.1[/B]
+• Initial commit
+5.33.64 - Play Next fullscreen Music look (Tuner FULLSCREEN MUSIC > Play Next)

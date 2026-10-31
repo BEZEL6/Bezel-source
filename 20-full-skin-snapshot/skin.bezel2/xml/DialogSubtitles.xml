@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- BEZEL 4.0.0 item 15: subtitle search in a wide Main menu block (mockups/dialogs/subtitles.png) -->
+<window>
+	
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthDialog+</depth>
+	
+	<controls>
+		<include>BzDlgDim</include>
+		
+		<include content="BzDlgFrame"><param name="blockw" value="1680" /><param name="dark" value="1290" /><param name="titlew" value="1200" /></include>
+		<control type="group"><left>120</left><top>120</top>
+<control type="label" id="100"><left>30</left><top>20</top><width>1200</width><height>62</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[24012]</label></control>
+<control type="label"><left>44</left><top>112</top><width>270</width><height>34</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><aligny>bottom</aligny><label>[UPPERCASE]$LOCALIZE[24018][/UPPERCASE]</label></control>
+<control type="list" id="150"><left>20</left><top>150</top><width>290</width><height>560</height><onleft>160</onleft><onright>120</onright><onup>150</onup><ondown>150</ondown><scrolltime>200</scrolltime><include content="BzDlgListLayouts"><param name="width" value="290" /><param name="height" value="56" /><param name="label" value="$INFO[ListItem.Label]" /><param name="label2" value="" /><param name="lw" value="240" /><param name="l2w" value="242" /><param name="selx" value="246" /><param name="id" value="150" /></include></control>
+<control type="image" id="110"><left>20</left><top>730</top><width>290</width><height>80</height><aspectratio>keep</aspectratio><fadetime>200</fadetime></control>
+<control type="label"><left>354</left><top>112</top><width>900</width><height>34</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><aligny>bottom</aligny><label>[UPPERCASE]$LOCALIZE[24012][/UPPERCASE]</label></control>
+<control type="list" id="120"><left>330</left><top>150</top><width>920</width><height>690</height><onleft>150</onleft><onright>73</onright><onup>120</onup><ondown>120</ondown><pagecontrol>73</pagecontrol><scrolltime>200</scrolltime><include content="BzDlgListLayouts"><param name="width" value="920" /><param name="height" value="56" /><param name="label" value="$INFO[ListItem.Label2]" /><param name="label2" value="$INFO[ListItem.Label]" /><param name="lw" value="640" /><param name="l2w" value="872" /><param name="selx" value="876" /><param name="id" value="120" /></include></control>
+<control type="scrollbar" id="73"><left>1256</left><top>150</top><width>6</width><height>690</height><texturesliderbackground colordiffuse="14FFFFFF">bezel/white.png</texturesliderbackground><texturesliderbar colordiffuse="C8FFFFFF">bezel/white.png</texturesliderbar><texturesliderbarfocus colordiffuse="FFFFFFFF">bezel/white.png</texturesliderbarfocus><orientation>vertical</orientation><showonepage>false</showonepage><onleft>120</onleft><onright>160</onright><onup>73</onup><ondown>73</ondown></control>
+<control type="group" id="250">
+<control type="label"><left>1312</left><top>22</top><width>346</width><height>26</height><font>bz_mm17</font><textcolor>C8FFFFFF</textcolor><label>[UPPERCASE]$LOCALIZE[291][/UPPERCASE]</label></control>
+<control type="textbox"><left>1312</left><top>56</top><width>346</width><height>110</height><font>bz_mm26b</font><textcolor>FFFFFFFF</textcolor><label>$INFO[Player.Filename]</label></control>
+<control type="label" id="140"><left>1312</left><top>190</top><width>346</width><height>120</height><wrapmultiline>true</wrapmultiline><font>bz_mm20</font><textcolor>E6FFFFFF</textcolor></control>
+<control type="grouplist" id="130"><left>1312</left><top>330</top><width>346</width><height>200</height><itemgap>10</itemgap><control type="image"><width>40</width><height>40</height><aspectratio align="left">keep</aspectratio><texture>DefaultIconInfo.png</texture></control><control type="label"><width>346</width><height>120</height><wrapmultiline>true</wrapmultiline><font>bz_mm20</font><textcolor>E6FFFFFF</textcolor><label>$LOCALIZE[31096]</label></control></control>
+<control type="grouplist"><left>1312</left><top>760</top><width>346</width><height>60</height><onleft>73</onleft><onright>150</onright><control type="button" id="160"><label>$LOCALIZE[24120]</label><align>center</align><include content="BzDlgBtn"><param name="width" value="346" /><param name="height" value="58" /></include></control></control>
+</control>
+<control type="label"><left>30</left><top>862</top><width>800</width><height>30</height><font>bz_mm17</font><textcolor>8CFFFFFF</textcolor><label>OK download   ‹ › switch column   BACK close</label></control>
+		</control>
+	</controls>
+</window>

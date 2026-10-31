@@ -1,0 +1,92 @@
+CODE	LABEL	ID	SECTION	PNG
+A1	Big album shadow opacity / Big album shadow shape / Big album shadow size / Big album shadow style / SHADOW	,ashop,ashshape,ashsize,ashstyle	ALBUM / POSTER	album_shadow_labels.png
+A2	ALBUM		ALBUM / POSTER	album_tuner_list.png
+A3	ALBUM DUST / Album lit dust / DUST / Fiber amount / Flake amount / Lit brightness / Lit mix fibers / Lit mix flakes / Lit particle size / Lit spin / Lit spin direction / Lit spin speed	,adust,d3lit,d3lsize,fib,fibamt,flk,flkamt,lspin,lspindir,lspinspd	ALBUM / POSTER	dust20_info_album.png
+A4	Big album	bigalb	ALBUM / POSTER	opt_bigalb.png
+A5	Flip speed	flip	ALBUM / POSTER	opt_flip.png
+A6	Preset	ps_art	ALBUM / POSTER	opt_ps_art.png
+A7	Album hold (-13)	swaypause	ALBUM / POSTER	opt_swaypause.png
+A8	Cast length / Cast offset X / Cast offset Y / Cast opacity / Cast shadow animated / Cast shadow style / Cast softness	acanim,aclen,acop,acsoft,acstyle,acx,acy	ALBUM SHADOW	cast_album_styles.png
+C1	Colour	blockcol	COLOUR BLOCK	opt_blockcol.png
+C2	Opacity	blockop	COLOUR BLOCK	opt_blockop.png
+D1	Dust layers (ambient/spin/dust/3-layer)	adust…	DUST	amb_*.png
+D2	Ambient dust	amb	DUST	dust20_info_ambient.png
+D3	Brightness / DISTANT DUST / Density / Distant dust / Fade speed / Size / Slide speed	,d20fbri,d20fdens,d20ffade,d20fsize,d20fslide,d3l0	DUST	dust20_info_distant.png
+D4	All dust / Dust / Preset	alldust,dust,ps_dust	DUST	dust20_info_masters.png
+D5	Brightness / Density / Fade speed / MID DUST / Mid dust / Size / Slide speed	,d20mbri,d20mdens,d20mfade,d20msize,d20mslide,d3l1	DUST	dust20_info_mid.png
+D6	Brightness / Density / Fade speed / SPINNING DUST / Size / Spin direction / Spin speed / Spinning dust	,d20sbri,d20sdens,d20sfade,d20ssize,spin,spindir,spinspd	DUST	dust20_info_spinning.png
+D7	AMBIENT DUST		DUST	dust20_nest.png
+D8	Ambient position	ambpos	DUST	dust47_ambpos.png
+D9	Fade speed / MENU DUST / Menu dust / Size / Slide speed	,mmdfade,mmdsize,mmdslide,mmdust	DUST	dust47_menudust.png
+DA	Lit dust / spinning	adust,lspin	DUST	lit_*.png
+DB	Menu dust	mmdust	DUST	opt_mmdust.png
+I1	Cascade speed / Cascade stagger	cascspeed,cascstag	LIST	cascade_stagger.png
+I2	Fanart fade	fanart	LIST	opt_fanart.png
+I3	Title scroll	pingspeed	LIST	opt_pingspeed.png
+I4	Preset	ps_list	LIST	opt_ps_list.png
+I5	Row scroll speed	rowscroll	LIST	opt_rowscroll.png
+I6	Row softness	rowsoft	LIST	opt_rowsoft.png
+I7	Zoom size (Poster Wall)	zoomsize	LIST	opt_zoomsize.png
+I8	Zoom time (Poster Wall)	zoomtime	LIST	opt_zoomtime.png
+L1	Backdrop image	bdimg	LOOK	look_bdimg.png
+L3	Bar style	hishape	LOOK	look_hishape.png
+L4	Auto-advance under menu	uadv	LOOK	look_uadv.png
+L5	Auto-advance every	uadvd	LOOK	look_uadvd.png
+L6	Auto-advance first hold	uadvh	LOOK	look_uadvh.png
+L7	Fanart opacity / Global dimmer	fanop,gdim	LOOK	mm47_dim.png
+L8	Bar style	hishape	LOOK	opt_hishape.png
+M1	Double-tap (legacy)	dtapwin,dtap	MAIN MENU	doubletap_window.png
+M2	Glow brightness	mmglow	MAIN MENU	mm47_glow.png
+M3	Close speed	menuclose	MAIN MENU	mm_close_speed.png
+M4	Default section on start	mmdef	MAIN MENU	mm_default_section.png
+M5	Background dim level	mmdim	MAIN MENU	mm_dim_level.png
+M6	Double-tap Select = menu	dtap	MAIN MENU	mm_dtap_toggle.png
+M7	Double-tap window	dtapwin	MAIN MENU	mm_dtap_window.png
+M8	Open speed	menuopen	MAIN MENU	mm_open_speed.png
+M9	Strip opacity	mmbar	MAIN MENU	mm_strip_opacity.png
+MA	Open/Close speed (legacy)	menuopen,menuclose	MAIN MENU	open_speed.png
+MB	Strip opacity	mmbar	MAIN MENU	opt_mmbar.png
+MC	Preset	ps_menu	MAIN MENU	opt_ps_menu.png
+U1	Auto fullscreen music	autonp	MUSIC	fs_music_delay.png
+U2	Controls fade speed	mctrl	MUSIC	opt_mctrl.png
+U3	Preset	ps_music	MUSIC	opt_ps_music.png
+P1	Cast length / Cast offset X / Cast offset Y / Cast opacity / Cast shadow animated / Cast shadow style / Cast softness	pcanim,pclen,pcop,pcsoft,pcstyle,pcx,pcy	POSTER SHADOW	cast_poster_styles.png
+P2	Fiber amount / Flake amount / Lit brightness / Lit mix fibers / Lit mix flakes / Lit particle size / Lit spin / Lit spin direction / Lit spin speed / POSTER DUST / Poster hold / Poster lit dust	,pd3lit,pd3lsize,pdust,pfib,pfibamt,pflk,pflkamt,phold,plspin,plspindir,plspinspd	POSTER SWAY	dust20_info_poster.png
+Y1	Artwork pre-cache	precache	SYSTEM	opt_precache.png
+Z1	(unused)			cast_shadow_styles.png
+Z2	(unused)			dust20_info_dust.png
+Z3	(unused)			o71_glare_opacity.png
+Z4	(unused)			o71_glare_style.png
+Z5	(unused)			o71_glare_tint.png
+Z6	(unused)			o71_shadow_opacity.png
+Z7	(unused)			o71_shadow_shape.png
+Z8	(unused)			o71_shadow_size.png
+Z9	(unused)			o71_shadow_style.png
+ZA	(unused)			opt_busydelay.png
+ZB	(unused)			opt_epease.png
+ZC	(unused)			opt_eposlide.png
+ZD	(unused)			opt_glareop.png
+ZE	(unused)			opt_glaretex.png
+ZF	(unused)			opt_hicol.png
+ZG	(unused)			opt_hiop.png
+ZH	(unused)			opt_lkchrome.png
+ZJ	(unused)			opt_lkfrost.png
+ZK	(unused)			opt_lkgloss.png
+ZL	(unused)			opt_lkgrain.png
+ZM	(unused)			opt_lkholo.png
+ZN	(unused)			opt_lkleak.png
+ZP	(unused)			opt_lkprism.png
+ZQ	(unused)			opt_lkrainbow.png
+ZR	(unused)			opt_lksatin.png
+ZS	(unused)			opt_lkvig.png
+ZT	(unused)			opt_mmdamt.png
+ZU	(unused)			opt_mmdbright.png
+ZV	(unused)			opt_mmspeed.png
+ZW	(unused)			opt_ps_ep.png
+ZX	(unused)			opt_shadowop.png
+ZY	(unused)			opt_shadowtex.png
+ZZ	(unused)			opt_splash.png
+MD	Background art crossfade	mmxfade	MAIN MENU	mm_art_xfade_1..11.png
+L9	Now-playing music label	npmlbl	LOOK	look_npmlbl.png
+LA	BEZEL logo colour	logocol	LOOK	look_logocol.png
+LB	BEZEL logo opacity	logoop	LOOK	look_logoop.png

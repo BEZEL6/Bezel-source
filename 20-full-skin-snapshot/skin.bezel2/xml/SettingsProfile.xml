@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<window>
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<controls>
+		<control type="group"><!-- 4.7.4: SECTION PARENT GROUP — Global Dim fade under MM --><include>BezelSecDim</include>
+		<include content="BezelPVRStage"/><!-- 5.33.13 (Rob t154, mockup 16): profiles/options open in colour strip replacing parent list; avatar+name in fanart stage -->
+		<control type="group"><include>BezelSecFadeIn</include>
+			<control type="image"><left>120</left><top>120</top><width>450</width><height>900</height><texture colordiffuse="66000000">colors/white.png</texture></control>
+			<control type="image"><left>195</left><top>200</top><width>300</width><height>300</height><aspectratio>keep</aspectratio><texture fallback="DefaultUser.png">$INFO[Container(2).ListItem.Icon]</texture><visible>Container(9000).HasFocus(2)</visible></control>
+			<control type="label"><left>150</left><top>530</top><width>390</width><height>50</height><font>bz_mm34</font><align>center</align><textcolor>FFFFFFFF</textcolor><scroll>true</scroll><label>$INFO[Container(2).ListItem.Label]</label><visible>Container(9000).HasFocus(2)</visible></control>
+			<control type="label"><left>150</left><top>585</top><width>390</width><height>30</height><font>bz_mm17</font><align>center</align><textcolor>B3FFFFFF</textcolor><label fallback="13170">$INFO[Container(2).ListItem.Label2]</label><visible>Container(9000).HasFocus(2)</visible></control>
+		</control>
+		<include content="BezelLogo"><param name="col" value="FFFFFFFF"/></include><!-- t4284 -->
+		<!-- 4.7.7 setsub: MM strip (same as Settings / Main menu) -->
+		<control type="group"><left>570</left><top>120</top><include>BezelSecFadeIn</include>
+			<control type="image"><left>-570</left><top>-120</top><width>1920</width><height>1080</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/mm_glow_behind.png</texture></control>
+			<control type="image"><left>-570</left><top>-120</top><width>1920</width><height>1080</height><texture colordiffuse="26FFFFFF">bezel/mm_glow_behind.png</texture></control>
+			<control type="image"><left>0</left><top>0</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture><animation effect="fade" start="100" end="10" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),1)">Conditional</animation><animation effect="fade" start="100" end="20" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),2)">Conditional</animation><animation effect="fade" start="100" end="30" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),3)">Conditional</animation><animation effect="fade" start="100" end="40" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),4)">Conditional</animation><animation effect="fade" start="100" end="50" time="0" condition="String.IsEmpty(Skin.String(bz_at_mmbar)) | String.IsEqual(Skin.String(bz_at_mmbar),5)">Conditional</animation><animation effect="fade" start="100" end="60" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),6)">Conditional</animation><animation effect="fade" start="100" end="70" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),7)">Conditional</animation><animation effect="fade" start="100" end="80" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),8)">Conditional</animation><animation effect="fade" start="100" end="90" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),9)">Conditional</animation></control>
+		</control>
+		<control type="group"><include>BezelSecFadeIn</include>
+			<control type="label"><left>1010</left><top>150</top><width>760</width><height>30</height><font>bz_b12</font><aligny>center</aligny><textcolor>99FFFFFF</textcolor><label>[UPPERCASE]$LOCALIZE[10034][/UPPERCASE]</label></control>
+			<control type="label"><left>1010</left><top>184</top><width>760</width><height>56</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><scroll>true</scroll><label>[UPPERCASE]$INFO[Container(9000).ListItem.Label][/UPPERCASE]</label></control>
+			<control type="image"><left>1010</left><top>248</top><width>130</width><height>3</height><texture colordiffuse="$VAR[BzMMBarCol]">bezel/white.png</texture></control>
+		</control>
+		<control type="multiimage">
+			<depth>DepthBackground</depth>
+			<include>FullScreenDimensions</include>
+			<aspectratio>scale</aspectratio>
+			<fadetime>600</fadetime>
+			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
+			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+			<animation effect="fade" time="400">VisibleChange</animation>
+			<imagepath background="true" colordiffuse="bg_overlay">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</imagepath>
+			<visible>false</visible>
+		</control>
+		<control type="group" id="9100">
+			<include>BezelSecFadeIn</include>
+			<left>570</left><width>390</width><animation effect="fade" start="100" end="0" time="0" condition="!ControlGroup(9100).HasFocus()">Conditional</animation>
+			<control type="image">
+				<top>130</top>
+				<right>0</right>
+				<height>3</height>
+				<texture colordiffuse="00FFFFFF" border="2">dialogs/separator-grey.png</texture>
+			</control>
+			<control type="image">
+				<bottom>134</bottom>
+				<right>0</right>
+				<height>3</height>
+				<texture colordiffuse="00FFFFFF" border="2">dialogs/separator-grey.png</texture>
+			</control>
+			<control type="panel" id="2">
+				<top>160</top>
+				<left>0</left><onback>SetFocus(9000)</onback>
+				<visible>Container(9000).Hasfocus(2)</visible>
+				<right>0</right>
+				<bottom>120</bottom>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<onup>2</onup>
+				<ondown>2</ondown>
+				<scrolltime>200</scrolltime>
+				<itemlayout height="60" width="390"><control type="label"><left>30</left><width>330</width><height>60</height><font>bz_mm28</font><aligny>center</aligny><textcolor>C8FFFFFF</textcolor><label>$INFO[ListItem.Label]</label></control></itemlayout>
+				<focusedlayout height="60" width="390"><control type="image"><width>390</width><height>60</height><texture colordiffuse="$VAR[BzMMBarCol]">$VAR[BzATHiTex]</texture></control><control type="label"><left>30</left><width>330</width><height>60</height><font>bz_mm28</font><aligny>center</aligny><textcolor>$VAR[BzMMDark]</textcolor><scroll>true</scroll><label>$INFO[ListItem.Label]</label></control></focusedlayout>
+			</control>
+			<control type="grouplist" id="9001">
+				<visible>Container(9000).Hasfocus(1)</visible>
+				<right>0</right>
+				<height>735</height>
+				<top>160</top><onback>SetFocus(9000)</onback>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<onup>9001</onup>
+				<ondown>9001</ondown>
+				<control type="radiobutton" id="4">
+					<label>$LOCALIZE[31057]</label>
+					<include>BzSettingButton</include>
+				</control>
+				<control type="button" id="5">
+					<label>$LOCALIZE[31058]</label>
+					<label2>[B]$INFO[System.ProfileAutoLogin][/B]</label2>
+					<include>BzSettingButton</include>
+					<enable>!Window.IsVisible(ProfileSettings) + !System.HasLoginScreen</enable>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<depth>DepthContentPanel</depth>
+			<include>BezelSecFadeIn</include>
+			<control type="list" id="9000">
+				<left>570</left>
+				<top>160</top>
+				<width>390</width>
+				<height>567</height>
+				<onleft>9100</onleft>
+				<onright>9100</onright><onclick>SetFocus(9100)</onclick><animation effect="fade" start="100" end="0" time="0" condition="ControlGroup(9100).HasFocus()">Conditional</animation>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<scrolltime>300</scrolltime>
+				<itemlayout height="56" width="390">
+					<control type="label">
+						<left>30</left>
+						<width>330</width>
+						<bottom>0</bottom>
+						<label>$INFO[ListItem.Label]</label>
+						<font>bz_mm28</font><textcolor>C8FFFFFF</textcolor>
+						<aligny>center</aligny>
+					</control>
+				</itemlayout>
+				<focusedlayout height="56" width="390">
+					<control type="image">
+						<right>0</right>
+						<bottom>0</bottom>
+						<texture colordiffuse="$VAR[BzMMBarCol]">$VAR[BzATHiTex]</texture>
+						<animation effect="fade" start="100" end="50" time="40" condition="!Control.HasFocus(9000)">Conditional</animation>
+					</control>
+					<control type="label">
+						<left>30</left>
+						<width>330</width>
+						<bottom>0</bottom>
+						<label>$INFO[ListItem.Label]</label>
+						<font>bz_mm28</font><textcolor>$VAR[BzMMDark]</textcolor>
+						<aligny>center</aligny>
+					</control>
+				</focusedlayout>
+				<content>
+					<item id="1">
+						<label>$LOCALIZE[128]</label>
+						<onclick>noop</onclick>
+						<icon></icon>
+					</item>
+					<item id="2">
+						<label>$LOCALIZE[13200]</label>
+						<onclick>noop</onclick>
+						<icon></icon>
+					</item>
+				</content>
+			</control>
+		</control>
+		<include>BezelFooter</include>
+			<!-- 2.0a3.1: BEZEL logo (sweep, tap opens the side menu) -->
+		<include content="BezelLogo"><param name="col" value="FFFFFFFF"/></include><!-- t4284 -->
+		</control><!-- 4.7.4 end SECTION PARENT GROUP -->
+		<include content="BezelLogoButton"><param name="col" value="FFFFFFFF"/></include><!-- t4284 -->
+	</controls>
+</window>

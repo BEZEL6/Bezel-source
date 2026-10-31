@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 5.33.94 t592: Estuary popup -> BEZEL DialogSlider template (BzDlgFrame bottom-left, colour strip, bz slider art) -->
+<window type="dialog" id="1103">
+	<defaultcontrol>11</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthOSD+</depth>
+	<controls>
+		<control type="button"><left>0</left><top>0</top><width>1920</width><height>1080</height><texturefocus /><texturenofocus /><onclick>Action(close)</onclick></control>
+		<include content="BzDlgFrame">
+			<param name="top" value="800" /><param name="height" value="220" /><param name="hinty" value="182" />
+			<param name="title" value="" /><param name="sub" value="$VAR[BzDlgPlaySub]" />
+			<param name="hints" value="‹ › volume   OK / BACK close" />
+			<param name="head" value="Volume" /><param name="stitle" value="$INFO[Player.Volume]" /><param name="sdesc" value="Use ‹ › to change the volume." />
+		</include>
+		<control type="group"><left>120</left><top>800</top>
+			<control type="label"><left>30</left><top>18</top><width>300</width><height>44</height><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[13376]</label></control>
+			<control type="label"><left>30</left><top>18</top><width>396</width><height>44</height><align>right</align><font>bz_mm24</font><textcolor>FFFFFFFF</textcolor><label>$INFO[Player.Volume]</label></control>
+			<control type="slider" id="11"><left>30</left><top>104</top><width>396</width><height>30</height>
+				<texturesliderbar border="3" colordiffuse="40FFFFFF">bezel/bz_sliderbar.png</texturesliderbar>
+				<textureslidernib colordiffuse="FFFF7A26">bezel/bz_slidernib.png</textureslidernib>
+				<textureslidernibfocus colordiffuse="FFFF7A26">bezel/bz_slidernib.png</textureslidernibfocus>
+				<info>Player.Volume</info><action>Volume</action>
+				<onup>11</onup><ondown>11</ondown>
+			</control>
+		</control>
+	</controls>
+</window>

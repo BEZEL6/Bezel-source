@@ -1,0 +1,3 @@
+
+## t4813 Movies-only (22:1x EDT)
+- Shared poster_clock MM freeze reversed (TV sway path untouched). Movies-only: mm_warm _m widened (movies|sets|videodb://movies/), bz_movposter_hold fallback in BezelPoster60 + stand-in gate. Stress: stress/results_movies_only.txt

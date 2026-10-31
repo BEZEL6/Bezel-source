@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- 5.33.196 WARM GATE: first paint = BezelWarmGate on Startup. RunScript + ReplaceWindow MUST run before ActivateWindow(1113) — a dialog ActivateWindow in an earlier onload was blocking later onloads (script never started, splash stuck forever). Script opens 1113 so the splash stays after Startup is replaced. -->
+	<!-- Tuner WARM 2.0 > Startup splash (bz_at_warmsplash, default On): Off hides splash VISUALS only; warm-cache (bz_warmgate.py) always runs. -->
+	<onload condition="!String.IsEqual(Skin.String(bz_at_warmsplash),Off)">SetProperty(bz_warm_gate,1,home)</onload>
+	<onload>ClearProperty(bz_splash_done,home)</onload>
+	<onload>RunScript(special://skin/scripts/bz_warmgate.py)</onload>
+	<onload>ReplaceWindow($INFO[System.StartupWindow])</onload>
+	<controls><control type="group"><visible>!String.IsEqual(Skin.String(bz_at_warmsplash),Off)</visible><include>BezelWarmGate</include></control></controls>
+</window>

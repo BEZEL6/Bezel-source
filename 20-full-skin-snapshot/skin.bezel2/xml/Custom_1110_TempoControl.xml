@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 5.33.94 t592: Estuary popup -> BEZEL DialogSlider template (BzDlgFrame bottom-left, colour strip) -->
+<window id="1110" type="dialog">
+	<defaultcontrol>11</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthOSD+</depth>
+	<controls>
+		<include content="BzDlgFrame">
+			<param name="top" value="800" /><param name="height" value="220" /><param name="hinty" value="182" />
+			<param name="title" value="" /><param name="sub" value="$VAR[BzDlgPlaySub]" />
+			<param name="hints" value="‹ › tempo   BACK close" />
+			<param name="head" value="Tempo" /><param name="stitle" value="$LOCALIZE[31142]" /><param name="sdesc" value="Use ‹ › to slow down or speed up playback." />
+		</include>
+		<control type="group"><left>120</left><top>800</top>
+			<control type="label"><left>30</left><top>18</top><width>300</width><height>44</height><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[31142]</label></control>
+			<control type="label"><left>30</left><top>90</top><width>396</width><height>60</height><align>center</align><aligny>center</aligny><font>bz_mm48b</font><textcolor>FFFFFFFF</textcolor><label>$INFO[Player.playspeed]</label></control>
+			<control type="button" id="11"><left>30</left><top>90</top><width>60</width><height>60</height><label>‹</label><font>bz_mm48b</font><align>center</align><aligny>center</aligny><textcolor>C8FFFFFF</textcolor><focusedcolor>$VAR[BzMMFocTxt]</focusedcolor><texturefocus border="0" colordiffuse="$VAR[BzMMBarCol]">$VAR[BzATHiTex]</texturefocus><texturenofocus/><onleft>12</onleft><onright>12</onright><onclick>PlayerControl(TempoDown)</onclick></control>
+			<control type="button" id="12"><left>366</left><top>90</top><width>60</width><height>60</height><label>›</label><font>bz_mm48b</font><align>center</align><aligny>center</aligny><textcolor>C8FFFFFF</textcolor><focusedcolor>$VAR[BzMMFocTxt]</focusedcolor><texturefocus border="0" colordiffuse="$VAR[BzMMBarCol]">$VAR[BzATHiTex]</texturefocus><texturenofocus/><onleft>11</onleft><onright>11</onright><onclick>PlayerControl(TempoUp)</onclick></control>
+		</control>
+	</controls>
+</window>

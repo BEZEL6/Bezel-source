@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 5.33.37 t286 Rob NEXT: Search dialog on fanart stage + colour strip template (FileBrowser/Browse locks).
+     Stage 120..960 (840x900) one fanart; strip 570 390 overlays. Block = search options list 9000 (same items/onclicks as before).
+     Strip = SEARCH header + focused option + description. -->
+<window type="dialog" id="1107">
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<include>BezelSecFadeInDialog</include>
+	<depth>DepthDialog+</depth>
+	<controls>
+		<include>BzDlgDim</include>
+		<include content="BzDlgFrame"><param name="sub" value="" /><param name="hints" value="" /><param name="head" value="" /><param name="stitle" value="" /><param name="sdesc" value="" /></include>
+		<include content="BezelFanartLayer"><param name="left" value="120"/><param name="top" value="120"/><param name="width" value="840"/><param name="height" value="900"/></include><control type="image"><left>570</left><top>120</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+		<control type="group">
+			<control type="image"><left>117</left><top>117</top><width>846</width><height>3</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+			<control type="image"><left>117</left><top>1020</top><width>846</width><height>3</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+			<control type="image"><left>117</left><top>117</top><width>3</width><height>906</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+			<control type="image"><left>960</left><top>117</top><width>3</width><height>906</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+		</control>
+		<control type="group"><left>120</left><top>120</top>
+		<!-- stage block -->
+		<control type="image"><left>20</left><top>20</top><width>410</width><height>860</height><texture border="10" colordiffuse="A0000000">bezel/mm_round_a60.png</texture></control>
+		<control type="label"><left>44</left><top>40</top><width>380</width><height>30</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><label>SEARCH</label></control>
+		<control type="list" id="9000"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
+			<onup>9000</onup><ondown>9000</ondown><onleft>9000</onleft><onright>9000</onright>
+			<left>40</left><top>80</top><width>370</width><height>740</height><scrolltime>200</scrolltime>
+			<itemlayout width="370" height="66">
+				<control type="image"><left>0</left><top>0</top><width>370</width><height>58</height><texture border="10" colordiffuse="26FFFFFF">bezel/mm_round_a60.png</texture></control>
+				<control type="label"><left>20</left><top>0</top><width>330</width><height>58</height><font>bz_mm22</font><aligny>center</aligny><textcolor>E6FFFFFF</textcolor><label>$INFO[ListItem.Label]</label></control>
+			</itemlayout>
+			<focusedlayout width="370" height="66">
+				<control type="image"><left>0</left><top>0</top><width>370</width><height>58</height><texture border="10" colordiffuse="26FFFFFF">bezel/mm_round_a60.png</texture></control>
+				<control type="image"><left>0</left><top>0</top><width>370</width><height>58</height><visible>Control.HasFocus(9000)</visible><texture border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</texture></control>
+				<control type="label"><left>20</left><top>0</top><width>330</width><height>58</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FF000000</textcolor><label>$INFO[ListItem.Label]</label><visible>Control.HasFocus(9000)</visible></control>
+				<control type="label"><left>20</left><top>0</top><width>330</width><height>58</height><font>bz_mm22</font><aligny>center</aligny><textcolor>E6FFFFFF</textcolor><label>$INFO[ListItem.Label]</label><visible>!Control.HasFocus(9000)</visible></control>
+			</focusedlayout>
+			<content>
+				<item>
+					<label>$LOCALIZE[31113]</label>
+					<label2>Search movies, shows, music and more across the whole library.</label2>
+					<onclick>Dialog.Close(all)</onclick>
+					<onclick condition="System.AddonIsEnabled(script.globalsearch)">RunScript(script.globalsearch)</onclick>
+					<onclick condition="System.HasAddon(script.globalsearch) + !System.AddonIsEnabled(script.globalsearch)">EnableAddon(script.globalsearch)</onclick>
+					<onclick condition="!System.HasAddon(script.globalsearch)">InstallAddon(script.globalsearch)</onclick>
+				</item>
+				<item>
+					<label>$LOCALIZE[31145]</label>
+					<label2>Find add-ons in your installed repositories.</label2>
+					<onclick>Dialog.Close(all)</onclick>
+					<onclick>ActivateWindow(addonbrowser,addons://search/,return)</onclick>
+				</item>
+				<item>
+					<label>$LOCALIZE[31114]</label>
+					<label2>Search YouTube (installs or enables the add-on if needed).</label2>
+					<onclick>Dialog.Close(all)</onclick>
+					<onclick condition="System.AddonIsEnabled(plugin.video.youtube)">ActivateWindow(videos,"plugin://plugin.video.youtube/kodion/search/list/",return)</onclick>
+					<onclick condition="System.HasAddon(plugin.video.youtube) + !System.AddonIsEnabled(plugin.video.youtube)">EnableAddon(plugin.video.youtube)</onclick>
+					<onclick condition="!System.HasAddon(plugin.video.youtube)">InstallAddon(plugin.video.youtube)</onclick>
+				</item>
+			</content>
+		</control>
+		<control type="label"><left>44</left><top>836</top><width>380</width><height>30</height><font>bz_mm17</font><textcolor>8CFFFFFF</textcolor><label>OK select   BACK close</label></control>
+		<!-- strip -->
+		<control type="label"><left>480</left><top>20</top><width>350</width><height>50</height><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$LOCALIZE[137]</label></control>
+		<control type="label"><left>494</left><top>72</top><width>330</width><height>26</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><label>SELECTED</label></control>
+		<control type="textbox"><left>494</left><top>110</top><width>330</width><height>90</height><font>bz_mm20</font><textcolor>E6FFFFFF</textcolor><label>$INFO[Container(9000).ListItem.Label]</label></control>
+		<control type="image"><left>480</left><top>220</top><width>340</width><height>2</height><texture colordiffuse="40FFFFFF">bezel/white.png</texture></control>
+		<control type="textbox"><left>494</left><top>240</top><width>330</width><height>600</height><font>bz_mm20</font><textcolor>C8FFFFFF</textcolor><label>$INFO[Container(9000).ListItem.Label2]</label></control>
+		</control>
+	</controls>
+</window>

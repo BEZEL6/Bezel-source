@@ -1,0 +1,1 @@
+Backdrop textures: drop 1920x1080 PNG into media/bezel/glow/backdrop/gbd_N_name.png; add value to BzGbdTex (Includes_Bezel), BzATVal_gbd/BzGbdInfo + onleft/onright cycle (Includes_Tuner), info art media/bezel/info/look_gbd_sty_N.png.

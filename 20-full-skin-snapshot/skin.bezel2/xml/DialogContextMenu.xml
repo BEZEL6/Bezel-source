@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<!-- 3.5.7: long-press / context menu on a poster or grid item in the video library opens the in-place extended info (dialog 1111) -->
+	<!-- t4005/oct27d: old context killed in libraries/home: any path (keymap, RPC action, longpress) closes it same frame and opens Options+Info -->
+	<onload condition="[Window.IsVisible(videos) | Window.IsVisible(music) | Window.IsVisible(home)] ">NotifyAll(bz,bz_ctx)</onload>
+	<visible>!Window.IsVisible(videos) + !Window.IsVisible(music) + !Window.IsVisible(home)</visible>
+	<defaultcontrol>996</defaultcontrol>
+	<!-- BETA 2.7 item 1: BEZEL standard view (was the Estuary popup) -->
+	<animation type="WindowOpen"><effect type="fade" start="0" end="100" time="200" tween="cubic" easing="out"/></animation>
+	<animation type="WindowClose"><effect type="fade" start="100" end="0" time="150" tween="cubic" easing="in"/></animation>
+	<coordinates><left>0</left><top>0</top></coordinates>
+	<controls>
+		<control type="group"><visible>!Window.IsVisible(filebrowser) + !Window.IsVisible(filemanager)</visible><include content="BezelStdFrame">
+			<param name="title" value="$INFO[ListItem.Label]"/>
+			<param name="sub" value="$LOCALIZE[33063]"/><param name="tpl" value="true"/>
+			<param name="head" value="$INFO[ListItem.Label]"/>
+			<param name="body" value="LONG-PRESS OR MENU OPENS THESE OPTIONS. BACK CLOSES."/>
+		</include></control>
+		<!-- 5.33.99 t625: FileBrowser opener → Estuary popup look (dim + dialog_tint panel, centred). 5.33.145 BUG-002: FileManager same path (focus + Back). -->
+		<control type="group"><visible>Window.IsVisible(filebrowser) | Window.IsVisible(filemanager)</visible>
+			<control type="image"><left>0</left><top>0</top><width>1920</width><height>1080</height><texture colordiffuse="B0FFFFFF">colors/white.png</texture><colordiffuse>B0000000</colordiffuse></control>
+			<control type="button"><left>0</left><top>0</top><width>1920</width><height>1080</height><texturefocus/><texturenofocus/><onfocus>SetFocus(996)</onfocus><onclick>Action(close)</onclick><!-- 5.33.151 BUG-002: bounce focus to list 996 --></control>
+			<control type="image"><left>735</left><top>150</top><width>450</width><height>780</height><texture colordiffuse="dialog_tint">colors/white.png</texture></control>
+		</control>
+		<control type="image" id="999"><left>0</left><top>0</top><width>1920</width><height>4320</height><texture/></control><!-- full-screen size so Kodi positioning (focus-centred, clamped to the screen) lands at 0,0 -->
+		<control type="grouplist" id="996">
+			<animation effect="slide" end="615,30" time="0" condition="Window.IsVisible(filebrowser) | Window.IsVisible(filemanager)">conditional</animation>
+			<left>120</left><top>120</top><width>450</width><height>900</height>
+			<itemgap>0</itemgap><orientation>vertical</orientation>
+		</control>
+		<control type="button" id="1000"><!-- 5.33.94 t592: MM-bar focus (was white/black Estuary-style) -->
+			<description>button template</description>
+			<width>450</width><height>58</height><font>bz_mm28</font><textoffsetx>44</textoffsetx><aligny>center</aligny><align>$VAR[BzCtxAlign]</align>
+			<textcolor>$VAR[BzCtxTxt]</textcolor><focusedcolor>$VAR[BzCtxFocTxt]</focusedcolor>
+			<texturefocus border="0" colordiffuse="$VAR[BzCtxBarCol]">lists/focus.png</texturefocus><!-- 5.33.151 BUG-002: literal path, texturefocus does not resolve $VAR --><texturenofocus/>
+		</control>
+	</controls>
+</window>

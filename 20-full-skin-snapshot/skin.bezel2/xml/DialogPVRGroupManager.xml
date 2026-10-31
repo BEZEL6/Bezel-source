@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- BEZEL 4.0.0 item 15: PVR group manager in a wide Main menu block (mockups/dialogs/sheet_pvr.png) -->
+<window>
+	<defaultcontrol always="true">29</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthDialog+</depth>
+	
+	<controls>
+		<include>BzDlgDim</include>
+		
+		<include content="BzDlgFrame"><param name="bgc" value="01000000" /><param name="darkc" value="01000000" /><param name="blockw" value="1680" /><param name="dark" value="1290" /><param name="titlew" value="1200" /></include>
+		<!-- 5.33.47: PVR manager on FileBrowser template: fanart stage + colour strip on top + 3px Outline bar -->
+		<include content="BezelFanartLayer"><param name="left" value="120"/><param name="top" value="120"/><param name="width" value="1680"/><param name="height" value="900"/></include><control type="image"><left>1410</left><top>120</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+		<control type="group"><control type="image"><left>117</left><top>117</top><width>1686</width><height>3</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control><control type="image"><left>117</left><top>1020</top><width>1686</width><height>3</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control><control type="image"><left>117</left><top>117</top><width>3</width><height>906</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control><control type="image"><left>1800</left><top>117</top><width>3</width><height>906</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control></control>
+
+		<control type="group"><left>120</left><top>120</top>
+<control type="label" id="1"><left>30</left><top>20</top><width>1200</width><height>62</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>$VAR[PVRGroupMgrHeader]$INFO[Container(13).NumItems, (,)]</label></control>
+<control type="label"><left>44</left><top>112</top><width>270</width><height>34</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><aligny>bottom</aligny><label>[UPPERCASE]$LOCALIZE[33063][/UPPERCASE]</label></control>
+<control type="grouplist" id="9000">
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<left>20</left><top>150</top><width>290</width><height>690</height><itemgap>4</itemgap><orientation>vertical</orientation><control type="button" id="29">
+					<description>OK</description>
+					<label>$LOCALIZE[186]</label>
+				<include content="BzDlgBtn"><param name="width" value="290" /><param name="height" value="56" /></include></control>
+				<control type="button" id="26">
+					<description>Add Group</description>
+					<label>$LOCALIZE[31044]</label>
+				<include content="BzDlgBtn"><param name="width" value="290" /><param name="height" value="56" /></include></control>
+				<control type="button" id="27">
+					<description>Rename Group</description>
+					<label>$LOCALIZE[31045]</label>
+				<include content="BzDlgBtn"><param name="width" value="290" /><param name="height" value="56" /></include></control>
+				<control type="radiobutton" id="25">
+					<description>Hide Group</description>
+					<label>$LOCALIZE[19289]</label>
+					<include content="BzDlgBtn"><param name="width" value="290" /><param name="height" value="56" /></include><radioposx>226</radioposx></control>
+				<control type="button" id="28">
+					<description>Delete Group</description>
+					<label>$LOCALIZE[31046]</label>
+				<include content="BzDlgBtn"><param name="width" value="290" /><param name="height" value="56" /></include></control>
+				<control type="button" id="35">
+					<description>Regenerate Group Thumbnail</description>
+					<label>$LOCALIZE[13315]</label>
+				<include content="BzDlgBtn"><param name="width" value="290" /><param name="height" value="56" /></include></control>
+				<control type="togglebutton" id="34">
+					<description>TV/Radio toggle</description>
+					<label>$LOCALIZE[19174]</label>
+					<altlabel>$LOCALIZE[19173]</altlabel>
+					<usealttexture>!String.IsEmpty(Window.Property(IsRadio))</usealttexture>
+				<include content="BzDlgBtn"><param name="width" value="290" /><param name="height" value="56" /></include></control>
+			<onleft>12</onleft><onright>13</onright></control>
+			
+<control type="label"><left>354</left><top>112</top><width>270</width><height>34</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><aligny>bottom</aligny><label>[UPPERCASE]$LOCALIZE[31089][/UPPERCASE]$INFO[Container(13).NumItems,  (,)]</label></control>
+<control type="list" id="13"><left>330</left><top>150</top><width>290</width><height>690</height><onup>13</onup><ondown>13</ondown><onleft>9000</onleft><onright>11</onright><pagecontrol>73</pagecontrol><scrolltime>200</scrolltime>
+<include content="BzDlgListLayouts"><param name="width" value="290" /><param name="height" value="52" /><param name="label" value="$INFO[ListItem.Label]" /><param name="label2" value="" /><param name="lw" value="250" /><param name="l2w" value="242" /><param name="selx" value="254" /><param name="id" value="13" /></include></control><control type="scrollbar" id="73"><left>624</left><top>150</top><width>6</width><height>690</height><texturesliderbackground colordiffuse="14FFFFFF">bezel/white.png</texturesliderbackground><texturesliderbar colordiffuse="C8FFFFFF">bezel/white.png</texturesliderbar><texturesliderbarfocus colordiffuse="FFFFFFFF">bezel/white.png</texturesliderbarfocus><orientation>vertical</orientation><showonepage>false</showonepage><onleft>13</onleft><onright>11</onright></control>
+<control type="label" id="21"><left>674</left><top>112</top><width>270</width><height>34</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><aligny>bottom</aligny><label></label></control>
+<control type="list" id="11"><left>650</left><top>150</top><width>290</width><height>690</height><onup>11</onup><ondown>11</ondown><onleft>13</onleft><onright>12</onright><pagecontrol>71</pagecontrol><scrolltime>200</scrolltime>
+<include content="BzDlgListLayouts"><param name="width" value="290" /><param name="height" value="52" /><param name="label" value="$INFO[ListItem.Label]" /><param name="label2" value="" /><param name="lw" value="250" /><param name="l2w" value="242" /><param name="selx" value="254" /><param name="id" value="11" /></include></control><control type="scrollbar" id="71"><left>944</left><top>150</top><width>6</width><height>690</height><texturesliderbackground colordiffuse="14FFFFFF">bezel/white.png</texturesliderbackground><texturesliderbar colordiffuse="C8FFFFFF">bezel/white.png</texturesliderbar><texturesliderbarfocus colordiffuse="FFFFFFFF">bezel/white.png</texturesliderbarfocus><orientation>vertical</orientation><showonepage>false</showonepage><onleft>11</onleft><onright>12</onright></control>
+<control type="label" id="22"><left>994</left><top>112</top><width>270</width><height>34</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><aligny>bottom</aligny><label></label></control>
+<control type="list" id="12"><left>970</left><top>150</top><width>290</width><height>690</height><onup>12</onup><ondown>12</ondown><onleft>11</onleft><onright>9000</onright><pagecontrol>72</pagecontrol><scrolltime>200</scrolltime>
+<include content="BzDlgListLayouts"><param name="width" value="290" /><param name="height" value="52" /><param name="label" value="$INFO[ListItem.Label]" /><param name="label2" value="" /><param name="lw" value="250" /><param name="l2w" value="242" /><param name="selx" value="254" /><param name="id" value="12" /></include></control><control type="scrollbar" id="72"><left>1264</left><top>150</top><width>6</width><height>690</height><texturesliderbackground colordiffuse="14FFFFFF">bezel/white.png</texturesliderbackground><texturesliderbar colordiffuse="C8FFFFFF">bezel/white.png</texturesliderbar><texturesliderbarfocus colordiffuse="FFFFFFFF">bezel/white.png</texturesliderbarfocus><orientation>vertical</orientation><showonepage>false</showonepage><onleft>12</onleft><onright>9000</onright></control>
+<control type="label"><left>1312</left><top>22</top><width>346</width><height>26</height><font>bz_mm17</font><textcolor>C8FFFFFF</textcolor><label>[UPPERCASE]$LOCALIZE[31089][/UPPERCASE]</label></control>
+<control type="textbox"><left>1312</left><top>56</top><width>346</width><height>80</height><font>bz_mm26b</font><textcolor>FFFFFFFF</textcolor><label>$INFO[Container(13).ListItem.Label]</label></control>
+<control type="image"><left>1312</left><top>150</top><width>346</width><height>200</height><aspectratio>keep</aspectratio><texture>$INFO[Container(13).ListItem.Icon]</texture></control>
+<control type="textbox"><left>1312</left><top>370</top><width>346</width><height>300</height><font>bz_mm20</font><textcolor>E6FFFFFF</textcolor><label>Pick a group, then move channels between the available list and the group. Hidden groups stay out of the guide.</label></control>
+<control type="label"><left>30</left><top>862</top><width>800</width><height>30</height><font>bz_mm17</font><textcolor>8CFFFFFF</textcolor><label>OK move channel   ‹ › switch column   BACK close</label></control>
+<control type="label" id="20"><visible>false</visible></control>
+		</control>
+	</controls>
+</window>

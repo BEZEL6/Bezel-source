@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<colors>
+	<color name="dialog_tint">FF251F24</color>
+	<color name="button_focus">FFFF8EC4</color>
+	<color name="button_alt_focus">80FF8EC4</color>
+	<color name="selected">FFFF0261</color>
+</colors>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- BEZEL 4.0.0 item 15: numeric input / PIN in the Main menu block, keypad in the dark section, strip explains the entry, poster block when there is art (mockups/dialogs/numeric.png) -->
+<window>
+	<defaultcontrol always="true">21</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<depth>DepthDialog+</depth>
+	<controls>
+		<include>BzDlgDim</include>
+		<include content="BzDlgPoster"><param name="art" value="$VAR[BzDlgPosterArt]" /><param name="vis" value="$EXP[bz_dlgposter] + !Window.IsActive(fullscreenvideo)" /></include><!-- 4.0.1 O31 (Rob): no poster in the player control submenus (audio / subtitle / video settings, go-to-time) -->
+		<include content="BzDlgFrame">
+			<param name="title" value="" /><param name="sub" value="$LOCALIZE[31161]" />
+			<param name="hints" value="0-9 type   ‹ › field   OK done   BACK cancel" />
+			<param name="head" value="Numeric input" /><param name="stitle" value="$INFO[Control.GetLabel(1)]" />
+			<param name="sdesc" value="Type with the keypad or the remote's number keys. Del removes the last digit; ‹ › move between fields (time, date and IP address entry)." />
+		</include>
+		<control type="group"><left>120</left><top>120</top>
+			<control type="textbox" id="1"><left>30</left><top>20</top><width>400</width><height>62</height><font>bz_mm48b</font><textcolor>FFFFFFFF</textcolor><label /><autoscroll>false</autoscroll></control>
+			<control type="image"><left>30</left><top>140</top><width>396</width><height>84</height><texture border="10" colordiffuse="14FFFFFF">bezel/mm_round_a60.png</texture></control>
+			<control type="label" id="4"><left>30</left><top>140</top><width>396</width><height>84</height><align>center</align><aligny>center</aligny><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><label /></control>
+				<control type="button" id="11"><left>30</left><top>250</top><include>BzKeyBtn</include><label>$LOCALIZE[12311]</label><onup>20</onup><ondown>14</ondown><onleft>13</onleft><onright>12</onright></control>
+				<control type="button" id="12"><left>166</left><top>250</top><include>BzKeyBtn</include><label>$LOCALIZE[12312]</label><onup>20</onup><ondown>15</ondown><onleft>11</onleft><onright>13</onright></control>
+				<control type="button" id="13"><left>302</left><top>250</top><include>BzKeyBtn</include><label>$LOCALIZE[12313]</label><onup>22</onup><ondown>16</ondown><onleft>12</onleft><onright>11</onright></control>
+				<control type="button" id="14"><left>30</left><top>380</top><include>BzKeyBtn</include><label>$LOCALIZE[12314]</label><onup>11</onup><ondown>17</ondown><onleft>16</onleft><onright>15</onright></control>
+				<control type="button" id="15"><left>166</left><top>380</top><include>BzKeyBtn</include><label>$LOCALIZE[12315]</label><onup>12</onup><ondown>18</ondown><onleft>14</onleft><onright>16</onright></control>
+				<control type="button" id="16"><left>302</left><top>380</top><include>BzKeyBtn</include><label>$LOCALIZE[12316]</label><onup>13</onup><ondown>19</ondown><onleft>15</onleft><onright>14</onright></control>
+				<control type="button" id="17"><left>30</left><top>510</top><include>BzKeyBtn</include><label>$LOCALIZE[12317]</label><onup>14</onup><ondown>23</ondown><onleft>19</onleft><onright>18</onright></control>
+				<control type="button" id="18"><left>166</left><top>510</top><include>BzKeyBtn</include><label>$LOCALIZE[12318]</label><onup>15</onup><ondown>10</ondown><onleft>17</onleft><onright>19</onright></control>
+				<control type="button" id="19"><left>302</left><top>510</top><include>BzKeyBtn</include><label>$LOCALIZE[12319]</label><onup>16</onup><ondown>21</ondown><onleft>18</onleft><onright>17</onright></control>
+				<control type="button" id="23"><left>30</left><top>640</top><include>BzKeyBtn</include><label>Del</label><onup>17</onup><ondown>20</ondown><onleft>21</onleft><onright>10</onright><font>bz_mm24</font></control>
+				<control type="button" id="10"><left>166</left><top>640</top><include>BzKeyBtn</include><label>$LOCALIZE[12310]</label><onup>18</onup><ondown>20</ondown><onleft>23</onleft><onright>21</onright></control>
+				<control type="button" id="21"><left>302</left><top>640</top><include>BzKeyBtn</include><label>OK</label><onup>19</onup><ondown>22</ondown><onleft>10</onleft><onright>23</onright><font>bz_mm24</font></control>
+				<control type="radiobutton" id="20"><left>30</left><top>772</top><width>194</width><height>56</height><label /><include content="BzKeyBtn"><param name="width" value="194" /><param name="height" value="56" /></include><textureradioonfocus>icons/keyboard/arrowleft.png</textureradioonfocus><textureradioonnofocus>icons/keyboard/arrowleft.png</textureradioonnofocus><textureradioofffocus>icons/keyboard/arrowleft.png</textureradioofffocus><textureradiooffnofocus>icons/keyboard/arrowleft.png</textureradiooffnofocus><radioposx>81</radioposx><radiowidth>32</radiowidth><radioheight>32</radioheight><onleft>22</onleft><onright>22</onright><onup>23</onup><ondown>11</ondown></control>
+				<control type="radiobutton" id="22"><left>232</left><top>772</top><width>194</width><height>56</height><label /><include content="BzKeyBtn"><param name="width" value="194" /><param name="height" value="56" /></include><textureradioonfocus>icons/keyboard/arrowright.png</textureradioonfocus><textureradioonnofocus>icons/keyboard/arrowright.png</textureradioonnofocus><textureradioofffocus>icons/keyboard/arrowright.png</textureradioofffocus><textureradiooffnofocus>icons/keyboard/arrowright.png</textureradiooffnofocus><radioposx>81</radioposx><radiowidth>32</radiowidth><radioheight>32</radioheight><onleft>20</onleft><onright>20</onright><onup>21</onup><ondown>13</ondown></control>
+		</control>
+	</controls>
+</window>

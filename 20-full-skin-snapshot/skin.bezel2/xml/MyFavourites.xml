@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<onload>RunScript(special://skin/scripts/bz_cmd.py,backdrop)</onload>
+	<onunload>SetProperty(bz_backdrop_last,$INFO[Window(Home).Property(bz_backdrop)],home)</onunload><onunload>ClearProperty(bz_backdrop,home)</onunload><!-- 4.7.5: release the backdrop texture on close (empty path = control drops it; no-repeat via bz_backdrop_last) --><!-- BETA 1.4 item 15: new random backdrop on every load -->
+	<defaultcontrol always="true">60</defaultcontrol>
+	<backgroundcolor>background</backgroundcolor>
+	<views>60</views>
+	<menucontrol>9000</menucontrol>
+	<onunload>ClearProperty(bz_minibig,home)</onunload>
+	<controls>
+		<control type="group"><!-- 4.7.4: SECTION PARENT GROUP — Global Dim fade under MM --><include>BezelSecDim</include>
+		<include>DefaultBackground</include>
+		<control type="group">
+			<animation effect="fade" start="100" end="0" time="200" tween="sine" condition="$EXP[infodialog_active]">Conditional</animation>
+			<include>BezelWindowFade</include><!-- 4.2: the BEZEL view fades with the window change (300 ms sine) -->
+			<control type="group">
+				<depth>DepthContentPanel</depth>
+				<include>BezelWindowFade</include><!-- 4.2: was OpenClose_Left -->
+				<include>Visible_Left</include>
+				<visible>Control.IsVisible(55)</visible>
+				<include>ListThumbInfoPanel</include>
+			</control>
+			<include content="TopBar">
+				<param name="breadcrumbs_label" value="$LOCALIZE[1036]" />
+			</include>
+			<include content="BottomBar">
+				<param name="info_visible" value="true" />
+			</include>
+			<include>CommonScrollbars</include>
+			<include>BezelFanartCycler</include>
+			<include>View_60_BezelInfoList</include><include>BezelDtapHint</include><!-- 5.33.46: match Programs/Games/Playlist -->
+			<!-- 2.0a3.4: Estuary mouse-edge overlay removed (it can cover the BEZEL list hit areas) -->
+			<control type="group">
+				<include>MediaMenuCommon</include>
+				<control type="grouplist" id="9000">
+					<top>50</top>
+					<include>MediaMenuListCommon</include>
+					<include>MediaMenuNowPlaying</include>
+				</control>
+			</control>
+		</control>
+		<include>BezelMiniPlayer</include>
+		</control><!-- 4.7.4 end SECTION PARENT GROUP -->
+		<include>BezelLogoButton</include>
+	</controls>
+</window>

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- BEZEL 3.2.0: the old seek bar (and its stray debug timestamp) is gone; the OSD list and the pause screen replace it. -->
+<window>
+	<visible>false</visible>
+	<controls></controls>
+</window>

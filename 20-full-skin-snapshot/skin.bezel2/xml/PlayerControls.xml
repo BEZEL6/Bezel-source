@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- BEZEL: Kodi's old PlayerControls window is gone. Menu / M / Start / swipe paths that
+     still hit this window close it at once and open BEZEL controls: 1115 (music) or VideoOSD (video).
+     Stub only — no controls, so it cannot steal FS keys. -->
+<window>
+	<onload>Dialog.Close(PlayerControls,true)</onload>
+	<onload condition="Window.IsActive(FullscreenVideo)">ActivateWindow(videoosd)</onload>
+	<onload condition="!Window.IsActive(FullscreenVideo) + Player.HasAudio">ActivateWindow(1115)</onload>
+	<controls />
+</window>

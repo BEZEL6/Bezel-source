@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 5.33.33 t275 Rob GO: DialogMediaSource (Browse) on fanart stage + colour strip template (FileBrowser locks).
+     Stage 120..960 (840x900) one fanart; strip 570 390 overlays. Block = paths list 10 + Browse/Add/Remove 9100.
+     Strip = header, NAME edit 12, OK/Cancel 9001, help. 9100 kept (9000 collides with section blade). -->
+<window>
+	<defaultcontrol always="true">10</defaultcontrol>
+	<include>BezelSecFadeInDialog</include>
+	<depth>DepthDialog+</depth>
+	<onload condition="Integer.IsEqual(Container(10).NumItems,0)">SetFocus(11)</onload>
+	<controls>
+		<include>BzDlgDim</include>
+		<include content="BzDlgFrame"><param name="sub" value="" /><param name="hints" value="" /><param name="head" value="" /><param name="stitle" value="" /><param name="sdesc" value="" /></include>
+		<include content="BezelFanartLayer"><param name="left" value="120"/><param name="top" value="120"/><param name="width" value="840"/><param name="height" value="900"/></include><control type="image"><left>570</left><top>120</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+		<control type="group">
+			<control type="image"><left>117</left><top>117</top><width>846</width><height>3</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+			<control type="image"><left>117</left><top>1020</top><width>846</width><height>3</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+			<control type="image"><left>117</left><top>117</top><width>3</width><height>906</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+			<control type="image"><left>960</left><top>117</top><width>3</width><height>906</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+		</control>
+		<control type="group"><left>120</left><top>120</top>
+		<!-- stage block: paths -->
+		<control type="image"><left>20</left><top>20</top><width>410</width><height>860</height><texture border="10" colordiffuse="A0000000">bezel/mm_round_a60.png</texture></control>
+		<control type="label"><left>44</left><top>40</top><width>380</width><height>30</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><label>PATHS</label></control>
+		<control type="list" id="10">
+			<onup>10</onup><ondown>11</ondown><onleft>10</onleft><onright>12</onright>
+			<pagecontrol>60</pagecontrol><scrolltime>200</scrolltime>
+			<left>20</left><top>76</top><width>410</width><height>522</height><include content="BzDlgListLayouts"><param name="width" value="410" /><param name="height" value="58" /><param name="lw" value="370" /><param name="l2w" value="370" /><param name="selx" value="372" /><param name="id" value="10" /></include></control>
+		<control type="scrollbar" id="60"><left>436</left><top>76</top><width>6</width><height>522</height><texturesliderbackground colordiffuse="14FFFFFF">bezel/white.png</texturesliderbackground><texturesliderbar colordiffuse="C8FFFFFF">bezel/white.png</texturesliderbar><texturesliderbarfocus colordiffuse="FFFFFFFF">bezel/white.png</texturesliderbarfocus><orientation>vertical</orientation><showonepage>false</showonepage><onleft>10</onleft><onright>12</onright></control>
+		<control type="image"><left>40</left><top>614</top><width>370</width><height>2</height><texture colordiffuse="40FFFFFF">bezel/white.png</texture></control>
+		<control type="image"><left>40</left><top>632</top><width>370</width><height>58</height><texture border="10" colordiffuse="26FFFFFF">bezel/mm_round_a60.png</texture></control><control type="image"><left>40</left><top>694</top><width>370</width><height>58</height><texture border="10" colordiffuse="26FFFFFF">bezel/mm_round_a60.png</texture></control><control type="image"><left>40</left><top>756</top><width>370</width><height>58</height><texture border="10" colordiffuse="26FFFFFF">bezel/mm_round_a60.png</texture></control>
+		<control type="grouplist" id="9100">
+			<onup>10</onup><onleft>10</onleft><onright>12</onright><ondown>9100</ondown>
+			<left>40</left><top>632</top><width>370</width><height>200</height><itemgap>4</itemgap><orientation>vertical</orientation>
+			<control type="button" id="11"><label>$LOCALIZE[1024]</label><texturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</texturefocus><focusedcolor>FF000000</focusedcolor><include content="BzDlgBtn"><param name="width" value="370" /><param name="height" value="58" /></include></control>
+			<control type="button" id="13"><label>$LOCALIZE[15019]</label><texturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</texturefocus><focusedcolor>FF000000</focusedcolor><include content="BzDlgBtn"><param name="width" value="370" /><param name="height" value="58" /></include></control>
+			<control type="button" id="14"><label>$LOCALIZE[1210]</label><texturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</texturefocus><focusedcolor>FF000000</focusedcolor><include content="BzDlgBtn"><param name="width" value="370" /><param name="height" value="58" /></include></control>
+		</control>
+		<control type="label"><left>44</left><top>836</top><width>380</width><height>30</height><font>bz_mm17</font><textcolor>8CFFFFFF</textcolor><label>OK select   BACK close</label></control>
+		<!-- strip -->
+		<control type="label" id="2"><left>480</left><top>20</top><width>350</width><height>50</height><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label /></control>
+		<control type="label"><left>494</left><top>72</top><width>330</width><height>26</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><label>MEDIA SOURCE</label></control>
+		<control type="textbox"><left>494</left><top>110</top><width>330</width><height>90</height><font>bz_mm20</font><textcolor>E6FFFFFF</textcolor><label>$INFO[Container(10).ListItem.Label]</label></control>
+		<control type="label"><left>494</left><top>220</top><width>330</width><height>30</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><aligny>bottom</aligny><label>NAME</label></control>
+		<control type="image"><left>470</left><top>256</top><width>350</width><height>58</height><texture border="10" colordiffuse="26FFFFFF">bezel/mm_round_a60.png</texture></control>
+		<control type="edit" id="12"><description>Name Button</description><label />
+			<onup>11</onup><ondown>9001</ondown><onleft>9100</onleft><onright>12</onright>
+			<left>470</left><top>256</top><texturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</texturefocus><focusedcolor>FF000000</focusedcolor><include content="BzDlgBtn"><param name="width" value="350" /><param name="height" value="58" /></include><textwidth>302</textwidth></control>
+		<control type="image"><left>470</left><top>330</top><width>170</width><height>58</height><texture border="10" colordiffuse="26FFFFFF">bezel/mm_round_a60.png</texture></control><control type="image"><left>650</left><top>330</top><width>170</width><height>58</height><texture border="10" colordiffuse="26FFFFFF">bezel/mm_round_a60.png</texture></control>
+		<control type="grouplist" id="9001">
+			<onup>12</onup><onleft>9100</onleft><ondown>9001</ondown>
+			<left>470</left><top>330</top><width>350</width><height>58</height><itemgap>10</itemgap><orientation>horizontal</orientation>
+			<control type="button" id="18"><label>$LOCALIZE[186]</label><texturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</texturefocus><focusedcolor>FF000000</focusedcolor><include content="BzDlgBtn"><param name="width" value="170" /><param name="height" value="58" /></include><align>center</align><textoffsetx>0</textoffsetx></control>
+			<control type="button" id="19"><label>$LOCALIZE[222]</label><onright>9100</onright><texturefocus border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</texturefocus><focusedcolor>FF000000</focusedcolor><include content="BzDlgBtn"><param name="width" value="170" /><param name="height" value="58" /></include><align>center</align><textoffsetx>0</textoffsetx></control>
+		</control>
+		<control type="image"><left>480</left><top>412</top><width>340</width><height>2</height><texture colordiffuse="40FFFFFF">bezel/white.png</texture></control>
+		<control type="textbox"><left>494</left><top>430</top><width>330</width><height>420</height><font>bz_mm20</font><textcolor>C8FFFFFF</textcolor><label>Browse to a folder or type a path, then give the source a name. Add more than one path to combine folders into one source.</label></control>
+		</control>
+	</controls>
+</window>

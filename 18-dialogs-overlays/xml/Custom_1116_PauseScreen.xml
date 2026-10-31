@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- BEZEL 3.2.0: pause screen (mockups/pause A). Auto-opens over fullscreen video while paused. -->
+<window type="dialog" id="1116">
+	<visible>Window.IsActive(fullscreenvideo) + Player.Paused + Player.HasVideo + !Player.Caching + !Window.IsActive(videoosd) + !Window.IsActive(osdsubtitlesettings) + !Window.IsActive(osdaudiosettings) + !Window.IsActive(osdvideosettings) + !Window.IsActive(videobookmarks)</visible>
+	<depth>DepthOSD</depth>
+	<zorder>1</zorder>
+	<controls>
+			<!-- BEZEL 3.2.0: pause screen (mockups/pause A): dim 28 %, poster 552x828 at 1014,156 slides in from the right (0.6 s cubic out), title overlay + pause icon. 4.0.1 O29: poster is clean (no gradient / pause badge); title, time and progress sit to the left of it -->
+		<control type="group">
+			<animation effect="fade" start="0" end="100" time="600" tween="cubic" easing="out">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="250">WindowClose</animation>
+			<control type="image"><left>0</left><top>0</top><width>1920</width><height>1080</height><texture colordiffuse="47000000">bezel/white.png</texture></control>
+			<control type="group"><left>1014</left><top>156</top>
+				<animation effect="slide" start="906,0" end="0,0" time="600" tween="cubic" easing="out">WindowOpen</animation>
+				<control type="image"><left>10</left><top>18</top><width>552</width><height>834</height><texture border="22" colordiffuse="AA000000">bezel/mm_round.png</texture></control>
+				<control type="image"><left>0</left><top>0</top><width>552</width><height>828</height><aspectratio>scale</aspectratio><texture background="true" diffuse="bezel/mm_round.png">$VAR[BzPausePoster]</texture></control>
+				<!-- 4.0.1 O29 (Rob): overlay removed from the poster: gradient -->
+				<!-- 4.0.1 O29 (Rob): overlay removed from the poster: pause badge -->
+				<!-- 4.0.1 O29 (Rob): overlay removed from the poster: pause badge -->
+				<control type="label"><left>-540</left><top>628</top><width>500</width><height>52</height><align>right</align><shadowcolor>C0000000</shadowcolor><font>bz_mm48b</font><textcolor>white</textcolor><label>[UPPERCASE]$VAR[BzVOSDTitle][/UPPERCASE]</label></control>
+				<control type="label"><left>-540</left><top>690</top><width>500</width><height>30</height><align>right</align><shadowcolor>C0000000</shadowcolor><font>bz_mm20</font><textcolor>E1FFFFFF</textcolor><label>$VAR[BzPauseSub]</label></control>
+				<control type="label"><left>-540</left><top>728</top><width>500</width><height>28</height><align>right</align><shadowcolor>C0000000</shadowcolor><font>bz_mm18b</font><textcolor>white</textcolor><label>PAUSED  ·  $INFO[Player.Time] / $INFO[Player.Duration]</label></control>
+				<control type="progress"><left>-540</left><top>774</top><width>500</width><height>4</height><info>Player.Progress</info><texturebg colordiffuse="46FFFFFF">bezel/white.png</texturebg><midtexture colordiffuse="$VAR[BezelBlockBF]">bezel/white.png</midtexture></control>
+			</control>
+		</control>
+	</controls>
+</window>

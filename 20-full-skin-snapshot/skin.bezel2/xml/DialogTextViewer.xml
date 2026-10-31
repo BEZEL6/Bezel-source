@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- BEZEL 4.0.0 item 15: text viewer in the wide Main menu block (mockups/dialogs/textviewer.png) -->
+<window>
+	<defaultcontrol always="true">1000</defaultcontrol>
+	<include>Animation_DialogPopupOpenClose</include>
+	<controls>
+		<include>BzDlgDim</include>
+		<include content="BzDlgFrame"><param name="blockw" value="1680" /><param name="dark" value="1290" /><param name="titlew" value="1230" />
+			<param name="title" value="$INFO[Control.GetLabel(1)]" /><param name="sub" value="Text viewer" />
+			<param name="hints" value="UP DOWN scroll   OK close" />
+			<param name="head" value="Text" /><param name="stitle" value="$INFO[Control.GetLabel(1)]" />
+			<param name="sdesc" value="Long text scrolls a page at a time with up and down or the page keys." /></include>
+		<control type="group"><left>120</left><top>120</top>
+			<control type="label" id="1"><left>-3000</left><top>0</top><width>10</width><height>10</height><label>$LOCALIZE[13406]</label></control>
+			<control type="textbox" id="5"><left>30</left><top>136</top><width>1180</width><height>700</height><font>bz_mm22</font><textcolor>E6FFFFFF</textcolor><pagecontrol>3000</pagecontrol><monofont>Mono26</monofont></control>
+			<control type="scrollbar" id="3000"><left>1240</left><top>136</top><width>6</width><height>700</height><texturesliderbackground colordiffuse="14FFFFFF">bezel/white.png</texturesliderbackground><texturesliderbar colordiffuse="C8FFFFFF">bezel/white.png</texturesliderbar><texturesliderbarfocus colordiffuse="C8FFFFFF">bezel/white.png</texturesliderbarfocus><orientation>vertical</orientation><showonepage>false</showonepage><ondown>3000</ondown><onup>3000</onup></control>
+			<control type="label"><left>1312</left><top>800</top><width>346</width><height>30</height><font>bz_mm18</font><textcolor>E6FFFFFF</textcolor><label>Page $INFO[Container(5).CurrentPage] / $INFO[Container(5).NumPages]</label><visible>Integer.IsGreater(Container(5).NumPages,1)</visible></control>
+		</control>
+		<control type="button" id="1000"><include>HiddenObject</include><onclick>Action(Close)</onclick><onup>PageUp(3000)</onup><ondown>PageDown(3000)</ondown></control>
+	</controls>
+</window>

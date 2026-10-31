@@ -1,0 +1,57 @@
+# t4813 stress — 5.0.14 with restored 5.0.12 Background dim
+
+## Setup
+- Skin under test: `/workspace/b401/t4813/skin.bezel2` — addon **5.0.14**
+- Live `/workspace/b300/skin.bezel2` untouched
+- Dim: `BezelSecDim` 11-step fades (end 5/10/20/…/100); **BzMmdimDiffuse removed** (0 refs)
+- Tuner labels 5%…100% = percent art left visible. Step 1 darkest; step 11 brightest.
+
+## Rob assertion vs restored code
+- Asked: art visible below 100%, hard blackout only at 100%.
+- Restored 5.0.12 scale: **100% = fully visible**. Near-blackout is at **5%** (step 1).
+- Stale Tuner desc still says “100% = darkest” (labels/fades disagree) — left as-is.
+
+## Primary signal: left fanart luminance (MM open) — tracks BezelSecDim
+| step | label | Movies left | Music left |
+|---|---|---|---|
+| 1 | 5% | 3.2 | 5.9 |
+| 2 | 10% | 4.0 | 8.6 |
+| 3 | 20% | 5.4 | 12.3 |
+| 4 | 30% | 6.7 | 14.6 |
+| 5 | 40% | 8.3 | 16.2 |
+| 6 | 50% | 9.7 | 17.5 |
+| 7 | 60% | 11.0 | 18.5 |
+| 8 | 70% | 12.6 | 19.7 |
+| 9 | 80% | 14.1 | 20.9 |
+| 10 | 90% | 15.4 | 22.3 |
+| 11 | 100% | 16.8 | 23.9 |
+
+## Right-art note
+- Mid steps (e.g. dim06): WALL·E / album art visible on the right.
+- Step 11 (100%): **right poster missing** on Movies (starfield/dust only); left fanart at brightest. Flagged FAIL.
+
+## Assertions
+- PASS: `addon_5.0.14` — 5.0.14
+- PASS: `BzMmdimDiffuse_removed` — 0 refs
+- PASS: `movies_titles_path`
+- PASS: `music_albums_path`
+- PASS: `mm_open_all_steps`
+- PASS: `no_misplaced_xml`
+- PASS: `movie_fanart_brightens_with_step` — 3.2 < 9.7 < 16.8
+- PASS: `music_fanart_brightens_with_step` — 5.9 < 17.5 < 23.9
+- PASS: `movie_step1_near_blackout` — 3.2
+- PASS: `music_step1_near_blackout` — 5.9
+- FAIL: `rob_hard_blackout_only_at_100pct` — Restored scale: 100%=fully visible (fade end 100). Near-black is step 1 (5%).
+- FAIL: `movie_right_poster_visible_at_100pct` — p2_movie_mm_dim11: right poster absent (starfield only); present at dim06
+- PASS: `movie_right_poster_visible_mid` — p2_movie_mm_dim06 WALL-E poster visible
+- PASS: `no_crash_mm_churn_section_switch`
+
+**Totals: 12 PASS / 2 FAIL**
+
+## Exercises completed
+- Background dim 1–11 on Movies titles + Music albums
+- MM open/close ×8 at mid dim
+- Movies ↔ Music ↔ TV under MM
+- Fanart closed vs open (dim 6)
+- No crash; no Misplaced XML
+- Shots: `p2_*` in this folder

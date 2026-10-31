@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- BEZEL 4.0.0 item 15: settings dialog in the Main menu block (mockups/dialogs/settings.png, videosub 01/03/04): list in the dark section, focused setting + its help text (id 6) in the colour strip, poster block while a video plays -->
+<window>
+	<defaultcontrol>5</defaultcontrol>
+	<include>BezelSecFadeInDialog</include>
+	<controls>
+		<control type="group">
+			<visible>!Window.IsVisible(sliderdialog)</visible>
+			<include>BzDlgDim</include>
+			<include content="BzDlgPoster"><param name="art" value="$VAR[BzDlgPosterArt]" /><param name="vis" value="$EXP[bz_dlgposter] + !Window.IsActive(fullscreenvideo)" /></include><!-- 4.0.1 O31 (Rob): no poster in the player control submenus (audio / subtitle / video settings, go-to-time) -->
+			<include content="BzDlgFrame">
+				<param name="title" value="" /><param name="sub" value="$VAR[BzDlgPlaySub]" />
+				<param name="hints" value="▲▼ move   OK change   ‹ › adjust   BACK save" />
+				<param name="head" value="Setting" /><param name="stitle" value="$INFO[System.CurrentControl]" /><param name="sdesc" value="" />
+			</include>
+			<control type="group"><left>120</left><top>120</top>
+				<control type="label" id="2"><left>30</left><top>20</top><width>400</width><height>62</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label /></control>
+				<control type="textbox" id="6"><left>472</left><top>140</top><width>346</width><height>560</height><font>bz_mm20</font><textcolor>E6FFFFFF</textcolor><label /></control>
+				<control type="grouplist" id="5">
+					<left>20</left><top>120</top><width>410</width><height>640</height>
+					<pagecontrol>60</pagecontrol><itemgap>2</itemgap>
+					<onleft>9000</onleft><onright>9000</onright><onup>5</onup><ondown>9000</ondown>
+				</control>
+				<control type="button" id="7"><include>BzDlgPill</include></control>
+				<control type="radiobutton" id="8"><include>BzDlgPill</include></control>
+				<control type="spincontrolex" id="9"><include>BzDlgPill</include><textureup /><texturedown /><textureupfocus /><texturedownfocus /><spinwidth>1</spinwidth><spinheight>1</spinheight></control>
+				<control type="image" id="11"><height>2</height><texture colordiffuse="30FFFFFF">bezel/white.png</texture></control>
+				<control type="edit" id="12"><include>BzDlgPill</include></control>
+				<control type="sliderex" id="13"><include>BzDlgPill</include><textwidth>150</textwidth><sliderwidth>120</sliderwidth><sliderheight>16</sliderheight></control>
+				<control type="label" id="14"><height>46</height><font>bz_mm18b</font><textcolor>A0FFFFFF</textcolor><aligny>bottom</aligny><textoffsetx>24</textoffsetx></control>
+				<control type="grouplist" id="9000">
+					<left>20</left><top>778</top><width>410</width><height>58</height><orientation>horizontal</orientation><itemgap>6</itemgap>
+					<onup>5</onup><ondown>5</ondown>
+					<control type="button" id="28"><include content="BzDlgBtn"><param name="width" value="132" /></include><align>center</align><textoffsetx>8</textoffsetx><label /></control>
+					<control type="button" id="29"><include content="BzDlgBtn"><param name="width" value="132" /></include><align>center</align><textoffsetx>8</textoffsetx><label /></control>
+					<control type="button" id="30"><include content="BzDlgBtn"><param name="width" value="132" /></include><align>center</align><textoffsetx>8</textoffsetx><label /></control>
+				</control>
+				<control type="scrollbar" id="60">
+					<left>436</left><top>120</top><width>6</width><height>640</height><orientation>vertical</orientation>
+					<texturesliderbackground colordiffuse="1AFFFFFF">bezel/white.png</texturesliderbackground>
+					<texturesliderbar colordiffuse="66FFFFFF">bezel/white.png</texturesliderbar><texturesliderbarfocus colordiffuse="FFFFFFFF">bezel/white.png</texturesliderbarfocus>
+					<onleft>5</onleft><onright>5</onright>
+				</control>
+			</control>
+		</control>
+	</controls>
+</window>

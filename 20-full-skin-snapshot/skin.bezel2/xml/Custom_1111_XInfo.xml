@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 3.5.6: in-place extended info (item 5). Modal so Back closes it (the media window would otherwise eat Back); see BezelXInfo. -->
+<window type="dialog" id="1111">
+	<defaultcontrol always="true">6701</defaultcontrol>
+	<onload>Dialog.Close(1111,true)</onload>
+	<onunload>ClearProperty(bz_xinfo,home)</onunload>
+	<controls>
+		<!-- t4166: BezelXInfo retired -->
+	</controls>
+</window>

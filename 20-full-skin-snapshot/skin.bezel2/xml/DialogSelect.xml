@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">3</defaultcontrol>
+	<include condition="String.IsEmpty(Window(Home).Property(bz_artsel))">Animation_DialogPopupOpenClose</include><!-- t4098: Choose art opens flat (no back-tween bounce), matches Info -->
+	<depth>DepthOSD</depth>
+	<controls>
+		<!-- 5.0.2 Refresh-in-strip: when opened over Music info (Refresh flow) use the strip format -->
+		<!-- 5.0.2 Choose art: bz_artsel (set by bz_cmd.py chooseart) wins over Refresh / Std -->
+		<include condition="String.IsEqual(Window(Home).Property(bz_artsel),types)">BzArtTypes</include>
+		<include condition="String.IsEqual(Window(Home).Property(bz_artsel),sq)">BzArtGrid_sq</include>
+		<include condition="String.IsEqual(Window(Home).Property(bz_artsel),wide)">BzArtGrid_wide</include>
+		<include condition="String.IsEqual(Window(Home).Property(bz_artsel),tall)">BzArtGrid_tall</include>
+		<include condition="String.IsEmpty(Window(Home).Property(bz_artsel)) + Window.IsVisible(musicinformation)">BzRefreshSelect</include>
+		<include condition="String.IsEmpty(Window(Home).Property(bz_artsel)) + ![Window.IsVisible(musicinformation)]">BzStdSelect</include>
+	</controls>
+</window>

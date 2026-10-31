@@ -1,0 +1,362 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<window>
+	<defaultcontrol always="true">95</defaultcontrol>
+	<controls>
+		<control type="group"><!-- 4.7.4: SECTION PARENT GROUP — Global Dim fade under MM --><include>BezelSecDim</include>
+		<include>DefaultBackground</include>
+		<!-- BETA 2.7 item 1: BEZEL standard view: categories as 60 px rows at 120,120, the info in the colour panel -->
+		<include content="BezelPVRStage"/><!-- 5.33.13 (Rob t154, mockup 15): categories in colour strip, info labels in fanart stage -->
+		<control type="image"><left>120</left><top>120</top><width>450</width><height>900</height><texture colordiffuse="66000000">colors/white.png</texture></control>
+				<!-- 4.7.7 setsub: MM strip (same as Settings / Main menu) -->
+		<control type="group"><left>570</left><top>120</top><include>BezelSecFadeIn</include>
+			<control type="image"><left>-570</left><top>-120</top><width>1920</width><height>1080</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/mm_glow_behind.png</texture></control>
+			<control type="image"><left>-570</left><top>-120</top><width>1920</width><height>1080</height><texture colordiffuse="26FFFFFF">bezel/mm_glow_behind.png</texture></control>
+			<control type="image"><left>0</left><top>0</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture><animation effect="fade" start="100" end="10" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),1)">Conditional</animation><animation effect="fade" start="100" end="20" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),2)">Conditional</animation><animation effect="fade" start="100" end="30" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),3)">Conditional</animation><animation effect="fade" start="100" end="40" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),4)">Conditional</animation><animation effect="fade" start="100" end="50" time="0" condition="String.IsEmpty(Skin.String(bz_at_mmbar)) | String.IsEqual(Skin.String(bz_at_mmbar),5)">Conditional</animation><animation effect="fade" start="100" end="60" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),6)">Conditional</animation><animation effect="fade" start="100" end="70" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),7)">Conditional</animation><animation effect="fade" start="100" end="80" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),8)">Conditional</animation><animation effect="fade" start="100" end="90" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),9)">Conditional</animation></control>
+		</control>
+		<control type="group"><left>593</left><top>140</top><include>BezelSecFadeIn</include><control type="label"><width>350</width><height>62</height><font>bz_mm48b</font><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[130]</label></control><control type="label"><left>2</left><top>62</top><width>350</width><height>26</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><label>$INFO[System.FriendlyName]</label></control></control><!-- (title moved into strip, 5.33.13) -->
+		<control type="multiimage">
+			<depth>DepthBackground</depth>
+			<include>FullScreenDimensions</include>
+			<aspectratio>scale</aspectratio>
+			<fadetime>600</fadetime>
+			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
+			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
+			<animation effect="fade" time="400">VisibleChange</animation>
+			<imagepath background="true" colordiffuse="bg_overlay">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</imagepath>
+			<visible>false</visible>
+		</control>
+		<control type="group">
+			<left>-270</left>
+			<top>110</top>
+			<include>BezelSecFadeIn</include>
+			<control type="grouplist">
+				<left>420</left>
+				<top>30</top>
+				<height>550</height>
+				<orientation>vertical</orientation>
+				<control type="label" id="2">
+					<height>34</height>
+					<width>350</width>
+					<font>bz_mm20</font>
+				</control>
+				<control type="label" id="3">
+					<height>34</height>
+					<width>350</width>
+					<font>bz_mm20</font>
+				</control>
+				<control type="label" id="4">
+					<height>34</height>
+					<width>350</width>
+					<font>bz_mm20</font>
+				</control>
+				<control type="label" id="5">
+					<height>34</height>
+					<width>350</width>
+					<font>bz_mm20</font>
+				</control>
+				<control type="label" id="6">
+					<height>34</height>
+					<width>350</width>
+					<font>bz_mm20</font>
+				</control>
+				<control type="label" id="7">
+					<height>34</height>
+					<width>350</width>
+					<font>bz_mm20</font>
+				</control>
+				<control type="label" id="8">
+					<height>34</height>
+					<width>350</width>
+					<font>bz_mm20</font>
+				</control>
+				<control type="label" id="9">
+					<height>34</height>
+					<width>350</width>
+					<font>bz_mm20</font>
+				</control>
+				<control type="label" id="10">
+					<height>34</height>
+					<width>350</width>
+					<font>bz_mm20</font>
+				</control>
+				<control type="label" id="11">
+					<height>34</height>
+					<width>350</width>
+					<font>bz_mm20</font>
+				</control>
+				<control type="label" id="12">
+					<height>34</height>
+					<width>350</width>
+					<font>bz_mm20</font>
+				</control>
+				<control type="label" id="13">
+					<height>34</height>
+					<width>350</width>
+					<font>bz_mm20</font>
+				</control>
+			</control>
+			<control type="textbox" id="30">
+				<left>420</left>
+				<width>350</width>
+				<top>30</top>
+				<height>480</height><font>bz_mm20</font>
+				<pagecontrol>60</pagecontrol>
+				<autoscroll delay="5000" repeat="7500" time="5000">!Control.HasFocus(60)</autoscroll>
+			</control>
+			<control type="scrollbar" id="60">
+				<left>784</left>
+				<top>10</top>
+				<width>4</width>
+				<height>900</height>
+				<orientation>vertical</orientation>
+				<texturesliderbackground />
+				<animation effect="slide" end="6,0" time="300" tween="sine" easing="inout" condition="!Control.HasFocus(60)">conditional</animation>
+				<onleft>9000</onleft>
+				<onright>9000</onright>
+				<visible>Control.IsVisible(30)</visible>
+				<animation effect="fade" start="0" end="100" time="200" delay="300">Visible</animation>
+				<animation effect="fade" start="100" end="0" time="200">Hidden</animation>
+				<animation effect="fade" start="0" end="100" delay="300" time="320">WindowOpen</animation>
+				<animation effect="fade" start="100" end="0" time="150">WindowClose</animation>
+			</control>
+			<control type="image">
+				<left>380</left>
+				<top>-3</top>
+				<right>0</right>
+				<height>3</height>
+				<texture colordiffuse="00FFFFFF" border="2">dialogs/separator-grey.png</texture>
+			</control>
+			<control type="group" id="102">
+				<description>System Info page that shows a QR code linking to https://kodi.tv/donate/</description>
+				<left>420</left>
+				<width>350</width>
+				<top>30</top>
+				<height>860</height>
+				<control type="textbox">
+					<height>110</height>
+					<label>$LOCALIZE[12397]</label>
+				</control>
+				<control type="multiimage" id="103">
+					<top>110</top>
+					<height>620</height>
+					<imagepath>special://xbmc/media/qr/kodilove/</imagepath>
+					<aspectratio>keep</aspectratio>
+					<timeperimage>5000</timeperimage>
+					<fadetime>1000</fadetime>
+					<randomize>false</randomize>
+				</control>
+				<control type="label">
+					<top>748</top>
+					<align>center</align>
+					<label>$LOCALIZE[12398]</label>
+				</control>
+			</control>
+		</control>
+		<control type="group">
+			<left>0</left>
+			<top>0</top>
+			<depth>DepthContentPanel</depth>
+			<include>BezelSecFadeIn</include>
+			<control type="grouplist" id="9000">
+				<left>570</left>
+				<top>240</top>
+				<width>390</width>
+				<height>900</height><itemgap>0</itemgap>
+				<onup>9000</onup>
+				<ondown>9000</ondown>
+				<onright>60</onright>
+				<control type="button" id="95"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
+					<description>Button Summary Values</description>
+					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
+					<label>$LOCALIZE[20037]</label>
+				</control>
+				<control type="button" id="94"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
+					<description>Button Storage</description>
+					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
+					<label>$LOCALIZE[13277]</label>
+				</control>
+				<control type="button" id="96"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
+					<description>Button Network</description>
+					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
+					<label>$LOCALIZE[13279]</label>
+				</control>
+				<control type="button" id="97"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
+					<description>Button Video</description>
+					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
+					<label>$LOCALIZE[13280]</label>
+				</control>
+				<control type="button" id="98"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
+					<description>Button Hardware</description>
+					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
+					<label>$LOCALIZE[13281]</label>
+				</control>
+				<control type="button" id="99"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
+					<description>Button PVR</description>
+					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
+					<label>$LOCALIZE[19191]</label>
+				</control>
+				<control type="button" id="100"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
+					<description>Button Privacy policy</description>
+					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
+					<label>$LOCALIZE[12389]</label>
+				</control>
+				<control type="button" id="101"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
+					<description>Button "Thank you!"</description>
+					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
+					<label>$LOCALIZE[12396]</label>
+				</control>
+			</control>
+		</control>
+		<control type="group" id="104">
+			<top>640</top>
+			<left>-270</left>
+			<height>370</height>
+			<include>BezelSecFadeIn</include>
+			<control type="image">
+				<left>380</left>
+				<top>30</top>
+				<right>0</right>
+				<height>3</height>
+				<texture colordiffuse="00FFFFFF" border="2">dialogs/separator-grey.png</texture>
+			</control>
+			<control type="grouplist">
+				<left>420</left>
+				<orientation>vertical</orientation>
+				<control type="label">
+					<description>Memory Text</description>
+					<width>350</width>
+					<height>80</height>
+					<label>$LOCALIZE[31030]: $INFO[system.memory(used)] [B]/[/B] $INFO[system.memory(total)] [B]-[/B] $INFO[system.memory(used.percent)]</label>
+					<aligny>top</aligny>
+					<textoffsety>40</textoffsety>
+					<shadowcolor>black</shadowcolor>
+					<font>bz_mm20</font><scroll>true</scroll>
+				</control>
+				<control type="progress">
+					<description>Memory BAR</description>
+					<width>350</width>
+					<height>16</height>
+					<info>system.memory(used)</info>
+				</control>
+				<control type="label">
+					<description>CPU Text</description>
+					<width>350</width>
+					<height>40</height>
+					<label>$LOCALIZE[13271] $INFO[System.CPUUsage]</label>
+					<aligny>center</aligny>
+					<shadowcolor>black</shadowcolor>
+					<font>bz_mm20</font><scroll>true</scroll>
+					<visible>System.SupportsCPUUsage</visible>
+				</control>
+				<control type="progress">
+					<description>CPU BAR</description>
+					<width>350</width>
+					<height>16</height>
+					<info>System.CPUUsage</info>
+					<visible>System.SupportsCPUUsage</visible>
+				</control>
+			</control>
+			<control type="group">
+				<animation effect="slide" end="0,-55" time="0" condition="!System.SupportsCPUUsage">Conditional</animation>
+				<control type="label">
+					<top>155</top>
+					<left>420</left>
+					<width>auto</width>
+					<height>50</height>
+					<aligny>bottom</aligny>
+					<textoffsety>10</textoffsety>
+					<label>$LOCALIZE[31031]:</label>
+					<shadowcolor>black</shadowcolor>
+					<font>bz_r22</font>
+				</control>
+				<control type="grouplist">
+					<description>Kodi build version</description>
+					<itemgap>10</itemgap>
+					<top>200</top>
+					<left>420</left>
+					<width>350</width>
+					<orientation>horizontal</orientation>
+					<control type="label">
+						<description>Build label</description>
+						<width>auto</width>
+						<height>40</height>
+						<font>bz_mm17</font>
+						<label>$LOCALIZE[144]</label>
+						<shadowcolor>black</shadowcolor>
+					</control>
+					<control type="label">
+						<description>Kodi Build Version</description>
+						<width>auto</width>
+						<height>40</height>
+						<font>bz_mm17</font>
+						<label>$INFO[System.BuildVersionShort]$INFO[System.BuildVersionCode, (,)]</label>
+						<textcolor>button_focus</textcolor>
+						<shadowcolor>black</shadowcolor>
+					</control>
+				</control>
+				<control type="grouplist">
+					<description>Git version</description>
+					<itemgap>10</itemgap>
+					<top>235</top>
+					<left>420</left>
+					<width>350</width>
+					<orientation>horizontal</orientation>
+					<control type="label">
+						<description>Git label</description>
+						<width>auto</width>
+						<height>40</height>
+						<font>bz_mm17</font>
+						<label>Git:</label>
+						<shadowcolor>black</shadowcolor>
+					</control>
+					<control type="label">
+						<description>Git version</description>
+						<width>auto</width>
+						<height>40</height>
+						<font>bz_mm17</font>
+						<label>$INFO[System.BuildVersionGit]</label>
+						<textcolor>button_focus</textcolor>
+						<shadowcolor>black</shadowcolor>
+					</control>
+				</control>
+				<control type="grouplist">
+					<description>Build date</description>
+					<itemgap>10</itemgap>
+					<top>270</top>
+					<left>420</left>
+					<width>350</width>
+					<orientation>horizontal</orientation>
+					<control type="label">
+						<description>kodi Compiled Text</description>
+						<width>auto</width>
+						<height>40</height>
+						<font>bz_mm17</font>
+						<label>$LOCALIZE[174]</label>
+						<shadowcolor>black</shadowcolor>
+					</control>
+					<control type="label" id="53">
+						<description>Kodi Build Date</description>
+						<width>auto</width>
+						<height>40</height>
+						<font>bz_mm17</font>
+						<textcolor>button_focus</textcolor>
+						<shadowcolor>black</shadowcolor>
+					</control>
+				</control>
+			</control>
+		</control>
+			<!-- 2.0a3.1: BEZEL logo (sweep, tap opens the side menu) -->
+		<include content="BezelLogo"><param name="col" value="FFFFFFFF"/></include><!-- t4284 -->
+		</control><!-- 4.7.4 end SECTION PARENT GROUP -->
+		<include content="BezelLogoButton"><param name="col" value="FFFFFFFF"/></include><!-- t4284 -->
+	</controls>
+</window>

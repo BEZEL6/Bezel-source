@@ -1,0 +1,36 @@
+# t4813 Movies-only stress (shared sway freeze reversed)
+
+| step | right | left | focus | hold |
+|---|---|---|---|---|
+| 1 | 2.4 | 2.8 | MOVIES | True |
+| 2 | 2.2 | 2.7 | MOVIES | True |
+| 3 | 4.8 | 2.7 | MOVIES | True |
+| 4 | 3.0 | 2.8 | MOVIES | True |
+| 5 | 6.5 | 2.8 | MOVIES | True |
+| 6 | 3.4 | 2.8 | MOVIES | True |
+| 7 | 7.4 | 2.7 | MOVIES | True |
+| 8 | 3.5 | 2.8 | MOVIES | True |
+| 9 | 4.9 | 2.8 | MOVIES | True |
+| 10 | 2.0 | 2.8 | MOVIES | True |
+| 11 | 1.1 | 2.8 | MOVIES | True |
+
+MM nav: [('TV SHOWS', 'true', 'videodb://tvshows/titles/', 2.3), ('MOVIES', 'true', 'videodb://movies/titles/', 4.0), ('TV SHOWS', 'true', 'videodb://tvshows/titles/', 3.8), ('MOVIES', 'true', 'videodb://movies/titles/', 1.7)]
+
+- PASS: zero_BzMmdimDiffuse_installed — 0
+- PASS: addon_5.0.14 — 5.0.14
+- PASS: movies_path — videodb://movies/titles/
+- PASS: movies_has_poster — Aliens
+- PASS: movposter_hold_set_closed — https://assets.fanart.tv/fanart/aliens-54c1636dbea3e.jpg
+- PASS: mm_opened_every_step
+- PASS: hold_set_under_mm_every_step
+- FAIL: step1_darker_than_step11 — 2.4 < 1.1
+- FAIL: step11_right_poster_visible — 1.1
+- PASS: mm_churn_x10
+- PASS: mm_stays_open_movies_tv_nav — ['true', 'true', 'true', 'true']
+- FAIL: right_art_present_during_mm_nav — [2.3, 4.0, 3.8, 1.7]
+- PASS: hold_cleared_on_tv
+- PASS: movies_after_tv_mm_open — {'Container(6996).ListItem.Label': 'MOVIES', 'Window(Home).Property(bz_nav)': 'true'}
+- PASS: no_misplaced_xml
+- PASS: no_bz_flip_traceback
+
+**Totals: 13 PASS / 3 FAIL**

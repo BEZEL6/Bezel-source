@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- BEZEL 3.2.0: video OSD as a colour-block list matching the music controls. 9-row list, y336-996, 72 px rows, white pill focus, Montserrat. -->
+<window>
+	<defaultcontrol always="true">6501</defaultcontrol>
+	<depth>DepthOSD</depth>
+	<animation effect="fade" start="0" end="100" time="300" tween="sine" easing="out">WindowOpen</animation>
+	<animation effect="fade" start="100" end="0" time="300" tween="sine" easing="in">WindowClose</animation>
+	<controls>
+		<control type="button"><left>0</left><top>0</top><width>1920</width><height>1080</height><label></label><texturefocus></texturefocus><texturenofocus></texturenofocus><onclick>Dialog.Close(videoosd)</onclick></control>
+		<control type="image"><left>0</left><top>0</top><width>1920</width><height>1080</height><texture colordiffuse="66000000">bezel/white.png</texture></control>
+		<control type="image"><left>120</left><top>110</top><width>840</width><height>916</height><texture border="22" colordiffuse="$VAR[BezelBlockBF]">bezel/mm_round.png</texture></control>
+		<control type="label"><left>150</left><top>150</top><width>780</width><height>60</height><font>bz_mm48b</font><textcolor>white</textcolor><label>$VAR[BzVOSDTitle]</label></control>
+		<control type="label"><left>150</left><top>222</top><width>780</width><height>34</height><font>bz_mm22</font><textcolor>DDFFFFFF</textcolor><label>$INFO[VideoPlayer.Year]$INFO[VideoPlayer.Genre,  ·  ]</label></control>
+		<control type="progress"><left>150</left><top>298</top><width>640</width><height>4</height><info>Player.Progress</info><texturebg colordiffuse="59FFFFFF">bezel/white.png</texturebg><midtexture colordiffuse="FFFFFFFF">bezel/white.png</midtexture></control>
+		<control type="label"><left>800</left><top>284</top><width>130</width><height>30</height><align>right</align><font>bz_mm18</font><textcolor>EBFFFFFF</textcolor><label>$INFO[Player.Time]</label></control>
+		<control type="image"><left>150</left><top>336</top><width>780</width><height>1</height><texture colordiffuse="3CFFFFFF">bezel/white.png</texture></control>
+		<control type="group"><left>150</left><top>336</top>
+			<control type="group"><top>0</top>
+				<control type="image"><left>-10</left><top>5</top><width>800</width><height>62</height><texture border="20" colordiffuse="FFFFFFFF">bezel/mm_round.png</texture><visible>Control.HasFocus(6501)</visible><animation effect="fade" time="150">VisibleChange</animation></control>
+				<control type="image"><left>0</left><top>71</top><width>780</width><height>1</height><texture colordiffuse="16FFFFFF">bezel/white.png</texture><visible>!Control.HasFocus(6501)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="37000000">bezel/mm_round.png</texture><visible>!Control.HasFocus(6501)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="FF8A3E10">bezel/mm_round.png</texture><visible>Control.HasFocus(6501)</visible></control>
+				<control type="image"><left>22</left><top>22</top><width>28</width><height>28</height><texture>bezel/np_pause.png</texture></control>
+				<control type="button" id="6501"><left>0</left><top>0</top><width>780</width><height>72</height><label>$VAR[BzOSDPlayLbl]</label><label2></label2>
+					<font>bz_mm28</font><textoffsetx>78</textoffsetx><aligny>center</aligny><textcolor>F0FFFFFF</textcolor><focusedcolor>FF23160E</focusedcolor><shadowcolor>66000000</shadowcolor>
+					<texturefocus></texturefocus><texturenofocus></texturenofocus><onclick>PlayerControl(Play)</onclick>
+					<onup>6509</onup><ondown>6502</ondown><onleft>Dialog.Close(videoosd)</onleft><onright>noop</onright></control>
+			</control>
+			<control type="group"><top>72</top>
+				<control type="image"><left>-10</left><top>5</top><width>800</width><height>62</height><texture border="20" colordiffuse="FFFFFFFF">bezel/mm_round.png</texture><visible>Control.HasFocus(6502)</visible><animation effect="fade" time="150">VisibleChange</animation></control>
+				<control type="image"><left>0</left><top>71</top><width>780</width><height>1</height><texture colordiffuse="16FFFFFF">bezel/white.png</texture><visible>!Control.HasFocus(6502)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="37000000">bezel/mm_round.png</texture><visible>!Control.HasFocus(6502)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="FF8A3E10">bezel/mm_round.png</texture><visible>Control.HasFocus(6502)</visible></control>
+				<control type="image"><left>22</left><top>22</top><width>28</width><height>28</height><texture>bezel/np_rew.png</texture></control>
+				<control type="button" id="6502"><left>0</left><top>0</top><width>780</width><height>72</height><label>Rewind</label><label2></label2>
+					<font>bz_mm28</font><textoffsetx>78</textoffsetx><aligny>center</aligny><textcolor>F0FFFFFF</textcolor><focusedcolor>FF23160E</focusedcolor><shadowcolor>66000000</shadowcolor>
+					<texturefocus></texturefocus><texturenofocus></texturenofocus><onclick>PlayerControl(Rewind)</onclick>
+					<onup>6501</onup><ondown>6503</ondown><onleft>Dialog.Close(videoosd)</onleft><onright>noop</onright></control>
+			</control>
+			<control type="group"><top>144</top>
+				<control type="image"><left>-10</left><top>5</top><width>800</width><height>62</height><texture border="20" colordiffuse="FFFFFFFF">bezel/mm_round.png</texture><visible>Control.HasFocus(6503)</visible><animation effect="fade" time="150">VisibleChange</animation></control>
+				<control type="image"><left>0</left><top>71</top><width>780</width><height>1</height><texture colordiffuse="16FFFFFF">bezel/white.png</texture><visible>!Control.HasFocus(6503)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="37000000">bezel/mm_round.png</texture><visible>!Control.HasFocus(6503)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="FF8A3E10">bezel/mm_round.png</texture><visible>Control.HasFocus(6503)</visible></control>
+				<control type="image"><left>22</left><top>22</top><width>28</width><height>28</height><texture>bezel/np_ff.png</texture></control>
+				<control type="button" id="6503"><left>0</left><top>0</top><width>780</width><height>72</height><label>Fast forward</label><label2></label2>
+					<font>bz_mm28</font><textoffsetx>78</textoffsetx><aligny>center</aligny><textcolor>F0FFFFFF</textcolor><focusedcolor>FF23160E</focusedcolor><shadowcolor>66000000</shadowcolor>
+					<texturefocus></texturefocus><texturenofocus></texturenofocus><onclick>PlayerControl(Forward)</onclick>
+					<onup>6502</onup><ondown>6504</ondown><onleft>Dialog.Close(videoosd)</onleft><onright>noop</onright></control>
+			</control>
+			<control type="group"><top>216</top>
+				<control type="image"><left>-10</left><top>5</top><width>800</width><height>62</height><texture border="20" colordiffuse="FFFFFFFF">bezel/mm_round.png</texture><visible>Control.HasFocus(6504)</visible><animation effect="fade" time="150">VisibleChange</animation></control>
+				<control type="image"><left>0</left><top>71</top><width>780</width><height>1</height><texture colordiffuse="16FFFFFF">bezel/white.png</texture><visible>!Control.HasFocus(6504)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="37000000">bezel/mm_round.png</texture><visible>!Control.HasFocus(6504)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="FF8A3E10">bezel/mm_round.png</texture><visible>Control.HasFocus(6504)</visible></control>
+				<control type="image"><left>22</left><top>22</top><width>28</width><height>28</height><texture>bezel/np_stop.png</texture></control>
+				<control type="button" id="6504"><left>0</left><top>0</top><width>780</width><height>72</height><label>Stop</label><label2></label2>
+					<font>bz_mm28</font><textoffsetx>78</textoffsetx><aligny>center</aligny><textcolor>F0FFFFFF</textcolor><focusedcolor>FF23160E</focusedcolor><shadowcolor>66000000</shadowcolor>
+					<texturefocus></texturefocus><texturenofocus></texturenofocus><onclick>PlayerControl(Stop)</onclick>
+					<onup>6503</onup><ondown>6505</ondown><onleft>Dialog.Close(videoosd)</onleft><onright>noop</onright></control>
+			</control>
+			<control type="group"><top>288</top>
+				<control type="image"><left>-10</left><top>5</top><width>800</width><height>62</height><texture border="20" colordiffuse="FFFFFFFF">bezel/mm_round.png</texture><visible>Control.HasFocus(6505)</visible><animation effect="fade" time="150">VisibleChange</animation></control>
+				<control type="image"><left>0</left><top>71</top><width>780</width><height>1</height><texture colordiffuse="16FFFFFF">bezel/white.png</texture><visible>!Control.HasFocus(6505)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="37000000">bezel/mm_round.png</texture><visible>!Control.HasFocus(6505)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="FF8A3E10">bezel/mm_round.png</texture><visible>Control.HasFocus(6505)</visible></control>
+				<control type="image"><left>22</left><top>22</top><width>28</width><height>28</height><texture>bezel/np_lyrics.png</texture></control>
+				<control type="button" id="6505"><left>0</left><top>0</top><width>780</width><height>72</height><label>Subtitles</label><label2>$INFO[VideoPlayer.SubtitlesLanguage]</label2>
+					<font>bz_mm28</font><textoffsetx>78</textoffsetx><aligny>center</aligny><textcolor>F0FFFFFF</textcolor><focusedcolor>FF23160E</focusedcolor><shadowcolor>66000000</shadowcolor>
+					<texturefocus></texturefocus><texturenofocus></texturenofocus><onclick>ActivateWindow(osdsubtitlesettings)</onclick>
+					<onup>6504</onup><ondown>6506</ondown><onleft>Dialog.Close(videoosd)</onleft><onright>noop</onright></control>
+			</control>
+			<control type="group"><top>360</top>
+				<control type="image"><left>-10</left><top>5</top><width>800</width><height>62</height><texture border="20" colordiffuse="FFFFFFFF">bezel/mm_round.png</texture><visible>Control.HasFocus(6506)</visible><animation effect="fade" time="150">VisibleChange</animation></control>
+				<control type="image"><left>0</left><top>71</top><width>780</width><height>1</height><texture colordiffuse="16FFFFFF">bezel/white.png</texture><visible>!Control.HasFocus(6506)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="37000000">bezel/mm_round.png</texture><visible>!Control.HasFocus(6506)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="FF8A3E10">bezel/mm_round.png</texture><visible>Control.HasFocus(6506)</visible></control>
+				<control type="image"><left>22</left><top>22</top><width>28</width><height>28</height><texture>bezel/np_volume.png</texture></control>
+				<control type="button" id="6506"><left>0</left><top>0</top><width>780</width><height>72</height><label>Audio</label><label2>$INFO[VideoPlayer.AudioLanguage]</label2>
+					<font>bz_mm28</font><textoffsetx>78</textoffsetx><aligny>center</aligny><textcolor>F0FFFFFF</textcolor><focusedcolor>FF23160E</focusedcolor><shadowcolor>66000000</shadowcolor>
+					<texturefocus></texturefocus><texturenofocus></texturenofocus><onclick>ActivateWindow(osdaudiosettings)</onclick>
+					<onup>6505</onup><ondown>6507</ondown><onleft>Dialog.Close(videoosd)</onleft><onright>noop</onright></control>
+			</control>
+			<control type="group"><top>432</top>
+				<control type="image"><left>-10</left><top>5</top><width>800</width><height>62</height><texture border="20" colordiffuse="FFFFFFFF">bezel/mm_round.png</texture><visible>Control.HasFocus(6507)</visible><animation effect="fade" time="150">VisibleChange</animation></control>
+				<control type="image"><left>0</left><top>71</top><width>780</width><height>1</height><texture colordiffuse="16FFFFFF">bezel/white.png</texture><visible>!Control.HasFocus(6507)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="37000000">bezel/mm_round.png</texture><visible>!Control.HasFocus(6507)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="FF8A3E10">bezel/mm_round.png</texture><visible>Control.HasFocus(6507)</visible></control>
+				<control type="image"><left>22</left><top>22</top><width>28</width><height>28</height><texture>bezel/np_fav.png</texture></control>
+				<control type="button" id="6507"><left>0</left><top>0</top><width>780</width><height>72</height><label>Bookmarks</label><label2></label2>
+					<font>bz_mm28</font><textoffsetx>78</textoffsetx><aligny>center</aligny><textcolor>F0FFFFFF</textcolor><focusedcolor>FF23160E</focusedcolor><shadowcolor>66000000</shadowcolor>
+					<texturefocus></texturefocus><texturenofocus></texturenofocus><onclick>ActivateWindow(videobookmarks)</onclick>
+					<onup>6506</onup><ondown>6508</ondown><onleft>Dialog.Close(videoosd)</onleft><onright>noop</onright></control>
+			</control>
+			<control type="group"><top>504</top>
+				<control type="image"><left>-10</left><top>5</top><width>800</width><height>62</height><texture border="20" colordiffuse="FFFFFFFF">bezel/mm_round.png</texture><visible>Control.HasFocus(6508)</visible><animation effect="fade" time="150">VisibleChange</animation></control>
+				<control type="image"><left>0</left><top>71</top><width>780</width><height>1</height><texture colordiffuse="16FFFFFF">bezel/white.png</texture><visible>!Control.HasFocus(6508)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="37000000">bezel/mm_round.png</texture><visible>!Control.HasFocus(6508)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="FF8A3E10">bezel/mm_round.png</texture><visible>Control.HasFocus(6508)</visible></control>
+				<control type="image"><left>22</left><top>22</top><width>28</width><height>28</height><texture>bezel/np_presets.png</texture></control>
+				<control type="button" id="6508"><left>0</left><top>0</top><width>780</width><height>72</height><label>Settings</label><label2></label2>
+					<font>bz_mm28</font><textoffsetx>78</textoffsetx><aligny>center</aligny><textcolor>F0FFFFFF</textcolor><focusedcolor>FF23160E</focusedcolor><shadowcolor>66000000</shadowcolor>
+					<texturefocus></texturefocus><texturenofocus></texturenofocus><onclick>ActivateWindow(osdvideosettings)</onclick>
+					<onup>6507</onup><ondown>6509</ondown><onleft>Dialog.Close(videoosd)</onleft><onright>noop</onright></control>
+			</control>
+			<control type="group"><top>576</top>
+				<control type="image"><left>-10</left><top>5</top><width>800</width><height>62</height><texture border="20" colordiffuse="FFFFFFFF">bezel/mm_round.png</texture><visible>Control.HasFocus(6509)</visible><animation effect="fade" time="150">VisibleChange</animation></control>
+				<control type="image"><left>0</left><top>71</top><width>780</width><height>1</height><texture colordiffuse="16FFFFFF">bezel/white.png</texture><visible>!Control.HasFocus(6509)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="37000000">bezel/mm_round.png</texture><visible>!Control.HasFocus(6509)</visible></control>
+				<control type="image"><left>16</left><top>16</top><width>40</width><height>40</height><texture border="10" colordiffuse="FF8A3E10">bezel/mm_round.png</texture><visible>Control.HasFocus(6509)</visible></control>
+				<control type="image"><left>22</left><top>22</top><width>28</width><height>28</height><texture>bezel/np_info.png</texture></control>
+				<control type="button" id="6509"><left>0</left><top>0</top><width>780</width><height>72</height><label>Info</label><label2></label2>
+					<font>bz_mm28</font><textoffsetx>78</textoffsetx><aligny>center</aligny><textcolor>F0FFFFFF</textcolor><focusedcolor>FF23160E</focusedcolor><shadowcolor>66000000</shadowcolor>
+					<texturefocus></texturefocus><texturenofocus></texturenofocus><onclick>Action(Info)</onclick>
+					<onup>6508</onup><ondown>6501</ondown><onleft>Dialog.Close(videoosd)</onleft><onright>noop</onright></control>
+			</control>
+		</control>
+	</controls>
+</window>
