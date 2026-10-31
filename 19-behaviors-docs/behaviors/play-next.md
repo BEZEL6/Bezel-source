@@ -24,7 +24,7 @@
 onunload: clears `bz_pnfoc`/`bz_pnsel` and refocuses the album rail for `bz_at_fsslide` (6368 / 6378 / 6398 / 6383).
 
 ## Fanart FS Play Next sides
-In visualisation, `bz_pnoff=1` = sides off. 6409 clears it (sides on), 6410 → `bz_npmode=upnext`, and side tiles 6407/6408 play offset ∓1.
+In visualisation, `bz_pnoff=1` = sides off. Double-Select on 6390 clears it (sides on / album viz). 6409 right hit is bounce-only (does not clear `bz_pnoff`). 6410 → `bz_npmode=upnext`. Side tiles 6407/6408 play offset ∓1.
 
 ## Sides fade-in (WindowOpen)
 Shared `BezelFSPlayNext` params `sdelay` / `sfade`: **3 s delay, 2 s fade** on both Dialogue FS (1120, explicit) and FS album viz / Play Next sides (MusicVisualisation, include defaults). Centre album + NP appear immediately; prev/next side albums fade in after the delay.

@@ -6,7 +6,7 @@
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<onload condition="!ListItem.Property(addon.isinstalled) + Window.IsActive(addonbrowser)">SetFocus(6)</onload>
 	<controls>
-		<control type="image"><left>-60</left><top>-60</top><width>630</width><height>1200</height><texture colordiffuse="FF000000">bezel/white.png</texture></control>
+		<!-- 5.33.205: left-half black mask over fanart DISABLED (was -60,-60 630x1200 FF000000) --><control type="image"><visible>false</visible><left>-60</left><top>-60</top><width>630</width><height>1200</height><texture colordiffuse="FF000000">bezel/white.png</texture></control>
 		<include>BezelLogo</include>
 		<include content="BzCIStage"><param name="fan" value="$VAR[BzAddonInfoFan]"/></include>
 		<control type="grouplist"><left>150</left><top>150</top><width>400</width><height>320</height><itemgap>6</itemgap><usecontrolheight>true</usecontrolheight><control type="textbox"><width>400</width><height>auto</height><font>bz_b46</font><textcolor>white</textcolor><shadowcolor>CC000000</shadowcolor><label>$INFO[ListItem.Label]</label></control></control>

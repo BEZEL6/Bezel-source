@@ -1,10 +1,12 @@
 # Options + Info
 
 **Object:** `DialogVideoInfo.xml` / `DialogMusicInfo.xml` · grouplist `9000`, cast list `50`; `Custom_1111_XInfo.xml` (1111 — closes itself on load; legacy)  
-**Last updated:** 2026-10-31 · 5.33.194  
-**Status:** draft — verified against live 5.33.194 tree (not Rob-approved, not re-smoked)
+**Last updated:** 2026-10-31 · 5.33.205 (left-half black mask off)  
+**Status:** draft — live tree; left fanart mask disabled
 
 ## What it does
+**Left fanart:** The old left-half solid black (`-60,-60` `630×1200` `FF000000` `bezel/white.png`) in `DialogVideoInfo` / `DialogMusicInfo` / `DialogAddonInfo` is **disabled** (`visible=false`, 5.33.205). Left fanart stage shows through while Options+Info is open.
+
 BEZEL Options+Info replaces both Info and the context menu for Movies/TV/Music/Pictures. It opens with Info, Menu/C, or double-tap Select (bz_dtap). Three pages are switched by Window property `bz_ci_more`:
 - **Main (empty):** Video → Play 8 · Play next 9081 · Queue 9082 · Browse seasons 9085 · Trailer 11 · Browse set 443 · More options 9089. Music → Play 8 · Play next 9081 · Queue 9082 · Favourite 9095 · Browse 9083/9084 · More options 9089.
 - **More (`1`):** Choose art 7710 · Refresh 6 · Set rating 7 · Director 13 / watched 9095 / Add to favourites 9097 / Remove from library 9098 (video) · Other 12 (music) · Section options 9980 (music) · ‹ Back 9096.

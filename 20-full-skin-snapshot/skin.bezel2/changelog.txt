@@ -1,3 +1,9 @@
+5.33.205
+- Fanart FS 6409: single click play/pause, double click album viz (ClearProperty bz_pnoff)
+- Fanart FS Right (visualisation keymap): PlayerControl(Next) only — no 6390 focus land
+- Options/Info left-half black mask disabled (DialogVideoInfo/MusicInfo/AddonInfo visible=false)
+- Album cast strip-edge drift: BzCastTex_a outside flip/sway rotatey tree
+
 5.33.204
 - Warm: Music↔Movies/TV album+poster true-fade (not Movies↔TV)
 - Startup/first-visit list randomizer (Container(60) row); art-cache shuffle kept

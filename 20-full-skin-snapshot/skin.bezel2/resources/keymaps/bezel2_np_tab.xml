@@ -144,13 +144,14 @@
 	     on fan art pill 6391: Select/L/R cycle; Down→1115 only in Controls; M/RED→1115; Play Next: Select pause, L/R prev/next.
 	     Route pad/Select to plain nav so 6390 owns them (Kodi default viz map steals Select→OSD / d-pad StepBack). -->
 	<visualisation>
-		<remote><left>Left</left><right>Right</right><up>Up</up><down>Down</down><back>SetFocus(6297)</back><red>ActivateWindow(1115)</red></remote>
-		<keyboard><left>Left</left><right>Right</right><up>Up</up><down>Down</down><backspace>SetFocus(6297)</backspace><browser_back>SetFocus(6297)</browser_back><escape>Back</escape><m>ActivateWindow(1115)</m><red>ActivateWindow(1115)</red></keyboard><!-- 5.33.108 Back; Fanart FS (fan art pill 6391): M/RED → Music controls 1115 -->
+	<!-- 5.33.205: Fanart FS Right = PlayerControl(Next) only (no plain Right / no focus land on 6390) -->
+			<remote><left>Left</left><right>PlayerControl(Next)</right><up>Up</up><down>Down</down><back>SetFocus(6297)</back><red>ActivateWindow(1115)</red></remote>
+		<keyboard><left>Left</left><right>PlayerControl(Next)</right><up>Up</up><down>Down</down><backspace>SetFocus(6297)</backspace><browser_back>SetFocus(6297)</browser_back><escape>Back</escape><m>ActivateWindow(1115)</m><red>ActivateWindow(1115)</red></keyboard><!-- 5.33.108 Back; Fanart FS (fan art pill 6391): M/RED → Music controls 1115 -->
 		<!-- 5.33.137 t976: override default viz Select/pad → plain nav so 6390 owns L/R/Select (fan art pill cycle or Play Next per Includes_Bezel). -->
-		<remote><select>Select</select><enter>Select</enter><menu>Select</menu><contentsmenu>noop</contentsmenu><rootmenu>noop</rootmenu><start>noop</start><left mod="longpress">Left</left><right mod="longpress">Right</right></remote>
-		<keyboard><return>Select</return><enter>Select</enter><return mod="longpress">PlayPause</return><enter mod="longpress">PlayPause</enter><menu>noop</menu><p>noop</p><left mod="longpress">Left</left><right mod="longpress">Right</right></keyboard>
-		<gamepad><A>Select</A><dpadleft>Left</dpadleft><dpadright>Right</dpadright><dpadup>Up</dpadup><dpaddown>Down</dpaddown><Y>noop</Y><start>noop</start><back>noop</back></gamepad>
-		<joystick profile="game.controller.default"><a>Select</a><b>SetFocus(6297)</b><left>Left</left><right>Right</right><up>Up</up><down>Down</down><y>noop</y><x>noop</x><rightthumb>noop</rightthumb><leftstick direction="left">Left</leftstick><leftstick direction="right">Right</leftstick><leftstick direction="up">Up</leftstick><leftstick direction="down">Down</leftstick></joystick>
-		<joystick profile="game.controller.shield"><a>Select</a><b>SetFocus(6297)</b><left>Left</left><right>Right</right><up>Up</up><down>Down</down><y>noop</y><x>noop</x><leftstick direction="left">Left</leftstick><leftstick direction="right">Right</leftstick></joystick>
+		<remote><select>Select</select><enter>Select</enter><menu>Select</menu><contentsmenu>noop</contentsmenu><rootmenu>noop</rootmenu><start>noop</start><left mod="longpress">Left</left><right mod="longpress">PlayerControl(Next)</right></remote>
+		<keyboard><return>Select</return><enter>Select</enter><return mod="longpress">PlayPause</return><enter mod="longpress">PlayPause</enter><menu>noop</menu><p>noop</p><left mod="longpress">Left</left><right mod="longpress">PlayerControl(Next)</right></keyboard>
+		<gamepad><A>Select</A><dpadleft>Left</dpadleft><dpadright>PlayerControl(Next)</dpadright><dpadup>Up</dpadup><dpaddown>Down</dpaddown><Y>noop</Y><start>noop</start><back>noop</back></gamepad>
+		<joystick profile="game.controller.default"><a>Select</a><b>SetFocus(6297)</b><left>Left</left><right>PlayerControl(Next)</right><up>Up</up><down>Down</down><y>noop</y><x>noop</x><rightthumb>noop</rightthumb><leftstick direction="left">Left</leftstick><leftstick direction="right">PlayerControl(Next)</leftstick><leftstick direction="up">Up</leftstick><leftstick direction="down">Down</leftstick></joystick>
+		<joystick profile="game.controller.shield"><a>Select</a><b>SetFocus(6297)</b><left>Left</left><right>PlayerControl(Next)</right><up>Up</up><down>Down</down><y>noop</y><x>noop</x><leftstick direction="left">Left</leftstick><leftstick direction="right">PlayerControl(Next)</leftstick></joystick>
 	</visualisation>
 </keymap>

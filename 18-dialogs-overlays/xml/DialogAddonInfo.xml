@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 5.33.28 Rob t243/t244: DialogAddonInfo on Movies/TV/Music Options+Info shell (DialogVideoInfo). List in colour strip (BzCIStripBG = section BezelColourBlock), shared fanart stage; Left/Right/Back close -> section list. Native control ids kept. -->
+<window>
+	<!-- 5.33.29 t257: pop-in anim removed, strip stays put -->
+	<depth>DepthDialog+</depth>
+	<defaultcontrol always="true">9000</defaultcontrol>
+	<onload condition="!ListItem.Property(addon.isinstalled) + Window.IsActive(addonbrowser)">SetFocus(6)</onload>
+	<controls>
+		<!-- 5.33.205: left-half black mask over fanart DISABLED (was -60,-60 630x1200 FF000000) --><control type="image"><visible>false</visible><left>-60</left><top>-60</top><width>630</width><height>1200</height><texture colordiffuse="FF000000">bezel/white.png</texture></control>
+		<include>BezelLogo</include>
+		<include content="BzCIStage"><param name="fan" value="$VAR[BzAddonInfoFan]"/></include>
+		<control type="grouplist"><left>150</left><top>150</top><width>400</width><height>320</height><itemgap>6</itemgap><usecontrolheight>true</usecontrolheight><control type="textbox"><width>400</width><height>auto</height><font>bz_b46</font><textcolor>white</textcolor><shadowcolor>CC000000</shadowcolor><label>$INFO[ListItem.Label]</label></control></control>
+		
+		<control type="group"><include>BzCIStripBG</include>
+		<control type="grouplist" id="9000"><left>582</left><top>166</top><width>360</width><height>430</height><itemgap>2</itemgap><orientation>vertical</orientation><onleft>Close</onleft><onright>Close</onright><onup>noop</onup><ondown>noop</ondown><onback>Close</onback>
+<control type="button" id="12"><label>$LOCALIZE[518]</label><include>BzCIBtn</include></control>
+<control type="button" id="9"><label>$LOCALIZE[24020]</label><include>BzCIBtn</include></control>
+<control type="radiobutton" id="13"><radioposx>286</radioposx><radiowidth>56</radiowidth><radioheight>26</radioheight><visible>Control.IsEnabled(13)</visible><include>BzCIBtn</include></control>
+<control type="button" id="10"><label>$LOCALIZE[39024]</label><include>BzCIBtn</include></control>
+<control type="button" id="7"><include>BzCIBtn</include></control>
+<control type="button" id="8"><label>$LOCALIZE[24138]</label><include>BzCIBtn</include></control>
+<control type="button" id="14"><label>$LOCALIZE[24069]</label><include>BzCIBtn</include></control>
+<control type="button" id="6"><include>BzCIBtn</include></control>
+		</control>
+		<control type="image"><left>595</left><top>600</top><width>345</width><height>1</height><texture colordiffuse="60FFFFFF">bezel/white.png</texture></control>
+<control type="grouplist"><left>595</left><top>606</top><width>345</width><height>408</height><itemgap>2</itemgap><usecontrolheight>true</usecontrolheight><include content="BzCIMeta"><param name="cap" value="VERSION"/><param name="val" value="$INFO[ListItem.AddonVersion]"/><param name="vis" value="!String.IsEmpty(ListItem.AddonVersion)"/></include><include content="BzCIMeta"><param name="cap" value="AUTHOR"/><param name="val" value="$INFO[ListItem.AddonCreator]"/><param name="vis" value="!String.IsEmpty(ListItem.AddonCreator)"/></include><include content="BzCIMeta"><param name="cap" value="STATUS"/><param name="val" value="$INFO[ListItem.Property(Addon.Status)]"/><param name="vis" value="!String.IsEmpty(ListItem.Property(Addon.Status))"/></include><control type="image"><width>345</width><height>8</height><texture>-</texture></control><control type="textbox"><width>345</width><height>220</height><font>bz_r18</font><textcolor>white</textcolor><autoscroll delay="8000" time="3000" repeat="8000">true</autoscroll><label>$INFO[ListItem.AddonDescription]</label></control></control>
+		</control>
+		<control type="group"><!-- 5.33.45: thin 3px Outline bar (FileBrowser pattern) -->
+			<control type="image"><left>117</left><top>117</top><width>846</width><height>3</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+			<control type="image"><left>117</left><top>1020</top><width>846</width><height>3</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+			<control type="image"><left>117</left><top>117</top><width>3</width><height>906</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+			<control type="image"><left>960</left><top>117</top><width>3</width><height>906</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+		</control>
+		<control type="button" id="5000"><left>-2000</left><width>10</width><height>10</height><visible>false</visible></control><control type="panel" id="50"><left>-2000</left><width>10</width><height>10</height><visible>false</visible><itemlayout height="10" width="10"/><focusedlayout height="10" width="10"/></control>
+	</controls>
+</window>

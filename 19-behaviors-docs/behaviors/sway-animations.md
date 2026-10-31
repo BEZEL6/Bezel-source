@@ -2,7 +2,7 @@
 
 **Object:** Shared sway clock + album / poster rotatey + stub cast opacity  
 **Where:** Music big album (Dialogue FS / Play Next / viz) · Movies/TV poster (`BezelVPLPoster`) · stub side casts (`pn_cast.png`)  
-**Last updated:** 2026-10-31 · 5.33.194 (re-verified vs live .194)  
+**Last updated:** 2026-10-31 · 5.33.205 (album cast outside sway — edge-drift fix)  
 **Status:** draft — matches live 5.33.194 (IDs/files re-verified Oct 31); not Rob-approved, not re-smoked  
 **Skin:** skin.bezel2 (Estuary fork)
 
@@ -169,6 +169,10 @@ Period comment in XML: **20 s** class (−13…+13); live pulse math matches alb
 
 ---
 
+## Album colour-strip cast (sway_shadow / BzCastTex_a)
+
+**Geometry (current):** image `left=480`, `top=230`, `width=480`, `height=580` → **right edge x=960** = BezelColourBlock right edge (570+390). Grow/shrink Conditional zooms use **center="960,520"** so fade-in/out stay pinned to the strip edge (no drag toward the album). Was left=485 / center 965 (5px overhang).
+
 ## Stub album cast opacity (`_bz_cast`) — 5.33.170 / .171
 
 **Texture:** `bezel/pn_cast.png`, **270×540**  
@@ -281,3 +285,15 @@ Casts **do not** own Conditional timers. Mid-cycle stub / viz / Play Next load j
 
 ## Related
 `play-next.md` · `dialogue-fs.md` · `fanart-fs.md` · `now-playing.md` · `music-viz-settings.md` · `skin-settings-tuner.md` · `mm-list.md` · `bugs.md` (BUG-009 / 014 / 019 / 021)
+
+---
+
+## Album cast strip-edge pin (5.33.205)
+
+**Bug:** Album cast soft shadow on the colour strip showed a couple of pixels of edge drift at the strip’s right edge (x 960) while sway ran.
+
+**Cause:** Cast lived *inside* the 3D sway `rotatey` group with a child counter-`rotatey`. Nested perspective does not cancel perfectly, so the cast’s right edge wobbles in screen space against the flat strip.
+
+**Fix (code only):** Move album cast (`BzCastTex_a`, left 480 × width 480 → right edge 960) **outside** the flip/sway rotate tree in `BezelMusicPlayingArt`. Keep zoom+fade grow about `960,520`. Remove all cast `rotatey` / counter-`rotatey`. Vis still gated on `Player.HasAudio`, sway mode, and `bz_back`. Poster cast unchanged.
+
+**Smoke:** ReloadSkin (or FULL restart if props sticky). Music playing, watch strip right edge through short and long sway peak — cast edge should stay flush, no crawl.
