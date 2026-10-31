@@ -17,6 +17,7 @@
 	<onload>SetProperty(bz_pnoff,1,home)</onload><onload condition="String.IsEmpty(Skin.String(bz_dfs_mode))">Skin.SetString(bz_dfs_mode,album)</onload><!-- 5.33.109: land in fanart FS; Play Next by double-tap; pill default album -->
 	<onload condition="!Window.Previous(music) + !Window.Previous(musicplaylist) + !Window.Previous(1112)">SetProperty(bz_fsnp,true,home)</onload>
 	<onload condition="!Window.Previous(music) + !Window.Previous(musicplaylist) + !Window.Previous(1112)">SetProperty(bz_np,true,home)</onload>
+	<onload condition="!Window.Previous(music) + !Window.Previous(musicplaylist) + !Window.Previous(1112)">AlarmClock(bz_fsfoc,SetFocus(6390),00:00,silent)</onload><!-- Fanart FS: re-focus 6390 after bz_np visible (defaultcontrol can miss hidden 6390 at init) -->
 	<onload condition="!Window.Previous(music) + !Window.Previous(musicplaylist) + !Window.Previous(1112) + !String.IsEqual(Window(Home).Property(bz_flip_running),true)">RunScript(special://skin/scripts/bz_flip.py)</onload>
 	<onload condition="!Window.Previous(music) + !Window.Previous(musicplaylist) + !Window.Previous(1112)">SetProperty(bz_sway_restart,true,home)</onload>
 	<onunload condition="String.IsEqual(Window(Home).Property(bz_fsnp),true)">ClearProperty(bz_np,home)</onunload>
