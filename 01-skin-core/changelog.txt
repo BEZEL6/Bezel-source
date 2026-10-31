@@ -1,3 +1,6 @@
+[B]5.33.197[/B]
+- Removed 64 unused images + 9 leftover theme assets (curial/flat); mockups already excluded (ReloadSkin)
+
 [B]5.33.162[/B]
 - WARM 2.0 BUG-012: MM A/B fanart+poster no black-start (outgoing held under incoming); BUG-010 kept; BUG-011 logged (ReloadSkin)
 
