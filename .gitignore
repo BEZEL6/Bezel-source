@@ -4,3 +4,7 @@ __pycache__/
 Thumbs.db
 *.zip
 _chunks/
+
+# Design mockups — never ship in Bezel package or skin zips
+mockups/
+**/mockups/
