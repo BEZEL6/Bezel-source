@@ -2549,7 +2549,11 @@
 							<left>bz_art_x</left><top>bz_top</top><width>600</width><height>bz_h</height>
 							<aspectratio>scale</aspectratio><diffuse>bezel/art_mask.png</diffuse><fadetime>300</fadetime>
 							<texture background="true">$VAR[BezelPoster60]</texture></control>
-<control type="image"><visible>$EXP[bz_navmenu] + String.IsEmpty(Window(Home).Property(bz_pos_on)) + !$EXP[bz_mmmushide]</visible><animation effect="fade" start="0" end="100" time="400" tween="sine" easing="inout" reversible="false" condition="!String.IsEmpty(Window(Home).Property(bz_mushref))">Conditional</animation><!-- 5.33.193 mushide toggle re-latch (sway untouched) -->
+<control type="image"><visible>$EXP[bz_navmenu] + Window.IsActive(videos) + !String.IsEmpty(Window(Home).Property(bz_xalb_on)) + !String.IsEmpty(Window(Home).Property(bz_xalb))</visible><animation effect="fade" start="100" end="0" time="1500" tween="sine" easing="inout">Hidden</animation><!-- 5.33.204 mvidfade: outgoing Music album fades out under incoming poster -->
+							<left>bz_art_x</left><top>bz_top</top><width>600</width><height>bz_h</height>
+							<aspectratio>scale</aspectratio><diffuse>bezel/art_mask.png</diffuse>
+							<texture background="true">$INFO[Window(Home).Property(bz_xalb)]</texture>
+						</control><control type="image"><visible>$EXP[bz_navmenu] + String.IsEmpty(Window(Home).Property(bz_pos_on)) + !$EXP[bz_mmmushide]</visible><animation effect="fade" start="0" end="100" time="400" tween="sine" easing="inout" reversible="false" condition="!String.IsEmpty(Window(Home).Property(bz_mushref))">Conditional</animation><!-- 5.33.193 mushide toggle re-latch (sway untouched) -->
 							<left>bz_art_x</left><top>bz_top</top><width>600</width><height>bz_h</height>
 							<aspectratio>scale</aspectratio><diffuse>bezel/art_mask.png</diffuse><fadetime>3000</fadetime><!-- BZMMXF t4277: MM-open art crossfade -->
 							<texture background="true">$VAR[BezelPoster60]</texture>

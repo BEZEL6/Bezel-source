@@ -2,7 +2,7 @@
 # Holds the cover being shown in Home properties bz_cov_a / bz_cov_b; bz_cov_side says which layer is in front.
 # On a track change the OLD cover stays up; the new cover is put on the hidden layer (and a hidden preload image)
 # and only after it has had time to load do we switch sides, which plays the skin's flip animation.
-import xbmc, xbmcgui, os
+import xbmc, xbmcgui, os, threading
 
 def _dbgmm(msg):   # fork.2: Skin.HasSetting(bz_debug_mm) -> verbose MM warm log
     import time as _tq
@@ -532,8 +532,20 @@ if home.getProperty('bz_flip_running') != 'true':
                 except ValueError: pass
                 e['path'] = xbmc.getInfoLabel('Container.FolderPath')
             if home.getProperty('bz_backdrop'): e['backdrop'] = home.getProperty('bz_backdrop')
+        def _randrow():   # 5.33.204 RANDSTART: random 0-based absolute row in list 60, skipping '..' and ALL/*All (like UADVRAND)
+            import random as _rnd
+            try: n = int(xbmc.getInfoLabel('Container(60).NumItems') or 0)
+            except ValueError: n = 0
+            if n <= 0: return None
+            lo = 1 if xbmc.getInfoLabel('Container(60).ListItemAbsolute(0).Label') == '..' else 0
+            hi = n - 1 + lo
+            if '/-1/' in xbmc.getInfoLabel('Container(60).ListItemAbsolute(%d).FolderPath' % lo): lo += 1
+            return _rnd.randint(lo, hi) if hi > lo else (lo if hi >= lo else None)
         def _restore(s2, p2, spos):   # WARM 2.0 (1): after settle -> list row, then same-frame bounce back to strip 6996
             e = SS.get(s2) or {}; r = e.get('row')
+            if r is None and not _pk() and xbmc.getInfoLabel('Container.FolderPath').rstrip('/') == p2.rstrip('/') and not xbmc.getCondVisibility('Container.IsUpdating'):
+                r = _randrow()   # 5.33.204 RANDSTART: first visit (no session row) -> random list row, not top; seeded below
+                if r is not None: e = SS.setdefault(s2, {}); e['row'] = r; e['path'] = p2; _dbgmm('warm2 randstart sec=%s row=%d' % (s2, r))
             if not r or _pk() or (e.get('path') or '').rstrip('/') != p2.rstrip('/'): return
             if xbmc.getInfoLabel('Container.FolderPath').rstrip('/') != p2.rstrip('/') or xbmc.getCondVisibility('Container.IsUpdating'): return
             xbmc.executebuiltin('SetFocus(60,%d,absolute)' % r); _bzstrip(home, home.getProperty('bz_mmlive') or spos)
@@ -600,6 +612,15 @@ if home.getProperty('bz_flip_running') != 'true':
             def _clear_poster_lane():   # BUG-010: drop poster A/B + hold so Music never paints the poster frame (and vice versa)
                 for k in ('bz_hold_poster', 'bz_pos_a', 'bz_pos_b', 'bz_pos_on', 'bz_pos_side', 'bz_pos_empty'):
                     home.clearProperty(k)
+            def _xfade_out(enter_music):   # 5.33.204 mvidfade: Music<->video true fade — drop visibility now (1500 ms Hidden fade plays), drop textures after
+                if enter_music: home.clearProperty('bz_pos_on'); home.clearProperty('bz_hold_poster')   # video poster A/B fades out over the new Music album
+                else: home.clearProperty('bz_xalb_on')   # held Music album fades out under the incoming poster A/B
+                def _late():
+                    mon.waitForAbort(1.7)
+                    if enter_music and not home.getProperty('bz_pos_on'):   # BUG-010: release poster lane once faded (skip if a video lane re-armed)
+                        for k in ('bz_pos_a', 'bz_pos_b', 'bz_pos_side', 'bz_pos_empty'): home.clearProperty(k)
+                    if not home.getProperty('bz_xalb_on'): home.clearProperty('bz_xalb')
+                threading.Thread(target=_late, daemon=True).start()
             def _ahold():   # fork.5 SPEC 9.3 + BUG-010: same-family poster hold only; never Music→poster or poster→Music
                 _gp = lambda *l: next((v for v in (xbmc.getInfoLabel(x) for x in l) if v), '')
                 home.setProperty('bz_hold_fanart', _gp('Control.GetLabel(9880)', 'Container(60).ListItem.Art(fanart)', 'Window(Home).Property(script.grab.fanart.TV.FanArt)'))
@@ -608,6 +629,11 @@ if home.getProperty('bz_flip_running') != 'true':
                 enter_music = (sec == 'music')
                 enter_video = (sec in ('movies', 'tv'))
                 cross = (leave_music and enter_video) or (leave_video and enter_music)
+                if leave_video and enter_music:   # 5.33.204 mvidfade: keep poster A/B textures + bz_pos_on so it can fade out in Music (_arel)
+                    home.clearProperty('bz_hold_poster'); home.setProperty('bz_arthold', '1'); return
+                if leave_music and enter_video:   # 5.33.204 mvidfade: hold the outgoing Music album so it fades out in Videos
+                    _alb = _gp('Container(60).ListItem.Art(thumb)', 'Container(60).ListItem.Icon')
+                    if _alb and not os.path.basename(_alb.rstrip('/')).startswith('Default'): home.setProperty('bz_xalb', _alb); home.setProperty('bz_xalb_on', '1')
                 if cross or enter_music:
                     _clear_poster_lane()   # leaving frame cleared immediately across families; no poster hold into Music
                     home.setProperty('bz_arthold', '1')   # fanart hold only
@@ -624,7 +650,7 @@ if home.getProperty('bz_flip_running') != 'true':
                     if xbmc.getInfoLabel('Container(60).ListItem.Label') and not xbmc.getCondVisibility('Container.IsUpdating') and (i >= 30 or any(xbmc.getInfoLabel(x) for x in arts)): break   # 5.33.131 / BUG-010: wait for family art
                     mon.waitForAbort(0.02)
                 home.clearProperty('bz_xfade'); home.clearProperty('bz_xfin'); home.clearProperty('bz_arthold')   # 5.33.147: fade-in only
-                if enter_music: _clear_poster_lane()   # BUG-010: never leave a video poster hold/pos for Music
+                if enter_music or home.getProperty('bz_xalb_on'): _xfade_out(enter_music)   # 5.33.204 mvidfade (BUG-010: poster lane released after the 1.5 s fade)
             _ahold()
             if xbmc.getCondVisibility('Window.IsActive(%s)' % win):   # MMWARM3 (t3420): that window is already under the menu -> no re-Activate (it closed MM ~1s later)
                 # MMWARM4 (t3425): same window, different folder -> swap the list IN PLACE (no ActivateWindow reopen, menu stays up)

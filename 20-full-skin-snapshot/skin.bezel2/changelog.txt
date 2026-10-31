@@ -1,3 +1,8 @@
+5.33.204
+- Warm: Music↔Movies/TV album+poster true-fade (not Movies↔TV)
+- Startup/first-visit list randomizer (Container(60) row); art-cache shuffle kept
+- Prior session: FS sides 3s/2s; double-Select album viz; fan art pill fanart-only; big album pill 6401 on album viz; TV Y/G under title; jump-bar; Warm 2.0 docs locked
+
 5.33.203
 - FS album viz + Dialogue FS: sides fade 3s delay / 2s fade
 - Fanart FS double-Select = album viz only (no NextPreset); fan art pill 6391 fanart-only; big album pill 6401 on album viz (match 1120)

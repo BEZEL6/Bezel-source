@@ -1,5 +1,6 @@
 # WARM GATE (5.33.202): cold-start gate of the WARM system.
 # 5.33.202: art warm GetDirectory uses random start offset (window still 400).
+# 5.33.204 RANDSTART: after LAND, focus a random row in list 60 (skip '..' / *All); strip 6996 focus bounced back.
 # Sequence (Rob): (1) splash first (2) skin windows/layouts/controls build under splash
 # (3) artwork cache (4) splash fades — no pop / no blank.
 # 5.33.199: non-modal BezelWarmGateOverlay (bz_warm_gate) on Startup + Music + Videos.
@@ -43,6 +44,22 @@ def warm(sec):
     except Exception:
         pass
     home.setProperty('bz_warm_ready_' + sec, '1')
+
+def randstart():
+    try:
+        n = int(xbmc.getInfoLabel('Container(60).NumItems') or 0)
+        if n <= 0: return
+        lo = 1 if xbmc.getInfoLabel('Container(60).ListItemAbsolute(0).Label') == '..' else 0
+        hi = n - 1 + lo
+        if '/-1/' in xbmc.getInfoLabel('Container(60).ListItemAbsolute(%d).FolderPath' % lo): lo += 1
+        if hi < lo: return
+        r = random.randint(lo, hi)
+        strip = xbmc.getCondVisibility('Control.HasFocus(6996)')
+        xbmc.executebuiltin('SetFocus(60,%d,absolute)' % r)
+        if strip and not (home.getProperty('bz_navtune') or home.getProperty('bz_navbez')):
+            xbmc.executebuiltin('SetFocus(6996)')   # MM never-break: same-frame bounce back to strip
+    except Exception:
+        pass
 
 def hold_until(t0, secs):
     while not mon.abortRequested():
@@ -110,6 +127,7 @@ def main():
             if home.getProperty('bz_splash_done') == '1':
                 break
             if xbmc.getCondVisibility(land):
+                randstart()   # 5.33.204 RANDSTART: first section opens on a random row, not top
                 break
             mon.waitForAbort(0.05)
 
