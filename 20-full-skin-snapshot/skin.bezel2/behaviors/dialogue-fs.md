@@ -1,8 +1,8 @@
 # Dialogue FS
 
-**Object:** `Custom_1120_PlayNext.xml` (album mode `bz_dfs_mode=album`) · `6400`/`6401`/`6405`/`6406`  
-**Last updated:** 2026-10-31 · 5.33.194 (catch-up sync to live tree)  
-**Status:** draft — matches live 5.33.194 (IDs/files re-verified Oct 31); not Rob-approved, not re-smoked
+**Object:** `Custom_1120_PlayNext.xml` (album mode `bz_dfs_mode=album`) · `6400` / **big album pill** `6401` / `6405`/`6406`  
+**Last updated:** 2026-10-31 · live (sides fade 3s delay / 2s fade)  
+**Status:** draft — matches live; not Rob-approved, not re-smoked
 
 ## Open / close
 Opened from big album tap (Music section) or Music controls Right. Back closes (bz_fsret).
@@ -13,17 +13,22 @@ Opened from big album tap (Music section) or Music controls Right. Back closes (
 | Select | Pause + ghost logo |
 | Left/Right | Previous / Next (unless pill focused) |
 | Up | Focus pill |
-| Select/Left/Right on pill | Cycle ALBUM ↔ PREV/NEXT |
-| Down from pill | Back to main control `6400` (live `6401` ondown=6400; **fixed 2026-10-31**, old doc said "Music controls") |
+| Select/Left/Right on big album pill | Cycle ALBUM ↔ PREV/NEXT |
+| Down from big album pill | Back to main control `6400` (big album pill `6401` ondown=6400; **fixed 2026-10-31**, old doc said "Music controls") |
 | Back | Close 1120 |
 
 ## Touch
 Bezel logo = Back. Cast gated on Cover. Pause+cast same as Play Next.
 
+## Big album pill 6401
+**Naming:** Control `6401` on Dialogue FS (1120) is the **big album pill** going forward. Modes: **ALBUM** ↔ **PREV/NEXT** (`bz_dfs_mode`; default ALBUM). Select / Left / Right toggle; Down returns to `6400`. Shared via `BezelBigAlbumPill` with FS album viz (MusicVisualisation) — **not** the fan art pill `6391`.
+
 ## Code notes
-Rob memory + live 1120
+Rob memory + live 1120. Side albums (Play Next mode of 1120): `BezelFSPlayNext` `sdelay=3000` `sfade=2000` — same as FS album viz defaults (Oct 31 2026).
+
 
 ## Related
+big-album-pill.md · 
 play-next.md · music-controls.md · fullscreen-pill.md
 
 

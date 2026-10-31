@@ -49,3 +49,7 @@ MUSIC · MOVIES · TV SHOWS · RECENTLY PLAYED · FAVOURITES · SEARCH · PICTUR
 ## Related
 - `music-list.md` (separate — Music section list/grid, MM closed)
 - `movies-list.md` · `tv-list.md`
+
+## Strip soft shadow (current)
+`BezelMMStripChrome` soft cast `bezel/mm_strip_shadow_c.png` is placed at **left=-47**, top=-36, width w2 (470). Dark contact sits on the colour-strip left edge (was left=-37, ~10px inside).
+

@@ -16,7 +16,7 @@
 | context-menu.md | Section menu 1119 (replaces Kodi context menu) |
 | dialog-busy.md | Busy spinner dialog |
 | dialog-confirm.md | Yes/No confirm dialog |
-| dialogue-fs.md | Dialogue FS (1120 album mode), album strip 6397, NP rides album, slide speed |
+| big-album-pill.md · dialogue-fs.md | Big album pill 6401 (1120 + album viz); Dialogue FS album mode; album strip 6397 |
 | dust.md | Dust 2.0 dialog 1114 + Dust3; all dust tuner rows incl. size 90/100/125% |
 | fanart-fs.md | Fanart FS / visualisation keys and touch |
 | favourites.md | Favourites under MM |

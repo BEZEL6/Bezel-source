@@ -16,7 +16,7 @@ Shown only with audio + music window + artists/albums/songs content + MM closed.
 | Select / tap | Fanart FS (visualisation) |
 | Up / Down / Left / Right / Back | Return focus to list `60` |
 
-**Fix this pass:** the old doc said "Left/Right cycle style". The live control sends every direction to 60. Style cycling is the FS pill `6391` inside Fanart FS (fanart-fs.md).
+**Fix this pass:** the old doc said "Left/Right cycle style". The live control sends every direction to 60. Style cycling is the **fan art pill** (`6391`) inside Fanart FS (fanart-fs.md).
 
 ## Related
 fanart-fs.md · music-list.md · dialogue-fs.md

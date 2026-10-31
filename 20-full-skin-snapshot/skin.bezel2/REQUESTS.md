@@ -18,7 +18,7 @@
 - BUG-023 logged (2026-10-30 Rob voice): black bar drawn during Options/context menu openings — open, log only, no fix.
 
 - 5.33.167 (2026-10-30): bake pause bars into ghost Bezel logo — new media/bezel/logo_pause.png (logo.png + centered solid pause in hollow; source glyph from approved mockups/pause-logo np_pause); both center-album pause overlays (Dialogue FS + Play Next) point at logo_pause.png; logo.png untouched for LOOK/home. ReloadSkin. Bak: bak_5.33.166_pre167_pausebake.
-- 5.33.113 (t787): Dialogue FS/Play Next cycle pill 6401 + NP bar + 1120 center controls WindowOpen fade delay 3800->800ms, time 1200->600ms.
+- 5.33.113 (t787): Dialogue FS/Play Next big album pill 6401 + NP bar + 1120 center controls WindowOpen fade delay 3800->800ms, time 1200->600ms.
 - 5.33.113 (t790): Play Next NP bar + cycle pill + center controls WindowOpen delay 800→1000 (1s).
 
 ## 5.33.115 — t801/t802 Dialogue FS Select stops music (Oct 30 2026)
@@ -114,3 +114,4 @@ Movies-only: keep `bz_movposter_hold` + new `bz_movfanart_hold` while on TV/othe
 - bz_warmgate.py: all Files.GetDirectory off main thread; ready flags always set; early dismiss for Music/Movies/TV landing list 60; 5s watchdog + Dialog.Close(1113,true).
 - Smoke: box t533f1 cold start.
 - Startup.xml: removed ActivateWindow(1113) from onload (blocked RunScript/ReplaceWindow); script opens 1113.
+- 5.33.203 (2026-10-31 Rob voice, code only not zipped): Power 1118 first-Down handoff — drop defaultcontrol always=true; onload SetFocus(7800,0,absolute). behaviors/power-menu.md updated. Bak: bak_5.33.202_pre_pwrfocus.

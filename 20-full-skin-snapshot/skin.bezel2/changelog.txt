@@ -1,3 +1,8 @@
+5.33.203
+- FS album viz + Dialogue FS: sides fade 3s delay / 2s fade
+- Fanart FS double-Select = album viz only (no NextPreset); fan art pill 6391 fanart-only; big album pill 6401 on album viz (match 1120)
+- TV Year/Genre under show title; jump-bar black bg removed; strip shadow / cast pin; viz keymap
+
 [B]5.33.202[/B]
 - WarmGate art preload: random 400-item GetDirectory window per section (Music/Movies/TV).
 - Includes prior uncommitted: GlobalBackdrop hidden while bz_warm_gate; TV clearlogo MM A/B fade.

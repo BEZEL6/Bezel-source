@@ -169,6 +169,10 @@ Period comment in XML: **20 s** class (−13…+13); live pulse math matches alb
 
 ---
 
+## Album colour-strip cast (sway_shadow / BzCastTex_a)
+
+**Geometry (current):** image `left=480`, `top=230`, `width=480`, `height=580` → **right edge x=960** = BezelColourBlock right edge (570+390). Grow/shrink Conditional zooms use **center="960,520"** so fade-in/out stay pinned to the strip edge (no drag toward the album). Was left=485 / center 965 (5px overhang).
+
 ## Stub album cast opacity (`_bz_cast`) — 5.33.170 / .171
 
 **Texture:** `bezel/pn_cast.png`, **270×540**  

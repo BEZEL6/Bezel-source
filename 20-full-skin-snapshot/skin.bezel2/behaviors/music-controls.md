@@ -5,7 +5,7 @@
 **Status:** draft — verified against live 5.33.194 tree (not Rob-approved, not re-smoked)
 
 ## What it does
-Transport and options dialog for music. Opened from the FS pill 6391 (Controls mode Select, or Down in viz / controls mode) or from Dialogue FS.
+Transport and options dialog for music. Opened from the fan art pill 6391 (Controls mode Select, or Down in viz / controls mode) or from Dialogue FS.
 
 ## Rows (Up/Down wraps 6410 ↔ 6401)
 Play/Pause 6401 · Last 6402 · Next 6403 · Rewind 6404 · FF 6405 · Stop 6406 · Shuffle 6407 (Random) · Repeat 6408 · Up next 6409 (→ musicplaylist) · Visualisation 6411 (choose viz) · Viz settings 6412 · TUNER 6413 · Close controls 6410.

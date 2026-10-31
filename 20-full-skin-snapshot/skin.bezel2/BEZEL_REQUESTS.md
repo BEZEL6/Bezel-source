@@ -24,8 +24,8 @@
 - Tuner FULLSCREEN MUSIC item label "Play Next" → "Dialogue FS"; value PLAY NEXT → DIALOGUE FS; desc updated.
 - Comments "Play Next dialog" → "Dialogue FS dialog". Internal ids kept: window 1120, Custom_1120_PlayNext.xml, bz_fs_layout=playnext, BezelFSPlayNext, bz_pndlg_*.
 
-## 5.33.70 (Rob t458–t462) — Dialogue FS cycle pill
-- Custom_1120: upper-right pill 6401 (clone of 6391: np_pill32 border16 h32 bz_b15 BzFSCTint/50/80). Label ALBUM / PREV/NEXT.
+## 5.33.70 (Rob t458–t462) — Dialogue FS big album pill
+- Custom_1120: upper-right **big album pill** 6401 (clone chrome of fan art pill 6391: np_pill32 border16 h32 bz_b15 BzFSCTint/50/80). Label ALBUM / PREV/NEXT.
 - Skin.String bz_dfs_mode: `album` = side albums fade out (800 ms); empty = PREV/NEXT (sides shown). Center album (Music window art) untouched, no anim restart.
 - 6400 Up → pill; pill Select/Left/Right cycle; Down/Up → 6400; Back closes. 6400 L/R prev/next + Back unchanged.
 - BezelFSPlayNext gained param `sides` (default true; Kodi FS unaffected).

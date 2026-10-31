@@ -3,8 +3,10 @@
      MM stays open (bz_nav kept); MM list 6996 hidden while 1118 is visible. Back/close -> focus back to 6996 (POWER row). -->
 <window type="dialog" id="1118">
 	<zorder>2</zorder><!-- 5.33.84 t534: above 1112 (zorder 1, hosts BezelNavMenu/Tuner) so Back-from-Tuner Power list draws on top -->
-	<defaultcontrol always="true">7800</defaultcontrol>
+	<!-- 5.33.203: drop always=true (BUG-002 pattern) + absolute SetFocus so first Down is not eaten by 6996→7800 handoff -->
+	<defaultcontrol>7800</defaultcontrol>
 	<onload>ClearProperty(bz_tunesrc,home)</onload><onload>SetProperty(bz_pwrswap,1,home)</onload><!-- t4943 K52: skip 6996 slides on POWER swap -->
+	<onload>SetFocus(7800,0,absolute)</onload>
 	<onunload condition="!String.IsEqual(Window(Home).Property(bz_tunesrc),pwr)">AlarmClock(bzpwrf,SetFocus(6996),00:00,silent,false)</onunload>
 	<onunload>AlarmClock(bzpwrsw,ClearProperty(bz_pwrswap,home),00:01,silent,false)</onunload>
 	<include>BezelSecFadeIn</include><!-- 5.33.177 section fade-in standard (was instant) -->

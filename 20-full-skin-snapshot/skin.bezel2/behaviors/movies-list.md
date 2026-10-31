@@ -1,7 +1,7 @@
 # Movies list
 
 **Object:** `MyVideoNav.xml` · list `60` (movies nodes)  
-**Last updated:** 2026-10-31 · 5.33.194 (catch-up sync to live tree)  
+**Last updated:** 2026-10-31 · A-Z jump bar no black bg
 **Status:** draft — matches live 5.33.194 (IDs/files re-verified Oct 31); not Rob-approved, not re-smoked
 
 ## Open / close
@@ -20,6 +20,10 @@ None specified.
 
 ## Code notes
 MyVideoNav.xml
+
+
+## A-Z jump bar
+Grouplists `6100` (Music artists/songs) and `6500` (Movies/TV) at left **78**. Letters only — **no black fade/background** behind the bar (`BezelAZFade` emptied Oct 31 2026; was `fade_top`/`fade_bottom`).
 
 ## Related
 mm-list.md · tv-list.md · video-osd.md

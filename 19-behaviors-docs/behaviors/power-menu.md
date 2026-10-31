@@ -1,11 +1,15 @@
 # Power menu
 
 **Object:** `Custom_1118_PowerMenu.xml` dialog `1118` (zorder 2) · list `7800` (SHUTDOWN / QUIT KODI / SUSPEND / SLEEP / TUNER)  
-**Last updated:** 2026-10-31 · 5.33.194  
-**Status:** draft — verified against live 5.33.194 tree (not Rob-approved, not re-smoked)
+**Last updated:** 2026-10-31 · 5.33.203 (code; not shipped)
+**Status:** draft — first-Down handoff fix in tree (not Rob-smoked, not zipped)
 
 ## Open / close
 Select POWER in MM. onload clears `bz_tunesrc` and sets `bz_pwrswap` (swap animation). onunload: unless `bz_tunesrc=pwr`, it refocuses MM strip `6996`, then clears `bz_pwrswap` after 1 s.
+
+
+## Focus (5.33.203)
+Opens over MM with 6996 hidden the same frame. `defaultcontrol` is **7800** without `always="true"`. Onload also runs `SetFocus(7800,0,absolute)` so list focus is real on SHUTDOWN before the first Down — avoids the handoff that ate the first Down (Shutdown looked focused, Quit needed a second press).
 
 ## Keys
 | Key | Behavior |
