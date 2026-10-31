@@ -79,7 +79,7 @@ Untouched: section (`!bz_navmenu`) twins, list rows/grids, in-section art.
 - Album slot uses `BzWarmMusicArt`: thumb > album.thumb > MusicPlayer.Cover > Player.Icon > DefaultAlbumCover.png.
 - Toggle Left/Right sets `bz_mushref` (AlarmClock clears after 1s); poster/album images re-latch with a 400 ms Conditional fade. Sway props untouched, so the sway keeps running.
 
-## Warm gate — cold-start splash (Rob approved Oct 31 2026; non-modal overlay 5.33.199)
+## Warm gate — cold-start splash (Rob approved Oct 31 2026; non-modal overlay 5.33.199; min 5 s display 5.33.200)
 The splash is the WARM system's cold-start gate. **5.33.199 sequence:** (1) splash draws first (2) main section windows/layouts/controls build **under** the splash (3) artwork cache loads (4) splash fades — no pop, no blank.
 
 **Objects:** `xml/Startup.xml` · include `BezelWarmGateOverlay` + `BezelWarmGate` (`Includes_Bezel.xml`) on Startup, `MyMusicNav.xml`, `MyVideoNav.xml` · `scripts/bz_warmgate.py` · `xml/Custom_1113_WarmGate.xml` (**not opened** — kept only so dialog id 1113 stays reserved)
@@ -92,8 +92,8 @@ The splash is the WARM system's cold-start gate. **5.33.199 sequence:** (1) spla
 | 2 — screen | Solid black 1920×1080, Bezel logo + `bezel/logoglow` pulse, version label, credit + flag (same `BezelWarmGate` art as before). Overlay Hidden animation = 500 ms sine fade-out. |
 | 3 — wait land | Script waits until the Startup-highlight section's list 60 has items and is not updating (Music / Movies|sets / TV), or until the 5 s hard cap. |
 | 4 — art warm | **After** land (or late in CAP): `Files.GetDirectory` for focused section first, then the other two, on a **background thread**. Ready flags flip success or fail. |
-| 5 — dismiss | Clear `bz_warm_gate` → overlay fades; set `bz_splash_done=1`. **Never** `ActivateWindow(1113)` (196/197 log: `Activate of window '10502' refused because there are active modal dialogs`). |
-| 6 — hard cap | 5.0 s watchdog + main loop force dismiss. |
+| 5 — dismiss | Clear `bz_warm_gate` → overlay fades; set `bz_splash_done=1`. **Never** `ActivateWindow(1113)`. **5.33.200:** dismiss only after **at least 5.0 s** from gate start (`MIN`), even if land + art ready earlier. |
+| 6 — hard cap | Same 5.0 s mark: watchdog force-dismiss if work incomplete (`CAP` = `MIN`). |
 
 - `bz_precache.py` stays idle while `bz_warm_gate` is set. `bz_flip.py` still treats visible 1113 as busy (harmless; 1113 is not opened).
 - Keys can reach the underlay while the overlay is up (non-modal).
