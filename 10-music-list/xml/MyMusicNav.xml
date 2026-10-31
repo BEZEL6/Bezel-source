@@ -113,5 +113,7 @@
 		<include>BezelMiniPlayer</include><!-- 3.5.3: music -> video transition band (bz_m2v) -->
 		<control type="group"><include>BezelSecDim</include><include>BezelViewPill</include></control><!-- 4.2 -->
 		<!-- 4.0.1 O36 (Rob): album tap-to-enlarge/shrink target 6188 removed -->
+		<!-- 5.33.199: warm-gate splash overlay (non-modal) — UI builds underneath -->
+		<include>BezelWarmGateOverlay</include>
 	</controls>
 </window>

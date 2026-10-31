@@ -1,3 +1,6 @@
+[B]5.33.199[/B]
+- WarmGate non-modal splash overlay: no ActivateWindow(1113); BezelWarmGateOverlay on Startup/Music/Videos so underlay builds under splash, then art warm, then fade (fixes 196/197 modal blank).
+
 [B]5.33.198[/B]
 - WarmGate modal deadlock fix: dismiss when all bz_warm_ready_* are set (no land wait); Dialog.Close(1113) then Activate StartupWindow if blocked (blank after splash on 197).
 

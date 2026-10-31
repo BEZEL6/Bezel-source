@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 1113 WARM GATE: cold-start splash (bz_warmgate.py). Dialog is modal — script must Dialog.Close after ready/CAP so StartupWindow can Activate (5.33.198). Topmost; WindowClose 500 ms sine.
+<!-- 1113 WARM GATE (legacy dialog). 5.33.199+: bz_warmgate.py does NOT ActivateWindow(1113) — type=dialog is modal and blocked Music (10502). Splash is BezelWarmGateOverlay on Startup/Music/Videos. File kept so id 1113 stays reserved. -->
 <window type="dialog" id="1113">
 	<zorder>99</zorder>
 	<defaultcontrol>-</defaultcontrol>

@@ -79,29 +79,28 @@ Untouched: section (`!bz_navmenu`) twins, list rows/grids, in-section art.
 - Album slot uses `BzWarmMusicArt`: thumb > album.thumb > MusicPlayer.Cover > Player.Icon > DefaultAlbumCover.png.
 - Toggle Left/Right sets `bz_mushref` (AlarmClock clears after 1s); poster/album images re-latch with a 400 ms Conditional fade. Sway props untouched, so the sway keeps running.
 
-## Warm gate — cold-start splash (Rob approved Oct 31 2026; hang fix 5.33.196; modal-dismiss 5.33.198)
-The splash is the WARM system's cold-start gate, not a separate system. It is the first paint while warm caches Music, Movies and TV.
+## Warm gate — cold-start splash (Rob approved Oct 31 2026; non-modal overlay 5.33.199)
+The splash is the WARM system's cold-start gate. **5.33.199 sequence:** (1) splash draws first (2) main section windows/layouts/controls build **under** the splash (3) artwork cache loads (4) splash fades — no pop, no blank.
 
-**Objects:** `xml/Startup.xml` · `xml/Custom_1113_WarmGate.xml` (dialog 1113, zorder 99) · include `BezelWarmGate` (`Includes_Bezel.xml`) · `scripts/bz_warmgate.py`
-**Properties (Home):** `bz_warm_gate` (gate up) · `bz_warm_ready_music` / `_movies` / `_tv` · `bz_warmgate_running` · `bz_splash_done` (set on dismiss, opens dust/ambient/MM-start gates)
+**Objects:** `xml/Startup.xml` · include `BezelWarmGateOverlay` + `BezelWarmGate` (`Includes_Bezel.xml`) on Startup, `MyMusicNav.xml`, `MyVideoNav.xml` · `scripts/bz_warmgate.py` · `xml/Custom_1113_WarmGate.xml` (**not opened** — kept only so dialog id 1113 stays reserved)
+**Properties (Home):** `bz_warm_gate` (overlay up) · `bz_warm_ready_music` / `_movies` / `_tv` · `bz_warmgate_running` · `bz_splash_done` (set on dismiss; releases `bz_cmd.py start`)
 
 | Step | Behavior |
 |------|----------|
-| 0 — first paint | `Startup.xml` draws `BezelWarmGate` itself, sets `bz_warm_gate=1`, clears `bz_splash_done`, starts `bz_warmgate.py`, then `ReplaceWindow(StartupWindow)`. **Do not** `ActivateWindow(1113)` from a Startup onload before RunScript/ReplaceWindow — that blocked later onloads and left the splash stuck forever (5.33.195). The script opens 1113 immediately so the splash stays after Startup is replaced. Black + logo is up before any section content, list or backdrop. |
-| 1 — screen | Solid black 1920×1080 at 100%. Bezel logo centred (`bezel/logo.png` 256 px) over the looping `bezel/logoglow` sequence (100 ms/frame) with a soft 1.4 s sine pulse (100→80→100). |
-| 2 — credit | Bottom centre (y 1030): exactly `designed by Robert Politano` + `bezel/us_flag.png`. Power-menu styling: `bz_mm17` (Montserrat Regular 17), flag 30×18, itemgap 10. Text `80FFFFFF` and flag `colordiffuse 80FFFFFF` = 50%. |
-| 3 — version | `BEZEL $INFO[System.AddonVersion(skin.bezel2)]`, `bz_mm28`, 100% white, fades in (900 ms, 700 ms delay). |
-| 4 — warm | Tuner Startup highlight (`bz_at_mmdef` 1 Music / 2 Movies / 3 TV, empty = TV) warms first, then the other two. **All three `Files.GetDirectory` calls run on a background thread** (never on the main script thread), so a hung JSON-RPC cannot block the 5 s cap. Each request is musicdb artists / movie titles / TV titles, ≤400 items, thumb+art. |
-| 5 — ready | Each section sets `bz_warm_ready_<sec>=1` after its warm attempt **whether the RPC succeeds or fails**. **5.33.198:** early dismiss when all three ready flags are set — **do not wait for landing list paint**. Window 1113 is a **modal** dialog; while it is up, `ReplaceWindow`/`ActivateWindow` to Music (or Videos) is refused, so a land condition can never become true and left a blank screen after splash on 5.33.197. After `Dialog.Close(1113)`, the script re-asserts `System.StartupWindow` if it is not already active. MM-first is unchanged: focus goes to strip 6996 and no list item is highlighted. |
-| 6 — hard cap | 5.0 s from gate start: dismiss anyway via the main wait loop **and** a watchdog thread. A background warm still running finishes quietly with no second splash; the script stays alive until CAP so those warms can complete after early dismiss. |
-| 7 — dismiss | `Dialog.Close(1113,true)` plays its WindowClose fade (500 ms sine) when possible. Then `bz_splash_done=1`, which releases `bz_cmd.py start`. Dismiss is idempotent (lock + already-done check). |
+| 0 — first paint | `Startup.xml` sets `bz_warm_gate=1`, clears `bz_splash_done`, starts `bz_warmgate.py`, then `ReplaceWindow(StartupWindow)`. Splash is `BezelWarmGateOverlay` (property-gated group), **not** modal dialog 1113. |
+| 1 — underlay | Because nothing modal is open, `ReplaceWindow` to Music/Videos **succeeds**. Music or Videos builds layouts/controls while the overlay (same black + logo) continues on that window via `BezelWarmGateOverlay` drawn last in controls. |
+| 2 — screen | Solid black 1920×1080, Bezel logo + `bezel/logoglow` pulse, version label, credit + flag (same `BezelWarmGate` art as before). Overlay Hidden animation = 500 ms sine fade-out. |
+| 3 — wait land | Script waits until the Startup-highlight section's list 60 has items and is not updating (Music / Movies|sets / TV), or until the 5 s hard cap. |
+| 4 — art warm | **After** land (or late in CAP): `Files.GetDirectory` for focused section first, then the other two, on a **background thread**. Ready flags flip success or fail. |
+| 5 — dismiss | Clear `bz_warm_gate` → overlay fades; set `bz_splash_done=1`. **Never** `ActivateWindow(1113)` (196/197 log: `Activate of window '10502' refused because there are active modal dialogs`). |
+| 6 — hard cap | 5.0 s watchdog + main loop force dismiss. |
 
-- While the gate is up (`bz_warm_gate=1`) it is re-asserted if a window switch closes 1113; **never** re-opened after dismiss clears that property (5.33.198). `bz_flip.py` warm already treats 1113 as busy. `bz_precache.py` stays idle while `bz_warm_gate` is set.
-- Keys: 1113 has no focusable controls, so keys can still reach the underlay (old open issue).
-
+- `bz_precache.py` stays idle while `bz_warm_gate` is set. `bz_flip.py` still treats visible 1113 as busy (harmless; 1113 is not opened).
+- Keys can reach the underlay while the overlay is up (non-modal).
 
 ### Tuner toggle: Startup splash (WARM 2.0)
 - Setting `Skin.String(bz_at_warmsplash)` = `On`/`Off`; **default On** (empty = On).
-- Toggle controls splash **visuals only**. Warm-cache of Music/Movies/TV (focused first, other two bg) and `bz_warm_ready_*` flags **always run**.
-- On: approved splash (1113 + BezelWarmGate in Startup, fade-out dismiss).
-- Off: Startup skips `bz_warm_gate`, `ActivateWindow(1113)` and BezelWarmGate drawing; still RunScript bz_warmgate.py silently; `bz_splash_done=1` set when all warm ready flags are set or at 5 s cap; no Dialog.Close since 1113 never opened.
+- Toggle controls splash **visuals only**. Warm-cache and ready flags **always run**.
+- On: `bz_warm_gate` + `BezelWarmGateOverlay` on Startup/Music/Videos.
+- Off: no gate property / no overlay; silent warm; `bz_splash_done=1` when ready or at CAP.
+
