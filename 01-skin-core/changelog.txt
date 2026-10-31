@@ -1,3 +1,7 @@
+[B]5.33.202[/B]
+- WarmGate art preload: random 400-item GetDirectory window per section (Music/Movies/TV).
+- Includes prior uncommitted: GlobalBackdrop hidden while bz_warm_gate; TV clearlogo MM A/B fade.
+
 [B]5.33.201[/B]
 - WarmGate splash timing (clean build): min 5 s hold, max 15 s cap, 3 s fade-out (BezelWarmGateOverlay Hidden 3000 ms). Non-modal overlay from 199 included.
 

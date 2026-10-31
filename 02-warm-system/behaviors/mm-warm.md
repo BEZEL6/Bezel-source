@@ -7,8 +7,8 @@
 
 **Object:** Main Menu warm underlay (`scripts/bz_flip.py` → `mm_warm`)  
 **Where:** Under `$EXP[bz_navmenu]`, strip `6996` focused  
-**Last updated:** 2026-10-31 · live 5.33.200 (+ uncommitted: GlobalBackdrop hide during warm gate)  
-**Status:** live 5.33.200 — WARM 2.0 through .193 mushide; A/B fixed 1500 ms (.192); warm-gate overlay 199+; GBD hidden while `bz_warm_gate`  
+**Last updated:** 2026-10-31 · live 5.33.202  
+**Status:** live 5.33.202 — random art warm window; GBD hidden while `bz_warm_gate`; TV clearlogo A/B; warm-gate overlay 199+  
 **Skin:** skin.bezel2
 
 ## Warm park (unchanged)
@@ -91,7 +91,7 @@ The splash is the WARM system's cold-start gate. **5.33.199 sequence:** (1) spla
 | 1 — underlay | Because nothing modal is open, `ReplaceWindow` to Music/Videos **succeeds**. Music or Videos builds layouts/controls while the overlay (same black + logo) continues on that window via `BezelWarmGateOverlay` drawn last in controls. |
 | 2 — screen | Solid black 1920×1080, Bezel logo + `bezel/logoglow` pulse, version label, credit + flag (same `BezelWarmGate` art as before). Overlay Hidden animation = **3000 ms** sine fade-out (5.33.201). |
 | 3 — wait land | Script waits until the Startup-highlight section's list 60 has items and is not updating (Music / Movies|sets / TV), or until the 5 s hard cap. |
-| 4 — art warm | **After** land (or late in CAP): `Files.GetDirectory` for focused section first, then the other two, on a **background thread**. Ready flags flip success or fail. |
+| 4 — art warm | **After** land (or late in CAP): `Files.GetDirectory` for focused section first, then the other two, on a **background thread**. Each section uses a **random** 400-item window (`limits.start` shuffled; size still 400). Ready flags flip success or fail. |
 | 5 — dismiss | After `MIN`, clear `bz_warm_gate` → **3.0 s** overlay fade, then `bz_splash_done=1`. **Never** `ActivateWindow(1113)`. Ready early still waits until 5 s. |
 | 6 — hard cap | **15.0 s** (`CAP`): watchdog force-dismiss if land/art still incomplete. |
 

@@ -1,6 +1,6 @@
 # Home / startup splash
 
-**Last updated:** 2026-10-31 · live 5.33.200 (+ uncommitted GBD hide during warm gate)
+**Last updated:** 2026-10-31 · live 5.33.202
 
 The startup splash is now the **warm gate** of the WARM system. Its full spec (sequence, styling, flags, 5 s cap, fade-out) is in **mm-warm.md → Warm gate**.
 
