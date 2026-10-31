@@ -1,20 +1,16 @@
-# WARM GATE (5.33.196): cold-start gate of the WARM system.
+# WARM GATE (5.33.198): cold-start gate of the WARM system.
 # Splash 1113 is first paint; warm-caches Music/Movies/TV lists (Tuner Startup highlight first, other two after),
 # sets bz_warm_ready_<sec>; last flag (or ~5 s hard cap) -> fade-out dismiss, then bz_splash_done=1.
 # 5.33.196: ALL Files.GetDirectory warms run off the main thread so the 5 s cap / Dialog.Close always run
 # even if a JSON-RPC hangs on Shield. Ready flags flip after each warm attempt (success or fail).
-# Early dismiss uses the Tuner Startup section's window/list 60 (Music / Movies / TV), not Music-only.
+# 5.33.198: do NOT wait for landing list paint to dismiss — 1113 is a modal dialog and blocks
+# ActivateWindow(StartupWindow)/Music, so the land condition could never become true (blank after splash).
+# Dismiss as soon as all ready flags are set (or at CAP). After close, re-assert StartupWindow if needed.
 # Focus/highlight is untouched (MM-first: strip 6996, no list highlight). Doc: behaviors/mm-warm.md
 import json, time, threading, xbmc, xbmcgui
 home = xbmcgui.Window(10000); mon = xbmc.Monitor()
 CAP = 5.0
 PATHS = {'music': ('musicdb://artists/', 'music'), 'movies': ('videodb://movies/titles/', 'video'), 'tv': ('videodb://tvshows/titles/', 'video')}
-# Landing underlay painted: list 60 on the Startup-highlight section (bz_at_mmdef)
-LAND = {
-    'music':  'Window.IsActive(music) + !Container(60).IsUpdating + Integer.IsGreater(Container(60).NumItems,0)',
-    'movies': 'Window.IsActive(videos) + [Container.Content(movies) | Container.Content(sets)] + !Container(60).IsUpdating + Integer.IsGreater(Container(60).NumItems,0)',
-    'tv':     'Window.IsActive(videos) + Container.Content(tvshows) + !Container(60).IsUpdating + Integer.IsGreater(Container(60).NumItems,0)',
-}
 _lock = threading.Lock()
 
 def warm(sec):
@@ -35,6 +31,10 @@ def dismiss(vis):
             xbmc.executebuiltin('Dialog.Close(1113,true)')   # force close; WindowClose fade still plays when possible
         home.setProperty('bz_splash_done', '1')
         home.clearProperty('bz_warmgate_running')
+        # 5.33.198: modal 1113 blocked ReplaceWindow(StartupWindow) — nudge it now that the dialog is closing
+        sw = xbmc.getInfoLabel('System.StartupWindow') or ''
+        if sw and not xbmc.getCondVisibility('Window.IsActive(%s)' % sw):
+            xbmc.executebuiltin('ActivateWindow(%s)' % sw)
 
 def main():
     if home.getProperty('bz_warmgate_running'):
@@ -75,13 +75,14 @@ def main():
                 dismiss(vis)
         threading.Thread(target=watchdog, daemon=True).start()
 
-        land = LAND[first]
         while time.time() - t0 < CAP and not mon.abortRequested():
             if home.getProperty('bz_splash_done') == '1':
                 break
-            if vis and not xbmc.getCondVisibility('Window.IsVisible(1113)') and home.getProperty('bz_warm_gate'):
+            # Keep splash visible only while gate property is set (cleared in dismiss — never re-open after)
+            if vis and home.getProperty('bz_warm_gate') == '1' and not xbmc.getCondVisibility('Window.IsVisible(1113)'):
                 xbmc.executebuiltin('ActivateWindow(1113)')
-            if all(home.getProperty('bz_warm_ready_' + s) for s in PATHS) and xbmc.getCondVisibility(land):
+            # 5.33.198: ready flags alone — do not wait for land (modal 1113 blocks StartupWindow)
+            if all(home.getProperty('bz_warm_ready_' + s) for s in PATHS):
                 break
             mon.waitForAbort(0.05)
     finally:

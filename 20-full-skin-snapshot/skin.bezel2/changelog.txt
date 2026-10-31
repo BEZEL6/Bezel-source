@@ -1,3 +1,6 @@
+[B]5.33.198[/B]
+- WarmGate modal deadlock fix: dismiss when all bz_warm_ready_* are set (no land wait); Dialog.Close(1113) then Activate StartupWindow if blocked (blank after splash on 197).
+
 [B]5.33.197[/B]
 - Removed 64 unused images + 9 leftover theme assets (curial/flat); mockups already excluded (ReloadSkin)
 
