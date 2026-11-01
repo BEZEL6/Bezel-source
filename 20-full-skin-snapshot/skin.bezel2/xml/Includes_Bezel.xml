@@ -1305,6 +1305,7 @@
 					<control type="button" id="6180">
 						<left>1140</left><top>220</top><width>600</width><height>600</height><label/>
 						<texturefocus/><texturenofocus/>
+						<!-- 5.33.221: touch tap big album = Dialogue FS (same as 6390 remote) --><onclick condition="$EXP[bz_pndlg_ok] + String.IsEqual(Skin.String(bz_at_fsslide),1)">SetFocus(6369)</onclick><onclick condition="$EXP[bz_pndlg_ok] + String.IsEqual(Skin.String(bz_at_fsslide),2)">SetFocus(6379)</onclick><onclick condition="$EXP[bz_pndlg_ok] + [String.IsEmpty(Skin.String(bz_at_fsslide)) | String.IsEqual(Skin.String(bz_at_fsslide),3)]">SetFocus(6399)</onclick><onclick condition="$EXP[bz_pndlg_ok] + String.IsEqual(Skin.String(bz_at_fsslide),4)">SetFocus(6384)</onclick><onclick condition="$EXP[bz_pndlg_ok]">ActivateWindow(1120)</onclick>
 						<visible>String.IsEqual(Window(Home).Property(bz_audio_latch),true) + String.IsEmpty(Window(Home).Property(bz_back)) + String.IsEmpty(Window(Home).Property(bz_flipping)) + String.IsEmpty(Window(Home).Property(bz_backanim))</visible>
 <!-- 4.0.1 O36: the Standard/Jumbo tap toggle is removed (album is always Jumbo 900 px, the previous default) -->
 					</control>

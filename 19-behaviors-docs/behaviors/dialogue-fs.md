@@ -2,7 +2,7 @@
 
 **Object:** `Custom_1120_PlayNext.xml` dialog `1120` · main `6400` (660,220, 600×600) · **big album pill** `6401` (shared `BezelBigAlbumPill`) · touch sides `6405`/`6406` · side albums `BezelFSPlayNext` · album grouplist `6397`  
 **Where:** Music section, over the left fanart stage  
-**Last updated:** 2026-10-31 · 5.33.207  
+**Last updated:** 2026-11-01 · 5.33.221
 **Status:** draft. This doc matches the live tree. Rob has not approved it and it has not been re-smoked.  
 **Skin:** skin.bezel2
 
@@ -67,3 +67,6 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ## Related
 big-album-pill.md · play-next.md · music-controls.md · fullscreen-pill.md · fanart-fs.md
+
+## Touch: big album tap (5.33.221)
+- Button `6180` (Includes_Bezel `BezelMusicPlayingArt`, left 1140 top 220, 600×600; visible while `bz_audio_latch` and no back/flip anim) now has the same Dialogue FS onclicks as remote 6390 when `$EXP[bz_pndlg_ok]`: SetFocus fsslide slot (`bz_at_fsslide` 1→6369, 2→6379, empty/3→6399, 4→6384) then `ActivateWindow(1120)`. When `bz_pndlg_ok` is false the tap does nothing.

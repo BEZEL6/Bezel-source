@@ -2,7 +2,7 @@
 
 **Object:** `AddonBrowser.xml` (Kodi `addonbrowser`), list `60`, grouplist `9000`  
 **Where:** Opened from the Main Menu row ADD-ONS (`bz_mm.py addons`)  
-**Last updated:** 2026-10-31 · 5.33.207  
+**Last updated:** 2026-11-01 · 5.33.221
 **Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
 **Skin:** skin.bezel2
 
@@ -58,3 +58,10 @@ mm-list.md · context-menu.md · keymaps.md · favourites.md
 - AddonBrowser.xml restyled as a Warm strip (title $VAR[BzAdTitle], "ADD-ONS · N ITEMS", 48px rows with »). Back at the root returns to 1131 → Back again → MM.
 - DialogAddonInfo.xml restyled as a strip: OPEN » / ENABLED pill / AUTO-UPDATE pill / CONFIGURE / UPDATE / VERSIONS / DEPENDENCIES / INSTALL-UNINSTALL.
 - Still stock: DialogAddonSettings, DialogSelect (version pick), FileBrowser (zip picker).
+
+## Focus highlight + pills (5.33.221)
+- Focused row uses the **same highlight bar as Bezel lists**: full-row image 390×48, `$VAR[BzATHiTex]` tinted `$VAR[BzATHiCol]` (follows Tuner highlight shape/opacity); focused label colour `$VAR[BzATHiText]`.
+- List rows (1131 list 9140, 1130 list 9130/9131, AddonBrowser list 60) put the bar in `focusedlayout` behind `Control.HasFocus(<list>)`.
+- Button/radiobutton rows (1117, DialogAddonInfo) use `<texturefocus/>` plus a sibling image `visible Control.HasFocus(<id>)` — a `$VAR` inside button `texturefocus` did not render in these dialogs.
+- Value pills (‹ AUTO ›, ‹ OFF ›, radios): Bezel pill `bezel/np_pill32.png` border 12 — 33FFFFFF fill for value / radio off, E6FFFFFF for radio on. Old `mm_pill_ol` outline and `ad_pill_on/off` are no longer used.
+- Zip / repository / category follow-ons (AddonBrowser strip) get the same bar. File manager stays stock.

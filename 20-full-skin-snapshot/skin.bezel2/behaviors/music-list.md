@@ -2,7 +2,7 @@
 
 **Object:** `MyMusicNav.xml` · list `60` · grouplist (Includes_Bezel ~L1492) · ALL `6097` · A–Z `6100`/`6500` · album rails `6367`/`6377`/`6397`/`6382` · NP proxy `6385`
 **Where:** Main menu MUSIC (and the music pills) → music window
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-01 · 5.33.221
 **Status:** Live in 5.33.207. Edge-to-ALL with no wrap. Left opens the MM when the A–Z bar is hidden, and Back at the armed root opens the MM (clearing NP first). The big album and compact NP share album grouplist 6397, and the speed rail follows `bz_at_fsslide`. Tap big album → Dialogue FS 1120. Draft: not Rob-approved.
 **Skin:** skin.bezel2
 
@@ -163,3 +163,6 @@ Big album tap → Dialogue FS 1120 (dialogue-fs.md).
 
 ## Related
 mm-list.md · mm-warm.md · now-playing.md · np-bar.md · dialogue-fs.md · music-controls.md · section-transitions.md
+
+## Touch: big album tap (5.33.221)
+- Button `6180` (Includes_Bezel `BezelMusicPlayingArt`, left 1140 top 220, 600×600; visible while `bz_audio_latch` and no back/flip anim) now has the same Dialogue FS onclicks as remote 6390 when `$EXP[bz_pndlg_ok]`: SetFocus fsslide slot (`bz_at_fsslide` 1→6369, 2→6379, empty/3→6399, 4→6384) then `ActivateWindow(1120)`. When `bz_pndlg_ok` is false the tap does nothing.

@@ -2,7 +2,7 @@
 
 **Object:** `Settings.xml` (Settings home, list `9000`) · `SettingsCategory.xml` sub-pages · Back in sub-lists handled by `scripts/bz_dtap.py` (`bz_setback`)
 **Where:** Opened from MM SETTINGS (`bz_mm.py GO['settings']`)
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-01 · 5.33.221
 **Status:** Live in 5.33.207. Back from Settings home reopens the MM with a 1 s re-arm. Back in a sub-list returns to its category list. Every Settings level fades in 400 ms sine. Draft: not Rob-approved.
 **Skin:** skin.bezel2
 
@@ -105,3 +105,10 @@ MM → SETTINGS now opens BEZEL's own Settings, styled as the MM strip, as a dia
 
 ### Still stock (» → ActivateWindow)
 playersettings, mediasettings, interfacesettings, servicesettings (SMB/Weather/Caching), gamesettings (no-op on builds without games), systemsettings, addonbrowser, profiles, filemanager, systeminfo, eventlog, LibreELEC. `xml/Settings.xml` is untouched and only used if the Settings window is opened directly.
+
+## Focus highlight + pills (5.33.221)
+- Focused row uses the **same highlight bar as Bezel lists**: full-row image 390×48, `$VAR[BzATHiTex]` tinted `$VAR[BzATHiCol]` (follows Tuner highlight shape/opacity); focused label colour `$VAR[BzATHiText]`.
+- List rows (1131 list 9140, 1130 list 9130/9131, AddonBrowser list 60) put the bar in `focusedlayout` behind `Control.HasFocus(<list>)`.
+- Button/radiobutton rows (1117, DialogAddonInfo) use `<texturefocus/>` plus a sibling image `visible Control.HasFocus(<id>)` — a `$VAR` inside button `texturefocus` did not render in these dialogs.
+- Value pills (‹ AUTO ›, ‹ OFF ›, radios): Bezel pill `bezel/np_pill32.png` border 12 — 33FFFFFF fill for value / radio off, E6FFFFFF for radio on. Old `mm_pill_ol` outline and `ad_pill_on/off` are no longer used.
+- Zip / repository / category follow-ons (AddonBrowser strip) get the same bar. File manager stays stock.
