@@ -2,13 +2,17 @@
 
 **Object:** `FileBrowser.xml` (Kodi `filebrowser`) · panels `450`/`451`, button grouplist `9100`, scrollbar `60` (hidden), label `412`  
 **Where:** Kodi pick-file / pick-folder dialog (Add source, Import, etc.)  
-**Last updated:** 2026-10-31 · 5.33.207  
+**Last updated:** 2026-11-01 · 5.33.223 (built, not smoked)  
 **Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
 **Skin:** skin.bezel2
 
 Each section has three layers: **Simple** (what it does and why), **How it works** (the flow end to end, with the order and the races), and **Wiring** (props, conditions, controls, scripts and timings, all read from the live tree).
 
 ---
+
+## Current layout (5.33.223 Warm strip)
+Warm strip like 1130/1131/1117: group at 570,120, full-screen 8C dim, `BezelMMStripChrome box=true`. 411 title, 412 path crumb. Panels 450/451: width 390, rows 48, `$VAR[BzATHiTex]`/`BzATHiCol`/`BzATHiText` highlight; folders show », files show size + ✓. Grouplist 9100 is now a horizontal row of np_pill32 pills (413 OK, 414 Cancel, 415/416 when enabled) at y 808. 60 hidden. Nav: 450 Left/Right/Down → 9100; 9100 Up/Down → 450. Footer hint + FileBrowserSelectLabel.
+**Classic fallback:** `xml/FileBrowser.xml.classic.bak` (classic double pane; copy over FileBrowser.xml to restore). Kept until every picker screen is designed. The tables below describe the classic nav.
 
 ## What it does
 
