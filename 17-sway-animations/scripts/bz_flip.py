@@ -1316,6 +1316,10 @@ if home.getProperty('bz_flip_running') != 'true':
             return ''
         return _il('Container(60).ListItem.Art(clearlogo)', 'Container(60).ListItem.Art(tvshow.clearlogo)',
                    'Container(60).ListItem.Art(clearart)', 'Container(60).ListItem.Art(tvshow.clearart)')
+    _WHWIN = ('Window.IsActive(favouritesbrowser) | Window.IsActive(pictures) | Window.IsActive(addonbrowser) | '
+              'Window.IsActive(settings) | Window.IsActive(1107) | Window.IsActive(1117)')
+    def _whold():   # 5.33.211 WARM HOLD kill switch (Tuner WARM 2.0 > Hold last art): Off = pre-.211 behaviour
+        return xbmc.getInfoLabel('Skin.String(bz_at_warmhold)') != 'Off'
     def ab_clock():
         lanes = ((_ABLane('fan', 0.25, 0.5), _ab_fanart), (_ABLane('pos', 0.25, 0.5, True), _ab_poster),
                  (_ABLane('clr', 0.25, 0.5, True), _ab_clear))
@@ -1325,7 +1329,9 @@ if home.getProperty('bz_flip_running') != 'true':
             if home.getProperty('bz_nav') == 'true':
                 if not armed: armed = True; open_t = time.time()
                 elif not home.getProperty('bz_ab_live') and time.time() - open_t >= 0.3: home.setProperty('bz_ab_live', '1')   # 5.33.207: side-flip fades armed only after MM is up (open = full opacity, same frame)
-                if not xbmc.getCondVisibility('Container.IsUpdating | System.HasModalDialog'):
+                if _whold() and xbmc.getCondVisibility(_WHWIN):
+                    pass   # 5.33.211 WARM HOLD: MM open over a non-M/M/TV section -> lanes keep the last WARM art (no re-target to that window's art)
+                elif not xbmc.getCondVisibility('Container.IsUpdating | System.HasModalDialog'):
                     now = time.time()
                     for ln, rf in lanes: ln.tick(rf(), now)
             else:
@@ -1335,7 +1341,7 @@ if home.getProperty('bz_flip_running') != 'true':
                 elif not xbmc.getCondVisibility('Container.IsUpdating | System.HasModalDialog') and xbmc.getCondVisibility('Window.IsActive(music) | Window.IsActive(videos)'):
                     now = time.time()   # 5.33.207 mirror-enter seed: lane front side tracks the section art while MM is closed
                     for ln, rf in lanes: ln.seed(rf(), now)
-                elif not xbmc.getCondVisibility('Container.IsUpdating') and xbmc.getCondVisibility('Window.IsActive(1107) | Window.IsActive(1117)'):
+                elif not _whold() and not xbmc.getCondVisibility('Container.IsUpdating') and xbmc.getCondVisibility('Window.IsActive(1107) | Window.IsActive(1117)'):   # 5.33.211: WARM HOLD on -> no 1107/1117 seed (keeps last WARM); Off -> old .207 seed
                     # 5.33.207 mirror-enter ALL sections: Search (1107) / Media Sources (1117) draw BezelFanartLayer too —
                     # seed the fan lane with that on-screen fanart so MM opens on it (no 3000 ms unfed fade from black). Poster/clear N/A there.
                     lanes[0][0].seed(xbmc.getInfoLabel('$VAR[BezelFanart]'), time.time())

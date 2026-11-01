@@ -9,6 +9,7 @@
 	<controls>
 		<control type="group"><!-- 4.7.4: SECTION PARENT GROUP — Global Dim fade under MM --><include>BezelSecDim</include>
 		<include>BezelBlack</include>
+		<include>BezelWarmHold</include><!-- 5.33.211 WARM HOLD -->
 		<include content="BezelLogo"><param name="col" value="FFFFFFFF"/></include><!-- t4284 -->
 		<control type="group">
 			<animation effect="fade" start="0" end="100" time="400" tween="sine" easing="out">WindowOpen</animation><!-- 5.33.177 section fade-in standard -->

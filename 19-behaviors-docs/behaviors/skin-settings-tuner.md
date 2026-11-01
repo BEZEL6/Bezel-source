@@ -110,7 +110,7 @@ All dust opacity rows step 10% → 100% in 10% increments (stored index 1–10; 
 id `fsslide`, string `bz_at_fsslide` 1–4 (empty=3). Left/Right in 6970 nav block before fsvizop. Reset with fschrome reset.
 
 ## Other live sections (5.33.194)
-- WARM 2.0 section (`warmmusicposters` On/Off → `bz_mmmushide`; `abfade` slider present but no effect since 5.33.192 — A/B fixed 1500 ms). See mm-warm.md.
+- WARM 2.0.1 section (`warmmusicposters` On/Off → `bz_mmmushide`; `abfade` slider present but no effect since 5.33.192 — A/B fixed 1500 ms). See mm-warm.md.
 - LOOK: Global dim `gdim` (values listed 90%→30%; bz_tune.json default index 7 = last entry — **unverified** vs Rob standard "default 60%"; flagged), fanart `fanop`, logo colour/opacity, colour block.
 - MENU: `mmxfade` 0–5 s crossfade (MM-open only), `mmglow`.
 - Shadows/glare: album `ac*`/`agl*`, poster `pc*`/`pgl*`.
@@ -118,6 +118,6 @@ id `fsslide`, string `bz_at_fsslide` 1–4 (empty=3). Left/Right in 6970 nav blo
 - Every row carries `property name="info"` infographic (`media/bezel/info/`).
 - Opened from Power › TUNER (`bz_tunesrc=pwr`, focus 6970). Back restores opener.
 
-- WARM 2.0 `warmsplash` (Startup splash) On/Off → `bz_at_warmsplash`, default On; visuals only, warm-cache always runs. See mm-warm.md.
+- WARM 2.0.1 `warmsplash` (Startup splash) On/Off → `bz_at_warmsplash`, default On; visuals only, warm-cache always runs. See mm-warm.md.
 
 **5.33.210:** Tuner onback `bz_tunesrc=fsctrl` → `ActivateWindow(1121)` when `$EXP[bz_m1121ok]`, else `ActivateWindow(visualisation)`. All Fanart FS / visualisation tuner rows also apply to 1121 (shared includes).

@@ -1,8 +1,10 @@
-# MM warm (WARM 2.0) — LOCKED
+# MM warm (WARM 2.0.1) — LOCKED
+
+> **Warm 2.0.1 (5.33.211):** feature version tracked like Bezel builds. 2.0.1 = Warm 2.0 locked enter/exit + hold last WARM art behind MM for other sections (Favourites/Pictures/Add-ons/Settings/Search/Media Sources). Music/Movies/TV unchanged.
 
 **Object:** Main Menu warm underlay (`scripts/bz_flip.py` → `mm_warm`, `ab_clock`, `_ABLane`) + cold-start warm gate (`scripts/bz_warmgate.py`)  
 **Where:** Under `$EXP[bz_navmenu]` (`String.IsEqual(Window(Home).Property(bz_nav),true)`, `Includes_Bezel.xml` line ~348), strip `6996` focused  
-**Last updated:** 2026-10-31 (5.33.207, full technical expand)  
+**Last updated:** 2026-10-31 (5.33.211, WARM HOLD for non-Music/Movies/TV sections)  
 **Status:** LOCKED. Live since 5.33.203 (Rob approved Oct 31 2026). **Section enter/exit (mirror-enter) locked Oct 31 2026 evening** after Rob confirmed the black flash was fixed on 5.33.207. This file describes how things work now. It is not a changelog. Any change needs Rob's approval.  
 **Skin:** skin.bezel2
 
@@ -34,7 +36,7 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 | Music playing | `$EXP[bz_mmmushide]` hides the MM poster lane and shows `$VAR[BzWarmMusicArt]`: Visible 600 / Hidden 300 / fadetime 600. Re-latch is a 400 ms Conditional on `bz_mushref` | Includes_Bezel |
 | Warm gate | `MIN=5.0` · `CAP=15.0` · `FADE=3.0` s. Each section warms a random 400-item `Files.GetDirectory` window | bz_warmgate.py |
 | GBD | `BezelGlobalBackdrop` is hidden while `Home.bz_warm_gate` is set | Includes_Bezel |
-| Tuner WARM 2.0 rows | `bz_at_warmsplash` (Startup splash, empty = On) · `bz_at_warmmusicposters` (Album art during music, empty = On) · `bz_at_abfade` (A/B fade length, **not wired**: XML is fixed at 1500 ms) | Includes_Tuner |
+| Tuner WARM 2.0.1 rows | `bz_at_warmsplash` (Startup splash, empty = On) · `bz_at_warmmusicposters` (Album art during music, empty = On) · `bz_at_abfade` (A/B fade length, **not wired**: XML is fixed at 1500 ms) | Includes_Tuner |
 | Section-fade Tuner value | `bz_at_mmsecfade` is read into `_xf` (table `0,0,0.15,0.25,0.35,0.5,0.7,1.0`, default index 4 → 0.35). **Only logged.** No warm-swap fade uses it | `mm_warm` |
 | Debug | `Skin.HasSetting(bz_debug_mm)` → `_dbgmm` verbose log lines `warm-start` / `warm-done` / `warm2 restore|cycle|randstart` | bz_flip.py |
 
@@ -114,12 +116,27 @@ Rob confirmed Oct 31 2026: the black flash on exit is fixed. **Do not change thi
 | MOVIES `movies` | MyVideoNav | BezelFanartLayer + poster | all lanes |
 | TV SHOWS `tv` | MyVideoNav | BezelFanartLayer + poster + clear | all lanes |
 | RECENTLY PLAYED `recent` | MyMusicNav `musicdb://recentlyplayedalbums/` | same as Music | music window seed |
-| SEARCH `search` | Custom_1107_SearchDialog | BezelFanartLayer | fan only, `$VAR[BezelFanart]` |
-| MEDIA SOURCES `mediasources` | Custom_1117 (BezelStdFrame → BezelFanartLayer) | fanart | fan only |
-| FAVOURITES `fav` / PICTURES `pictures` / ADD-ONS `addons` / SETTINGS `settings` | MyFavourites / MyPics / AddonBrowser / Settings | none | N/A |
+| SEARCH `search` | Custom_1107_SearchDialog | BezelFanartLayer | none with WARM HOLD on (last WARM kept); fan seed from `$VAR[BezelFanart]` only when `bz_at_warmhold=Off` |
+| MEDIA SOURCES `mediasources` | Custom_1117 (BezelStdFrame → BezelFanartLayer) | fanart | as Search |
+| FAVOURITES `fav` / PICTURES `pictures` / ADD-ONS `addons` / SETTINGS `settings` | MyFavourites / MyPics / AddonBrowser / Settings | `BezelWarmHold` (MM-only fan lane) | none — draws last WARM lane |
 | POWER `power` | Custom_1118 over the open MM (`bz_nav` kept) | MM art stays | N/A: MM never closes |
 
 Shield smoke test for 1107/1117 is still pending.
+
+### WARM HOLD — non-Music/Movies/TV sections (5.33.211, Rob Oct 31 2026)
+**Simple:** Leave Favourites, Pictures, Add-ons, Settings, Search or Media Sources for the Main menu and the menu shows the last Music/Movies/TV WARM art, not a plain/cleared background. Unless Rob says otherwise per section, this is the rule for every non-M/M/TV section. Music, Movies and TV mirror-enter above is unchanged.
+
+**How it works:** The fan A/B lane already keeps its last shown art when MM closes (`stop()` keeps `shown`; nothing seeds it outside music/videos). `BezelWarmHold` draws that lane under the open MM in the four windows that had no art stage. While MM is open over any of the six hold windows, `ab_clock` skips `tick()` so the lane does not re-target to that window's own art; once you park on Music/Movies/TV, `mm_warm` swaps the window and ticks resume normally (A/B 0.25/0.5/1500 unchanged). Search/Media Sources skip the old .207 fan seed, so their MM twins also show last WARM. Cold start with nothing warmed (`bz_fan_on` empty): hold draws nothing → plain background as before.
+
+**Wiring:**
+| Piece | Value |
+|---|---|
+| Expression | `bz_warmhold` = `$EXP[bz_navmenu] + !String.IsEqual(Skin.String(bz_at_warmhold),Off) + !String.IsEmpty(Home.bz_fan_on)` |
+| Include | `BezelWarmHold` (Includes_Bezel, before BezelFanartLayer): group visible `$EXP[bz_warmhold]` → `BezelFanartLayer` 120,120 840×900 |
+| Call sites | MyFavourites / MyPics / AddonBrowser after `DefaultBackground`; Settings after `BezelBlack` — all inside the `BezelSecDim` parent group (Global Dim applies) |
+| Python | `bz_flip.py`: `_WHWIN` = favouritesbrowser · pictures · addonbrowser · settings · 1107 · 1117; `_whold()` = `Skin.String(bz_at_warmhold) != 'Off'`. MM open + `_whold()` + `_WHWIN` → no lane tick. MM closed 1107/1117 seed runs only when `not _whold()` |
+| Kill switch | Tuner WARM 2.0.1 › **Hold last art (other sections)** (`id warmhold`, `bz_at_warmhold` On/Off, default On, info `mm_warm_hold.png`). Off = exact 5.33.210 behaviour |
+| Only fan lane | Poster/clear lanes are not drawn in hold windows |
 
 ### Not this method
 - Timed Hidden hold or AlarmClock delay on section art: rejected.

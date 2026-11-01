@@ -1,3 +1,10 @@
+5.33.211
+- WARM 2.0.1 (feature version, tracked like Bezel builds): Warm 2.0 + hold last art for other sections.
+- WARM HOLD: going back to the Main menu from Favourites, Pictures, Add-ons or Settings now keeps the last Music/Movies/TV WARM fanart behind the menu (new BezelWarmHold include, MM-only, inside BezelSecDim). Search (1107) / Media Sources (1117) no longer seed the fan lane with their own fanart — always last WARM.
+- bz_flip.py ab_clock: while MM is open over those six windows the A/B lanes do not re-target (keep last WARM). Music/Movies/TV WARM 2.0 / mirror-enter untouched.
+- Tuner WARM 2.0.1 > Hold last art (other sections): On (default) / Off = kill switch (Off restores 5.33.210 behaviour). Infographic mm_warm_hold.png.
+- Cold start with nothing warmed: plain background as before. FULL restart (.py).
+
 5.33.210
 - Music Fanart FS dialog 1121 (Custom_1121_MusicFanartFS.xml): Music FS pills / Tab in Music open 1121 over Music (sway stays underneath); pixel-match visualisation Fanart FS art framing/crop/dim; Play Next copied into 1121 (not reusing 1120); Back focuses Music list 60; visualisation Tuner rows wire to 1121 same as real visualisation. Sister of Kodi Fanart FS (MusicVisualisation) — changes apply to both. behaviors/music-fanart-fs.md added.
 - 1121 album view: property-driven album center slide (-480 on Music album rails at FS slide speed) while album view is up; real visualisation path unchanged.

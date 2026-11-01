@@ -663,6 +663,14 @@
 			<visible>!Skin.HasSetting(bezel_norotate)</visible>
 		</control>
 	</include>
+	<!-- 5.33.211 WARM HOLD: non-Music/Movies/TV sections (Favourites/Pictures/Add-ons/Settings) draw the last WARM fan lane under the open MM. Kill: Skin.String(bz_at_warmhold)=Off -->
+	<expression name="bz_warmhold">$EXP[bz_navmenu] + !String.IsEqual(Skin.String(bz_at_warmhold),Off) + !String.IsEmpty(Window(Home).Property(bz_fan_on))</expression>
+	<include name="BezelWarmHold">
+		<control type="group">
+			<visible>$EXP[bz_warmhold]</visible>
+			<include content="BezelFanartLayer"><param name="left" value="120"/><param name="top" value="120"/><param name="width" value="840"/><param name="height" value="900"/></include>
+		</control>
+	</include>
 	<include name="BezelFanartLayer">
 		<param name="left" default="0"/><param name="top" default="0"/>
 		<param name="width" default="1920"/><param name="height" default="1080"/>

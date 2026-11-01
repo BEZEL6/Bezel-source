@@ -11,6 +11,7 @@
 	<controls>
 		<control type="group"><!-- 4.7.4: SECTION PARENT GROUP — Global Dim fade under MM --><include>BezelSecDim</include>
 		<include>DefaultBackground</include>
+		<include>BezelWarmHold</include><!-- 5.33.211 WARM HOLD -->
 		<control type="group"><!-- 5.33.58 Rob t378-t387: Add-ons on MENU template (list in colour strip, fanart stage clean, all info inside artwork frame, no transition anim) -->
 			<control type="group"><left>120</left><top>120</top><!-- fanart stage: art only, no text -->
 				<control type="image"><left>0</left><top>0</top><width>840</width><height>900</height><aspectratio>scale</aspectratio><texture background="true">$INFO[Window(Home).Property(bz_backdrop)]</texture></control>
