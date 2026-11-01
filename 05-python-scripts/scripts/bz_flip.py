@@ -527,7 +527,7 @@ if home.getProperty('bz_flip_running') != 'true':
         def _snap(s2):   # WARM 2.0 (1)+(2): save leaving section row (0-based for SetFocus absolute) + path + backdrop
             if s2 not in WARM: return
             e = SS.setdefault(s2, {}); e['timer_on'] = False
-            if xbmc.getCondVisibility(_SECM[s2]) and not xbmc.getCondVisibility('Container.IsUpdating'):
+            if 'row' in e and xbmc.getCondVisibility(_SECM[s2]) and not xbmc.getCondVisibility('Container.IsUpdating'):   # 5.33.218: only after a seeded/restored warm — an unseeded first pass (Music '..' row 0) no longer blocks RANDSTART
                 try: e['row'] = max(0, int(xbmc.getInfoLabel('Container(60).CurrentItem') or 1) - (0 if xbmc.getInfoLabel('Container(60).ListItemAbsolute(0).Label') == '..' else 1))   # '..' row is absolute 0
                 except ValueError: pass
                 e['path'] = xbmc.getInfoLabel('Container.FolderPath')
@@ -541,14 +541,36 @@ if home.getProperty('bz_flip_running') != 'true':
             hi = n - 1 + lo
             if '/-1/' in xbmc.getInfoLabel('Container(60).ListItemAbsolute(%d).FolderPath' % lo): lo += 1
             return _rnd.randint(lo, hi) if hi > lo else (lo if hi >= lo else None)
+        def _cur0():   # 0-based absolute row of list 60 ('..' = 0), -1 unknown
+            try: return int(xbmc.getInfoLabel('Container(60).CurrentItem') or 0) - (0 if xbmc.getInfoLabel('Container(60).ListItemAbsolute(0).Label') == '..' else 1)
+            except ValueError: return -1
+        def _defer(r, p2, spos):   # 5.33.219 RANDSTART path 2 (t1720u): SetFocus is ignored while list 60 is hidden under MM -> re-apply the row the moment 60 is visible
+            def run():
+                stuck = None
+                for i in range(1200):   # <=120 s
+                    if mon.waitForAbort(0.1): return
+                    if xbmc.getInfoLabel('Container.FolderPath').rstrip('/') != p2.rstrip('/') or home.getProperty('bz_mmpick'): return
+                    c = _cur0()
+                    if c == r: _dbgmm('warm2 defer landed row=%d' % r); return
+                    if not xbmc.getCondVisibility('Control.IsVisible(60)') or xbmc.getCondVisibility('Container.IsUpdating'): continue
+                    mm = bool(home.getProperty('bz_nav'))
+                    if not mm:
+                        if stuck is None: stuck = c
+                        elif c != stuck: return   # user moved the list themselves -> leave it
+                    xbmc.executebuiltin('SetFocus(60,%d,absolute)' % r)
+                    if mm: _bzstrip(home, home.getProperty('bz_mmlive') or spos)   # same-frame bounce: strip 6996 keeps focus
+                    _dbgmm('warm2 defer apply row=%d mm=%d' % (r, mm)); mon.waitForAbort(0.3)
+            threading.Thread(target=run, daemon=True).start()
         def _restore(s2, p2, spos):   # WARM 2.0 (1): after settle -> list row, then same-frame bounce back to strip 6996
             e = SS.get(s2) or {}; r = e.get('row')
             if r is None and not _pk() and xbmc.getInfoLabel('Container.FolderPath').rstrip('/') == p2.rstrip('/') and not xbmc.getCondVisibility('Container.IsUpdating'):
                 r = _randrow()   # 5.33.204 RANDSTART: first visit (no session row) -> random list row, not top; seeded below
                 if r is not None: e = SS.setdefault(s2, {}); e['row'] = r; e['path'] = p2; _dbgmm('warm2 randstart sec=%s row=%d' % (s2, r))
-            if not r or _pk() or (e.get('path') or '').rstrip('/') != p2.rstrip('/'): return
+            if r is None or _pk() or (e.get('path') or '').rstrip('/') != p2.rstrip('/'): return
             if xbmc.getInfoLabel('Container.FolderPath').rstrip('/') != p2.rstrip('/') or xbmc.getCondVisibility('Container.IsUpdating'): return
             xbmc.executebuiltin('SetFocus(60,%d,absolute)' % r); _bzstrip(home, home.getProperty('bz_mmlive') or spos)
+            if s2 == 'music': _defer(r, p2, spos)   # 5.33.219 RANDSTART path 2: hidden Music list ignored SetFocus -> deferred apply when 60 is visible (MM close / list shown)
+            home.setProperty('bz_warmrow', p2.rstrip('/'))   # 5.33.218: tell the grid sync this folder's list row is a WARM row (do not reset to item 0)
             _dbgmm('warm2 restore sec=%s row=%d' % (s2, r))
         def _bdpick():   # WARM 2.0 (3): new random backdrop (bz_cmd listing logic); honours a fixed Tuner image
             import xbmcvfs, random
@@ -697,6 +719,9 @@ if home.getProperty('bz_flip_running') != 'true':
                     if xbmc.getCondVisibility('Control.HasFocus(6996)'): home.setProperty('bz_mmlive', xbmc.getInfoLabel('Container(6996).Position') or _pp[0]); break   # t4094c; JUMP t3450: never re-SetFocus a focused strip (yanked TV back to Movies when you moved on)
                     _pp[0] = home.getProperty('bz_mmlive') or _pp[0]; (_pk() or _bzstrip(home, _pp[0]))   # t4092 live row
                     mon.waitForAbort(0.05)
+                for i in range(80):   # 5.33.218 RANDSTART: window-switch path waits (<=4s, Rob: solid wait OK under load screen) for the target list like the in-place path, so Music seeds a random row (was bailing on IsUpdating -> row 1)
+                    if xbmc.getInfoLabel('Container.FolderPath').rstrip('/') == path.rstrip('/') and not xbmc.getCondVisibility('Container.IsUpdating') and int(xbmc.getInfoLabel('Container(60).NumItems') or 0) > 0: break
+                    (_pk() or home.setProperty('bz_nav', 'true')); mon.waitForAbort(0.05)
                 _restore(sec, path, _pp[0])   # WARM 2.0 (1)
                 xbmc.log('BEZEL MMWARM: %s under menu (%s)' % (sec, path), xbmc.LOGWARNING)
                 _dbgmm('warm-done sec=%s took=%.3fs now=%s focus=%s' % (sec, time.time() - _t0, xbmc.getInfoLabel('Container.FolderPath'), xbmc.getInfoLabel('System.CurrentControlId')))   # fork.2
@@ -1065,6 +1090,9 @@ if home.getProperty('bz_flip_running') != 'true':
                         if same:
                             # 4.2 item 23: same folder refreshed (new song / library update): hold the grid on the current list item instead of item 0
                             j0 = mp.get(xbmc.getInfoLabel('Container(60).ListItem.DBID') or xbmc.getInfoLabel('Container(60).ListItem.Label'))
+                        if j0 is None and home.getProperty('bz_warmrow') and home.getProperty('bz_warmrow') == (sig[0] or '').rstrip('/'):
+                            # 5.33.218 RANDSTART: WARM just put list 60 on a random/saved row -> grid follows that item instead of resetting to 0
+                            home.clearProperty('bz_warmrow'); j0 = mp.get(xbmc.getInfoLabel('Container(60).ListItem.DBID') or xbmc.getInfoLabel('Container(60).ListItem.Label'))
                         if j0 is None:
                             # 4.6.2 nav3: the colour block reads list 60, which Kodi restores to the OLD selection: put it on item 0 with the grid
                             if not gf: _bzfocus('SetFocus(60,0,absolute)')

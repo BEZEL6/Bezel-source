@@ -34,7 +34,7 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 | MM-open seed | While MM is closed and music/videos is active (and nothing is updating and no modal is open), every lane runs `seed()`. With 1107/1117 active, only `fan` is seeded | `ab_clock` |
 | Lane not fed | Live MM twin image is shown (`fadetime` 3000) | Includes_Bezel |
 | Backdrop cycle | `BDW = 10.0` s parked → new random image from `special://skin/extras/backdrop/` | `mm_warm` |
-| Music playing | `$EXP[bz_mmmushide]` hides the MM poster lane and shows `$VAR[BzWarmMusicArt]`: Visible 600 / Hidden 300 / fadetime 600. Re-latch is a 400 ms Conditional on `bz_mushref` | Includes_Bezel |
+| Music playing | `$EXP[bz_mmmushide]` (any strip section with a Videos underlay: Movies, TV, Favourites/other held-WARM sections) hides the MM poster lane and shows `$VAR[BzWarmMusicArt]` in the BezelVPLPoster slot (visible = `$EXP[bz_mmmushide]` only; 5.33.218 removed `!String.IsEmpty($VAR[..])`, a boolean parse error that kept the slot dead outside Music): Visible 600 / Hidden 300 / fadetime 600. Re-latch is a 400 ms Conditional on `bz_mushref` | Includes_Bezel |
 | Warm gate | `MIN=5.0` · `CAP=15.0` · `FADE=3.0` s. Each section warms a random 400-item `Files.GetDirectory` window | bz_warmgate.py |
 | GBD | `BezelGlobalBackdrop` is hidden while `Home.bz_warm_gate` is set | Includes_Bezel |
 | Tuner WARM 2.0.1 rows | `bz_at_warmsplash` (Startup splash, empty = On) · `bz_at_warmmusicposters` (Album art during music, empty = On) · `bz_at_abfade` (A/B fade length, **not wired**: XML is fixed at 1500 ms) | Includes_Tuner |
@@ -43,6 +43,8 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ### Startup random row (5.33.204 RANDSTART)
 **Simple:** The first time you open each section, it starts on a random row instead of the top.
+
+**5.33.218:** window-switch warm (Music/Movies/TV via ActivateWindow) now waits up to 4 s for `Container.FolderPath == path` + `!Container.IsUpdating` + NumItems>0 before `_restore` (load screen may hold longer — intended). Row 0 is a valid row (`r is None` check). `_snap` only saves a row for a section already seeded/restored this session, so an unseeded first pass no longer pins row 0. `_restore` sets `bz_warmrow`=path so the grid sync keeps the list item instead of resetting to item 0. **5.33.219 Music apply path:** when `_restore` runs for Music it also starts `_defer(row)`: a daemon thread (≤120 s) that re-issues `SetFocus(60,row,absolute)` the moment `Control.IsVisible(60)` and `!Container.IsUpdating`, with the same-frame `_bzstrip` bounce while MM is open (strip 6996 keeps focus). It stops when the row lands (`warm2 defer landed`), the folder changes, a Select is made (`bz_mmpick`), or — with MM closed — the user moves the list themselves. Note: `xbmcgui…getControl(60).selectItem()` on a skin container **crashes Kodi** — never use it. Movies/TV land the random row directly.
 
 **How it works:** At cold start, `bz_warmgate.randstart()` runs as soon as the first section's list lands. In MM, `_restore` calls `_randrow()` when a section has no session row yet. Both keep focus on strip 6996.
 
