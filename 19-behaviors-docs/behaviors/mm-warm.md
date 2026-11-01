@@ -4,7 +4,7 @@
 
 **Object:** Main Menu warm underlay (`scripts/bz_flip.py` → `mm_warm`, `ab_clock`, `_ABLane`) + cold-start warm gate (`scripts/bz_warmgate.py`)  
 **Where:** Under `$EXP[bz_navmenu]` (`String.IsEqual(Window(Home).Property(bz_nav),true)`, `Includes_Bezel.xml` line ~348), strip `6996` focused  
-**Last updated:** 2026-10-31 (5.33.211, WARM HOLD for non-Music/Movies/TV sections)  
+**Last updated:** 2026-10-31 (5.33.214 Background dim top stop = No dim; 5.33.213, Background dim acts on poster + fanart together; 5.33.211 WARM HOLD)  
 **Status:** LOCKED. Live since 5.33.203 (Rob approved Oct 31 2026). **Section enter/exit (mirror-enter) locked Oct 31 2026 evening** after Rob confirmed the black flash was fixed on 5.33.207. This file describes how things work now. It is not a changelog. Any change needs Rob's approval.  
 **Skin:** skin.bezel2
 
@@ -308,3 +308,11 @@ Clear: `if not home.getProperty('bz_nav') and SS: SS.clear()`.
 - Code: `bz_flip.py` `mm_warm` inner `_clear_poster_lane` / `_xfade_out(enter_music)` / `_ahold` / `_arel`. `_arel` calls `_xfade_out` when `enter_music or bz_xalb_on`. The 1.7 s cleanup runs on a daemon thread (`_late`).
 - XML held album (`Includes_Bezel.xml` ~L2549, placed before the MM poster slot): `<visible>$EXP[bz_navmenu] + Window.IsActive(videos) + !String.IsEmpty(Window(Home).Property(bz_xalb_on)) + !String.IsEmpty(Window(Home).Property(bz_xalb))</visible>`, Hidden 100→0 1500 ms sine, no Visible animation, rect `bz_art_x`/`bz_top` 600×`bz_h`, `art_mask`, texture `$INFO[Window(Home).Property(bz_xalb)]`.
 - Does not use the `bz_xfin` dim-out. Fanart, strip, dim and labels are unchanged.
+
+### Background dim under MM — poster and fanart together (5.33.213)
+| Item | Current state |
+|---|---|
+| Mechanism | MAIN MENU › **Background dim level** (`bz_at_mmdim`) fades the whole section parent group (`BezelSecDim`, Includes_Bezel.xml ~582). Fanart, poster/album, list all sit in that group and dim by the same %. Right = brighter, Left = darker (5.33.212). |
+| Stops (5.33.214) | `bz_at_mmdim` 1–11 → section fade end 5 / 10 / 20 / 30 / 40 / 50 / 60 / 70 / 80 / 90 / 100%. Empty = 2 (10%, default). Stop **11 = "No dim (100%)"**: fade end 100 = full opacity, art exactly as with MM closed. Right steps up to it, Left steps down. Labels `BzATVal_mmdim` (Includes_Tuner ~202). |
+| No art cover under MM | `BezelRootArtHide` no longer draws the old 3.1.2 MM-open black panel over the right art window (x 962–1920). Only the library-root black (`bz_libroot`) is left. |
+| Why it was removed | That panel sat in its own `BezelSecDim` group, so Background dim faded the **cover** too. The poster showed at about (1 − dim) and the fanart at dim: the two moved in opposite directions and crossed around 50–60%. Measured on 5.33.212: poster 2→12→17→24→31 vs fanart 24→21→18→15→11 at 100/80/60/40/20%. |

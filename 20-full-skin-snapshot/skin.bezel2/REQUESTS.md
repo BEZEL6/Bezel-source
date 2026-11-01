@@ -115,3 +115,5 @@ Movies-only: keep `bz_movposter_hold` + new `bz_movfanart_hold` while on TV/othe
 - Smoke: box t533f1 cold start.
 - Startup.xml: removed ActivateWindow(1113) from onload (blocked RunScript/ReplaceWindow); script opens 1113.
 - 5.33.203 (2026-10-31 Rob voice, code only not zipped): Power 1118 first-Down handoff — drop defaultcontrol always=true; onload SetFocus(7800,0,absolute). behaviors/power-menu.md updated. Bak: bak_5.33.202_pre_pwrfocus.
+
+- 2026-10-31 10:45 PM ET — Rob: Background dim (mmdim) slider worked opposite of press direction. Swapped onleft/onright (Right=brighter). 5.33.212, on tree, not zipped.
