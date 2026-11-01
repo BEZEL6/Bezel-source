@@ -1,3 +1,8 @@
+5.33.210
+- Music Fanart FS dialog 1121 (Custom_1121_MusicFanartFS.xml): Music FS pills / Tab in Music open 1121 over Music (sway stays underneath); pixel-match visualisation Fanart FS art framing/crop/dim; Play Next copied into 1121 (not reusing 1120); Back focuses Music list 60; visualisation Tuner rows wire to 1121 same as real visualisation. Sister of Kodi Fanart FS (MusicVisualisation) — changes apply to both. behaviors/music-fanart-fs.md added.
+- 1121 album view: property-driven album center slide (-480 on Music album rails at FS slide speed) while album view is up; real visualisation path unchanged.
+- Keymap bezel2_np_tab.xml updated (Tab in Music -> 1121). FULL restart (keymap).
+
 5.33.209
 - Music visualisation bounce removed: opening visualisation from Music (MM FULL pill, Tab, 1112 auto-viz) now stays on real Kodi Fanart FS (MusicVisualisation.xml) like every other section, so the <visualisation> keymap applies everywhere. Old Tab-from-Music in-place 6390 toggle gone (bz_cmd.py vistoggle unused). behaviors/fanart-fs.md updated. ReloadSkin (XML); FULL restart fine.
 

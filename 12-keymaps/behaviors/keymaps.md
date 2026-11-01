@@ -63,3 +63,5 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ## Related
 context-menu.md · fanart-fs.md · fullscreen-video.md · skin-settings-tuner.md
+
+**5.33.210:** `<music>` Tab / remote Display → `ActivateWindow(1121)` (was 1112). New `<window1121>`: M/RED → 1115, Tab/Display → close, Back/Backspace/B → `SetFocus(6422)`, longpress Select → PlayPause.

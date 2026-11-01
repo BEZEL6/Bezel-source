@@ -132,3 +132,5 @@ Prev/next tiles 6405/6406 (1120) and 6407/6408 (viz) play offset ∓1.
 
 ## Related
 big-album-pill.md · dialogue-fs.md · fanart-fs.md · sway-animations.md · music-list.md
+
+**5.33.210:** Play Next is also **copied into Music Fanart FS 1121** (double-Select → album viz, sides + big album pill 6401 with main 6420). 1121 never opens or stacks 1120; `bz_pndlg_ok` is false while 1121 is visible.

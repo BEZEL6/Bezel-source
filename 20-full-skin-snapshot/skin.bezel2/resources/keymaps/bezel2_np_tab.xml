@@ -4,8 +4,8 @@
      The dialog's onload checks music is playing in the list view; otherwise it closes at once and opens Kodi's fullscreen music window as before. -->
 <keymap>
 	<music>
-		<keyboard><m>ActivateWindow(1115)</m><tab>ActivateWindow(1112)</tab><escape>Back</escape></keyboard><!-- BETA 2.3 item 11: Esc = Back, so at the top level it opens the slide menu (list onback) instead of leaving -->
-		<remote><display>ActivateWindow(1112)</display><red>ActivateWindow(1115)</red></remote>
+		<keyboard><m>ActivateWindow(1115)</m><tab>ActivateWindow(1121)</tab><escape>Back</escape></keyboard><!-- 5.33.210: Tab in Music -> Music Fanart FS 1121 (falls back to viz via 1121 kill switch). BETA 2.3 item 11: Esc = Back, so at the top level it opens the slide menu (list onback) instead of leaving -->
+		<remote><display>ActivateWindow(1121)</display><red>ActivateWindow(1115)</red></remote>
 		<keyboard><red>ActivateWindow(1115)</red></keyboard><!-- BEZEL 3.2.0 item 7: CEC RED (Samsung Frame 123/colour pad; arrives as remote red, or as keyboard red via Android PROG_RED on the Shield) opens the music controls -->
 	</music>
 	<videos>
@@ -21,6 +21,11 @@
 		<keyboard><tab>SetProperty(bz_tabq,true,home)</tab></keyboard>
 		<remote><display>SetProperty(bz_tabq,true,home)</display></remote>
 	</busydialognocancel>
+	<window1121><!-- 5.33.210 Music Fanart FS: same keys as <visualisation> -->
+		<keyboard><m>ActivateWindow(1115)</m><red>ActivateWindow(1115)</red><tab>Dialog.Close(1121)</tab><escape>Back</escape><backspace>SetFocus(6422)</backspace><browser_back>SetFocus(6422)</browser_back><return mod="longpress">PlayPause</return><enter mod="longpress">PlayPause</enter></keyboard>
+		<remote><display>Dialog.Close(1121)</display><red>ActivateWindow(1115)</red><back>SetFocus(6422)</back></remote>
+		<joystick profile="game.controller.default"><b>SetFocus(6422)</b></joystick><joystick profile="game.controller.shield"><b>SetFocus(6422)</b></joystick>
+	</window1121>
 	<window1112>
 		<keyboard><m>ActivateWindow(1115)</m><tab>Dialog.Close(1112)</tab><escape>Back</escape></keyboard><!-- Esc (PreviousMenu) would close the dialog under the slide menu; as Back the menu closes first -->
 		<remote><display>Dialog.Close(1112)</display><red>ActivateWindow(1115)</red></remote><keyboard><red>ActivateWindow(1115)</red></keyboard>

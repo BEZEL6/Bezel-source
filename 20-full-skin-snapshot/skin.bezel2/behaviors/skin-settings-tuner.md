@@ -119,3 +119,5 @@ id `fsslide`, string `bz_at_fsslide` 1–4 (empty=3). Left/Right in 6970 nav blo
 - Opened from Power › TUNER (`bz_tunesrc=pwr`, focus 6970). Back restores opener.
 
 - WARM 2.0 `warmsplash` (Startup splash) On/Off → `bz_at_warmsplash`, default On; visuals only, warm-cache always runs. See mm-warm.md.
+
+**5.33.210:** Tuner onback `bz_tunesrc=fsctrl` → `ActivateWindow(1121)` when `$EXP[bz_m1121ok]`, else `ActivateWindow(visualisation)`. All Fanart FS / visualisation tuner rows also apply to 1121 (shared includes).

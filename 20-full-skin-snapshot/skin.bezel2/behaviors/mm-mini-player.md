@@ -49,3 +49,5 @@ Focus shows a `mm_round.png` pill (border 20, 150 ms fade). Without focus there 
 
 ## Related
 mm-list.md · np-bar.md · mm-warm.md
+
+**5.33.210:** 6960 FULL (and 6910) with Music active + audio → `ActivateWindow(1121)` (Music Fanart FS, sway unbroken); other sections / kill switch `bz_m1121_off` → `ActivateWindow(visualisation)`.

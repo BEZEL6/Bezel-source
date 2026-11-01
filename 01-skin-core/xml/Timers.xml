@@ -29,4 +29,10 @@
         <stop>!Player.HasAudio | !Window.IsActive(1120)</stop>
         <onstop condition="Window.IsActive(1120) + !Player.HasAudio">SetProperty(bz_fsret,true,home)</onstop><onstop condition="Window.IsActive(1120) + !Player.HasAudio">AlarmClock(bz_fsretclr,ClearProperty(bz_fsret,home),00:01,silent)</onstop><onstop condition="Window.IsActive(1120) + !Player.HasAudio">Dialog.Close(1120)</onstop><!-- 5.33.109 t: stop = Step 5 Back path -->
     </timer>
+    <timer><!-- 5.33.210 Music Fanart FS 1121 auto-close when audio stops -->
+        <name>bz_m1121stop</name>
+        <start reset="true">Window.IsActive(1121)</start>
+        <stop>!Player.HasAudio | !Window.IsActive(1121)</stop>
+        <onstop condition="Window.IsActive(1121) + !Player.HasAudio">Dialog.Close(1121)</onstop>
+    </timer>
 </timers>

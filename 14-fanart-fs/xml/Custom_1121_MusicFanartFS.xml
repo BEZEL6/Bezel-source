@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 5.33.210 (Rob t1589-t1595): Music Fanart FS dialog 1121 — Music-only copy of Kodi Fanart FS (MusicVisualisation).
+     Music stays underneath and draws the fanart stage + playing album (BezelNPInPlace via bz_np, BezelMusicPlayingArt) so sway never remounts.
+     This dialog = chrome + keys only, with the SAME shared includes as MusicVisualisation (BezelLogo, BezelFSPlayNext, BezelBigAlbumPill, BezelNPControls)
+     so changes to Fanart FS apply here too (standing rule, behaviors/music-fanart-fs.md). Play Next is COPIED in (album viz via bz_pnoff), 1120 never stacks.
+     Kill switch: Skin.SetBool(bz_m1121_off) -> every trigger falls back to ActivateWindow(visualisation).
+     REMOVE: delete this file + bz_m1121 conditions on 6886/6960/6910/Tuner fsctrl + keymap tab/window1121 + Timers bz_m1121 timer. -->
+<window type="dialog" id="1121">
+	<zorder>1</zorder>
+	<defaultcontrol always="true">6420</defaultcontrol>
+	<onload condition="Skin.HasSetting(bz_m1121_off) | !Player.HasAudio | Player.HasVideo">Dialog.Close(1121,true)</onload>
+	<onload condition="Skin.HasSetting(bz_m1121_off) + Player.HasAudio + !Player.HasVideo">ActivateWindow(visualisation)</onload>
+	<onload condition="Window.IsVisible(1112)">Dialog.Close(1112,true)</onload>
+	<onload>RunScript(special://skin/scripts/bz_cmd.py,keymap)</onload>
+	<onload>SetProperty(bz_pnoff,1,home)</onload><onload condition="String.IsEmpty(Skin.String(bz_dfs_mode))">Skin.SetString(bz_dfs_mode,album)</onload>
+	<onload>SetProperty(bz_fsnp,true,home)</onload>
+	<onload>SetProperty(bz_np,true,home)</onload>
+	<onload condition="!String.IsEqual(Window(Home).Property(bz_flip_running),true)">RunScript(special://skin/scripts/bz_flip.py)</onload>
+	<!-- no bz_sway_restart: sway must stay unbroken (Music never remounts) -->
+	<onunload>ClearProperty(bz_np,home)</onunload><onunload>ClearProperty(bz_fsnp,home)</onunload><onunload>ClearProperty(bz_pnoff,home)</onunload><onunload>ClearProperty(bz_pnfoc,home)</onunload><onunload>ClearProperty(bz_vdtap,home)</onunload>
+	<onunload condition="!$EXP[bz_navmenu]">AlarmClock(bz_m1121ret,SetFocus(60),00:00,silent)</onunload><!-- Back -> Music section list 60 -->
+	<controls>
+		<control type="group">
+			<animation effect="fade" start="0" end="100" time="300" tween="sine" easing="inout">WindowOpen</animation>
+			<animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout">WindowClose</animation>
+			<include>BezelLogo</include>
+			<control type="group"><animation effect="fade" start="100" end="0" time="600" tween="sine" easing="inout">WindowClose</animation><include content="BezelFSPlayNext"><param name="sdelay" value="3000"/><param name="sfade" value="2000"/><param name="sides" value="!String.IsEqual(Skin.String(bz_dfs_mode),album)"/></include></control>
+			<include content="BezelBigAlbumPill"><param name="vis" value="[!String.IsEqual(Window(Home).Property(bz_pnoff),1)] + Player.HasAudio"/><param name="main" value="6420"/></include>
+			<include content="BezelNPControls"><param name="vis" value="$EXP[bz_np] + String.IsEqual(Window(Home).Property(bz_npctl),true)"/><param name="dx" value="0"/><param name="box" value="false"/></include>
+			<!-- fan art pill copy (Music's 6391 hides while 1121 is visible) — same place / look / cycle as Fanart FS 6391 -->
+			<control type="grouplist"><left>530</left><top>130</top><width>400</width><height>32</height><orientation>horizontal</orientation><align>right</align><itemgap>0</itemgap><usecontrolcoords>false</usecontrolcoords>
+				<visible>String.IsEqual(Window(Home).Property(bz_pnoff),1)</visible><animation effect="fade" start="0" end="0" time="0" condition="Skin.HasSetting(bz_fs_pill_off)">Conditional</animation>
+				<control type="button" id="6421"><width>auto</width><height>32</height><label>$VAR[BezelNPModeName]</label><font>bz_b15</font><textoffsetx>16</textoffsetx><align>center</align><aligny>center</aligny><textcolor>$VAR[BzFSCTint]</textcolor><focusedcolor>$VAR[BzFSCTint]</focusedcolor>
+					<texturenofocus border="16" colordiffuse="$VAR[BzFSCTint50]">bezel/np_pill32.png</texturenofocus><texturefocus border="16" colordiffuse="$VAR[BzFSCTint80]">bezel/np_pill32.png</texturefocus>
+					<onclick condition="$EXP[bz_npm_ctl]">ActivateWindow(1115)</onclick><onclick condition="$EXP[bz_npm_vis]">Skin.SetString(bz_npmode,bio)</onclick><onclick condition="$EXP[bz_npm_bio]">Skin.SetString(bz_npmode,fanart)</onclick><onclick condition="$EXP[bz_npm_fan]">Skin.SetString(bz_npmode,lyrics)</onclick><onclick condition="$EXP[bz_npm_lyr]">Skin.SetString(bz_npmode,upnext)</onclick><onclick condition="$EXP[bz_npm_upn]">Skin.SetString(bz_npmode,controls)</onclick><onclick>SetProperty(bz_npmlabel,1,home)</onclick><onclick>CancelAlarm(bznpml,true)</onclick><onclick>AlarmClock(bznpml,ClearProperty(bz_npmlabel,home),00:02,silent)</onclick>
+					<ondown condition="$EXP[bz_npm_ctl]">ActivateWindow(1115)</ondown><ondown condition="!$EXP[bz_npm_ctl]">6420</ondown><onleft>SendClick(6421)</onleft><onright>SendClick(6421)</onright><onup>6420</onup><onback>6422</onback>
+				</control>
+			</control>
+		</control>
+		<!-- main control = Fanart FS 6390 semantics (fanart: single Select pause / double = album viz; album viz: Select pause + ghost) -->
+		<control type="button" id="6420"><left>0</left><top>0</top><width>1920</width><height>1080</height><label/><texturefocus/><texturenofocus/>
+			<onfocus>ClearProperty(bz_pnfoc,home)</onfocus>
+			<onclick condition="[!String.IsEqual(Window(Home).Property(bz_pnoff),1)] + !Player.Paused">SetProperty(bz_pnfoc,6403,home)</onclick><onclick condition="[!String.IsEqual(Window(Home).Property(bz_pnoff),1)] + Player.Paused">ClearProperty(bz_pnfoc,home)</onclick><onclick condition="[!String.IsEqual(Window(Home).Property(bz_pnoff),1)]">PlayerControl(Play)</onclick>
+			<onclick condition="String.IsEqual(Window(Home).Property(bz_pnoff),1) + String.IsEqual(Window(Home).Property(bz_vdtap),1)">CancelAlarm(bz_vdtapgo,true)</onclick><onclick condition="String.IsEqual(Window(Home).Property(bz_pnoff),1) + String.IsEqual(Window(Home).Property(bz_vdtap),1)">ClearProperty(bz_pnoff,home)</onclick><onclick condition="String.IsEqual(Window(Home).Property(bz_pnoff),1) + String.IsEqual(Window(Home).Property(bz_vdtap),1)">SetProperty(bz_vdtap,2,home)</onclick>
+			<onclick condition="String.IsEqual(Window(Home).Property(bz_pnoff),1) + String.IsEmpty(Window(Home).Property(bz_vdtap))">AlarmClock(bz_vdtapgo,PlayerControl(Play),00:01,silent)</onclick><onclick condition="String.IsEqual(Window(Home).Property(bz_pnoff),1) + String.IsEmpty(Window(Home).Property(bz_vdtap))">SetProperty(bz_vdtap,1,home)</onclick><onclick>AlarmClock(bz_vdtapclr,ClearProperty(bz_vdtap,home),00:01,silent)</onclick>
+			<onleft>PlayerControl(Previous)</onleft><onright>PlayerControl(Next)</onright>
+			<onup condition="[!String.IsEqual(Window(Home).Property(bz_pnoff),1)]">6401</onup><onup condition="String.IsEqual(Window(Home).Property(bz_pnoff),1)">6421</onup><ondown>SetProperty(bz_noop,1,home)</ondown>
+			<onback>6422</onback>
+		</control>
+		<!-- Back router (= viz 6297): album viz -> fanart; fanart -> close, focus Music list 60 -->
+		<control type="button" id="6422"><left>-400</left><top>40</top><width>10</width><height>10</height><label/><texturefocus/><texturenofocus/>
+			<onfocus condition="[!String.IsEqual(Window(Home).Property(bz_pnoff),1)]">SetProperty(bz_pnoff,1,home)</onfocus><onfocus condition="[!String.IsEqual(Window(Home).Property(bz_pnoff),1)]">SetFocus(6420)</onfocus>
+			<onfocus condition="String.IsEqual(Window(Home).Property(bz_pnoff),1)">Dialog.Close(1121)</onfocus></control>
+		<!-- touch: copies of viz 6407/6408/6409/6410 -->
+		<control type="button" id="6427"><left>90</left><top>250</top><width>540</width><height>540</height><label/><texturefocus/><texturenofocus/><visible>[!String.IsEqual(Window(Home).Property(bz_pnoff),1)] + !String.IsEqual(Skin.String(bz_dfs_mode),album) + !String.IsEmpty(MusicPlayer.offset(-1).Title)</visible><onfocus>SetFocus(6420)</onfocus><onclick>Playlist.PlayOffset(music,-1)</onclick></control>
+		<control type="button" id="6428"><left>1290</left><top>250</top><width>540</width><height>540</height><label/><texturefocus/><texturenofocus/><visible>[!String.IsEqual(Window(Home).Property(bz_pnoff),1)] + !String.IsEqual(Skin.String(bz_dfs_mode),album) + !String.IsEmpty(MusicPlayer.offset(1).Title)</visible><onfocus>SetFocus(6420)</onfocus><onclick>Playlist.PlayOffset(music,1)</onclick></control>
+		<control type="button" id="6430"><left>960</left><top>0</top><width>960</width><height>1080</height><label/><texturefocus/><texturenofocus/><visible>String.IsEqual(Window(Home).Property(bz_pnoff),1) + !String.IsEqual(Window(Home).Property(bz_npctl),true)</visible><onfocus>SetFocus(6420)</onfocus><onclick>Skin.SetString(bz_npmode,upnext)</onclick></control>
+		<control type="button" id="6429"><left>1100</left><top>220</top><width>680</width><height>680</height><label/><texturefocus/><texturenofocus/><visible>String.IsEqual(Window(Home).Property(bz_pnoff),1) + !String.IsEqual(Window(Home).Property(bz_npctl),true)</visible><onfocus>SetFocus(6420)</onfocus><onclick>PlayerControl(Play)</onclick><ondoubleclick>ClearProperty(bz_pnoff,home)</ondoubleclick></control>
+		<control type="button" id="6426"><left>0</left><top>0</top><width>120</width><height>116</height><label/><texturefocus/><texturenofocus/><onclick>Dialog.Close(1121)</onclick></control>
+	</controls>
+</window>

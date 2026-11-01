@@ -28,3 +28,5 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ## Related
 fanart-fs.md · dialogue-fs.md · music-list.md
+
+**5.33.210:** `onclick` → `ActivateWindow(1121)` when `$EXP[bz_m1121ok]` (Music Fanart FS dialog), else `ActivateWindow(visualisation)`. Pill hides while 1121 is visible.

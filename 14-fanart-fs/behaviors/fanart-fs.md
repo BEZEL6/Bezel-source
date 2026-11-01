@@ -85,3 +85,9 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ## Related
 big-album-pill.md · play-next.md · fullscreen-pill.md · music-controls.md · keymaps.md · dialogue-fs.md
+
+## Music Fanart FS 1121 (5.33.210)
+
+**ALERT RULE (Rob):** before making any Fanart FS or 1121 change, alert Rob that it applies to BOTH (Kodi Fanart FS `MusicVisualisation.xml` and Music Fanart FS 1121).
+
+**STANDING (Rob):** every change to Fanart FS applies to Music dialog **1121** in the same build (shared includes / same wiring — see music-fanart-fs.md). In Music, pills 6886/6960/6910, Tab and Tuner fsctrl Back open 1121 instead of this window (`$EXP[bz_m1121ok]`); every other section still opens `visualisation`.

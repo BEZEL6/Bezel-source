@@ -54,3 +54,5 @@
 | touch-group.md | Tap targets + double-tap Select (no touch master in live tree) |
 | tv-list.md | TV list 60, Up wrap→6098, pills |
 | video-osd.md | Video OSD |
+
+- `music-fanart-fs.md` — Music Fanart FS dialog 1121
