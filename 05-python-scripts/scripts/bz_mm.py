@@ -24,7 +24,7 @@ GO = {
  'search': ['ClearProperty(bz_nav,home)', 'ActivateWindow(1107)'],
  'pictures': ['ClearProperty(bz_nav,home)', 'ActivateWindow(pictures)'],
  'files': ['ClearProperty(bz_nav,home)', 'ActivateWindow(filemanager)'],
- 'addons': ['ClearProperty(bz_nav,home)', 'ActivateWindow(addonbrowser)'],
+ 'addons': ['ClearProperty(bz_nav,home)', 'ActivateWindow(1131)'],  # 5.33.220 Warm strip Add-ons dialog over the section (was ActivateWindow(addonbrowser))
  'settings': ['ClearProperty(bz_nav,home)', 'ActivateWindow(1130)'],  # 5.33.215 MM-style Settings dialog over the section (was ActivateWindow(Settings))
  'kodi': ['ClearProperty(bz_nav,home)', 'ActivateWindow(systeminfo)'],
 }

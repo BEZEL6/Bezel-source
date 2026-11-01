@@ -50,3 +50,11 @@ List 60 includes `BezelMMFocusBounce` and `BezelMMFocusBounceList`. When `bz_nav
 
 ## Related
 mm-list.md · context-menu.md · keymaps.md · favourites.md
+
+## 5.33.220 — Warm strip Add-ons (current state)
+- MM → ADD-ONS opens **Custom_1131_BzAddons.xml** (dialog 1131, list 9140), styled like Settings 1130: title + breadcrumb, ▾ expand, » new menu, ‹PILL›.
+- Rows: MY ADD-ONS ▾ (Video/Music/Program/Services/Skins/All » with counts from bz_set adload), FROM REPOSITORY », FROM ZIP FILE (bz_set azip → InstallFromZip), SEARCH », pills UPDATES (AUTO/NOTIFY/NEVER) / NOTIFY / UNKNOWN SRC, AVAILABLE UPDATES », RUNNING », RECENTLY UPDATED », DEPENDENCIES ▾ (ALL / ORPHANED).
+- » rows: bz_set `ago,<path>` closes 1131, opens AddonBrowser (path,return); when it closes, `_reopen` brings 1131 back unless MM navigation (bz_nav), a modal, fullscreen or a plugin path is active.
+- AddonBrowser.xml restyled as a Warm strip (title $VAR[BzAdTitle], "ADD-ONS · N ITEMS", 48px rows with »). Back at the root returns to 1131 → Back again → MM.
+- DialogAddonInfo.xml restyled as a strip: OPEN » / ENABLED pill / AUTO-UPDATE pill / CONFIGURE / UPDATE / VERSIONS / DEPENDENCIES / INSTALL-UNINSTALL.
+- Still stock: DialogAddonSettings, DialogSelect (version pick), FileBrowser (zip picker).

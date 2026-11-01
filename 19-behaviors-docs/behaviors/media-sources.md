@@ -38,3 +38,7 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ## Related
 mm-list.md · filebrowser.md · files-filemanager.md
+
+## 5.33.220 — Warm strip Media Sources (current state)
+- Custom_1117 is still a window (6299 bounce, msret/msfocus kept) but now uses the strip chrome: VIDEOS ▾ / MUSIC ▾ / PICTURES ▾ (bz_msx), each with SOURCES » (count), library actions and an UPDATE ON START pill; ADD SOURCE » (sources://video/ with msret); LIBRARY SCAN pill (QUIET/SHOW). Wrap is 7100↔7131 and the default focus is 7100. Menucontrol 9001 has been removed.
+- Back → MM unchanged. FileBrowser / add-source dialog are still stock.
