@@ -1,3 +1,6 @@
+5.33.208
+- Docs: behaviors/ expanded — every file now has Simple / How it works / Wiring from live code; mm-warm.md Section enter/exit (mirror-enter) LOCKED block. No skin behavior code changes. ReloadSkin.
+
 5.33.207
 - Section exit black flash fix (mirror-enter): leaving Music/Movies/TV for MM no longer flashes black. MM opens on the art already on screen at full opacity, same frame.
 - bz_flip.py ab_clock: while MM closed (music/videos), fan/pos/clr lane front side is seeded with the current section art (bz_*_a|b, bz_*_on, bz_pos_empty).

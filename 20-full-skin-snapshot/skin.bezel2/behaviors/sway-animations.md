@@ -2,15 +2,25 @@
 
 **Object:** Shared sway clock + album / poster rotatey + stub cast opacity  
 **Where:** Music big album (Dialogue FS / Play Next / viz) · Movies/TV poster (`BezelVPLPoster`) · stub side casts (`pn_cast.png`)  
-**Last updated:** 2026-10-31 · 5.33.205 (album cast outside sway — edge-drift fix)  
-**Status:** draft — matches live 5.33.194 (IDs/files re-verified Oct 31); not Rob-approved, not re-smoked  
+**Last updated:** 2026-10-31  
+**Status:** Live. One Python clock drives the album and poster sway flags. The album cast sits outside the sway group (5.33.205 edge-drift fix). Draft: not Rob-approved, not re-smoked.  
 **Skin:** skin.bezel2 (Estuary fork)
 
 > Per-object behavior file (same family as `mm-list.md`). Documents **current live math and settings**. Tuner can patch some XML times; clock reads `D` from live XML.
 
 ---
 
-## How it works (plain English)
+## Overview
+
+Three layers: **Simple** (below), **How it works** (plain English, below), **Wiring** (Code map and every technical section after it, taken from the live tree).
+
+### Simple
+- The big album (Music) and the poster (Movies/TV) slowly rock left and right, like a picture tilting on a wall.
+- The soft shadows beside the album get darker and lighter in time with that rocking.
+- When the screen reloads, the rocking starts again from flat instead of jumping.
+- A few Tuner sliders change how long it pauses and how fast it moves.
+
+### How it works
 
 Sway is the slow left–right tip of the big Music album and the Movies/TV poster. It is not a one-shot animation Kodi runs and forgets. A small Python script keeps a shared **clock**, and the skin XML listens to flags that clock turns on. Stub side-cast shadows (the soft dark fall beside the album) also read that same clock so they brighten and fade in step with the tip.
 
@@ -38,7 +48,7 @@ One clock → phase flags → Conditional rotatey on art + script-driven cast op
 
 ---
 
-## Code map
+## Code map (Wiring)
 | Piece | Location |
 |-------|----------|
 | Shared clock + cast | `scripts/bz_flip.py` — `_sn`, `_cast_D`, `_bz_cast`, `sway_clock` (~L146–220) |

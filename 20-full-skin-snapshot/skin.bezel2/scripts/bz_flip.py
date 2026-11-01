@@ -1335,6 +1335,10 @@ if home.getProperty('bz_flip_running') != 'true':
                 elif not xbmc.getCondVisibility('Container.IsUpdating | System.HasModalDialog') and xbmc.getCondVisibility('Window.IsActive(music) | Window.IsActive(videos)'):
                     now = time.time()   # 5.33.207 mirror-enter seed: lane front side tracks the section art while MM is closed
                     for ln, rf in lanes: ln.seed(rf(), now)
+                elif not xbmc.getCondVisibility('Container.IsUpdating') and xbmc.getCondVisibility('Window.IsActive(1107) | Window.IsActive(1117)'):
+                    # 5.33.207 mirror-enter ALL sections: Search (1107) / Media Sources (1117) draw BezelFanartLayer too —
+                    # seed the fan lane with that on-screen fanart so MM opens on it (no 3000 ms unfed fade from black). Poster/clear N/A there.
+                    lanes[0][0].seed(xbmc.getInfoLabel('$VAR[BezelFanart]'), time.time())
             if mon.waitForAbort(0.05): break
     _bzstart(ab_clock)
     def akey():

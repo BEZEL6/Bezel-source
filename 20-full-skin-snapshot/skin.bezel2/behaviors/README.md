@@ -1,15 +1,16 @@
 # BEZEL behavior files
 
-**Last updated:** 2026-10-31 · 5.33.194 (full catch-up sync)
+**Last updated:** 2026-10-31
 
 **Standing rule (Rob):** every time a system changes, its behavior file is updated in the same build to match the new **current state** — the file documents how the system works now, not a changelog.
 
 - One Markdown file per object / screen (kebab-case). Never merge objects (MM ≠ Music list).
 - Header: title · Object (paths/IDs) · Last updated (date · build) · Status (`approved` / `draft` / `parked`).
+- **Standing format rule:** every behavior file uses the three layers **Simple** / **How it works** / **Wiring** for each major section, taken from the **live code** (XML, Python), at the detail level of `mm-warm.md`. Thin or stub objects still get all three layers. PARKED designs say clearly that they're not shipped.
 - `.bak_*` files are history — never edit or delete.
 
 ## Index
-| File | Purpose (state at 5.33.194) |
+| File | Purpose (current state) |
 |---|---|
 | addons.md | Add-ons browser under MM |
 | bezel-logo-back.md | Bezel logo acts as Back (touch) |
@@ -42,12 +43,12 @@
 | pictures.md | Pictures |
 | play-next.md | 1120 Play Next mode (bz_dfs_mode toggle), Fanart sides |
 | playlists.md | Playlists |
-| power-menu.md | Power menu 7800: SHUTDOWN/QUIT/SUSPEND/TUNER |
+| power-menu.md | Power menu dialog 1118, list 7800: SHUTDOWN/QUIT/SUSPEND/SLEEP/TUNER, BEZEL version label |
 | recently-played.md | Recently played |
 | search.md | Search dialog 1107 |
-| section-transitions.md | Fade-in-only section open standard |
+| section-transitions.md | Fade-in-only section open standard; Section ↔ MM art (LOCKED) → mm-warm.md |
 | settings.md | Kodi Settings, Back → MM opener row |
-| skin-settings-tuner.md | BEZEL Tuner 6970: sections, dust size/opacity, slide speed, WARM 2.0 |
+| skin-settings-tuner.md | BEZEL Tuner 6970 (group 6975): open/back by opener, value steps, presets, batched reload, dtap rows |
 | sway-animations.md | Shared sway clock, album/poster rotatey, stub cast |
 | swipe-to-spin-poster.md | PARKED design — not approved |
 | touch-group.md | Tap targets + double-tap Select (no touch master in live tree) |
