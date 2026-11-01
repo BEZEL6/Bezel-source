@@ -2,7 +2,7 @@
 
 **Object:** Main Menu strip list `6996` (Includes_Bezel) · `scripts/bz_mm.py` · chrome `BezelMMStripChrome` (line ~2318)  
 **Where:** Colour strip under `$EXP[bz_navmenu]` (`String.IsEqual(Window(Home).Property(bz_nav),true)`)  
-**Last updated:** 2026-10-31 · 5.33.207  
+**Last updated:** 2026-11-01 · 5.33.217  
 **Status:** approved. The live tree matches (re-verified 5.33.207). Warm underlay behavior is LOCKED in mm-warm.md.  
 **Skin:** skin.bezel2 (Estuary fork)
 
@@ -89,4 +89,5 @@ mm-warm.md (LOCKED) · mm-mini-player.md · music-list.md · movies-list.md · t
 - **When:** MM open, Tuner/BEZEL Settings closed, no modal, focus on 6996, `Skin.String(bz_at_mmidle)` ≠ Off (default On), Kodi global idle ≥ 30 s.
 - **Hide:** `bz_flip.py` `mm_idle()` sets focus to park button **6897** (2×2 off-screen, no textures, inside group 6899) then sets `Window(Home).Property(bz_mmidle)=1`. Wrapper group **6894** (all strip/label/glow groups of BezelNavMenu, not the dim veil or button 6898) is `Visible String.IsEmpty(bz_mmidle)` → Hidden fade 100→0 1500 ms sine. Warm art, dim and mini-player stay.
 - **Wake:** any key on 6897 (up/down/left/right/select/back) → `ClearProperty(bz_mmidle,home)`; touch/mouse wake when idle time < 1 s. Group fades in 200 ms; `mm_idle` restores focus via `_bzstrip` (same row). The first key only wakes; it does not navigate. MM close clears `bz_mmidle`.
+- **Background undim (5.33.217):** every `BezelSecDim` mmdim Conditional also needs `String.IsEmpty(Window(Home).Property(bz_mmidle))`. While idle the mmdim fades go false → section art/fanart reverses to full opacity (100%) over 600 ms. Wake clears `bz_mmidle` → Tuner Background dim reapplies (600 ms). gdim (closed MM) unchanged.
 - **Tuner:** MAIN MENU › Auto-hide menu (`mmidle`, LEFT Off / RIGHT On), info `bezel/info/mm_autohide.png`.

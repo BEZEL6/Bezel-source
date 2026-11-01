@@ -5,6 +5,7 @@
 **Object:** Main Menu warm underlay (`scripts/bz_flip.py` → `mm_warm`, `ab_clock`, `_ABLane`) + cold-start warm gate (`scripts/bz_warmgate.py`)  
 **Where:** Under `$EXP[bz_navmenu]` (`String.IsEqual(Window(Home).Property(bz_nav),true)`, `Includes_Bezel.xml` line ~348), strip `6996` focused  
 **Last updated:** 2026-10-31 (5.33.214 Background dim top stop = No dim; 5.33.213, Background dim acts on poster + fanart together; 5.33.211 WARM HOLD)  
+**Idle (5.33.217):** Background dim (mmdim) is gated off while `bz_mmidle=1` — art goes full opacity during MM idle fade; restored on wake (see mm-list.md).  
 **Status:** LOCKED. Live since 5.33.203 (Rob approved Oct 31 2026). **Section enter/exit (mirror-enter) locked Oct 31 2026 evening** after Rob confirmed the black flash was fixed on 5.33.207. This file describes how things work now. It is not a changelog. Any change needs Rob's approval.  
 **Skin:** skin.bezel2
 
