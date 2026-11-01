@@ -25,7 +25,7 @@ GO = {
  'pictures': ['ClearProperty(bz_nav,home)', 'ActivateWindow(pictures)'],
  'files': ['ClearProperty(bz_nav,home)', 'ActivateWindow(filemanager)'],
  'addons': ['ClearProperty(bz_nav,home)', 'ActivateWindow(addonbrowser)'],
- 'settings': ['ClearProperty(bz_nav,home)', 'ActivateWindow(Settings)'],
+ 'settings': ['ClearProperty(bz_nav,home)', 'ActivateWindow(1130)'],  # 5.33.215 MM-style Settings dialog over the section (was ActivateWindow(Settings))
  'kodi': ['ClearProperty(bz_nav,home)', 'ActivateWindow(systeminfo)'],
 }
 # 4.2.0 O59 (D3): music / movies / tv open the primed sub (home bz_mmsub_<sec>, 1-based; empty = default Artists / Titles / Shows)

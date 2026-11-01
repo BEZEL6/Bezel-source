@@ -117,3 +117,5 @@ Movies-only: keep `bz_movposter_hold` + new `bz_movfanart_hold` while on TV/othe
 - 5.33.203 (2026-10-31 Rob voice, code only not zipped): Power 1118 first-Down handoff — drop defaultcontrol always=true; onload SetFocus(7800,0,absolute). behaviors/power-menu.md updated. Bak: bak_5.33.202_pre_pwrfocus.
 
 - 2026-10-31 10:45 PM ET — Rob: Background dim (mmdim) slider worked opposite of press direction. Swapped onleft/onright (Right=brighter). 5.33.212, on tree, not zipped.
+
+- 2026-11-01 ~00:30 ET 5.33.215 Rob pt1691u: new BEZEL Settings (dialog 1130 over section, MM strip style, ▾ expand / » menus / ‹VALUE› pills, SERVICES sub-page, WARM 2.0.1 · TUNER row under INTERFACE). Back = MM, no poster reload. bz_mm.py + new bz_set.py → FULL restart. Docs settings.md + mm-warm.md. Bak b401/bak_5215_settingsmm_001550. Not zipped. Other stock pages to be done one by one.

@@ -316,3 +316,6 @@ Clear: `if not home.getProperty('bz_nav') and SS: SS.clear()`.
 | Stops (5.33.214) | `bz_at_mmdim` 1–11 → section fade end 5 / 10 / 20 / 30 / 40 / 50 / 60 / 70 / 80 / 90 / 100%. Empty = 2 (10%, default). Stop **11 = "No dim (100%)"**: fade end 100 = full opacity, art exactly as with MM closed. Right steps up to it, Left steps down. Labels `BzATVal_mmdim` (Includes_Tuner ~202). |
 | No art cover under MM | `BezelRootArtHide` no longer draws the old 3.1.2 MM-open black panel over the right art window (x 962–1920). Only the library-root black (`bz_libroot`) is left. |
 | Why it was removed | That panel sat in its own `BezelSecDim` group, so Background dim faded the **cover** too. The poster showed at about (1 − dim) and the fanart at dim: the two moved in opposite directions and crossed around 50–60%. Measured on 5.33.212: poster 2→12→17→24→31 vs fanart 24→21→18→15→11 at 100/80/60/40/20%. |
+
+### Settings stays in the Warm system (5.33.215)
+MM → SETTINGS opens dialog 1130 over the section instead of replacing it, so Warm/poster/section stay loaded under it; Back returns to MM with no poster reload. Stock pages reached from it do replace the section (normal Kodi windows); on return the section reloads, then 1130 reopens. See settings.md.
