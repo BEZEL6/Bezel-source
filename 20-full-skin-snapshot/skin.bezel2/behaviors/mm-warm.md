@@ -319,3 +319,12 @@ Clear: `if not home.getProperty('bz_nav') and SS: SS.clear()`.
 
 ### Settings stays in the Warm system (5.33.215)
 MM → SETTINGS opens dialog 1130 over the section instead of replacing it, so Warm/poster/section stay loaded under it; Back returns to MM with no poster reload. Stock pages reached from it do replace the section (normal Kodi windows); on return the section reloads, then 1130 reopens. See settings.md.
+
+### Music A/B art lane (5.33.216)
+| Item | Current state |
+|---|---|
+| Lane | `_ABLane('mart', settle 0.25, load 0.5, empty_flag)` in `bz_flip.py` `ab_clock`, fed by `_ab_mart()`: Music window only; `Container(60).ListItem.Art(thumb)` else `.Icon` (parent folder `..` → next item), `Default*` skipped. Same preload-hidden → side flip as the Videos poster lane. |
+| Properties | `bz_mart_a` / `bz_mart_b` / `bz_mart_side` / `bz_mart_on` / `bz_mart_empty`. Music never writes `bz_pos_*` (BUG-010 kept: Videos owns `bz_pos`). |
+| XML | Includes_Bezel.xml poster group, after the MM pos A/B twins: two images gated `$EXP[bz_navmenu] + !$EXP[bz_mmmushide] + Window.IsActive(music) + bz_mart_on + !bz_mart_empty` + side. Visible 0→100 1500 ms sine (only while `bz_ab_live`, so MM open = full opacity same frame), Hidden 100→0 1500 ms sine, texture fadetime 0. |
+| Live twin | `BezelPoster60` MM twin (fadetime 3000) now yields in Music whenever the mart lane has art; it still covers no-art items (stand-ins) and Videos before `bz_pos_on`. |
+| Leaving Music | `_ab_mart` returns empty → `bz_mart_empty=1` → lane hidden in Videos. Mirror-enter seed keeps the front side on the current Music item while MM is closed. Music playing (mushide) path unchanged. |

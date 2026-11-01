@@ -84,3 +84,9 @@ The last choice is remembered across sessions. On a cold start the pills reset t
 
 ## Related
 mm-warm.md (LOCKED) · mm-mini-player.md · music-list.md · movies-list.md · tv-list.md · media-sources.md
+
+## Idle auto-hide (5.33.216)
+- **When:** MM open, Tuner/BEZEL Settings closed, no modal, focus on 6996, `Skin.String(bz_at_mmidle)` ≠ Off (default On), Kodi global idle ≥ 30 s.
+- **Hide:** `bz_flip.py` `mm_idle()` sets focus to park button **6897** (2×2 off-screen, no textures, inside group 6899) then sets `Window(Home).Property(bz_mmidle)=1`. Wrapper group **6894** (all strip/label/glow groups of BezelNavMenu, not the dim veil or button 6898) is `Visible String.IsEmpty(bz_mmidle)` → Hidden fade 100→0 1500 ms sine. Warm art, dim and mini-player stay.
+- **Wake:** any key on 6897 (up/down/left/right/select/back) → `ClearProperty(bz_mmidle,home)`; touch/mouse wake when idle time < 1 s. Group fades in 200 ms; `mm_idle` restores focus via `_bzstrip` (same row). The first key only wakes; it does not navigate. MM close clears `bz_mmidle`.
+- **Tuner:** MAIN MENU › Auto-hide menu (`mmidle`, LEFT Off / RIGHT On), info `bezel/info/mm_autohide.png`.

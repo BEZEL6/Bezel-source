@@ -121,3 +121,6 @@ id `fsslide`, string `bz_at_fsslide` 1–4 (empty=3). Left/Right in 6970 nav blo
 - WARM 2.0.1 `warmsplash` (Startup splash) On/Off → `bz_at_warmsplash`, default On; visuals only, warm-cache always runs. See mm-warm.md.
 
 **5.33.210:** Tuner onback `bz_tunesrc=fsctrl` → `ActivateWindow(1121)` when `$EXP[bz_m1121ok]`, else `ActivateWindow(visualisation)`. All Fanart FS / visualisation tuner rows also apply to 1121 (shared includes).
+
+### MAIN MENU › Auto-hide menu (5.33.216)
+`id=mmidle`, toggle, `Skin.String(bz_at_mmidle)` Off / On (empty = On). On = 30 s idle fades the MM strip to 0 (see mm-list.md). Info art `bezel/info/mm_autohide.png`. Row sits after Background dim level.

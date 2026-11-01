@@ -1304,6 +1304,16 @@ if home.getProperty('bz_flip_running') != 'true':
         if not v and home.getProperty('bz_arthold'): v = home.getProperty('bz_hold_poster')
         if v and os.path.basename(v.rstrip('/')).startswith('Default'): v = ''
         return v
+    def _ab_mart():   # 5.33.216 Music A/B art lane: artist/album thumbs, Music window only (BUG-010: never feeds bz_pos)
+        c = xbmc.getCondVisibility
+        if not c('Window.IsActive(music)'):
+            return ''
+        if c('Container(60).ListItem.IsParentFolder'):
+            v = _il('Container(60).ListItemNoWrap(1).Art(thumb)', 'Container(60).ListItemNoWrap(1).Icon')
+        else:
+            v = _il('Container(60).ListItem.Art(thumb)', 'Container(60).ListItem.Icon')
+        if v and os.path.basename(v.rstrip('/')).startswith('Default'): v = ''
+        return v
     def _ab_clear():   # TV clearlogo/clearart — same settle/load as fan/pos so strip logo crossfades with them
         c = xbmc.getCondVisibility
         if not c('Window.IsActive(videos)'):
@@ -1322,7 +1332,8 @@ if home.getProperty('bz_flip_running') != 'true':
         return xbmc.getInfoLabel('Skin.String(bz_at_warmhold)') != 'Off'
     def ab_clock():
         lanes = ((_ABLane('fan', 0.25, 0.5), _ab_fanart), (_ABLane('pos', 0.25, 0.5, True), _ab_poster),
-                 (_ABLane('clr', 0.25, 0.5, True), _ab_clear))
+                 (_ABLane('clr', 0.25, 0.5, True), _ab_clear),
+                 (_ABLane('mart', 0.25, 0.5, True), _ab_mart))   # 5.33.216 Music A/B
         armed = False; open_t = 0.0
         home.clearProperty('bz_ab_live')
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
@@ -1347,6 +1358,29 @@ if home.getProperty('bz_flip_running') != 'true':
                     lanes[0][0].seed(xbmc.getInfoLabel('$VAR[BezelFanart]'), time.time())
             if mon.waitForAbort(0.05): break
     _bzstart(ab_clock)
+    def mm_idle():   # 5.33.216 MM idle fade: 30 s no input -> strip fades to 0 (veil/Warm stay), focus parked on 6897; any key wakes + SetFocus(6996)
+        IDLE = 30
+        while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
+            hid = home.getProperty('bz_mmidle')
+            if hid == '1':
+                if home.getProperty('bz_nav') != 'true':
+                    home.clearProperty('bz_mmidle')
+                elif xbmc.getGlobalIdleTime() < 1:
+                    home.clearProperty('bz_mmidle')   # touch / mouse / key not routed to 6897
+            elif hid == 'w':   # woken by 6897 (ClearProperty) -> restore strip focus next frame
+                pass
+            elif home.getProperty('bz_mmidle_set'):
+                home.clearProperty('bz_mmidle_set')
+                if mon.waitForAbort(0.05): break
+                if home.getProperty('bz_nav') == 'true' and xbmc.getCondVisibility('Control.HasFocus(6897)'):
+                    _bzstrip(home)
+            elif (home.getProperty('bz_nav') == 'true' and xbmc.getInfoLabel('Skin.String(bz_at_mmidle)') != 'Off'
+                  and not home.getProperty('bz_navtune') and not home.getProperty('bz_navbez')
+                  and xbmc.getGlobalIdleTime() >= IDLE and xbmc.getCondVisibility('Control.HasFocus(6996) + !System.HasModalDialog')):
+                xbmc.executebuiltin('SetFocus(6897)')
+                home.setProperty('bz_mmidle', '1'); home.setProperty('bz_mmidle_set', '1')
+            if mon.waitForAbort(0.1): break
+    _bzstart(mm_idle)
     def akey():
         alb = xbmc.getInfoLabel('MusicPlayer.Album')
         if alb: return alb + '|' + xbmc.getInfoLabel('MusicPlayer.Property(Album_Artist)') + '|' + xbmc.getInfoLabel('MusicPlayer.AlbumArtist')
