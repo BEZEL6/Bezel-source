@@ -20,12 +20,14 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ## Open / close
 
-**How it works.** If viz opens straight from the Music window, the music playlist or 1112 (Kodi auto-viz), it is a bounce: the skin toggles viz off and replaces the window with Music. A fresh open sets the NP props, starts `bz_flip` if needed and focuses 6390 on the next tick.
+**Simple.** Fanart FS is always Kodi's real fullscreen music window, from every section including Music. Same look, same keys everywhere.
+
+**How it works.** Every open of `visualisation` (MM FULL pill, Tab, 1112 auto-viz, any `ActivateWindow(visualisation)`) stays on `MusicVisualisation.xml`, so the `<visualisation>` keymap always applies. The old Music bounce (opened from music/musicplaylist/1112 → toggle viz off, `ReplaceWindow(Music)` with the in-place 6390 panel) was removed (t1584). Each open sets the NP props, starts `bz_flip` if needed and focuses 6390 on the next tick.
 
 **Wiring.**
-- `onload` from music/musicplaylist/1112 → `bz_fsbounce=1` (cleared 1 s) · `bz_cmd.py vistoggle` · `ReplaceWindow(Music)`.
+- No `Window.Previous` gating; `bz_fsbounce` is never set now (the list-60 cover-column fade checks in `Includes_Bezel.xml` treat it as empty). `bz_cmd.py vistoggle` is unused.
 - `onload` always → `bz_cmd.py keymap` · `bz_pnoff=1` · `bz_dfs_mode=album` if empty.
-- `onload` fresh → `bz_fsnp=true` · `bz_np=true` · `AlarmClock(bz_fsfoc,SetFocus(6390),00:00,silent)` · `RunScript(bz_flip.py)` if `bz_flip_running` is not true · `bz_sway_restart=true`.
+- `onload` every open → `bz_fsnp=true` · `bz_np=true` · `AlarmClock(bz_fsfoc,SetFocus(6390),00:00,silent)` · `RunScript(bz_flip.py)` if `bz_flip_running` is not true · `bz_sway_restart=true`.
 - `onunload` → clear `bz_np` if `bz_fsnp` · if `!$EXP[bz_navmenu]` `AlarmClock(bz_vizret,SetFocus(60),00:00,silent)` · clear `bz_fsnp`, `bz_pnoff`, `bz_pnfoc`, `bz_vdtap` · `bz_gridret=1` for 1 s.
 - `6299` `onfocus` → `ClearProperty(bz_np,home)` + `Action(Back)`. `6385` → focus 6390 + `bz_cmd.py npctl,toggle`. `60` → focus 6390.
 

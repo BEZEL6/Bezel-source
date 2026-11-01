@@ -1,3 +1,6 @@
+5.33.209
+- Music visualisation bounce removed: opening visualisation from Music (MM FULL pill, Tab, 1112 auto-viz) now stays on real Kodi Fanart FS (MusicVisualisation.xml) like every other section, so the <visualisation> keymap applies everywhere. Old Tab-from-Music in-place 6390 toggle gone (bz_cmd.py vistoggle unused). behaviors/fanart-fs.md updated. ReloadSkin (XML); FULL restart fine.
+
 5.33.208
 - Docs: behaviors/ expanded — every file now has Simple / How it works / Wiring from live code; mm-warm.md Section enter/exit (mirror-enter) LOCKED block. No skin behavior code changes. ReloadSkin.
 

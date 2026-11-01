@@ -1,25 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- 3.5.2: Kodi's fullscreen music window (12006: Tab / FullScreen / "switch to visualisation on playback").
-     From the music window (or the Now Playing dialog over it) it still toggles the in-place Now Playing panel (bz_np) and goes straight back to the
-     music screen with plain builtins (vistoggle, debounced).
-     BETA 2 items 2 + 3: from any NON-music window (Home, Movies, TV, Pictures, Settings...) it is a real full-screen Now Playing window of its own:
-     the same Now Playing panel (BezelNPInPlace, with its black / fanart / colour block background), the swaying album (BezelMusicPlayingArt),
-     the same player controls (M / tap) and the logo. Back, Tab / Display, a logo tap or the music stopping close it with Kodi's PreviousWindow,
-     so it returns to the window / section it was opened from. -->
+<!-- 5.33.209: real Kodi fullscreen music window from EVERY section including Music (Music bounce / in-place vistoggle removed, Rob t1584).
+     Real full-screen Now Playing: BezelNPInPlace panel, swaying album, player controls and logo. Back / Tab / logo tap / music stop close it with PreviousWindow. -->
 <window>
 	<backgroundcolor>00000000</backgroundcolor>
 	<defaultcontrol always="true">6390</defaultcontrol>
 	<menucontrol>6385</menucontrol>
-	<onload condition="Window.Previous(music) | Window.Previous(musicplaylist) | Window.Previous(1112)">SetProperty(bz_fsbounce,1,home)</onload><onload condition="Window.Previous(music) | Window.Previous(musicplaylist) | Window.Previous(1112)">AlarmClock(bzfsbounce,ClearProperty(bz_fsbounce,home),00:01,silent)</onload><!-- 5.33.52: Music FS bounce, list 60 cover-column fades skipped -->
-	<onload condition="Window.Previous(music) | Window.Previous(musicplaylist) | Window.Previous(1112)">RunScript(special://skin/scripts/bz_cmd.py,vistoggle)</onload>
-	<onload condition="Window.Previous(music) | Window.Previous(musicplaylist) | Window.Previous(1112)">ReplaceWindow(Music)</onload>
+	<!-- bounce removed (Rob t1584): Music now stays on real visualisation like every section -->
 	<onload>RunScript(special://skin/scripts/bz_cmd.py,keymap)</onload><!-- 5.33.137 t976: refresh viz keymap (Select/pad -> 6390) -->
 	<onload>SetProperty(bz_pnoff,1,home)</onload><onload condition="String.IsEmpty(Skin.String(bz_dfs_mode))">Skin.SetString(bz_dfs_mode,album)</onload><!-- 5.33.109: land in fanart FS; Play Next by double-tap; pill default album -->
-	<onload condition="!Window.Previous(music) + !Window.Previous(musicplaylist) + !Window.Previous(1112)">SetProperty(bz_fsnp,true,home)</onload>
-	<onload condition="!Window.Previous(music) + !Window.Previous(musicplaylist) + !Window.Previous(1112)">SetProperty(bz_np,true,home)</onload>
-	<onload condition="!Window.Previous(music) + !Window.Previous(musicplaylist) + !Window.Previous(1112)">AlarmClock(bz_fsfoc,SetFocus(6390),00:00,silent)</onload><!-- Fanart FS: re-focus 6390 after bz_np visible (defaultcontrol can miss hidden 6390 at init) -->
-	<onload condition="!Window.Previous(music) + !Window.Previous(musicplaylist) + !Window.Previous(1112) + !String.IsEqual(Window(Home).Property(bz_flip_running),true)">RunScript(special://skin/scripts/bz_flip.py)</onload>
-	<onload condition="!Window.Previous(music) + !Window.Previous(musicplaylist) + !Window.Previous(1112)">SetProperty(bz_sway_restart,true,home)</onload>
+	<onload>SetProperty(bz_fsnp,true,home)</onload>
+	<onload>SetProperty(bz_np,true,home)</onload>
+	<onload>AlarmClock(bz_fsfoc,SetFocus(6390),00:00,silent)</onload><!-- Fanart FS: re-focus 6390 after bz_np visible (defaultcontrol can miss hidden 6390 at init) -->
+	<onload condition="!String.IsEqual(Window(Home).Property(bz_flip_running),true)">RunScript(special://skin/scripts/bz_flip.py)</onload>
+	<onload>SetProperty(bz_sway_restart,true,home)</onload>
 	<onunload condition="String.IsEqual(Window(Home).Property(bz_fsnp),true)">ClearProperty(bz_np,home)</onunload>
 	<onunload condition="!$EXP[bz_navmenu]">AlarmClock(bz_vizret,SetFocus(60),00:00,silent)</onunload><!-- 5.33.112 t786: Play Next / viz exit -> section list 60 --><onunload>ClearProperty(bz_fsnp,home)</onunload><onunload>ClearProperty(bz_pnoff,home)</onunload><onunload>ClearProperty(bz_pnfoc,home)</onunload><onunload>ClearProperty(bz_vdtap,home)</onunload><!-- 5.33.108 t732: Back in play-next = plain viz FS -->
 	<onunload>SetProperty(bz_gridret,1,home)</onunload><onunload>AlarmClock(bzgridret,ClearProperty(bz_gridret,home),00:01,silent)</onunload><!-- 4.0.1 O22: the section underneath holds its list hidden for 1 s if its grid takes the focus (no list bar flash) -->

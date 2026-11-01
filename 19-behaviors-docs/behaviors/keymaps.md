@@ -57,6 +57,8 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 | videoosd | back → `vidback` |
 | visualisation | Right → `PlayerControl(Next)` (5.33.205) · back → `SetFocus(6297)` · M/RED → 1115 · select → Select · longpress return → PlayPause · gamepad/joystick mapped to match |
 
+**Note:** the `visualisation` block now applies from every section, Music included — the Music→Music bounce that used to skip it was removed (t1584).
+
 **Unverified:** both a `fullscreenvideo` and a `FullscreenVideo` block map Back. Which one wins on device has not been tested.
 
 ## Related

@@ -2,15 +2,25 @@
 
 **Object:** Shared sway clock + album / poster rotatey + stub cast opacity  
 **Where:** Music big album (Dialogue FS / Play Next / viz) · Movies/TV poster (`BezelVPLPoster`) · stub side casts (`pn_cast.png`)  
-**Last updated:** 2026-10-31 · 5.33.194 (re-verified vs live .194)  
-**Status:** draft — matches live 5.33.194 (IDs/files re-verified Oct 31); not Rob-approved, not re-smoked  
+**Last updated:** 2026-10-31  
+**Status:** Live. One Python clock drives the album and poster sway flags. The album cast sits outside the sway group (5.33.205 edge-drift fix). Draft: not Rob-approved, not re-smoked.  
 **Skin:** skin.bezel2 (Estuary fork)
 
 > Per-object behavior file (same family as `mm-list.md`). Documents **current live math and settings**. Tuner can patch some XML times; clock reads `D` from live XML.
 
 ---
 
-## How it works (plain English)
+## Overview
+
+Three layers: **Simple** (below), **How it works** (plain English, below), **Wiring** (Code map and every technical section after it, taken from the live tree).
+
+### Simple
+- The big album (Music) and the poster (Movies/TV) slowly rock left and right, like a picture tilting on a wall.
+- The soft shadows beside the album get darker and lighter in time with that rocking.
+- When the screen reloads, the rocking starts again from flat instead of jumping.
+- A few Tuner sliders change how long it pauses and how fast it moves.
+
+### How it works
 
 Sway is the slow left–right tip of the big Music album and the Movies/TV poster. It is not a one-shot animation Kodi runs and forgets. A small Python script keeps a shared **clock**, and the skin XML listens to flags that clock turns on. Stub side-cast shadows (the soft dark fall beside the album) also read that same clock so they brighten and fade in step with the tip.
 
@@ -38,7 +48,7 @@ One clock → phase flags → Conditional rotatey on art + script-driven cast op
 
 ---
 
-## Code map
+## Code map (Wiring)
 | Piece | Location |
 |-------|----------|
 | Shared clock + cast | `scripts/bz_flip.py` — `_sn`, `_cast_D`, `_bz_cast`, `sway_clock` (~L146–220) |
@@ -285,3 +295,15 @@ Casts **do not** own Conditional timers. Mid-cycle stub / viz / Play Next load j
 
 ## Related
 `play-next.md` · `dialogue-fs.md` · `fanart-fs.md` · `now-playing.md` · `music-viz-settings.md` · `skin-settings-tuner.md` · `mm-list.md` · `bugs.md` (BUG-009 / 014 / 019 / 021)
+
+---
+
+## Album cast strip-edge pin (5.33.205)
+
+**Bug:** Album cast soft shadow on the colour strip showed a couple of pixels of edge drift at the strip’s right edge (x 960) while sway ran.
+
+**Cause:** Cast lived *inside* the 3D sway `rotatey` group with a child counter-`rotatey`. Nested perspective does not cancel perfectly, so the cast’s right edge wobbles in screen space against the flat strip.
+
+**Fix (code only):** Move album cast (`BzCastTex_a`, left 480 × width 480 → right edge 960) **outside** the flip/sway rotate tree in `BezelMusicPlayingArt`. Keep zoom+fade grow about `960,520`. Remove all cast `rotatey` / counter-`rotatey`. Vis still gated on `Player.HasAudio`, sway mode, and `bz_back`. Poster cast unchanged.
+
+**Smoke:** ReloadSkin (or FULL restart if props sticky). Music playing, watch strip right edge through short and long sway peak — cast edge should stay flush, no crawl.

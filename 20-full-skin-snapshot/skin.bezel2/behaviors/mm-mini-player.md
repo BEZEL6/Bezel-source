@@ -27,7 +27,7 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 | 6960 | 286, top 86, 86×34 | label FULL, font `bz_mm17`, `mm_full_ol.png` / `mm_full.png` (border 12, "FULL pill B") | see below | 6959 / noop |
 
 - 6957–6959 extra clicks: 1120 active → `Dialog.Close(1120)`. Otherwise `ClearProperty(bz_np,home)` + `Action(Back)`.
-- 6960: 1112 active → `Dialog.Close(1112,true)`. Clear `bz_nav` / `bz_navtune` / `bz_navbez`. `Player.HasVideo` → `ActivateWindow(fullscreenvideo)`, else `ActivateWindow(visualisation)`.
+- 6960: 1112 active → `Dialog.Close(1112,true)`. Clear `bz_nav` / `bz_navtune` / `bz_navbez`. `Player.HasVideo` → `ActivateWindow(fullscreenvideo)`, else `ActivateWindow(visualisation)`. From any section, Music included, this lands on real Fanart FS (`MusicVisualisation.xml`) with the `<visualisation>` keymap — no Music bounce (removed t1584).
 - A 350×2 divider (40% white) sits at top 140.
 
 ## Video group
