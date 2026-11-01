@@ -17,3 +17,6 @@ Not covered (not section menus): notifications, keyboard/numeric/slider/volume, 
 
 ## Related
 mm-list.md · mm-warm.md · settings.md
+
+## Section exit → MM (5.33.207 mirror-enter)
+Exit mirrors enter: section fanart/poster cut away as before, but the MM A/B lanes were pre-seeded (bz_flip.py `ab_clock` seed while MM closed) with the same art and show at full opacity the same frame MM opens — art over art, no black flash. Lane 1500 ms fades run only on side flips while MM is already open (`bz_ab_live`). Same for Music, Movies, TV.

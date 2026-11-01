@@ -1,3 +1,9 @@
+5.33.207
+- Section exit black flash fix (mirror-enter): leaving Music/Movies/TV for MM no longer flashes black. MM opens on the art already on screen at full opacity, same frame.
+- bz_flip.py ab_clock: while MM closed (music/videos), fan/pos/clr lane front side is seeded with the current section art (bz_*_a|b, bz_*_on, bz_pos_empty).
+- Includes_Bezel.xml: MM A/B fan + pos lanes (fanart stage, section poster, album face A/B posters, Music MM poster) 1500 ms Visible fade now only when bz_ab_live (side flip while MM already open); bz_ab_live set 0.3 s after MM opens, cleared on close.
+- No timed holds, no K40. FULL restart (.py).
+
 5.33.205
 - Fanart FS 6409: single click play/pause, double click album viz (ClearProperty bz_pnoff)
 - Fanart FS Right (visualisation keymap): PlayerControl(Next) only — no 6390 focus land

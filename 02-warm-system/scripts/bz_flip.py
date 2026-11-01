@@ -1243,6 +1243,14 @@ if home.getProperty('bz_flip_running') != 'true':
         def __init__(self, p, settle=0.25, load_wait=0.5, empty_flag=False):
             self.p = p; self.settle = settle; self.load_wait = load_wait; self.empty_flag = empty_flag
             self.seen = None; self.seen_t = 0.0; self.shown = None; self.stage = None; self.stage_t = 0.0
+        def seed(self, target, now):   # 5.33.207 mirror-enter: while MM is closed, keep the front side = art on screen now, so MM opens on it (no black)
+            p = self.p; side = home.getProperty('bz_%s_side' % p) or 'a'
+            if target:
+                if home.getProperty('bz_%s_%s' % (p, side)) != target: home.setProperty('bz_%s_%s' % (p, side), target)
+                if not home.getProperty('bz_%s_on' % p): home.setProperty('bz_%s_on' % p, 'true')
+                if self.empty_flag and home.getProperty('bz_%s_empty' % p): home.clearProperty('bz_%s_empty' % p)
+            elif self.empty_flag and not home.getProperty('bz_%s_empty' % p): home.setProperty('bz_%s_empty' % p, '1')
+            self.shown = target; self.seen = target; self.seen_t = now; self.stage = None
         def stop(self):   # MM closed: drop pending, keep last shown
             if self.stage is not None:
                 o = 'b' if (home.getProperty('bz_%s_side' % self.p) or 'a') == 'a' else 'a'
@@ -1311,16 +1319,22 @@ if home.getProperty('bz_flip_running') != 'true':
     def ab_clock():
         lanes = ((_ABLane('fan', 0.25, 0.5), _ab_fanart), (_ABLane('pos', 0.25, 0.5, True), _ab_poster),
                  (_ABLane('clr', 0.25, 0.5, True), _ab_clear))
-        armed = False
+        armed = False; open_t = 0.0
+        home.clearProperty('bz_ab_live')
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
             if home.getProperty('bz_nav') == 'true':
-                armed = True
+                if not armed: armed = True; open_t = time.time()
+                elif not home.getProperty('bz_ab_live') and time.time() - open_t >= 0.3: home.setProperty('bz_ab_live', '1')   # 5.33.207: side-flip fades armed only after MM is up (open = full opacity, same frame)
                 if not xbmc.getCondVisibility('Container.IsUpdating | System.HasModalDialog'):
                     now = time.time()
                     for ln, rf in lanes: ln.tick(rf(), now)
-            elif armed:
-                armed = False
-                for ln, rf in lanes: ln.stop()
+            else:
+                if armed:
+                    armed = False; home.clearProperty('bz_ab_live')
+                    for ln, rf in lanes: ln.stop()
+                elif not xbmc.getCondVisibility('Container.IsUpdating | System.HasModalDialog') and xbmc.getCondVisibility('Window.IsActive(music) | Window.IsActive(videos)'):
+                    now = time.time()   # 5.33.207 mirror-enter seed: lane front side tracks the section art while MM is closed
+                    for ln, rf in lanes: ln.seed(rf(), now)
             if mon.waitForAbort(0.05): break
     _bzstart(ab_clock)
     def akey():

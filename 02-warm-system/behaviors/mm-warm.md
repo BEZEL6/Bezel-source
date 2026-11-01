@@ -2,7 +2,7 @@
 
 **Object:** Main Menu warm underlay (`scripts/bz_flip.py` → `mm_warm`) + cold-start warm gate (`scripts/bz_warmgate.py`)  
 **Where:** Under `$EXP[bz_navmenu]`, strip `6996` focused  
-**Last updated:** 2026-10-31  
+**Last updated:** 2026-10-31 (5.33.207 mirror-enter exit)  
 **Status:** LOCKED — live as of 5.33.203 (Rob approved Oct 31 2026). This file describes the current state, not a changelog. Any change needs Rob's approval.  
 
 **Startup random row (5.33.204 RANDSTART):** startup seeds a random list-60 row (skip `..` / *All), not only the GetDirectory art window — `bz_warmgate.py` `randstart()` after LAND for the first section; `bz_flip.py` `_restore` picks + seeds `SS[sec].row/path` via `_randrow()` when a section has no session row. Strip 6996 focus bounced back.
@@ -16,7 +16,8 @@
 | Music underlay | always `musicdb://artists/` (+ `bz_music_underlay` guard); Select returns to `bz_lastmusic` |
 | Section swap | fade-in only: `bz_arthold` hold → release when new list has item + family art (≤ ~0.9 s, 45×20 ms); no `bz_xfin`/`bz_xfade` dim-out |
 | Family split (BUG-010) | Music ↔ Movies/TV: poster lane cleared at once, fanart-only hold. Movies ↔ TV: poster + fanart hold (`bz_hold_poster`, poster/tvshow.poster only) |
-| A/B lanes | `fan`, `pos`, `clr`: settle 0.25 s → LOAD_WAIT 0.5 s → side flip → 1500 ms sine Visible/Hidden crossfade (fixed) |
+| A/B lanes | `fan`, `pos`, `clr`: settle 0.25 s → LOAD_WAIT 0.5 s → side flip → 1500 ms sine Visible/Hidden crossfade. **5.33.207:** fan/pos Visible fade only when `bz_ab_live` (set 0.3 s after MM opens, cleared on close) — MM open shows the lane at full opacity same frame |
+| MM-open seed (5.33.207 mirror-enter) | While MM is closed in music/videos, `ab_clock` seeds each lane's front side with the art on screen now (`_ab_fanart/_ab_poster/_ab_clear` → `bz_<p>_<side>`, `bz_<p>_on`, `bz_pos_empty`). Section → MM exit opens on that same image (no black flash), mirroring the enter path. No timed hold |
 | Lane not fed | live MM twin image, `fadetime` 3000 |
 | Backdrop cycle | 10 s parked → new random `extras/backdrop/` image |
 | Music playing (`bz_mmmushide`) | MM poster lane hidden, album art (`BzWarmMusicArt`) in poster slot, fade 600 in / 300 out, re-latch 400 ms |

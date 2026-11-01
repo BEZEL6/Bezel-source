@@ -1,3 +1,25 @@
+5.33.207
+- Section exit black flash fix (mirror-enter): leaving Music/Movies/TV for MM no longer flashes black. MM opens on the art already on screen at full opacity, same frame.
+- bz_flip.py ab_clock: while MM closed (music/videos), fan/pos/clr lane front side is seeded with the current section art (bz_*_a|b, bz_*_on, bz_pos_empty).
+- Includes_Bezel.xml: MM A/B fan + pos lanes (fanart stage, section poster, album face A/B posters, Music MM poster) 1500 ms Visible fade now only when bz_ab_live (side flip while MM already open); bz_ab_live set 0.3 s after MM opens, cleared on close.
+- No timed holds, no K40. FULL restart (.py).
+
+5.33.205
+- Fanart FS 6409: single click play/pause, double click album viz (ClearProperty bz_pnoff)
+- Fanart FS Right (visualisation keymap): PlayerControl(Next) only — no 6390 focus land
+- Options/Info left-half black mask disabled (DialogVideoInfo/MusicInfo/AddonInfo visible=false)
+- Album cast strip-edge drift: BzCastTex_a outside flip/sway rotatey tree
+
+5.33.204
+- Warm: Music↔Movies/TV album+poster true-fade (not Movies↔TV)
+- Startup/first-visit list randomizer (Container(60) row); art-cache shuffle kept
+- Prior session: FS sides 3s/2s; double-Select album viz; fan art pill fanart-only; big album pill 6401 on album viz; TV Y/G under title; jump-bar; Warm 2.0 docs locked
+
+5.33.203
+- FS album viz + Dialogue FS: sides fade 3s delay / 2s fade
+- Fanart FS double-Select = album viz only (no NextPreset); fan art pill 6391 fanart-only; big album pill 6401 on album viz (match 1120)
+- TV Year/Genre under show title; jump-bar black bg removed; strip shadow / cast pin; viz keymap
+
 [B]5.33.202[/B]
 - WarmGate art preload: random 400-item GetDirectory window per section (Music/Movies/TV).
 - Includes prior uncommitted: GlobalBackdrop hidden while bz_warm_gate; TV clearlogo MM A/B fade.
