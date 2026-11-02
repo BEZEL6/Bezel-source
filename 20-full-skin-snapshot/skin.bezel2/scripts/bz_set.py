@@ -335,3 +335,83 @@ def act(k):
         xbmc.executebuiltin('ClearProperty(bz_nav,home)'); xbmc.executebuiltin('ActivateWindow(1130)')
 if a and a[0] == 'pick': pick(a[1])
 elif a and a[0] == 'act': act(a[1])
+
+# ---- 5.33.364 Rob t2572: per-source dropdown in SOURCES 1132 (OPEN / RENAME / REMOVE / REFRESH) ----
+def _srcctx(win, typ, path, want):
+    # open <win> at sources://<typ>/, focus the source row, run Kodi's context entry whose label contains want
+    xbmc.executebuiltin('ActivateWindow(%s,sources://%s/,return)' % (win, typ))
+    for _ in range(60):
+        if xbmc.getCondVisibility('Window.IsActive(%s) + String.IsEqual(Container.FolderPath,sources://%s/) + Integer.IsGreater(Container(60).NumItems,0)' % (win, typ)): break
+        if _ == 30: xbmc.executebuiltin('Container.Update(sources://%s/)' % typ)
+        xbmc.sleep(50)
+    n = int(xbmc.getInfoLabel('Container(60).NumItems') or 0)
+    for i in range(n + 1):
+        xbmc.executebuiltin('SetFocus(60,%d,absolute)' % i); xbmc.sleep(40)
+        if xbmc.getInfoLabel('Container(60).ListItem.FolderPath').rstrip('/') == path.rstrip('/'): break
+    else:
+        xbmc.log('BEZEL mssrc row not found %s' % path, xbmc.LOGWARNING); return False
+    xbmc.executebuiltin('Action(ContextMenu)')
+    xbmc.sleep(150)
+    for _ in range(120):
+        if xbmc.getCondVisibility('Window.IsActive(contextmenu)') and xbmc.getInfoLabel('Control.GetLabel(1000)') + xbmc.getInfoLabel('Control.GetLabel(1001)'): break
+        xbmc.sleep(50)
+    xbmc.log('BEZEL mssrc ctx open=%s labels=%s' % (xbmc.getCondVisibility('Window.IsActive(contextmenu)'), [xbmc.getInfoLabel('Control.GetLabel(%d)' % c) for c in range(996, 1012)]), xbmc.LOGWARNING)
+    for cid in range(1000, 1040):
+        if want in xbmc.getInfoLabel('Control.GetLabel(%d)' % cid).lower():
+            xbmc.executebuiltin('SetFocus(%d)' % cid); xbmc.sleep(60); xbmc.executebuiltin('Action(select)'); return True
+    xbmc.executebuiltin('Dialog.Close(contextmenu)'); return False
+def _waitmodal(mon):
+    for _ in range(40):
+        if xbmc.getCondVisibility('System.HasActiveModalDialog'): break
+        xbmc.sleep(50)
+    while not mon.abortRequested() and xbmc.getCondVisibility('System.HasActiveModalDialog'): xbmc.sleep(150)
+def _ctxpick(want):
+    xbmc.sleep(150)
+    for _ in range(80):
+        if xbmc.getCondVisibility('Window.IsActive(contextmenu)'): break
+        xbmc.sleep(50)
+    xbmc.sleep(150)
+    labs = [(c, xbmc.getInfoLabel('Control.GetLabel(%d)' % c)) for c in range(1000, 1040)]
+    xbmc.log('BEZEL mssrc ctx %s' % [l for l in labs if l[1]], xbmc.LOGWARNING)
+    for cid, l in labs:
+        if want in l.lower():
+            xbmc.executebuiltin('SetFocus(%d)' % cid); xbmc.sleep(60); xbmc.executebuiltin('Action(select)'); return True
+    xbmc.executebuiltin('Dialog.Close(contextmenu)'); return False
+def mssrc(act):
+    mon = xbmc.Monitor()
+    win = home.getProperty('bz_srcwin') or 'Videos'; path = home.getProperty('bz_srcsel'); name = home.getProperty('bz_srcname')
+    typ = {'Music': 'music', 'Pictures': 'pictures'}.get(win, 'video')
+    if act == 'refresh':
+        if typ != 'pictures': xbmc.executebuiltin('UpdateLibrary(%s,%s)' % (typ, path))
+        home.clearProperty('bz_srcdd'); xbmc.sleep(80); xbmc.executebuiltin('SetFocus(9150)'); return
+    if act == 'open':
+        home.clearProperty('bz_srcdd'); home.setProperty('bz_msret', '1')
+        xbmc.executebuiltin('Dialog.Close(1132,true)'); xbmc.sleep(50)
+        xbmc.executebuiltin('ActivateWindow(%s,%s,return)' % (win, path)); return
+    new = ''
+    if act == 'rename':
+        new = xbmcgui.Dialog().input('RENAME SOURCE', name)
+        if not new or new == name: return
+    # REMOVE / RENAME: Kodi's own source context entry, run on the 1132 row (no window switch)
+    home.clearProperty('bz_srcdd'); xbmc.sleep(80); xbmc.executebuiltin('SetFocus(9150)'); xbmc.sleep(80)
+    xbmc.executebuiltin('Action(ContextMenu)')
+    if act == 'remove':
+        if _ctxpick('remove'): _waitmodal(mon)
+    elif _ctxpick('edit'):
+        for _ in range(80):
+            if xbmc.getCondVisibility('Window.IsActive(mediasource)'): break
+            xbmc.sleep(50)
+        xbmc.sleep(200); xbmc.executebuiltin('SetFocus(12)'); xbmc.sleep(100); xbmc.executebuiltin('Action(select)')
+        for _ in range(60):
+            if xbmc.getCondVisibility('Window.IsActive(virtualkeyboard)'): break
+            xbmc.sleep(50)
+        xbmc.executeJSONRPC(json.dumps({'jsonrpc': '2.0', 'id': 1, 'method': 'Input.SendText', 'params': {'text': new, 'done': True}}))
+        xbmc.sleep(400); xbmc.executebuiltin('SetFocus(18)'); xbmc.sleep(100); xbmc.executebuiltin('Action(select)')
+        _waitmodal(mon)
+    msload()
+if a and a[0] == 'mssrc': mssrc(a[1] if len(a) > 1 else 'open')
+# 5.33.364: Back in the per-source dropdown — Kodi closes 1132 on Back; reopen it on the list
+if a and a[0] == 'ddback':
+    xbmc.sleep(120)
+    if not xbmc.getCondVisibility('Window.IsActive(1132)') and xbmc.getCondVisibility('Window.IsActive(1117)'):
+        xbmc.executebuiltin('ActivateWindow(1132)')

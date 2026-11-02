@@ -2,7 +2,7 @@
 
 **Object:** `DialogConfirm.xml` (Kodi yes/no) · include `BzStdProgress` (Includes_BezelDialogs ~514) or `BzRefreshProgress` (Includes_BezelRefresh ~112) · grouplist `9000` with buttons `10` / `11` / `12`  
 **Where:** Colour strip at 570,120 (390×900) plus body text in the fanart block (140,220)  
-**Last updated:** 2026-10-31 · 5.33.207  
+**Last updated:** 2026-11-02 · 5.33.364
 **Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
 **Skin:** skin.bezel2
 
@@ -21,6 +21,12 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 - `<defaultcontrol always="true">9000</defaultcontrol>`.
 - Layout: `Window.IsActive(musicinformation) + Window.IsActive(progressdialog)` → `BzRefreshProgress`, else `BzStdProgress`.
 - `BzStdProgress`: B3 black full-screen dim · strip `$VAR[BzMMStrip]` · "CONFIRM" title `bz_mm34` · grouplist 9000 (top 100, 390×754, vertical) with buttons 10 (No), 11 (Yes), 12 (custom), each 390×58 `bz_mm28` with focus bar `$VAR[BzATHiTex]` / `$VAR[BzMMBarCol]` · heading label 1 · textbox 9 (autoscroll 3000/4000/5000) · progress 20 (only with `progressdialog` and `System.Progressbar`).
+
+## Warm look (5.33.364, global)
+
+**Simple.** Every Yes/No is Warm, everywhere — not just Media Sources. Same Warm underlay (BzMSUnderlay: black + MM fanart lane at MM dim) and Warm MM strip chrome (BezelMMStripChrome box) behind the CONFIRM rows.
+
+**Wiring.** `BzStdProgress`: `BzMSUnderlay` visible `!Window.IsActive(fullscreenvideo) + !Window.IsActive(visualisation)`; over fullscreen video / visualisation only, the old B3 dim shows instead so playback stays visible. BzMSUnderlay itself draws nothing when 1117 is under (1117 is the underlay). Strip chrome `!Window.IsActive(1117)`. `bz_msflow` expression still exists but no longer gates the confirm. Refresh-over-Music-info path (`BzRefreshProgress`) unchanged. Callers: bz_ctx remove, bz_wipe, bz_tune reset, msclean, Add Source scan ask, source Remove, core Kodi yes/no.
 
 ## Keys
 
@@ -72,3 +78,7 @@ _No id’d controls in this file (layout comes from includes)._
 <!-- PORTLINKS -->
 ---
 **Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/dialog-confirm.md) · [state](../state/dialog-confirm.md) · [motion](../motion/dialog-confirm.md) · [art](../art/dialog-confirm.md) · [input](../input/dialog-confirm.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+## Media Sources look (5.33.363, current state)
+In any Media Sources flow (`bz_msflow` = 1117 active, mediasource dialog active, or folder path starts with sources://), the Yes/No dialog uses the Warm look: no dark full-screen dim. It draws the shared Media Sources underlay `BzMSUnderlay` (the same one the Add Source dialog uses: held fanart + poster). Over Videos it also draws the MM strip chrome (`BezelMMStripChrome` box). Over 1117 it uses 1117's own chrome, and 1117 hides its rows while `yesnodialog` is open. Outside Media Sources the dialog is unchanged (dark dim, flat strip).
+This covers every Yes/No in these flows: the scan question after Add Source OK, Remove source, the CLEAN LIBRARY confirm, and Edit source questions.

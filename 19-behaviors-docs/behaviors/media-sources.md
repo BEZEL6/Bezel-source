@@ -2,7 +2,7 @@
 
 **Object:** `Custom_1117_MediaSources.xml` window `1117` · grouplist `9000` (125,128, 440 wide) with 11 rows `7101–7121` · grouplist `9001` (584,136) with `9101` / `9102` · bounce `6299`  
 **Where:** Main Menu row MEDIA SOURCES  
-**Last updated:** 2026-11-02 · 5.33.359
+**Last updated:** 2026-11-02 · 5.33.365
 **Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
 **Skin:** skin.bezel2
 
@@ -113,3 +113,24 @@ Nav: Up/Down runs NAME → PATHS → BROWSE → ADD PATH → REMOVE → OK/CANCE
 
 ## Add Source dialog (5.33.360)
 DialogMediaSource = MS Warm strip at 570,120: BezelMMStripChrome (bar opacity/shadow/bezel), NAME/PATHS/BROWSE/ADD PATH/REMOVE rows with BzATHiTex hi bar, OK/CANCEL np pills. No own dim/fanart: 1117 art stays under; 1117 rows/labels hide while mediasource is active.
+
+## Add Source dialog — current state (5.33.363)
+- Opens over 1117 or over Videos (sources://). Over 1117: 1117's own underlay + strip chrome show; the dialog draws no underlay or chrome (no double opacity). Not over 1117: the dialog draws the 1117 underlay itself (StdFrame, held fanart lane bz_fan_a/b at MM dim + fanart opacity, art) plus strip chrome (box).
+- Title: ADD VIDEO SOURCE (etc., from control 2), font bz_mm28.
+- Right art: a movie/TV poster (bz_pos_a/b) sits in the real poster slot, x990 y120, 600×900, same as Videos/1117, with a white frame. When there's no poster but music art (bz_cov_a), the album cover goes in the square album slot, x1140 y220, 600×600.
+- StdFrame's thin underline (x1040 y998) is covered in this dialog, so no white bar shows under the art.
+
+## SOURCES list click (5.33.363, current state)
+- SOURCES » (7101/7111/7121) opens 1132, which lists **every** source for that type (multi-source, filled from sources://<type>/).
+- Select on a source: `bz_msret=1` → `Dialog.Close(1132,true)` → `ActivateWindow(<win>,<source path>,return)`. The close has to come first: Kodi refuses ActivateWindow while modal 1132 is open (before .363, clicking a source did nothing). Back from the media window returns to 1117.
+- MENU on a source row = Kodi's source context menu (edit/remove).
+
+
+## SOURCES per-source dropdown (5.33.364, current)
+**Simple.** In SOURCES (1132), Select on a source row opens a Warm dropdown in the same strip. The source name is the strip title (colour strip label, bz_mm34) with "<TYPE> SOURCE · OPTIONS" under it. Rows: **OPEN »**, **RENAME**, **REMOVE**, **REFRESH** (REFRESH hidden for Pictures). No EDIT.
+**Wiring.** list 9150 onclick → bz_srcsel/bz_srcname, `bz_srcdd=1`, SetFocus(9161). Grouplist 9160: 9161 OPEN (`bz_set.py mssrc,open`: close 1132, ActivateWindow(<win>,path,return)), 9162 RENAME (keyboard → Kodi context Edit source → name field 12 → OK 18), 9163 REMOVE (Kodi context Remove source → Warm Yes/No), 9164 REFRESH (`UpdateLibrary(video|music,path)`; `!String.IsEqual(bz_srcwin,Pictures)`). Back on any row → `ddback` (reopens 1132 on the list). bz_srcdd cleared on load/unload. Needs FULL restart (.py).
+
+## Add Source — Set content + open (current, 5.33.365)
+- Videos Add Source → OK → **Set content** is `DialogContentSettings.xml` (Bezel Warm): BzMSUnderlay + MM strip chrome at 570,120; settings rows (Kodi tpl ids 7/8/9/12/13, group 5) in the colour strip with BzATHiTex hi bar; OK/CANCEL/extra (28/29/30) as np pills; title id 2 uppercase in the strip. No stock/Estuary fallback.
+- Open: DialogMediaSource and DialogContentSettings have **no window-level fade** — underlay (black base, StdFrame, held fanart/poster) draws at full on frame 1; only the strip group fades in (400ms sine). Underlay art loads sync (`background="false"`) so first open has no late art.
+- Poster: StdFrame underline is off in BzMSUnderlay (`showline=false`); no black cover bar under the poster.
