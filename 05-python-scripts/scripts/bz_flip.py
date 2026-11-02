@@ -1565,6 +1565,9 @@ if home.getProperty('bz_flip_running') != 'true':
                     home.clearProperty('bz_mmidle')
                 elif xbmc.getGlobalIdleTime() < 1:
                     home.clearProperty('bz_mmidle')   # touch / mouse / key not routed to 6897
+            elif (home.getProperty('bz_nav') == 'true' and not home.getProperty('bz_mmidle_set')
+                  and xbmc.getCondVisibility('Control.HasFocus(6897) + !System.HasModalDialog')):
+                home.setProperty('bz_mmidle', '1'); home.setProperty('bz_mmidle_set', '1')   # 5.33.387: focus already parked (late SetFocus landed) -> finish the hide instead of stranding focus
             elif hid == 'w':   # woken by 6897 (ClearProperty) -> restore strip focus next frame
                 pass
             elif home.getProperty('bz_mmidle_set'):
@@ -1578,9 +1581,19 @@ if home.getProperty('bz_flip_running') != 'true':
                   and not home.getProperty('bz_navtune') and not home.getProperty('bz_navbez')
                   and xbmc.getGlobalIdleTime() >= IDLE and xbmc.getCondVisibility('Control.HasFocus(6996) + !System.HasModalDialog')):
                 xbmc.executebuiltin('SetFocus(6897)')
-                if mon.waitForAbort(0.05): break   # 5.33.380: only hide once the park really holds focus (hiding 6894 while 6996 focused let Kodi fall back to list 60)
-                if xbmc.getCondVisibility('Control.HasFocus(6897)') and home.getProperty('bz_nav') == 'true':
+                # 5.33.380: only hide once the park really holds focus (hiding 6894 while 6996 focused let Kodi fall back to list 60)
+                # 5.33.387 IDLEPARK (Rob t2714): 50 ms was too short on Shield -> focus sat on the invisible park with no bz_mmidle
+                # (strip unfocused + never hid, and no retry since 6996 no longer focused). Poll up to 1 s; if the park never holds, give 6996 back.
+                held = False
+                for _ in range(20):
+                    if mon.waitForAbort(0.05): break
+                    if xbmc.getCondVisibility('Control.HasFocus(6897)'): held = True; break
+                if mon.abortRequested(): break
+                if held and home.getProperty('bz_nav') == 'true':
+                    home.clearProperty('bz_mmtap')
                     home.setProperty('bz_mmidle', '1'); home.setProperty('bz_mmidle_set', '1')
+                elif home.getProperty('bz_nav') == 'true' and not xbmc.getCondVisibility('Control.HasFocus(6996) | System.HasModalDialog'):
+                    _bzstrip(home)
             if mon.waitForAbort(0.1): break
     _bzstart(mm_idle)
     def mm_tap():   # 5.33.386 MMTAP (Rob t2705): strip-wide quick-tap ignore. 6996 Select/Back/Left/Right set bz_mmtap as their last
