@@ -2,7 +2,7 @@
 
 **Object:** Shared sway clock + album / poster rotatey + stub cast opacity  
 **Where:** Music big album (Dialogue FS / Play Next / viz) · Movies/TV poster (`BezelVPLPoster`) · stub side casts (`pn_cast.png`)  
-**Last updated:** 2026-11-02 · 5.33.309
+**Last updated:** 2026-11-02 · 5.33.381
 **Status:** Live. One Python clock drives the album and poster sway flags. The album cast sits outside the sway group (5.33.205) and, since 5.33.299, outside the album slide rails too (include `BezelAlbumCast`). Draft: not Rob-approved, not re-smoked.  
 **Skin:** skin.bezel2 (Estuary fork)
 
@@ -367,3 +367,6 @@ See `artwork-group.md`. Big album + Compact NP now sit in 1122 group 6400 / albu
 
 ## 5.33.367 — poster stage
 The swaying Movies/TV poster (BezelVPLPoster) now draws only in dialog 1122 layer 6401, fed by the bz_flip list-60 Home mirror (bz_v60_*, bz_vpl_on). Screens keep only the tap target. See `artwork-group.md`.
+
+## 5.33.381 GLARESYNC rule
+Glare + lit dust must ride the sway clock: never put a <visible> on any group between the sway group and the glare pulse groups (hidden = children frozen, pulse re-anchors on re-show = phase drift). Gate glare with Conditional fades only. Poster: glare block is a direct child of the 1290,570 camera group inside the BezelVPLPoster sway group, gated by fades on bz_ppulse/bz_pready/bz_vbackanim/bz_mmmushide. Album: glares inside covers, visible only Player.HasAudio/bz_swayright (stable while playing). Timings shared: hold 12250, swing 10000 d2000, glare A 100→0 3450 d2000, B 0→100 3450 d8550.

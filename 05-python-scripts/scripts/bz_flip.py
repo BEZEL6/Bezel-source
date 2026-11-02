@@ -258,11 +258,63 @@ if home.getProperty('bz_flip_running') != 'true':
         if home.getProperty(k) != v:
             if v: home.setProperty(k, v)
             else: home.clearProperty(k)
+    _setopen_t = [0]
+    _v60_pend = ['', 0.0]; _v60_gone = [0.0]   # 5.33.372 POSTERHOLD: staged art (preload slot bz_v60_next) + list-60 gap grace
+    def _v60_art_stage(a):   # 5.33.372 Rob t2671-t2677: never overwrite bz_v60_art with an undecoded path. New art -> hidden preload slot first
+        if not a or a == home.getProperty('bz_v60_art'): _v60_pend[0] = ''; _v60_set('bz_v60_next', ''); return   # empty = keep old (hold)
+        now = _t.time()
+        if a != _v60_pend[0]: _v60_pend[0] = a; _v60_pend[1] = now; _v60_set('bz_v60_next', a); return
+        if now - _v60_pend[1] >= 0.6:   # preload slot had >= 0.6 s to decode -> promote; 6401's own image fades old->new from cache
+            _v60_set('bz_v60_art', a); _v60_pend[0] = ''; _v60_set('bz_v60_next', '')
+    # 5.33.385 DUALHOLD Rob t2700-t2702: split poster holds. bz_v60_mov = last Movies poster, bz_v60_tv = last TV poster (written
+    # whenever list 60 promotes art in that content type). Target = MM highlighted row (Container(6996) sec) while MM is on the strip,
+    # else the Videos list type. If the list isn't showing the target type yet, bz_v60_art is swapped to the matching hold (already
+    # decoded earlier) so 6401 fades up a movie for Movies and a show for TV. Layer swap stays opacity-only; Music never feeds it.
+    _V60_TYP = {'movies': 'Window.IsActive(videos) + [Container.Content(movies) | Container.Content(sets) | String.StartsWith(Container.FolderPath,videodb://movies/)]',
+                'tv': 'Window.IsActive(videos) + [Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes) | String.StartsWith(Container.FolderPath,videodb://tvshows/)]'}
+    _V60_HK = {'movies': 'bz_v60_mov', 'tv': 'bz_v60_tv'}
+    def _v60_ltype():
+        for k, c in _V60_TYP.items():
+            if xbmc.getCondVisibility(c): return k
+        return ''
+    def _v60_target(lt):
+        if home.getProperty('bz_nav') == 'true' and xbmc.getCondVisibility('Control.HasFocus(6996)'):
+            s2 = xbmc.getInfoLabel('Container(6996).ListItem.Property(sec)')
+            return s2 if s2 in _V60_HK else ''
+        return lt
+    def _v60_dualpick():   # returns True when the list is NOT the target type (caller must not stage list-60 art over the hold)
+        lt = _v60_ltype(); tg = _v60_target(lt)
+        if not tg: return False
+        if tg == lt and not xbmc.getCondVisibility('Container.IsUpdating'): return False
+        h = home.getProperty(_V60_HK[tg])
+        if h and home.getProperty('bz_v60_art') != h:
+            _v60_pend[0] = ''; _v60_set('bz_v60_next', ''); _v60_set('bz_v60_art', h)
+        return True
+    def _v60_dualrec():
+        lt = _v60_ltype(); a = home.getProperty('bz_v60_art')
+        if lt and a and not xbmc.getCondVisibility('Container.IsUpdating') and _v60_target(lt) == lt: _v60_set(_V60_HK[lt], a)
     def v60_mirror():
         cv = xbmc.getCondVisibility; il = xbmc.getInfoLabel
         vid = cv('Window.IsActive(videos)'); oth = (not vid) and cv(_V60_INFOWIN)
+        if home.getProperty('bz_setopen'):   # 5.33.370 Rob t2660: MM->Settings/Add-ons/Sources latch; keep 6401 gated through the nav-clear gap
+            if cv('Window.IsActive(1130) | Window.IsActive(1131) | Window.IsActive(1117)'): home.clearProperty('bz_setopen')
+            elif _t.time() - _setopen_t[0] > 2.0 and _setopen_t[0]: home.clearProperty('bz_setopen'); _setopen_t[0] = 0
+            else:
+                if not _setopen_t[0]: _setopen_t[0] = _t.time()
+                _v60_set('bz_vpl_on', ''); return
+        else: _setopen_t[0] = 0
+        if cv('Window.IsVisible(movieinformation) | Window.IsVisible(musicinformation) | Window.IsVisible(songinformation)'): return   # 5.33.379 Rob t2697: Info/Options on top -> list 60 unreadable from dialog; HOLD poster/art + bz_vpl_on (was cleared -> blank art)
+        _dmis = _v60_dualpick()   # 5.33.385 DUALHOLD
         if not (vid or oth) or not cv('Control.IsVisible(60)'):
+            # 5.33.372 POSTERHOLD: list 60 blinking out on a section swap / warm load no longer drops 6401 into an empty frame —
+            # keep bz_vpl_on + the held art for a 1.5 s grace (or while the MM / a handoff is up), then clear as before.
+            if vid and home.getProperty('bz_vpl_on'):
+                if not _v60_gone[0]: _v60_gone[0] = _t.time()
+                if (_t.time() - _v60_gone[0] < 1.5 or home.getProperty('bz_nav') == 'true' or home.getProperty('bz_tovideo') or home.getProperty('bz_m2v_flat')) and not home.getProperty('bz_setopen'):
+                    return
+            _v60_gone[0] = 0.0
             _v60_set('bz_vpl_on', ''); return
+        _v60_gone[0] = 0.0
         par = cv('Container(60).ListItem.IsParentFolder')
         if vid:   # = $VAR[BezelPoster60V]
             a = ''
@@ -270,7 +322,8 @@ if home.getProperty('bz_flip_running') != 'true':
             if not a: a = il('Container(60).ListItem.Art(poster)') or il('Container(60).ListItem.Art(tvshow.poster)')
             if not a and home.getProperty('bz_arthold'): a = home.getProperty('bz_hold_poster')
             if not a: a = il('Container(60).ListItem.Icon')
-            _v60_set('bz_v60_art', a)
+            if not _dmis: _v60_art_stage(a); _v60_dualrec()   # 5.33.385 DUALHOLD: list type == target -> stage + record per-type hold
+            # 5.33.372: follows list 60 = the MM random idle row (UADVRAND / RANDSTART move it); staged, never blanked
             on = not cv(_V60_GRIDV) and not cv('Container.Content(episodes)') and not cv('Container.Content(actors)')
         else:     # = $VAR[BezelPoster60M] (music) ; other info-list windows have no art var
             a = ''
@@ -286,6 +339,27 @@ if home.getProperty('bz_flip_running') != 'true':
         _v60_set('bz_v60_resume', '1' if cv('Container(60).ListItem.IsResumable') else '')
         _v60_set('bz_v60_episodes', '1' if cv('Container.Content(episodes)') else '')
         _v60_set('bz_vpl_on', '1' if on else '')
+    # 5.33.384 IDLEAB (Rob parked 👍): idle Music album = two always-loaded 1122 slots bz_m_idle_a / bz_m_idle_b, bz_m_idle_side = shown slot.
+    # New cover -> written into the HIDDEN slot only (preload), promoted after 0.6 s (= _v60_art_stage), then side flips -> 400 ms sine opacity A->B.
+    # A slot is never rewritten while it is visible or still fading out (0.45 s guard) = no mid-fade texture swap. bz_m_idle_art = cover on screen (lock/hold logic).
+    _mi = {'pend': '', 't': 0.0, 'flip': 0.0}
+    def _m_idle_stage(a):
+        now = _t.time(); side = home.getProperty('bz_m_idle_side') or 'a'
+        if a is None:
+            a = _mi['pend']
+            if not a: return
+        if a == home.getProperty('bz_m_idle_art'): _mi['pend'] = ''; return
+        if not home.getProperty('bz_m_idle_art'):   # first cover (startup): straight into the shown slot
+            _v60_set('bz_m_idle_' + side, a); _v60_set('bz_m_idle_side', side); _v60_set('bz_m_idle_art', a); _mi['pend'] = ''; return
+        hid = 'b' if side == 'a' else 'a'
+        if a != _mi['pend']:
+            if now - _mi['flip'] < 0.45: _mi['pend'] = a; _mi['t'] = 0.0; return   # hidden slot still fading out -> wait
+            _mi['pend'] = a; _mi['t'] = now; _v60_set('bz_m_idle_' + hid, a); return
+        if not _mi['t']:
+            if now - _mi['flip'] < 0.45: return
+            _mi['t'] = now; _v60_set('bz_m_idle_' + hid, a); return
+        if now - _mi['t'] >= 0.6:
+            _v60_set('bz_m_idle_side', hid); _v60_set('bz_m_idle_art', a); _mi['flip'] = now; _mi['pend'] = ''
     def m_mirror():   # 5.33.368 Rob t2636: Music NP + idle list art mirrored into Home for the dual-preloaded 1122 big album (hold last when unseen)
         cv = xbmc.getCondVisibility; il = xbmc.getInfoLabel
         if cv('Player.HasAudio') and not cv('Window.IsActive(visualisation)'):
@@ -295,8 +369,9 @@ if home.getProperty('bz_flip_running') != 'true':
             a = ''
             if cv('Container(60).ListItem.IsParentFolder'): a = il('Container(60).ListItemNoWrap(1).Art(thumb)')
             if not a: a = il('Container(60).ListItem.Art(thumb)') or il('Container(60).ListItem.Icon')
-            if a: _v60_set('bz_m_idle_art', a)
-        if not home.getProperty('bz_m_idle_art') and home.getProperty('bz_cov_last'): home.setProperty('bz_m_idle_art', home.getProperty('bz_cov_last'))   # = bz_cov_last fallback
+            if a: _m_idle_stage(a)
+        if not home.getProperty('bz_m_idle_art') and home.getProperty('bz_cov_last'): _m_idle_stage(home.getProperty('bz_cov_last'))   # = bz_cov_last fallback
+        _m_idle_stage(None)   # 5.33.384 IDLEAB: tick the pending promote
     def poster_clock():
         key = None; since = time.time(); was = False; closed_at = None; opened = 0; got = False; sw = [0]; pend = [None, 0.0]; sw_prev = [0]; sw_path = ['']; sw_top = [False]; sw_tchg = [0.0]
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
@@ -529,7 +604,7 @@ if home.getProperty('bz_flip_running') != 'true':
     # fanart / poster changes. Hold N s after the MM opens, then one step every D s (wraps). Closing the MM / Select lands on the
     # advanced item (it IS the list position). K24: never during MM warm / Container.IsUpdating / dialogs; only Control.Move (no Container.Update).
     def under_adv():
-        opened = None; last = 0.0; navwas = [False]
+        opened = None; last = 0.0; navwas = [False]; idwas = ['']
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
             # 5.33.369 MMHOLD (Rob t2641-t2652): MM opens from Music -> lock bz_m_idle_art on the focused list-60 cover (warm/path churn can't swap it);
             # unlock on the first UADVRAND step (after hold) or MM close. Random never runs with MM closed (list browsing).
@@ -537,6 +612,14 @@ if home.getProperty('bz_flip_running') != 'true':
             if _nv and not navwas[0] and home.getProperty('bz_m_idle_art'): home.setProperty('bz_m_idle_lock', '1')
             if not _nv: home.clearProperty('bz_m_idle_lock')
             navwas[0] = _nv
+            # 5.33.383 IDLERESET: MM auto-hide wake (bz_mmidle 1 -> clear) = fresh MM entry for idle art: re-lock the shown cover
+            # and restart the UADVRAND hold (bz_uadv_hold, >=3 s) so no random step lands while the strip fades back in.
+            _id = home.getProperty('bz_mmidle')
+            if idwas[0] == '1' and not _id and _nv:
+                opened = None
+                if home.getProperty('bz_m_idle_art'): home.setProperty('bz_m_idle_lock', '1')
+                xbmc.log('BEZEL IDLERESET: MM wake -> idle art hold restarted', xbmc.LOGINFO)
+            idwas[0] = _id
             on = (home.getProperty('bz_nav') == 'true' and not home.getProperty('bz_mmstart') and not home.getProperty('bz_mmwarm')
                   and not home.getProperty('bz_navtune') and not home.getProperty('bz_navset') and not home.getProperty('bz_navsub') and not home.getProperty('bz_kset')   # F10 batch2: pause while Tuner / settings card / submenu open
                   and not xbmc.getCondVisibility('Skin.HasSetting(bz_uadv_off)')
@@ -657,6 +740,8 @@ if home.getProperty('bz_flip_running') != 'true':
                     home.setProperty('bz_lastmusic', _lp)
             if not home.getProperty('bz_nav') and SS: SS.clear()   # WARM 2.0: session store lives only while MM is open
             if home.getProperty('bz_mmpick'): last[0] = None; done[0] = None; continue   # t5030: never start/continue a warm after a pick
+            if home.getProperty('bz_nav') == 'true' and (home.getProperty('bz_mmidle') or xbmc.getCondVisibility('Control.HasFocus(6897)')):
+                continue   # 5.33.374 IDLEWAKE (Rob t2682): MM auto-hide park 6897 is NOT leaving the strip - keep last/done so wake never re-arms a warm (list reload / RANDSTART reset the idle album)
             if home.getProperty('bz_nav') != 'true' or not xbmc.getCondVisibility('Control.HasFocus(6996)'):
                 last[0] = None; done[0] = None; continue
             if home.getProperty('bz_mmstart') or home.getProperty('bz_secload') or home.getProperty('bz_navsub') or home.getProperty('bz_navset') or home.getProperty('bz_navtune') \
@@ -816,7 +901,16 @@ if home.getProperty('bz_flip_running') != 'true':
             setret[0] = _sw
             # 3.2.1 item 14: leaving fullscreen music (Now Playing 1112, the in-place Now Playing, visualisation, controls 1115) -> focus the music list (60)
             fsm = home.getProperty('bz_np') == 'true' or xbmc.getCondVisibility('Window.IsActive(1112) | Window.IsActive(1115) | Window.IsActive(visualisation)')
-            if fs_was[0] and not fsm: fs_was[1] = now + 1.2
+            # 5.33.378 Rob t2694u #2: FS opened while MM was open (or <0.8s after the opener cleared it) -> latch bz_fsmm; exit FS reopens MM, not the section list
+            if home.getProperty('bz_nav') == 'true': fs_was.append(now) if len(fs_was) < 3 else fs_was.__setitem__(2, now)
+            if fsm and not fs_was[0] and len(fs_was) > 2 and now - fs_was[2] < 0.8: home.setProperty('bz_fsmm', '1')
+            if fs_was[0] and not fsm:
+                fs_was[1] = now + 1.2
+                if home.getProperty('bz_fsmm'):
+                    home.clearProperty('bz_fsmm'); fs_was[1] = 0
+                    if not xbmc.getCondVisibility('Player.HasVideo + Window.IsActive(fullscreenvideo)'):
+                        home.clearProperty('bz_navgrace'); home.setProperty('bz_nav', 'true')
+                        xbmc.log('BEZEL FSMM: left FS opened from MM -> MM', xbmc.LOGWARNING)
             fs_was[0] = fsm
             if fs_was[1]:
                 if now > fs_was[1] or home.getProperty('bz_nav'): fs_was[1] = 0
@@ -1475,16 +1569,31 @@ if home.getProperty('bz_flip_running') != 'true':
                 pass
             elif home.getProperty('bz_mmidle_set'):
                 home.clearProperty('bz_mmidle_set')
-                if mon.waitForAbort(0.05): break
-                if home.getProperty('bz_nav') == 'true' and xbmc.getCondVisibility('Control.HasFocus(6897)'):
+                # 5.33.380 WAKEGRACE (Rob t2694 #3): the wake key is eaten by 6897, but a fast 2nd press (Back/Select/L/R) used to land on the
+                # freshly re-focused strip -> Back closed MM / Select opened a section. Park 0.5 s on the no-op 6897 (strip fades in), THEN hand to 6996.
+                if mon.waitForAbort(0.5): break
+                if home.getProperty('bz_nav') == 'true' and not home.getProperty('bz_mmidle') and xbmc.getCondVisibility('Control.HasFocus(6897)'):
                     _bzstrip(home)
             elif (home.getProperty('bz_nav') == 'true' and xbmc.getInfoLabel('Skin.String(bz_at_mmidle)') != 'Off'
                   and not home.getProperty('bz_navtune') and not home.getProperty('bz_navbez')
                   and xbmc.getGlobalIdleTime() >= IDLE and xbmc.getCondVisibility('Control.HasFocus(6996) + !System.HasModalDialog')):
                 xbmc.executebuiltin('SetFocus(6897)')
-                home.setProperty('bz_mmidle', '1'); home.setProperty('bz_mmidle_set', '1')
+                if mon.waitForAbort(0.05): break   # 5.33.380: only hide once the park really holds focus (hiding 6894 while 6996 focused let Kodi fall back to list 60)
+                if xbmc.getCondVisibility('Control.HasFocus(6897)') and home.getProperty('bz_nav') == 'true':
+                    home.setProperty('bz_mmidle', '1'); home.setProperty('bz_mmidle_set', '1')
             if mon.waitForAbort(0.1): break
     _bzstart(mm_idle)
+    def mm_tap():   # 5.33.386 MMTAP (Rob t2705): strip-wide quick-tap ignore. 6996 Select/Back/Left/Right set bz_mmtap as their last
+        # action; every 6996 action is gated on !bz_mmtap, so a 2nd press inside 400 ms is swallowed. Clear 400 ms after first seen.
+        LATCH = 0.4; t0 = 0
+        while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
+            if home.getProperty('bz_mmtap'):
+                if not t0: t0 = time.time()
+                elif time.time() - t0 >= LATCH: home.clearProperty('bz_mmtap'); t0 = 0
+            else: t0 = 0
+            if mon.waitForAbort(0.05): break
+        home.clearProperty('bz_mmtap')
+    _bzstart(mm_tap)
 
     def idle_hinge():   # 5.33.231 HINGEFLIP (Rob pt1824u): idle big album AWAY centre-hinge flip. No audio, Music list 60 focused.
         # Artist row: cycles that artist's album covers (by year, wraps). Album row: album <-> artist face. 10 s hold; playback / focus change resets.
@@ -1498,6 +1607,9 @@ if home.getProperty('bz_flip_running') != 'true':
             if home.getProperty('bz_randpend'): return False
             if mmw(): return True
             return xbmc.getCondVisibility('!Player.HasAudio + Window.IsActive(music) + Control.HasFocus(60)') and not home.getProperty('bz_nav')
+        def dim():   # 5.33.375 LEAFWAKE (Rob pt2688u): mirror XML bz_lfdim (MM open & not auto-hide, or gdim 1-6 MM closed) -> leaf groups hidden, so never step phases (was glare/shadow-only ghost flip)
+            if home.getProperty('bz_nav') == 'true': return not home.getProperty('bz_mmidle')
+            return xbmc.getInfoLabel('Skin.String(bz_at_gdim)') in ('1', '2', '3', '4', '5', '6')
         def keynow(): return xbmc.getInfoLabel('Container(60).ListItem.DBType') + ':' + xbmc.getInfoLabel('Container(60).ListItem.DBID')
         def covers():
             t = xbmc.getInfoLabel('Container(60).ListItem.DBType'); i = xbmc.getInfoLabel('Container(60).ListItem.DBID')
@@ -1532,10 +1644,12 @@ if home.getProperty('bz_flip_running') != 'true':
             nxt = (idx + 1) % len(cv)
             if home.getProperty('bz_hf_b') != cv[nxt]:   # 5.33.245 PRELOAD: next cover set at hold start, drawn under A all hold -> loaded before fold
                 home.setProperty('bz_hf_a', cv[idx]); home.setProperty('bz_hf_b', cv[nxt])
+            if dim():   # 5.33.375 LEAFWAKE: hold paused while dimmed; A stays the shown cover; restart hold on undim (fresh flip with current art)
+                t0 = time.time(); continue
             if time.time() - t0 < (5.0 if mmw() else HOLD): continue   # 5.33.279: MM warm 5 s, idle list 10 s
             aborted = False
             for ph in ('1', '2'):
-                if not ok() or keynow() != key: aborted = True; break
+                if not ok() or keynow() != key or dim(): aborted = True; break   # 5.33.375: dim mid-fold aborts + re-arms (no phase desync)
                 home.setProperty('bz_hf_ph', ph)
                 if mon.waitForAbort(1.4): return   # 5.33.254 Rob pt1922u: 1400 ms per phase (matches XML)
             if aborted: clr(); key = None; continue
@@ -1613,4 +1727,4 @@ if home.getProperty('bz_flip_running') != 'true':
         home.clearProperty('bz_flipping')
         home.clearProperty('bz_sway_hold')
         home.clearProperty('bz_sway_pulse'); home.clearProperty('bz_sway_go'); home.clearProperty('bz_big_go'); home.clearProperty('bz_big_pulse')
-        for k in ('bz_albumid', 'bz_pswayon', 'bz_ppulse', 'bz_ppulse2', 'bz_pready', 'bz_vreq', 'bz_sway_pulse2', 'bz_castL', 'bz_castR', 'bz_vpl_on', 'bz_v60_art', 'bz_m60_art', 'bz_v60_lbl', 'bz_v60_parent', 'bz_v60_scroll', 'bz_v60_watched', 'bz_v60_resume', 'bz_v60_episodes'): home.clearProperty(k)
+        for k in ('bz_albumid', 'bz_pswayon', 'bz_ppulse', 'bz_ppulse2', 'bz_pready', 'bz_vreq', 'bz_sway_pulse2', 'bz_castL', 'bz_castR', 'bz_vpl_on', 'bz_v60_art', 'bz_v60_next', 'bz_v60_mov', 'bz_v60_tv', 'bz_m60_art', 'bz_v60_lbl', 'bz_v60_parent', 'bz_v60_scroll', 'bz_v60_watched', 'bz_v60_resume', 'bz_v60_episodes'): home.clearProperty(k)

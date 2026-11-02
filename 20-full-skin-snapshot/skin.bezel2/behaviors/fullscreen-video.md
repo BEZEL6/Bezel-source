@@ -68,3 +68,7 @@ video-osd.md · pause-overlay.md · keymaps.md
 <!-- PORTLINKS -->
 ---
 **Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/fullscreen-video.md) · [state](../state/fullscreen-video.md) · [motion](../motion/fullscreen-video.md) · [art](../art/fullscreen-video.md) · [input](../input/fullscreen-video.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+
+## Exit (5.33.378 audit)
+Video FS Back = `bz_cmd vidback` (OSD/info close, then Stop); Kodi returns to the opener window (section). No MM latch — video is started from a section list, so section return is intended.

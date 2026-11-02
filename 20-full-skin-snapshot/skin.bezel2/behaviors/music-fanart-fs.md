@@ -2,7 +2,7 @@
 
 **Object:** `Custom_1121_MusicFanartFS.xml` dialog `1121` · main `6420` · fan art pill copy `6421` · Back router `6422` · touch `6426`–`6430` · big album pill `6401` (shared include)
 **Where:** Music section only, over the Music window
-**Last updated:** 2026-11-02 · 5.33.327
+**Last updated:** 2026-11-02 · 5.33.377
 **Status:** draft — built, not smoke-tested on device. Rob locks t1589–t1595.
 **Skin:** skin.bezel2
 
@@ -135,3 +135,11 @@ Down on 6421 in Up Next focuses 1121's own Up Next proxy **6396** (list **6395**
 
 ## Progress bar opacity (5.33.319, Rob t2399 — current)
 - FS meta pill bar (1121, 780×32 at 150,296): ring `40FFFFFF`, dark inner `40000000`, fill `40FFFFFF` = **25%** (was `99` ≈ 60% since 5.33.286). Time/duration labels unchanged (100%).
+
+## 5.33.377 — layout matches Music Fanart FS 1121 (current)
+On the fanart stage (`bz_pnoff=1`) Kodi Fanart FS and 1121 draw the same chrome: shared include `BezelFSMeta` (small ARTIST · ALBUM 150,196 `bz_mm18s`; big SONG TITLE 150,226 `bz_mm34`; year pill zooms into 780×32 progress at 150,296, 25% bar, time/duration in at 2100 ms; genre pill fades). BezelNPInPlace's old title/artist/album + thin progress/time overlay is hidden while `visualisation` is active (as for 1121). Cycle pill 6391 sits at 140,136 left-aligned (NPInPlace params `pillx/pilly/pillal`, defaults 530/130/right for other hosts), no live-shadow copies in viz; "press down to open" hint 140,172 left. Tuner `bz_fs_ttl_off` / `bz_fs_prog_off` / `bz_fs_pill_off` / `bz_fschrome_fan` act on the shared block. Keys/pill cycle logic unchanged (6391 Select-on-Controls still opens 1115; 6421 L/R cycles).
+
+
+## Exit rule (5.33.378)
+- FS opened **from MM** (MM open, or MM closed by the opener <0.8 s before FS): `bz_fsmm` latches (bz_cmd tab/np + bz_flip FS rise edge). On FS exit bz_flip reopens MM (`bz_nav=true`, normal open path → strip 6996 on the current section row); the `SetFocus(60)` onunload alarm and fs_was list re-focus are skipped.
+- FS opened **from inside a section** (list / FULLSCREEN pill 6886): exit → section list 60 (intended, unchanged).

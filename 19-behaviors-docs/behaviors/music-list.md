@@ -2,7 +2,7 @@
 
 **Object:** `MyMusicNav.xml` · list `60` · grouplist (Includes_Bezel ~L1492) · ALL `6097` · A–Z `6100`/`6500` · album rails `6367`/`6377`/`6397`/`6382` · NP proxy `6385`
 **Where:** Main menu MUSIC (and the music pills) → music window
-**Last updated:** 2026-11-02 · 5.33.311
+**Last updated:** 2026-11-02 · 5.33.384
 **Status:** Live in 5.33.275. Edge-to-ALL with no wrap. Left opens the MM when the A–Z bar is hidden, and Back at the armed root opens the MM (clearing NP first). The big album and compact NP share album grouplist 6397, and the speed rail follows `bz_at_fsslide`. Tap big album → Dialogue FS 1120. Draft: not Rob-approved.
 **Skin:** skin.bezel2
 
@@ -317,3 +317,8 @@ See `artwork-group.md`. Big album + Compact NP now sit in 1122 group 6400 / albu
 
 ## 5.33.367 — poster stage
 The swaying Movies/TV poster (BezelVPLPoster) now draws only in dialog 1122 layer 6401, fed by the bz_flip list-60 Home mirror (bz_v60_*, bz_vpl_on). Screens keep only the tap target. See `artwork-group.md`.
+
+- 5.33.382 POSTERWARM: Music→Movies/TV — the 1122 poster layer never draws Music art (twins read held `bz_v60_art`); see artwork-group.md.
+
+## Idle album A/B (current, 5.33.384)
+Idle Music big album in the 1122 album layer draws two always-loaded images: `bz_m_idle_a` / `bz_m_idle_b`; `bz_m_idle_side` (a|b, empty=a) picks the shown one. Each has a Conditional 400 ms sine fade-out when `Player.HasAudio` or it is not the shown side; the NP layer (`bz_m_np_art`) is unchanged. `bz_flip.py` `_m_idle_stage()` (called from `m_mirror`): first cover goes straight into the shown slot; later covers go to the hidden slot, wait 0.6 s to decode, then flip side and set `bz_m_idle_art` (= cover on screen, used by MMHOLD/IDLERESET locks). Hidden slot is not written until 0.45 s after a flip. Random steps (UADVRAND, MM + startup only) therefore crossfade, never pop; after MM wake the 383 hold applies, then the next random step crossfades.

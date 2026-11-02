@@ -1,6 +1,6 @@
 # MM warm (WARM 2.0.1) — LOCKED
 
-> **Warm 2.0.1 (5.33.211):** feature version tracked like Bezel builds. 2.0.1 = Warm 2.0 locked enter/exit + hold last WARM art behind MM for other sections (Favourites/Pictures/Add-ons/Settings/Search/Media Sources). Music/Movies/TV unchanged.
+> **Warm 2.0.1 (5.33.385):** feature version tracked like Bezel builds. 2.0.1 = Warm 2.0 locked enter/exit + hold last WARM art behind MM for other sections (Favourites/Pictures/Add-ons/Settings/Search/Media Sources). Music/Movies/TV unchanged.
 
 **Object:** Main Menu warm underlay (`scripts/bz_flip.py` → `mm_warm`, `ab_clock`, `_ABLane`) + cold-start warm gate (`scripts/bz_warmgate.py`)  
 **Where:** Under `$EXP[bz_navmenu]` (`String.IsEqual(Window(Home).Property(bz_nav),true)`, `Includes_Bezel.xml` line ~348), strip `6996` focused  
@@ -95,7 +95,7 @@ Rob confirmed Oct 31 2026: the black flash on exit is fixed. **Do not change thi
 **Twin conditions (`Includes_Bezel.xml`):**
 | Stage | Section twin | MM live twin (lane unfed) | MM A/B image a / b |
 |---|---|---|---|
-| Fanart (BezelFanartLayer ~L675–710) | `!$EXP[bz_navmenu]`. Fanart Pop: `!$EXP[bz_navmenu] + $EXP[bz_fpop]` | `$EXP[bz_navmenu] + String.IsEmpty(Home.bz_fan_on)`, fadetime 3000, `$VAR[BezelFanart]` | `$EXP[bz_navmenu] + !Empty(bz_fan_on) + bz_fan_side != b` (a) / `== b` (b). Visible 0→100 1500 sine **cond `!Empty(bz_ab_live)`**. Hidden 100→0 1500 sine. fadetime 0. LOOK fanart-opacity Conditionals kept |
+| Fanart (BezelFanartLayer ~L675–710) | `!$EXP[bz_navmenu]`. Fanart Pop: `!$EXP[bz_navmenu] + $EXP[bz_fpop]`. Both section images: fadetime = LIST Tuner Fanart fade (`bz_at_fanart`, default 200 ms) via `<!-- BETA 2.6 item 10 -->` marker patched by bz_tune_patch.py (5.33.376) | `$EXP[bz_navmenu] + String.IsEmpty(Home.bz_fan_on)`, fadetime 3000, `$VAR[BezelFanart]` | `$EXP[bz_navmenu] + !Empty(bz_fan_on) + bz_fan_side != b` (a) / `== b` (b). Visible 0→100 1500 sine **cond `!Empty(bz_ab_live)`**. Hidden 100→0 1500 sine. fadetime 0. LOOK fanart-opacity Conditionals kept |
 | Album flip face A (~L1125–1150) | `!$EXP[bz_navmenu]` | `$EXP[bz_navmenu] + ![!Empty(bz_pos_on) + !Player.HasAudio + Empty(bz_cov_a) + Empty(bz_pos_empty)]`, `$VAR[BezelFlipA]`, fadetime 3000 | `$EXP[bz_navmenu] + !Empty(bz_pos_on) + !Player.HasAudio + Empty(bz_cov_a) + Empty(bz_pos_empty) + side a/b`. Same gated Visible and plain Hidden 1500. 1140,220 600×600, `art_mask` |
 | Album flip face B (~L1196–1220) | `!$EXP[bz_navmenu]` | as above with `bz_cov_b` | as above with `bz_cov_b` |
 | MM poster slot (~L2549–2570) | section poster twins: `!$EXP[bz_navmenu]` | `$EXP[bz_navmenu] + Empty(bz_pos_on) + !$EXP[bz_mmmushide]`, `$VAR[BezelPoster60]`, fadetime 3000 | `$EXP[bz_navmenu] + !$EXP[bz_mmmushide] + !Empty(bz_pos_on) + Empty(bz_pos_empty) + side`. Gated Visible 1500, Hidden 1500, `bz_mushref` 400 ms Conditional |
@@ -390,3 +390,24 @@ See `artwork-group.md`. Big album + Compact NP now sit in 1122 group 6400 / albu
 
 ## 5.33.367 — poster stage
 The swaying Movies/TV poster (BezelVPLPoster) now draws only in dialog 1122 layer 6401, fed by the bz_flip list-60 Home mirror (bz_v60_*, bz_vpl_on). Screens keep only the tap target. See `artwork-group.md`.
+- 5.33.372 POSTERHOLD: Videos poster (6401) follows the MM random idle row via the staged list-60 mirror; see artwork-group.md.
+
+
+## MM enter fade (5.33.373)
+MM chrome fades in 400 ms sine out on open (= section open). Warm art lanes stay mirror-enter seeded at full opacity on frame 1; the fade never touches them, so no black flash.
+
+## MM auto-hide wake (5.33.380)
+30 s idle on strip 6996 → SetFocus(6897) park; bz_mmidle set only once 6897 holds focus (fades 6894). Any key on 6897 (Up/Down/L/R/Select/Back) or touch/mouse clears bz_mmidle = wake only (key is consumed). Strip fades in; focus stays parked on no-op 6897 for 0.5 s (WAKEGRACE) so rapid extra presses cannot hit Back-close / Select-open / pill; then bz_flip _bzstrip returns focus to 6996 on the live row. Warm never re-arms during park (.374). Wake always lands on normal MM.
+- 5.33.383 IDLERESET: MM auto-hide wake now restarts the idle album/poster hold — the cover on screen at wake is re-locked (bz_m_idle_lock) and the UADVRAND timer restarts (bz_uadv_hold, default 5 s, min 3 s) before random resumes every bz_uadv_delay. Before: random timer kept running through hide, so a step could swap art right as the strip faded back in. bz_flip.py under_adv. FULL restart.
+
+## Dual poster holds (5.33.385 DUALHOLD)
+- `bz_v60_mov` = last Movies poster, `bz_v60_tv` = last TV poster. Written by `v60_mirror` (`_v60_dualrec`) right after list-60 art is staged, only when the Videos list type (movies/sets vs tvshows/seasons/episodes) equals the target and the container is not updating.
+- Target (`_v60_target`): MM open on strip 6996 → highlighted row `sec` (movies/tv; music/other = no target, nothing changes). MM closed → current Videos list type.
+- `_v60_dualpick`: if the list is not the target type yet (on Music, on the other Videos type, or loading), list-60 staging is skipped and `bz_v60_art` is set straight to the matching hold (already decoded on its earlier visit). 6401 / BezelVPLPoster still reads only `bz_v60_art` → opacity-only layer swap, never Music art.
+- No hold yet for that type (first visit this session) → keeps whatever `bz_v60_art` held; list 60 preload fills it (~0.6 s) as before.
+- Both props cleared on Bezel leave with the other `bz_v60_*` props.
+
+## Quick-tap ignore (current, 5.33.386)
+- **Whole strip:** any Select / Back / Left / Right on 6996 runs once, then sets Home `bz_mmtap`. All 6996 actions are conditioned on `String.IsEmpty(bz_mmtap)`, so a second press within **400 ms** does nothing. `bz_flip.py mm_tap()` clears the latch 400 ms after it appears (50 ms poll). Up/Down are not latched (fast scrolling stays free).
+- **Auto-hide wake:** unchanged — wake key eaten by park 6897, focus stays there 0.5 s, then strip 6996.
+- Scope: strip only. Once Back/Select hands focus to list 60 / another window, that target is not latched.

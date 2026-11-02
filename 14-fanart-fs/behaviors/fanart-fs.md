@@ -2,7 +2,7 @@
 
 **Object:** `MusicVisualisation.xml` (Kodi `visualisation`) · default `6390` (BezelNPInPlace, Includes_Bezel ~2896, 120,120, 840×900) · **fan art pill** `6391` (~2956, fanart only) · **big album pill** `6401` (album viz) · hidden redirects `6297`, `6299`, `6385`, `60` · touch `6407`/`6408`, `6409`/`6410`  
 **Where:** Full-screen music  
-**Last updated:** 2026-11-02 · 5.33.352
+**Last updated:** 2026-11-02 · 5.33.377
 **Status:** draft. This doc matches the live tree. 6409 click = pause, double = album viz. Right = next via keymap (5.33.205). Rob has not approved it.  
 **Skin:** skin.bezel2
 
@@ -136,3 +136,11 @@ Up Next list 6395 + proxy 6396 now live in shared include `BezelFSUpNext` (param
 - The viz (visualization.bezel) only paints its rect from Kodi's audio bins; no input, no focus, no skin access. Skin → viz triggers only via Home properties.
 - Install: Startup runs `scripts/bz_dustviz.py` — copies bundled `resources/dustviz/<android|linux>/visualization.bezel` into special://home/addons when the version differs, UpdateLocalAddons, enables it, sets `musicplayer.visualisation`, sets Home `bz_dustviz_ok`. Windows: no binary, skipped (logged).
 - Kill switch: `Skin.SetBool(bz_dustviz_off)`.
+
+## 5.33.377 — layout matches Music Fanart FS 1121 (current)
+On the fanart stage (`bz_pnoff=1`) Kodi Fanart FS draws the same chrome as 1121: shared include `BezelFSMeta` (small ARTIST · ALBUM 150,196 `bz_mm18s`; big SONG TITLE 150,226 `bz_mm34`; year pill zooms into 780×32 progress at 150,296, 25% bar, time/duration in at 2100 ms; genre pill fades). BezelNPInPlace's old title/artist/album + thin progress/time overlay is hidden while `visualisation` is active (as for 1121). Cycle pill 6391 sits at 140,136 left-aligned (NPInPlace params `pillx/pilly/pillal`, defaults 530/130/right for other hosts), no live-shadow copies in viz; "press down to open" hint 140,172 left. Tuner `bz_fs_ttl_off` / `bz_fs_prog_off` / `bz_fs_pill_off` / `bz_fschrome_fan` act on the shared block. Keys/pill cycle logic unchanged (6391 Select-on-Controls still opens 1115; 6421 L/R cycles).
+
+
+## Exit rule (5.33.378)
+- FS opened **from MM** (MM open, or MM closed by the opener <0.8 s before FS): `bz_fsmm` latches (bz_cmd tab/np + bz_flip FS rise edge). On FS exit bz_flip reopens MM (`bz_nav=true`, normal open path → strip 6996 on the current section row); the `SetFocus(60)` onunload alarm and fs_was list re-focus are skipped.
+- FS opened **from inside a section** (list / FULLSCREEN pill 6886): exit → section list 60 (intended, unchanged).

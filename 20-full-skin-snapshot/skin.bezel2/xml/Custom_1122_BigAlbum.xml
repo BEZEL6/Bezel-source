@@ -22,6 +22,9 @@
 		     BezelSecDim inside (the old mounts sat in the section parent group's SecDim). -->
 		<control type="group" id="6401"><!-- one inverse fade (Kodi multiplies fade anims) -->
 			<animation effect="fade" start="100" end="0" time="400" tween="sine" easing="inout" condition="String.IsEmpty(Window(Home).Property(bz_vpl_on)) + ![[Window.IsActive(videos) + [String.IsEqual(Window(Home).Property(bz_tovideo),fade) | String.IsEqual(Window(Home).Property(bz_m2v_flat),true)]] | String.IsEqual(Window(Home).Property(bz_tomusic),true)]">Conditional</animation>
+			<control type="image"><!-- 5.33.372 POSTERHOLD preload slot: bz_flip stages new poster art here (near-invisible) for 0.6 s so the texture is decoded before it becomes bz_v60_art -->
+				<left>990</left><top>120</top><width>600</width><height>900</height><aspectratio>scale</aspectratio><colordiffuse>01FFFFFF</colordiffuse>
+				<texture background="true">$INFO[Window(Home).Property(bz_v60_next)]</texture></control>
 			<control type="group"><!-- handoff pre-warm (same mirrored texture): only during the Music<->Videos crossfade, before bz_pready arms the swaying stack -->
 				<animation effect="fade" start="100" end="0" time="400" tween="sine" easing="inout" condition="![[Window.IsActive(videos) + [String.IsEqual(Window(Home).Property(bz_tovideo),fade) | String.IsEqual(Window(Home).Property(bz_m2v_flat),true)]] | String.IsEqual(Window(Home).Property(bz_tomusic),true)]">Conditional</animation>
 				<control type="image"><left>990</left><top>120</top><width>600</width><height>900</height><aspectratio>scale</aspectratio><diffuse>bezel/art_mask.png</diffuse><fadetime>300</fadetime>

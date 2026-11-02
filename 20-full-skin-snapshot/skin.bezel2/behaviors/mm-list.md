@@ -99,3 +99,17 @@ mm-warm.md (LOCKED) · mm-mini-player.md · music-list.md · movies-list.md · t
 ---
 **Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/mm-list.md) · [state](../state/mm-list.md) · [motion](../motion/mm-list.md) · [art](../art/mm-list.md) · [input](../input/mm-list.md) · [theme](../theme/tokens.md) · [screens](../port-refs/mm-list/) · [PORT_INDEX](../PORT_INDEX.md)
 - 5.33.341: MM auto-hide clearart/title (from 330) never showed, because `String.IsEmpty($VAR[...])` in <visible> is never true. The guards now use direct Container(60) Label/Art conditions. Smoked with Friends: clearlogo + title show over the stage while bz_mmidle is set.
+- **Wake keeps warm state (5.33.374):** `mm_warm` skips (does not reset `last`/`done`) while `bz_mmidle` or focus 6897, so wake never re-warms the underlay; current idle album/random row stays.
+
+
+## Kodi FS from MM (5.33.378)
+Leaving Fanart FS / 1121 / NP opened while MM was open returns to MM (`bz_fsmm` latch), not the section list. Video FS not covered (video playback starts from a section).
+
+## MM auto-hide wake (5.33.380)
+30 s idle on strip 6996 → SetFocus(6897) park; bz_mmidle set only once 6897 holds focus (fades 6894). Any key on 6897 (Up/Down/L/R/Select/Back) or touch/mouse clears bz_mmidle = wake only (key is consumed). Strip fades in; focus stays parked on no-op 6897 for 0.5 s (WAKEGRACE) so rapid extra presses cannot hit Back-close / Select-open / pill; then bz_flip _bzstrip returns focus to 6996 on the live row. Warm never re-arms during park (.374). Wake always lands on normal MM.
+Wake idle-art (5.33.383): see artwork-group.md IDLERESET — wake restarts the hold then random.
+
+## Quick-tap ignore (current, 5.33.386)
+- **Whole strip:** any Select / Back / Left / Right on 6996 runs once, then sets Home `bz_mmtap`. All 6996 actions are conditioned on `String.IsEmpty(bz_mmtap)`, so a second press within **400 ms** does nothing. `bz_flip.py mm_tap()` clears the latch 400 ms after it appears (50 ms poll). Up/Down are not latched (fast scrolling stays free).
+- **Auto-hide wake:** unchanged — wake key eaten by park 6897, focus stays there 0.5 s, then strip 6996.
+- Scope: strip only. Once Back/Select hands focus to list 60 / another window, that target is not latched.

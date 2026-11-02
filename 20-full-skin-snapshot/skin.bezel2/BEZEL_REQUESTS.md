@@ -2771,3 +2771,20 @@ Custom_1130_BzSettings.xml: new 9132 pages upnp/control/airplay/internet (+visib
 - 5.33.366 artwork group 6400 (Rob t2616) — 1122 album opacity-gated, poster layer 6401 prewarm/crossfade; Includes 6180 railvis guard. Unsmoked (no Kodi).
 - 5.33.367 (Nov 2 2026, t2622): artwork phase 2 — bz_flip v60_mirror relays list 60 → Home props; BezelVPLPoster moved into 1122 layer 6401; per-screen mounts → BezelVPLPosterTap only. FULL restart. Not zipped.
 - 5.33.369 (Nov 2 2026, t2652): MMHOLD — Music→MM holds focused list-60 art (bz_m_idle_lock) for uadv hold (5 s, min 3) then UADVRAND; RANDSTART untouched. FULL restart. Unsmoked.
+
+- 5.33.378 (Nov 2 2026, Rob t2694u #2): FS exit → MM when FS was opened from MM (bz_fsmm latch). From-section exit stays → list 60. FULL restart. Not zipped. #3 (MM auto-hide wake→section) still queued — separate path.
+- 5.33.379 (Nov 2 2026, Rob t2697): Info/Options blank art — 1122 poster/album held under Info. FULL restart. Not zipped.
+
+- 5.33.380 (Rob t2694u #3) MM auto-hide wake → section: WAKEGRACE fix in bz_flip mm_idle. Built, not zipped.
+
+## 5.33.381 — GLARESYNC (Rob t2696u "poster glare not synced with poster sway"): Poster glare A/B + lit dust (BezelLitDustP) sat under the bz_pready + !mushide <visible> group (and its own !mushide visible) inside the 6401 BezelVPLPoster sway group. A hidden Kodi group stops processing its children, so the glare pulse froze while the sway pulse kept running; on re-show the pulse re-anchored to "now" = out of phase. Fix: glare block hoisted out of the visible group (still a child of the same sway/camera group, same z-order under frame.png); mushide added to its fade gates (no <visible>). Album: glares only gated by Player.HasAudio/bz_swayright, bz_cov_side no longer flips (5.33.301), timings identical (12250/2000/3450/8550) — in sync, no change. No stale per-screen glare left (6401 is the only BezelVPLPoster mount). XML only → ReloadSkin.
+
+## 5.33.382 — POSTERWARM (Rob t2698u "Music artwork drawn in poster during section change; why isn't poster warmed from the mirror"): Cause: the 1122 poster layer 6401 (BezelVPLPoster) still carried the old per-screen Music twins (static + MM live twin, Window.IsActive(music)) and BezelPoster60S LOOK art, all reading bz_m60_art (Music list thumb). The bz_v60_art mirror WAS warm (held last Videos poster), but while the Music window is still active — bz_vpl_on can be on in Music non-artist/album/song lists, and bz_tomusic / Music->Videos handoff hold 6401 up — the layer drew the Music twin, then on the window flip swapped to the Videos twin = Music cover in the poster frame + texture swap mid-fade. Fix: Music twins + BezelPoster60S now read bz_v60_art (held poster mirror) — poster layer can only ever show the warm poster; album art stays in 6402. bz_m60_art still mirrored (unused by the stage). XML only → ReloadSkin. Not zipped.
+  - 5.33.382 add: Music A/B lanes bz_mart_a/b inside 6401 also repointed to bz_v60_art.
+
+## 5.33.383 IDLERESET (Nov 2 2026)
+5.33.383 IDLERESET: MM auto-hide wake now restarts the idle album/poster hold — the cover on screen at wake is re-locked (bz_m_idle_lock) and the UADVRAND timer restarts (bz_uadv_hold, default 5 s, min 3 s) before random resumes every bz_uadv_delay. Before: random timer kept running through hide, so a step could swap art right as the strip faded back in. bz_flip.py under_adv. FULL restart. Not zipped. Next: idle A/B (not started).
+
+## 5.33.384 — IDLEAB idle album A/B crossfade (parked, Rob 👍)
+- 5.33.384 IDLEAB: idle Music big album (1122) is now dual A/B — slots bz_m_idle_a / bz_m_idle_b, bz_m_idle_side = shown slot. m_mirror stages a new cover (UADVRAND random step / focus) into the HIDDEN slot, promotes after 0.6 s preload, then flips side -> 400 ms sine opacity crossfade A->B (same timing as DUALM NP/idle fade). Hidden slot never rewritten while visible or <0.45 s after a flip (no mid-fade texture swap). bz_m_idle_art kept = cover on screen; MMHOLD / 383 IDLERESET locks unchanged. bz_flip.py + Includes_Bezel.xml. FULL restart. Not zipped.
+- Backup bak_5.33.383_pre384/.

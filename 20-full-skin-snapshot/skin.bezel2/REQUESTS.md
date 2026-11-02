@@ -246,3 +246,20 @@ Rob: "Take out" the black box above the merged song list. Gated the View D cover
 
 - 5.33.344 (Nov 2 2026, t2489): MM FAVOURITES opened last section — ActivateWindow(Favourites) is not a Kodi 21 window name; now favouritesbrowser (bz_mm.py GO fav + Includes_Bezel ~496). FULL restart (.py). Not zipped.
 - 5.33.345 t2490 TV pills clipped: VSTRIP meta pill grouplist width 400→780 (Includes_Bezel). ReloadSkin.
+- 5.33.368 Rob t2636: Music NP + idle list art Python-mirrored (bz_m_np_art/bz_m_idle_art), dual preloaded big album, opacity on Player.HasAudio — FULL
+- 2026-11-02 5.33.373 (Rob t2680): MM enter fade 400 ms sine out on BezelNavMenu chrome group (was 150 ms). Art lanes untouched (mirror-enter). XML → ReloadSkin. No zip. bak_5.33.372_pre373.
+
+## 5.33.375 LEAFWAKE (Rob pt2688u, Nov 2 2026)
+"Switch to new artist. Part of anim is running but not the flip. Looks like the glare or shadow moving only?" — Root: LEAFDIM (313) hides leaf groups under bz_lfdim but idle_hinge kept stepping bz_hf_ph, and 7 phase overlays (shadows, landing black) weren't dim-gated. Fix in place: Python dim() gate + XML !bz_lfdim on overlays. LEAFDIM intent kept (no fold in normal MM). FULL restart. Not zipped/smoked.
+
+## 5.33.376 FANARTFADE (Rob t2692/t2693, Nov 2 2026)
+"Did the new music list break the fanart fade?" / "fanart pop is carrying over into the section list" — Root: section fanart fadetime lost its `<!-- BETA 2.6 item 10` marker (was `5.0.3 #7` fadetime 0), so Tuner Fanart fade patch never hit. Fix in place: both section fadetimes → 200 + marker. Leaf 375 untouched. ReloadSkin. Not zipped. bak_5.33.375_pre376.
+
+## 5.33.377 FSMATCH (Rob t2694u #1, Nov 2 2026)
+"Fs fanart and fs fanart dialog are not same layout on fanart stage. Use the fs fanart dialog for style. Explain" — Root: 5.33.277 FSMETA restyle was built only inside 1121 (and NPInPlace overlay hidden only while 1121 visible), so MusicVisualisation kept the pre-277 layout. Kodi Fanart FS (MusicVisualisation) now uses the Music Fanart FS dialog 1121 fanart-stage layout: shared include BezelFSMeta (artist · album 150,196 / song title 150,226 / year pill→progress 150,296) mounted in both; BezelNPInPlace old title (150,162)/artist/album/progress (150,323)+time (729,305) hidden in viz; cycle pill 6391 moved 530,130 right → 140,136 left (NPInPlace params pillx/pilly/pillal), live shadow copies off in viz, "press down to open" hint 530,166 → 140,172. Keys unchanged. XML only - ReloadSkin. Queue #2/#3 not started.
+- 5.33.379 (Nov 2 2026, Rob t2697): Info/Options blank art fixed — 1122 poster/album held while Info open (bz_flip hold + bz_railvis clause). FULL restart. Not zipped. Unsmoked.
+
+- 5.33.385 (Nov 2 2026, Rob t2702 GO): DUALHOLD — separate last-Movies (`bz_v60_mov`) / last-TV (`bz_v60_tv`) poster holds; Music→Movies/TV + MM highlight fade up matching hold. FULL restart. Not zipped. Unsmoked.
+
+## 5.33.386 — Rob t2705 (GO): whole-MM quick-tap ignore
+- DONE: 6996 Select/Back/Left/Right gated on `bz_mmtap`; 400 ms latch (bz_flip `mm_tap`). Wake 0.5 s park on 6897 kept. FULL restart. Not zipped.

@@ -2,7 +2,7 @@
 
 **Object:** `MyVideoNav.xml` · list `60` (tvshows / seasons / episodes) · grouplist (Includes_Bezel ~L2638) · ALL `6098` · A–Z `6500` · clearlogo `BzTVClear`
 **Where:** Main menu TV → video window
-**Last updated:** 2026-11-01 (5.33.292)
+**Last updated:** 2026-11-01 (5.33.385)
 **Status:** Live in 5.33.207. Shares the Movies list nav (edge-to-ALL, no wrap, Left/Back → MM). Seasons never rest on `..`. Clearlogo/title sits on the colour strip with Year/Genre underneath. Known open issue: the Movies→TV highlight can jump back to Movies. Draft: not Rob-approved.
 **Skin:** skin.bezel2
 
@@ -231,3 +231,10 @@ Double-tap hint (BezelDtapHint) is fixed at y978 h30 in the colour strip. List 6
 
 ## 5.33.367 — poster stage
 The swaying Movies/TV poster (BezelVPLPoster) now draws only in dialog 1122 layer 6401, fed by the bz_flip list-60 Home mirror (bz_v60_*, bz_vpl_on). Screens keep only the tap target. See `artwork-group.md`.
+
+## Dual poster holds (5.33.385 DUALHOLD)
+- `bz_v60_mov` = last Movies poster, `bz_v60_tv` = last TV poster. Written by `v60_mirror` (`_v60_dualrec`) right after list-60 art is staged, only when the Videos list type (movies/sets vs tvshows/seasons/episodes) equals the target and the container is not updating.
+- Target (`_v60_target`): MM open on strip 6996 → highlighted row `sec` (movies/tv; music/other = no target, nothing changes). MM closed → current Videos list type.
+- `_v60_dualpick`: if the list is not the target type yet (on Music, on the other Videos type, or loading), list-60 staging is skipped and `bz_v60_art` is set straight to the matching hold (already decoded on its earlier visit). 6401 / BezelVPLPoster still reads only `bz_v60_art` → opacity-only layer swap, never Music art.
+- No hold yet for that type (first visit this session) → keeps whatever `bz_v60_art` held; list 60 preload fills it (~0.6 s) as before.
+- Both props cleared on Bezel leave with the other `bz_v60_*` props.

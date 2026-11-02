@@ -2,7 +2,7 @@
 
 **Object:** `DialogVideoInfo.xml` / `DialogMusicInfo.xml` · grouplist `9000` (582,166, 360 wide), cast list `50` (video); `Custom_1111_XInfo.xml` (legacy 1111, closes itself)  
 **Where:** Movies / TV / Music (and Pictures) item info  
-**Last updated:** 2026-10-31 · 5.33.207  
+**Last updated:** 2026-11-02 · 5.33.379  
 **Status:** draft. This doc matches the live tree. The left fanart mask has been off since 5.33.205. Rob has not approved it.  
 **Skin:** skin.bezel2
 
@@ -26,6 +26,12 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 **Simple.** The left fanart stays visible while the menu is open.
 
 **Wiring.** The old left black mask (`-60,-60` 630×1200 `FF000000` `bezel/white.png`) is `visible=false` in DialogVideoInfo / DialogMusicInfo / DialogAddonInfo (5.33.205). Video still has `BezelBlack` when `!Window.IsVisible(videos)`.
+
+## Global artwork under Info (5.33.379)
+
+**Simple.** The poster (Movies/TV) or big album (Music) from the global artwork group 1122 stays visible on the right while Options+Info is open. Info has no art of its own; the left BzCIStage (120..960) shows fanart.
+
+**Wiring.** `bz_flip.v60_mirror` returns early (holds `bz_vpl_on` + `bz_v60_art`) while `movieinformation | musicinformation | songinformation` is visible — list 60 can't be read from the dialog. `bz_railvis` has a `Window.IsActive(music) + Info visible` clause so 6402 stays at 100. BzCIStage: black backer + `$VAR[BzCIStageFan]` (bz_secfan if label matches, else BezelMIFanart).
 
 ## Pages
 
