@@ -2,7 +2,7 @@
 
 **Object:** `MusicVisualisation.xml` (Kodi `visualisation`) · default `6390` (BezelNPInPlace, Includes_Bezel ~2896, 120,120, 840×900) · **fan art pill** `6391` (~2956, fanart only) · **big album pill** `6401` (album viz) · hidden redirects `6297`, `6299`, `6385`, `60` · touch `6407`/`6408`, `6409`/`6410`  
 **Where:** Full-screen music  
-**Last updated:** 2026-11-02 · 5.33.326
+**Last updated:** 2026-11-02 · 5.33.352
 **Status:** draft. This doc matches the live tree. 6409 click = pause, double = album viz. Right = next via keymap (5.33.205). Rob has not approved it.  
 **Skin:** skin.bezel2
 
@@ -129,3 +129,10 @@ Down on 6421 in Up Next focuses 1121's own Up Next proxy **6396** (list **6395**
 
 ## Up Next include (5.33.315)
 Up Next list 6395 + proxy 6396 now live in shared include `BezelFSUpNext` (params `vis`, `home`, `upc1-3`). BezelNPInPlace mounts it with home 6390 and `!Window.IsVisible(1121)`; Music Fanart FS 1121 mounts its own copy with home 6421. Visualisation path unchanged.
+
+## DustViz layer (5.33.352)
+- Bottom layer of the window is `BezelDustViz` (Includes_Bezel.xml): `visualisation` control id **6399**, full 1920×1080, drawn **behind** all Bezel chrome. Same include in Dialogue FS 1120, Music Fanart FS 1121 and MusicVisualisation — one place to change.
+- Visible: `Player.HasAudio + !Player.HasVideo + System.HasAddon(visualization.bezel) + !Skin.HasSetting(bz_dustviz_off)`; 400ms fade-in.
+- The viz (visualization.bezel) only paints its rect from Kodi's audio bins; no input, no focus, no skin access. Skin → viz triggers only via Home properties.
+- Install: Startup runs `scripts/bz_dustviz.py` — copies bundled `resources/dustviz/<android|linux>/visualization.bezel` into special://home/addons when the version differs, UpdateLocalAddons, enables it, sets `musicplayer.visualisation`, sets Home `bz_dustviz_ok`. Windows: no binary, skipped (logged).
+- Kill switch: `Skin.SetBool(bz_dustviz_off)`.

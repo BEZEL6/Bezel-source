@@ -20,6 +20,7 @@
 	<onunload>ClearProperty(bz_np,home)</onunload><onunload>ClearProperty(bz_fsnp,home)</onunload><onunload>ClearProperty(bz_pnoff,home)</onunload><onunload>ClearProperty(bz_pnfoc,home)</onunload><onunload>ClearProperty(bz_vdtap,home)</onunload>
 	<onunload condition="!$EXP[bz_navmenu]">AlarmClock(bz_m1121ret,SetFocus(60),00:00,silent)</onunload><!-- Back -> Music section list 60 -->
 	<controls>
+		<include>BezelDustViz</include><!-- 5.33.352 DustViz behind chrome (first = bottom layer) -->
 		<control type="group">
 			<animation effect="fade" start="0" end="100" time="300" tween="sine" easing="inout">WindowOpen</animation>
 			<animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="!$EXP[bz_m13]">WindowClose</animation>

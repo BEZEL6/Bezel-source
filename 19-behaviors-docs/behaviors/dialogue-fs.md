@@ -2,7 +2,7 @@
 
 **Object:** `Custom_1120_PlayNext.xml` dialog `1120` · main `6400` (660,220, 600×600) · **big album pill** `6401` (shared `BezelBigAlbumPill`) · touch sides `6405`/`6406` · side albums `BezelFSPlayNext` · album grouplist `6397`  
 **Where:** Music section, over the left fanart stage  
-**Last updated:** 2026-11-02 · 5.33.326
+**Last updated:** 2026-11-02 · 5.33.352
 **Status:** draft. This doc matches the live tree. Rob has not approved it and it has not been re-smoked.  
 **Skin:** skin.bezel2
 
@@ -141,3 +141,10 @@ The big album, its sway, next-song fade, cast and compact NP no longer live in t
 - Tuner > FULLSCREEN MUSIC > **Open after 30 s idle in Music** (ON default; OFF = `Skin.HasSetting(bz_fsauto_off)`). Separate from the older Music > Auto fullscreen music slider (`bz_at_autonp`, opens Now Playing).
 
 - Transport-bar prev/next song pills (shared BezelNPInPlace, also seen behind Dialogue FS) match cycle pill 6391 chrome as of 5.33.326 — see fanart-fs.md.
+
+## DustViz layer (5.33.352)
+- Bottom layer of the window is `BezelDustViz` (Includes_Bezel.xml): `visualisation` control id **6399**, full 1920×1080, drawn **behind** all Bezel chrome. Same include in Dialogue FS 1120, Music Fanart FS 1121 and MusicVisualisation — one place to change.
+- Visible: `Player.HasAudio + !Player.HasVideo + System.HasAddon(visualization.bezel) + !Skin.HasSetting(bz_dustviz_off)`; 400ms fade-in.
+- The viz (visualization.bezel) only paints its rect from Kodi's audio bins; no input, no focus, no skin access. Skin → viz triggers only via Home properties.
+- Install: Startup runs `scripts/bz_dustviz.py` — copies bundled `resources/dustviz/<android|linux>/visualization.bezel` into special://home/addons when the version differs, UpdateLocalAddons, enables it, sets `musicplayer.visualisation`, sets Home `bz_dustviz_ok`. Windows: no binary, skipped (logged).
+- Kill switch: `Skin.SetBool(bz_dustviz_off)`.

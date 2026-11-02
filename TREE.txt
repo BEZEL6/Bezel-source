@@ -1,4 +1,4 @@
-Bezel-source (organized systems) — copies from skin.bezel2 5.33.350
+Bezel-source (organized systems) — copies from skin.bezel2 5.33.354
 No source code was modified; these are organizational copies only.
 
 .
@@ -148,6 +148,7 @@ No source code was modified; these are organizational copies only.
 05-python-scripts/scripts/bz_ctx.py
 05-python-scripts/scripts/bz_dbg.py
 05-python-scripts/scripts/bz_dtap.py
+05-python-scripts/scripts/bz_dustviz.py
 05-python-scripts/scripts/bz_fav.py
 05-python-scripts/scripts/bz_firstalbum.py
 05-python-scripts/scripts/bz_flip.py

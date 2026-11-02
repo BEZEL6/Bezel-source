@@ -1,7 +1,7 @@
 # Keyboard (DialogKeyboard 10103)
 
 **Object:** `xml/DialogKeyboard.xml` · includes `BzStdKeyboard` (Includes_BezelDialogs), `BzRefreshKeyboard` (Includes_BezelRefresh), `BzStripKeyboard` (Includes_BezelDialogs) · script `scripts/bz_kb.py`
-**Last updated:** 2026-11-01 · 5.33.239
+**Last updated:** 2026-11-02 · 5.33.354
 **Status:** draft. Strip keyboard smoked headless :77 (type/space/del/caps/done). Not yet seen on Shield.
 **Skin:** skin.bezel2
 
@@ -16,7 +16,7 @@ On-screen keyboard. Search, sources, renames and most text fields use the Bezel 
 - Everywhere else (Search, Add/Edit Source, rename, playlist name, add-on text settings, etc.) → `BzStripKeyboard`: vbar keyboard left of the colour strip, focus on A–Z 9601.
 
 ## Strip keyboard essentials
-Bars 9601 A–Z / 9602 0–9 / 9603 symbols (wraplists, focus row 5). Select → `bz_kb.py` appends the char via JSON `Input.SendText` (done=false) to the text read from `Control.GetLabel(312).index(1)`. Pills 32 SPACE, 8 DEL, 300 DONE. Caps: Left on the A–Z bar 9601 toggles Home `bz_kbcaps` (letters redraw upper/lower; no caps pill since 5.33.231). Digits use `$NUMBER[n]` labels (a bare number label is read as a localized string id).
+Bars 9601 A–Z / 9602 0–9 / 9603 symbols (wraplists, focus row 5). Select → `bz_kb.py` appends the char via JSON `Input.SendText` (done=false) to the text read from `Control.GetLabel(312).index(1)`. Pills 32 SPACE, 8 DEL, 300 DONE, 9604 CANCEL (5.33.354). Caps: Left on the A–Z bar 9601 toggles Home `bz_kbcaps` (letters redraw upper/lower; no caps pill since 5.33.231). Digits use `$NUMBER[n]` labels (a bare number label is read as a localized string id).
 
 ## Strip keyboard — How it works (deep)
 **Simple.** Three upright drums (letters, digits, symbols) spin under a fixed highlight; Select types the drum's current character into the edit line; three pills below give space, delete and done.
@@ -26,7 +26,7 @@ Bars 9601 A–Z / 9602 0–9 / 9603 symbols (wraplists, focus row 5). Select →
 2. Up/Down spins the focused wraplist; focus row is fixed, so the character under the highlight changes, not the highlight.
 3. Select on a drum runs `bz_kb.py <bar> <index>`. The script reads the current text from edit 312 (`Control.GetLabel(312).index(1)`), appends the one character (upper-cased on the A–Z bar when `bz_kbcaps` is set), and pushes the whole string back with JSON `Input.SendText` `done=false` — the dialog stays open.
 4. Left on 9601 toggles caps (sets/clears Home `bz_kbcaps`); the A–Z labels come from `$VAR[BzKbCase0..25]` so they redraw instantly. Caps is cleared on `onunload`.
-5. DONE (300) is Kodi's stock OK id; DEL (8) and SPACE (32) are stock keyboard button ids, so Kodi itself does the edit. Back = cancel (stock).
+5. DONE (300) is Kodi's stock OK id; DEL (8) and SPACE (32) are stock keyboard button ids, so Kodi itself does the edit. Back = cancel (stock). **Remote path (5.33.354):** Right from #!? → DEL → DONE → CANCEL; CANCEL = `Action(Back)`.
 
 ## Strip keyboard — Wiring (from `Includes_BezelDialogs.xml` L564+, design canvas 1920×1080)
 | piece | id | x,y (in group 170,120) | w×h | nav L / R / U / D |
@@ -36,10 +36,11 @@ Bars 9601 A–Z / 9602 0–9 / 9603 symbols (wraplists, focus row 5). Select →
 | edit line | 312 | 16,64 | 348×46 | all → 9601 |
 | A–Z drum | 9601 | 22,162 | 100×506, item 46 | caps toggle / 9602 / self / self |
 | 0–9 drum | 9602 | 136,162 | 100×506 | 9601 / 9603 / self / self |
-| #!? drum (`/:._-@\\!#$%&+=?`) | 9603 | 250,162 | 100×506 | 9602 / 300 / self / self |
-| SPACE pill | 32 | 26,706 | 110×38 | 300 / 8 / 9601 / 9601 |
-| ← DEL pill | 8 | 146,706 | 70×38 | 32 / 300 / 9602 / 9602 |
-| DONE pill | 300 | 226,706 | 138×38 | 8 / 9603 / 9603 / 9603 |
+| #!? drum (`/:._-@\\!#$%&+=?`) | 9603 | 250,162 | 100×506 | 9602 / 8 (DEL) / self / self |
+| SPACE pill | 32 | 20,706 | 78×38 | 9604 / 8 / 9601 / 9601 |
+| ← DEL pill | 8 | 104,706 | 78×38 | 9603 / 300 / 9602 / 9602 |
+| DONE pill | 300 | 188,706 | 82×38 | 8 / 9604 / 9603 / 9603 |
+| CANCEL pill | 9604 | 276,706 | 86×38 | 300 / 32 / 9603 / 9603 · `Action(Back)` |
 | hint label | — | 26,800 | 340×90 | bz_mm14 `AAFFFFFF` |
 
 - Focused drum item: `$VAR[BzATHiTex]` tinted `$VAR[BzATHiCol]`, text `$VAR[BzATHiText]`, font bz_mm34; unfocused drum keeps a `3CFFFFFF` `np_pill32` ghost.

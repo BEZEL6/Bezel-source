@@ -2,7 +2,7 @@
 
 **Object:** `Custom_1117_MediaSources.xml` window `1117` · grouplist `9000` (125,128, 440 wide) with 11 rows `7101–7121` · grouplist `9001` (584,136) with `9101` / `9102` · bounce `6299`  
 **Where:** Main Menu row MEDIA SOURCES  
-**Last updated:** 2026-11-01 · 5.33.243
+**Last updated:** 2026-11-02 · 5.33.354
 **Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
 **Skin:** skin.bezel2
 
@@ -88,3 +88,8 @@ Menu on a source row (1117 / SOURCES 1132 / Pictures sources root) now draws Kod
 ## 5.33.337 (t2458)
 - ADD SOURCE (7130) now opens the stock "Add <type> source" dialog directly: `bz_set.py msadd,<m|p|v>` uses the expanded section, finds the `add` item in sources://, selects it, waits for the dialog to close, then goes back to 1117 with focus on 7130. Shots: `skip/337_addsource_dialog.png`, `skip/337_addsource_back.png`.
 - IMPORT LIBRARY (7105) stays SKIP. Kodi has no ImportLibrary builtin, and the import runs only as a stock settings action through the file browser (it opens Settings/Media). Shot: `skip/337_import_library_stock.png`.
+
+## Keyboard + CLEAN warning (5.33.354, current state)
+- **Keyboard:** every text field in the Media Sources flows — ADD SOURCE path + name and EDIT SOURCE (context → Edit source) path + name in DialogMediaSource — opens the Bezel **strip keyboard** (DialogKeyboard picks `BzStripKeyboard` everywhere except Music Refresh and File Manager). No stock keyboard is left in these flows. The path **Browse** button still opens Kodi's stock file browser (a folder picker, not a keyboard).
+- **Remote path on the keyboard:** bars A–Z → 0–9 → #!? ; Right from #!? (bar 3) → **← DEL** → **DONE** (save/enter) → **CANCEL** (new pill 9604, `Action(Back)`). Back also cancels. See `keyboard.md`.
+- **CLEAN LIBRARY** (7103 video / 7113 music) runs `bz_set.py msclean,<video|music>`: Yes/No dialog "CLEAN VIDEO|MUSIC LIBRARY" first; only YES runs `CleanLibrary(<type>)`. NO / Back does nothing.
