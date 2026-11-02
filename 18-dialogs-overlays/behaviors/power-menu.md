@@ -82,3 +82,10 @@ None specified.
 
 ## Related
 mm-list.md · skin-settings-tuner.md · section-transitions.md
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/power-menu.md) · [state](../state/power-menu.md) · [motion](../motion/power-menu.md) · [art](../art/power-menu.md) · [input](../input/power-menu.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+## First Down hardening (5.33.322, Rob t2409 — current)
+- onload order: `ClearProperty(bz_tunesrc)` · `SetProperty(bz_pwrswap,1)` · `CancelAlarm(bzpwrf,true)` (drops a pending close-alarm `SetFocus(6996)` from a previous close, e.g. Tuner→Back reopen) · `SetFocus(7800,0,absolute)` · `AlarmClock(bzpwrfoc,SetFocus(7800,0,absolute),00:00)` (re-asserts one tick later after the 6996→7800 hand-off). One Down from SHUTDOWN moves to QUIT.

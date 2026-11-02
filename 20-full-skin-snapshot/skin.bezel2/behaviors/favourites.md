@@ -40,3 +40,93 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ## Related
 context-menu.md · info-options.md · addons.md · mm-list.md
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/MyFavourites.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 9000 | grouplist | —,50 | —×— | `—/—/—/—` | `—` |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `RunScript(special://skin/scripts/bz_cmd.py,backdrop)`
+
+**Source:** `xml/Includes_Bezel.xml` include `View_60_BezelInfoList`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 6891 | button | 894,144 | 45×32 | `—/—/—/—` | `false` |
+| 6077 | textbox | 612,622 | 306×344 | `—/—/—/—` | `!$EXP[bz_infoup] + !$EXP[bz_ameta]` |
+| 60 | list | 0,0 | 450×900 | `SetProperty(bz_vback_close,true,home)/SetFocus(6095)/SetProperty(bz_topedge,1,home)/6097` | `—` |
+| 6097 | button | 0,0 | 450×60 | `SetProperty(bz_nav,true,home)/—/SetFocus(60,$INFO[Window(Home).Property(bz_allup)],absolute)/noop` | `!$EXP[bz_covercol] | $EXP[bz_allpick]` |
+| 6140 | list | -4000,0 | 10×10 | `—/—/—/—` | `[Window.IsActive(music) | Window.IsActive(musicplaylist)] + [Container.Content(artists)…` |
+| 6141 | list | -4000,20 | 10×10 | `—/—/—/—` | `[Window.IsActive(music) | Window.IsActive(musicplaylist)] + [Container.Content(artists)…` |
+| 6100 | grouplist | 78,151 | 36×837 | `60/60/—/—` | `!$EXP[bz_navmenu]` |
+| 6101 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6102 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6103 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6104 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6105 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6106 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6107 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6108 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6109 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6110 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6111 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6112 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6113 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6114 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6115 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6116 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6117 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6118 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6119 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6120 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6121 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6122 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6123 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6124 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6125 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6126 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6127 | button | —,— | 36×31 | `—/—/—/—` | `—` |
+| 6886 | button | —,— | auto×32 | `60/60/60/60` | `—` |
+| 6367 | grouplist | 0,0 | 1920×1080 | `—/—/—/—` | `String.IsEqual(Skin.String(bz_at_fsslide),1)` |
+| 6368 | button | —,— | 1×1 | `—/—/—/—` | `—` |
+| 6369 | button | —,— | 480×1 | `SetFocus(6368)/SetFocus(6368)/SetFocus(6368)/SetFocus(6368)` | `—` |
+| 6377 | grouplist | 0,0 | 1920×1080 | `—/—/—/—` | `String.IsEqual(Skin.String(bz_at_fsslide),2)` |
+| 6378 | button | —,— | 1×1 | `—/—/—/—` | `—` |
+| … | 8 more ids not listed | | | | |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `60`
+- `6299`
+- `Action(Select)`
+- `Action(firstpage)`
+- `Action(lastpage)`
+- `Action(nextletter)`
+- `ActivateWindow(1115)`
+- `ActivateWindow(1117)`
+- `ActivateWindow(1121)`
+- `ActivateWindow(12006)`
+- `ActivateWindow(visualisation)`
+- `ClearProperty(bezel_jump,home)`
+- `ClearProperty(bz_nav,home)`
+- `ClearProperty(bz_navbez,home)`
+- `ClearProperty(bz_navtune,home)`
+- `ClearProperty(bz_np,home)`
+- `Control.Move(60,-1)`
+- `RunScript(special://skin/scripts/bz_cmd.py,allrow)`
+- `SetFocus(60)`
+- `SetFocus(60,$INFO[Container(6140).CurrentItem],absolute)`
+- `SetFocus(6140,0,absolute)`
+- `SetFocus(6368)`
+- `SetFocus(6378)`
+- `SetFocus(6383)`
+- `SetFocus(6390)`
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/favourites.md) · [state](../state/favourites.md) · [motion](../motion/favourites.md) · [art](../art/favourites.md) · [input](../input/favourites.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

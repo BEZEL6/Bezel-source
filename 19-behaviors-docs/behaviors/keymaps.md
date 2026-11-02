@@ -65,3 +65,10 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 context-menu.md · fanart-fs.md · fullscreen-video.md · skin-settings-tuner.md
 
 **5.33.210:** `<music>` Tab / remote Display → `ActivateWindow(1121)` (was 1112). New `<window1121>`: M/RED → 1115, Tab/Display → close, Back/Backspace/B → `SetFocus(6422)`, longpress Select → PlayPause.
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/keymaps.md) · [state](../state/keymaps.md) · [motion](../motion/keymaps.md) · [art](../art/keymaps.md) · [input](../input/keymaps.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+## Home Back ignored (5.33.321, Rob t2408 — current)
+- `bezel2_np_tab.xml` `<home>` maps Back to `noop`: keyboard escape/backspace/browser_back, remote back, gamepad b/back, joystick b (default + shield). Quick or HDMI-CEC repeat Back while the Home bounce pad is active no longer reaches Kodi default ShutdownMenu → Power 1118. MM POWER row → 1118 unchanged. Installed as `zz_bezel2_np_tab.xml` on start (FULL restart).

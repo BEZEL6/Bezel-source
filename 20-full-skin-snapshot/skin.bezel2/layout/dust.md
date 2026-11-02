@@ -1,0 +1,20 @@
+# Dust (ambient particle layers) — dust
+
+**Object:** `dust` · **Layer:** layout (geometry) · **Last updated:** 2026-11-01 · 5.33.267 · **Status:** current-state, extracted from live XML/Python
+**Blueprint siblings:** [behavior](../behaviors/dust.md) · [layout](../layout/dust.md) · [state](../state/dust.md) · [motion](../motion/dust.md) · [art](../art/dust.md) · [input](../input/dust.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+## Simple
+Slow drifting dust in the black space of the screen. It starts once after the splash and keeps drifting across window changes, so it never restarts or jumps.
+
+**This layer in one line:** where every control of this object sits on the 1920×1080 canvas, and which control focus moves to on each direction.
+
+## Deep (rebuild detail)
+> **Verification (phase 2 hand-check):** auto-extracted rows are kept only where the control id is named in [behavior](../behaviors/dust.md); others were stripped as stray. Kept rows are *unverified at runtime* unless a section says hand-verified.
+Coordinates are Kodi skin units on the **1920×1080** design canvas (see [resolution](resolution.md)). Values copied from live XML; `—` = not set on that control (inherits/fills parent). Visibility strings are geometry context — names are defined in [state](../state/dust.md).
+
+## Control 100 · `button` · `xml/Includes_BezelDialogs.xml` L119
+| field | value |
+|---|---|
+| onup | `304` |
+| ondown | `120` |
+

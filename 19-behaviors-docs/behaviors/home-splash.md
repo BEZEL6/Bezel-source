@@ -2,7 +2,7 @@
 
 **Object:** `Startup.xml` onload · `Home.xml` onload · `scripts/bz_warmgate.py` (warm gate) · `scripts/bz_cmd.py start` · overlay `BezelWarmGateOverlay` (Includes_Bezel ~3617)  
 **Where:** Cold start of Kodi on BEZEL, and every Home load  
-**Last updated:** 2026-10-31 · 5.33.207  
+**Last updated:** 2026-11-02 · 5.33.316  
 **Status:** live. The splash is the warm gate of WARM 2.0, which is **LOCKED** (mm-warm.md). Any change needs Rob's approval. This file only describes the startup chain around it.  
 **Skin:** skin.bezel2
 
@@ -21,6 +21,18 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 - `bz_warmgate.py`: `MIN=5.0`, `CAP=15.0`, `FADE=3.0`. Guard `bz_warmgate_running`. First section from `bz_at_mmdef` (1 Music / 2 Movies / 3/empty TV). Ready flags `bz_warm_ready_<sec>`. `dismiss()` clears `bz_warm_gate`, closes 1113 if visible, waits FADE, then sets `bz_splash_done=1` and clears `bz_warmgate_running`.
 - Overlay visible: `!String.IsEmpty(Window(Home).Property(bz_warm_gate)) + !String.IsEqual(Skin.String(bz_at_warmsplash),Off)`.
 - While `bz_warm_gate` is set, `BezelGlobalBackdrop` (inside `BezelBlack`) is hidden, so Music/Videos first paint is solid black under the splash rather than the glow backdrop.
+
+## Splash look (5.33.316, approved tighter mock pt2395u)
+
+**Simple.** Near-black screen, one Bezel logo in the middle at half opacity, **BEZEL** and the version under it, and a small half-opacity credit "Design by Robert Politano" with a tiny US flag at the bottom. Nothing else.
+
+**Wiring.** `BezelWarmGate` (Includes_Bezel, also used by Custom_1113_WarmGate.xml), wrapped by `BezelWarmGateOverlay` (visibility + 3 s Hidden fade, unchanged).
+- Backdrop `colors/white.png` colordiffuse `FF0A0B0E`, 1920×1080.
+- Logo `bezel/logo.png` 280×280 at x820 y340, colordiffuse `80FFFFFF` (50%). Static: logoglow multiimage and 80↔100 pulse removed.
+- `BEZEL` label y650 h64, font `bz_splash68b` (Montserrat-Bold 68), `FFFFFFFF`.
+- Version label y714 h36, `v$INFO[System.AddonVersion(skin.bezel2)]`, font `bz_splash28m` (Montserrat-Medium 28), `FFC8C8CD`.
+- Credit grouplist y1000 h28 centred, gap 12: label "Design by Robert Politano" font `bz_splash20r` (Montserrat-Regular 20) `80FFFFFF` + `bezel/us_flag.png` (54×28 source) drawn 27×14, colordiffuse `80FFFFFF`.
+- Fonts added to both fontsets in Font.xml.
 
 ## Home.xml onload
 
@@ -44,3 +56,43 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ## Related
 mm-warm.md · mm-list.md · section-transitions.md · dust.md
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/Startup.xml`
+
+_No id’d controls in this file (layout comes from includes)._
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `ClearProperty(bz_splash_done,home)`
+- `ReplaceWindow($INFO[System.StartupWindow])`
+- `RunScript(special://skin/scripts/bz_warmgate.py)`
+- `SetProperty(bz_warm_gate,1,home)`
+
+**Source:** `xml/Home.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 9999 | button | -100,-100 | 10×10 | `—/—/—/—` | `—` |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `RunScript(special://skin/scripts/bz_cmd.py,start)`
+- `RunScript(special://skin/scripts/bz_flip.py)`
+- `RunScript(special://skin/scripts/bz_precache.py)`
+- `RunScript(special://skin/scripts/bz_tune.py,seed)`
+
+**Source:** `xml/Includes_Bezel.xml` include `BezelWarmGateOverlay`
+
+_No id’d controls in this file (layout comes from includes)._
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/home-splash.md) · [state](../state/home-splash.md) · [motion](../motion/home-splash.md) · [art](../art/home-splash.md) · [input](../input/home-splash.md) · [theme](../theme/tokens.md) · [screens](../port-refs/home-splash/) · [PORT_INDEX](../PORT_INDEX.md)
+
+## Startup add-on install rescue (5.33.312)
+If Kodi auto-installs/updates an add-on at boot, its dialog can swallow Startup.xml's `ReplaceWindow(System.StartupWindow)`, leaving a blank Startup window. `bz_warmgate.py` `rescue_startup()` (after splash dismiss) waits up to 120s for modal/progress/busy dialogs to close; if still on Startup it re-issues `ReplaceWindow` once. No-op on normal boots.
+
+## Home Back ignored (5.33.321, Rob t2408 — current)
+- `bezel2_np_tab.xml` `<home>` maps Back to `noop`: keyboard escape/backspace/browser_back, remote back, gamepad b/back, joystick b (default + shield). Quick or HDMI-CEC repeat Back while the Home bounce pad is active no longer reaches Kodi default ShutdownMenu → Power 1118. MM POWER row → 1118 unchanged. Installed as `zz_bezel2_np_tab.xml` on start (FULL restart).

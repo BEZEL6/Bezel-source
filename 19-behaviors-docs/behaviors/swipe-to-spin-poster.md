@@ -54,3 +54,7 @@ No live wiring. The nearest live mechanism is the sway clock (Python sets flags,
 - An earlier parked idea: an animation scrubber / stepped keyframes driven by a Tuner slider (Kodi can't truly scrub Conditional animations).
 - sway-animations.md
 - Logged from voice, 2026-10-31.
+
+<!-- PORTLINKS -->
+---
+**Port blueprint:** PARKED — not part of the port. [PORT_INDEX](../PORT_INDEX.md)

@@ -18,7 +18,7 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 **Simple.** ALBUM shows the big album alone. PREV/NEXT also shows the previous and next albums at the sides.
 
-**How it works.** The mode lives in one Skin.String, so it is shared across 1120 and viz and survives restarts. Both windows set `bz_dfs_mode=album` on load when it is empty, so ALBUM is the default. The side albums come from `BezelFSPlayNext` with `sides=!String.IsEqual(Skin.String(bz_dfs_mode),album)`. Their reveal uses `sdelay 3000` / `sfade 2000`, so after a switch to PREV/NEXT the sides wait 3 s and then fade in over 2 s.
+**How it works.** The mode lives in one Skin.String, so it is shared across 1120 and viz and survives restarts. Both windows set `bz_dfs_mode=album` on load when it is empty, so ALBUM is the default. The side albums come from `BezelFSPlayNext` with `sides=!String.IsEqual(Skin.String(bz_dfs_mode),album)`. Their reveal uses `sdelay 0` / `sfade 2000` (5.33.317), so after a switch to PREV/NEXT the sides start fading in at once over 2 s.
 
 **Wiring.**
 | Label (`$VAR[BezelDFSModeName]`) | `bz_dfs_mode` | Sides |
@@ -54,3 +54,74 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ## Related
 dialogue-fs.md · fanart-fs.md · play-next.md
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/Includes_Bezel.xml` include `BezelBigAlbumPill`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 6401 | button | —,— | auto×32 | `Skin.Reset(bz_dfs_mode)/Skin.Reset(bz_dfs_mode)/$PARAM[main]/$PARAM[main]` | `—` |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `$PARAM[main]`
+- `AlarmClock(bz_fsretclr,ClearProperty(bz_fsret,home),00:01,silent)`
+- `Dialog.Close(1120)`
+- `SetProperty(bz_fsret,true,home)`
+- `Skin.Reset(bz_dfs_mode)`
+- `Skin.SetString(bz_dfs_mode,album)`
+
+**Source:** `xml/Custom_1120_PlayNext.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 6400 | button | 660,220 | 600×600 | `PlayerControl(Previous)/PlayerControl(Next)/6401/SetProperty(bz_noop,1,home)` | `—` |
+| 6405 | button | 90,250 | 540×540 | `—/—/—/—` | `!String.IsEqual(Skin.String(bz_dfs_mode),album) + !String.IsEmpty(MusicPlayer.offset(-1…` |
+| 6406 | button | 1290,250 | 540×540 | `—/—/—/—` | `!String.IsEqual(Skin.String(bz_dfs_mode),album) + !String.IsEmpty(MusicPlayer.offset(1)…` |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `AlarmClock(bz_fsretclr,ClearProperty(bz_fsret,home),00:01,silent)`
+- `ClearProperty(bz_pnfoc,home)`
+- `Dialog.Close(1120)`
+- `PlayerControl(Play)`
+- `Playlist.PlayOffset(music,-1)`
+- `Playlist.PlayOffset(music,1)`
+- `SetProperty(bz_fsret,true,home)`
+- `SetProperty(bz_pnfoc,6403,home)`
+- `Skin.SetString(bz_dfs_mode,album)`
+
+**Source:** `xml/MusicVisualisation.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 6387 | button | 0,0 | 120×116 | `—/—/—/—` | `—` |
+| 6297 | button | -400,40 | 10×10 | `—/—/—/—` | `—` |
+| 6299 | button | -400,0 | 10×10 | `—/—/—/—` | `—` |
+| 6385 | button | -400,40 | 10×10 | `—/—/—/—` | `—` |
+| 60 | button | -400,80 | 10×10 | `—/—/—/—` | `—` |
+| 6407 | button | 90,250 | 540×540 | `—/—/—/—` | `[!String.IsEqual(Window(Home).Property(bz_pnoff),1)] + !String.IsEqual(Skin.String(bz_d…` |
+| 6408 | button | 1290,250 | 540×540 | `—/—/—/—` | `[!String.IsEqual(Window(Home).Property(bz_pnoff),1)] + !String.IsEqual(Skin.String(bz_d…` |
+| 6410 | button | 960,0 | 960×1080 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_pnoff),1) + !String.IsEqual(Window(Home).Proper…` |
+| 6409 | button | 1100,220 | 680×680 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_pnoff),1) + !String.IsEqual(Window(Home).Proper…` |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `Action(Back)`
+- `AlarmClock(bz_fsfoc,SetFocus(6390),00:00,silent)`
+- `ClearProperty(bz_np,home)`
+- `PlayerControl(Play)`
+- `Playlist.PlayOffset(music,-1)`
+- `Playlist.PlayOffset(music,1)`
+- `RunScript(special://skin/scripts/bz_cmd.py,keymap)`
+- `RunScript(special://skin/scripts/bz_flip.py)`
+- `SetProperty(bz_fsnp,true,home)`
+- `SetProperty(bz_np,true,home)`
+- `SetProperty(bz_pnoff,1,home)`
+- `SetProperty(bz_sway_restart,true,home)`
+- `Skin.SetString(bz_dfs_mode,album)`
+- `Skin.SetString(bz_npmode,upnext)`
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/big-album-pill.md) · [state](../state/big-album-pill.md) · [motion](../motion/big-album-pill.md) · [art](../art/big-album-pill.md) · [input](../input/big-album-pill.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

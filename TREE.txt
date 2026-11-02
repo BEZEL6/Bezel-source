@@ -1,4 +1,4 @@
-Bezel-source (organized systems) — copies from skin.bezel2 5.33.196
+Bezel-source (organized systems) — copies from skin.bezel2 5.33.343
 No source code was modified; these are organizational copies only.
 
 .
@@ -151,9 +151,12 @@ No source code was modified; these are organizational copies only.
 05-python-scripts/scripts/bz_fav.py
 05-python-scripts/scripts/bz_firstalbum.py
 05-python-scripts/scripts/bz_flip.py
+05-python-scripts/scripts/bz_kb.py
 05-python-scripts/scripts/bz_km.py
 05-python-scripts/scripts/bz_mm.py
 05-python-scripts/scripts/bz_precache.py
+05-python-scripts/scripts/bz_set.py
+05-python-scripts/scripts/bz_set_pages.py
 05-python-scripts/scripts/bz_tune.py
 05-python-scripts/scripts/bz_tune_patch.py
 05-python-scripts/scripts/bz_vizset.py
@@ -196,10 +199,12 @@ No source code was modified; these are organizational copies only.
 10-music-list
 10-music-list/SYSTEM.md
 10-music-list/behaviors
+10-music-list/behaviors/big-album.md
 10-music-list/behaviors/music-controls.md
 10-music-list/behaviors/music-list.md
 10-music-list/xml
 10-music-list/xml/Custom_1115_MusicControls.xml
+10-music-list/xml/Custom_1122_BigAlbum.xml
 10-music-list/xml/MyMusicNav.xml
 11-dust
 11-dust/SYSTEM.md
@@ -242,6 +247,8 @@ No source code was modified; these are organizational copies only.
 17-sway-animations
 17-sway-animations/SYSTEM.md
 17-sway-animations/behaviors
+17-sway-animations/behaviors/idle-big-album-fold.md
+17-sway-animations/behaviors/leaf-flip.md
 17-sway-animations/behaviors/sway-animations.md
 17-sway-animations/scripts
 17-sway-animations/scripts/bz_flip.py
@@ -267,6 +274,7 @@ No source code was modified; these are organizational copies only.
 19-behaviors-docs/behaviors/README.md
 19-behaviors-docs/behaviors/addons.md
 19-behaviors-docs/behaviors/bezel-logo-back.md
+19-behaviors-docs/behaviors/big-album.md
 19-behaviors-docs/behaviors/context-menu.md
 19-behaviors-docs/behaviors/dialog-busy.md
 19-behaviors-docs/behaviors/dialog-confirm.md
@@ -279,8 +287,11 @@ No source code was modified; these are organizational copies only.
 19-behaviors-docs/behaviors/fullscreen-pill.md
 19-behaviors-docs/behaviors/fullscreen-video.md
 19-behaviors-docs/behaviors/home-splash.md
+19-behaviors-docs/behaviors/idle-big-album-fold.md
 19-behaviors-docs/behaviors/info-options.md
+19-behaviors-docs/behaviors/keyboard.md
 19-behaviors-docs/behaviors/keymaps.md
+19-behaviors-docs/behaviors/leaf-flip.md
 19-behaviors-docs/behaviors/media-sources.md
 19-behaviors-docs/behaviors/mm-list.md
 19-behaviors-docs/behaviors/mm-mini-player.md
