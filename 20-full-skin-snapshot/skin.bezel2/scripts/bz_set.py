@@ -231,10 +231,10 @@ elif a and a[0] == 'azip': azip()
 # ---- 5.33.337 Rob t2458: ADD SOURCE straight from the strip ----
 # Opens the section's sources:// list, selects its "Add …" item (path 'add') so Kodi's
 # Add Source dialog comes up at once, then returns to Media Sources 1117 on ADD SOURCE.
-def msadd(k):
+def msadd(k, foc='7130'):
     mon = xbmc.Monitor()
     win, path = {'m': ('Music', 'sources://music/'), 'p': ('Pictures', 'sources://pictures/')}.get(k, ('Videos', 'sources://video/'))
-    home.setProperty('bz_msfocus', '7130'); home.setProperty('bz_msadd', '1')
+    home.setProperty('bz_msfocus', foc); home.setProperty('bz_msadd', '1')
     xbmc.executebuiltin('ActivateWindow(%s,%s,return)' % (win, path))
     for _ in range(60):
         if xbmc.getCondVisibility('Window.IsActive(%s) + String.IsEqual(Container.FolderPath,%s) + Integer.IsGreater(Container(60).NumItems,0)' % (win, path)): break
@@ -255,7 +255,7 @@ def msadd(k):
     if mon.abortRequested() or home.getProperty('bz_nav'): return
     if xbmc.getCondVisibility('Window.IsActive(%s)' % win):
         home.clearProperty('bz_msret'); xbmc.executebuiltin('ActivateWindow(1117)')
-if a and a[0] == 'msadd': msadd(a[1] if len(a) > 1 else 'v')
+if a and a[0] == 'msadd': msadd(a[1] if len(a) > 1 and a[1] else 'v', a[2] if len(a) > 2 else '7130')
 # 5.33.354 Rob t2513: CLEAN LIBRARY always asks Yes/No first (Videos + Music)
 if a and a[0] == 'msclean':
     t = 'music' if len(a) > 1 and a[1] == 'music' else 'video'

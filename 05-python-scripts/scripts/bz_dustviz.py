@@ -1,6 +1,6 @@
 # 5.33.352 DustViz auto-install (Rob t2503): copy bundled visualization.bezel into special://home/addons,
 # enable it and make it the music visualisation. Skin = trigger only; viz draws in Bezel's visualisation rect.
-# Bundles: resources/dustviz/android (Shield aarch64 GLES 0.2.0) / linux (desktop). No Windows build yet -> skip.
+# Bundles: resources/dustviz/android (Shield aarch64 GLES 0.2.0) / linux (desktop) / windows (x64 DX11 0.2.0, 5.33.358).
 import os, json, shutil, xbmc, xbmcvfs
 ID = 'visualization.bezel'
 def rpc(m, p):
@@ -12,10 +12,10 @@ def ver(path):
         i = s.index('version="', s.index('<addon')) + 9; return s[i:s.index('"', i)]
     except Exception: return ''
 def main():
-    win = xbmc.getCondVisibility('System.Platform.Windows')
-    plat = 'android' if xbmc.getCondVisibility('System.Platform.Android') else ('linux' if xbmc.getCondVisibility('System.Platform.Linux') else '')
-    if not plat or win:
-        xbmc.log('BEZEL dustviz: no bundled binary for this platform (Windows/other) - skipped', xbmc.LOGINFO); return
+    cv = xbmc.getCondVisibility
+    plat = 'windows' if cv('System.Platform.Windows') else ('android' if cv('System.Platform.Android') else ('linux' if cv('System.Platform.Linux') else ''))
+    if not plat:
+        xbmc.log('BEZEL dustviz: no bundled binary for this platform - skipped', xbmc.LOGINFO); return
     src = os.path.join(xbmcvfs.translatePath('special://skin/'), 'resources', 'dustviz', plat, ID)
     dst = os.path.join(xbmcvfs.translatePath('special://home/addons/'), ID)
     if not os.path.isdir(src): return

@@ -83,3 +83,6 @@ Actions (`onclick`/`onload`/`onback`) found:
 <!-- PORTLINKS -->
 ---
 **Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/music-viz-settings.md) · [state](../state/music-viz-settings.md) · [motion](../motion/music-viz-settings.md) · [art](../art/music-viz-settings.md) · [input](../input/music-viz-settings.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+## DustViz auto-install (5.33.358)
+`scripts/bz_dustviz.py` copies the bundled `visualization.bezel` from `resources/dustviz/<plat>/` into `special://home/addons/` when versions differ, enables it, and sets it as the music visualisation. Platforms: `windows` (x64 DX11 dll), `android` (Shield aarch64 GLES), `linux` (desktop). Any other platform is skipped.

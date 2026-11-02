@@ -26,7 +26,7 @@ Bars 9601 A–Z / 9602 0–9 / 9603 symbols (wraplists, focus row 5). Select →
 2. Up/Down spins the focused wraplist; focus row is fixed, so the character under the highlight changes, not the highlight.
 3. Select on a drum runs `bz_kb.py <bar> <index>`. The script reads the current text from edit 312 (`Control.GetLabel(312).index(1)`), appends the one character (upper-cased on the A–Z bar when `bz_kbcaps` is set), and pushes the whole string back with JSON `Input.SendText` `done=false` — the dialog stays open.
 4. Left on 9601 toggles caps (sets/clears Home `bz_kbcaps`); the A–Z labels come from `$VAR[BzKbCase0..25]` so they redraw instantly. Caps is cleared on `onunload`.
-5. DONE (300) is Kodi's stock OK id; DEL (8) and SPACE (32) are stock keyboard button ids, so Kodi itself does the edit. Back = cancel (stock). **Remote path (5.33.354):** Right from #!? → DEL → DONE → CANCEL; CANCEL = `Action(Back)`.
+5. DONE (300) is Kodi's stock OK id; DEL (8) and SPACE (32) are stock keyboard button ids, so Kodi itself does the edit. Back = cancel (stock). **Remote path (5.33.354):** Right from #!? → SPACE → DEL → DONE → CANCEL (5.33.357: was landing on DEL). Pill row Left/Right wraps SPACE ↔ CANCEL; Up leaves the row.; CANCEL = `Action(Back)`.
 
 ## Strip keyboard — Wiring (from `Includes_BezelDialogs.xml` L564+, design canvas 1920×1080)
 | piece | id | x,y (in group 170,120) | w×h | nav L / R / U / D |
@@ -36,9 +36,9 @@ Bars 9601 A–Z / 9602 0–9 / 9603 symbols (wraplists, focus row 5). Select →
 | edit line | 312 | 16,64 | 348×46 | all → 9601 |
 | A–Z drum | 9601 | 22,162 | 100×506, item 46 | caps toggle / 9602 / self / self |
 | 0–9 drum | 9602 | 136,162 | 100×506 | 9601 / 9603 / self / self |
-| #!? drum (`/:._-@\\!#$%&+=?`) | 9603 | 250,162 | 100×506 | 9602 / 8 (DEL) / self / self |
+| #!? drum (`/:._-@\\!#$%&+=?`) | 9603 | 250,162 | 100×506 | 9602 / 32 (SPACE) / self / self |
 | SPACE pill | 32 | 20,706 | 78×38 | 9604 / 8 / 9601 / 9601 |
-| ← DEL pill | 8 | 104,706 | 78×38 | 9603 / 300 / 9602 / 9602 |
+| ← DEL pill | 8 | 104,706 | 78×38 | 32 / 300 / 9602 / 9602 |
 | DONE pill | 300 | 188,706 | 82×38 | 8 / 9604 / 9603 / 9603 |
 | CANCEL pill | 9604 | 276,706 | 86×38 | 300 / 32 / 9603 / 9603 · `Action(Back)` |
 | hint label | — | 26,800 | 340×90 | bz_mm14 `AAFFFFFF` |

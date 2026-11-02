@@ -374,3 +374,4 @@ Coordinates are Kodi skin units on the **1920×1080** design canvas (see [resolu
 | onup | `9603` |
 | ondown | `9603` |
 
+- 5.33.362: Add Source title uses bz_mm28 (width 356) so full ADD VIDEO/MUSIC/PICTURE SOURCE fits; Warm strip unchanged.

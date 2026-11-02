@@ -1452,15 +1452,22 @@ if home.getProperty('bz_flip_running') != 'true':
                 af = xbmc.getInfoLabel('Container(60).ListItem.Art(artist.thumb)')
                 if af and af not in out: out.append(af)
             return [c for c in out if c and not os.path.basename(c.rstrip('/')).startswith('Default')]
-        key = None; cv = []; idx = 0; t0 = 0.0
+        key = None; cv = []; idx = 0; t0 = 0.0; kt = 0.0
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
             if mon.waitForAbort(0.1): break
             if not ok():
                 if key is not None or home.getProperty('bz_hf_a'): clr(); key = None
                 continue
             k = keynow()
+            if not k.split(':')[-1]:   # 5.33.355 COLDLEAF (Rob pt2531u): list 60 not populated yet on cold start -> don't lock a key
+                if key is not None or home.getProperty('bz_hf_a'): clr(); key = None
+                continue
             if k != key:   # focus change resets
-                clr(); key = k; cv = covers(); idx = 0; t0 = time.time(); continue
+                clr(); key = k; cv = covers(); idx = 0; t0 = time.time(); kt = t0; continue
+            if idx == 0 and not home.getProperty('bz_hf_ph') and time.time() - kt < 6.0 and int((time.time() - kt) * 10) % 10 == 0:
+                c2 = covers()   # 5.33.355 COLDLEAF: on cold start / first MM open the item art + album RPC arrive late -> re-read covers for 6 s
+                if c2 != cv and c2 and (not cv or c2[0] == cv[0] or not home.getProperty('bz_hf_a') or not cv[0]):
+                    cv = c2; clr(); t0 = time.time()
             if len(cv) < 2: continue
             nxt = (idx + 1) % len(cv)
             if home.getProperty('bz_hf_b') != cv[nxt]:   # 5.33.245 PRELOAD: next cover set at hold start, drawn under A all hold -> loaded before fold

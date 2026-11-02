@@ -2,7 +2,7 @@
 
 **Object:** `Custom_1117_MediaSources.xml` window `1117` · grouplist `9000` (125,128, 440 wide) with 11 rows `7101–7121` · grouplist `9001` (584,136) with `9101` / `9102` · bounce `6299`  
 **Where:** Main Menu row MEDIA SOURCES  
-**Last updated:** 2026-11-02 · 5.33.354
+**Last updated:** 2026-11-02 · 5.33.359
 **Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
 **Skin:** skin.bezel2
 
@@ -93,3 +93,23 @@ Menu on a source row (1117 / SOURCES 1132 / Pictures sources root) now draws Kod
 - **Keyboard:** every text field in the Media Sources flows — ADD SOURCE path + name and EDIT SOURCE (context → Edit source) path + name in DialogMediaSource — opens the Bezel **strip keyboard** (DialogKeyboard picks `BzStripKeyboard` everywhere except Music Refresh and File Manager). No stock keyboard is left in these flows. The path **Browse** button still opens Kodi's stock file browser (a folder picker, not a keyboard).
 - **Remote path on the keyboard:** bars A–Z → 0–9 → #!? ; Right from #!? (bar 3) → **← DEL** → **DONE** (save/enter) → **CANCEL** (new pill 9604, `Action(Back)`). Back also cancels. See `keyboard.md`.
 - **CLEAN LIBRARY** (7103 video / 7113 music) runs `bz_set.py msclean,<video|music>`: Yes/No dialog "CLEAN VIDEO|MUSIC LIBRARY" first; only YES runs `CleanLibrary(<type>)`. NO / Back does nothing.
+
+## Section options (5.33.356, current state)
+Rows per section (▾ open):
+- **VIDEOS:** SOURCES » (7101) · **ADD SOURCE » (7107)** · **REFRESH LIBRARY** (7102, `UpdateLibrary(video)`) · CLEAN LIBRARY (7103, Yes/No) · EXPORT LIBRARY (7104) · IMPORT LIBRARY (7105, still stock Settings — SKIP) · UPDATE ON START (7106).
+- **MUSIC:** SOURCES » (7111) · **ADD SOURCE » (7117)** · **REFRESH LIBRARY** (7112) · CLEAN LIBRARY (7113, Yes/No) · EXPORT (7114) · IMPORT (7115, SKIP) · UPDATE ON START (7116).
+- **PICTURES:** SOURCES » (7121) · **ADD SOURCE » (7122)**. No library scan/clean.
+- Bottom rows unchanged: ADD SOURCE (7130, adds to the open section, default Videos) · LIBRARY SCAN pill (7131).
+- Section ADD SOURCE runs `bz_set.py msadd,<v|m|p>,<row id>`; after the Add Source dialog closes, 1117 returns with focus on that same row (`bz_msfocus`).
+- **EDIT / REMOVE:** on a source row in SOURCES 1132 (or the sources root), MENU opens the Warm-strip context menu (Edit source / Remove source, Kodi's own rows). 1132 footer hint now reads "MENU edit · remove". Edit fields use the strip keyboard.
+- Down order inside a section: SOURCES → ADD SOURCE → REFRESH → … ; Up reverses. Detail panel (`BzMSHead/BzMSBody`) has text for 7107/7117/7122.
+
+
+## Add Source dialog (DialogMediaSource, 5.33.359 — mock A)
+Every control sits in the Warm colour strip (x570, 390×900) over the fanart stage, same look as Media Sources 1117 / SOURCES 1132.
+Top to bottom: title (2) · NAME edit (12) · PATHS list (10, scrollbar 60) · divider · BROWSE » (11) · ADD PATH + (13) · REMOVE (14) · divider · OK (18) / CANCEL (19) pills.
+Rows use the Warm highlight colour (BzATHiCol) on focus, dark text. Pills: translucent round pill, white when focused.
+Nav: Up/Down runs NAME → PATHS → BROWSE → ADD PATH → REMOVE → OK/CANCEL and wraps (NAME Up → CANCEL, pills Down → NAME). Left/Right only moves between OK and CANCEL (wraps); elsewhere no-op. Default focus NAME.
+
+## Add Source dialog (5.33.360)
+DialogMediaSource = MS Warm strip at 570,120: BezelMMStripChrome (bar opacity/shadow/bezel), NAME/PATHS/BROWSE/ADD PATH/REMOVE rows with BzATHiTex hi bar, OK/CANCEL np pills. No own dim/fanart: 1117 art stays under; 1117 rows/labels hide while mediasource is active.

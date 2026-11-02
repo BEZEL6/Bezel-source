@@ -12,7 +12,7 @@
 			
 			<control type="label"><left>48</left><top>852</top><width>80</width><height>30</height><aligny>center</aligny><font>bz_b12</font><textcolor>AAFFFFFF</textcolor><label></label></control>
 			<control type="label"><left>130</left><top>852</top><width>120</width><height>30</height><aligny>center</aligny><font>bz_b12</font><textcolor>AAFFFFFF</textcolor><label>»  new menu</label></control>
-			<control type="label"><left>250</left><top>852</top><width>120</width><height>30</height><aligny>center</aligny><font>bz_b12</font><textcolor>AAFFFFFF</textcolor><label>MENU  edit</label></control>
+			<control type="label"><left>250</left><top>852</top><width>170</width><height>30</height><aligny>center</aligny><font>bz_b12</font><textcolor>AAFFFFFF</textcolor><label>MENU  edit · remove</label></control>
 		</control>
 		<include content="BezelLogoButton"><param name="col" value="FFFFFFFF"/></include>
 	</controls>

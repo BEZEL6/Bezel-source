@@ -1,7 +1,7 @@
 # Idle Big Album fold (book-page leaf)
 
 **Object:** `xml/Includes_Bezel.xml` hinge group (~L1096, camera 1440,520) · `scripts/bz_flip.py` `idle_hinge()` (~L1458) · Home props `bz_hf_a` / `bz_hf_b` / `bz_hf_ph`
-**Last updated:** 2026-11-01 · 5.33.313 (look = 5.33.266)
+**Last updated:** 2026-11-02 · 5.33.355 (look = 5.33.266)
 **Status:** **APPROVED — LOCKED 100% (Rob, Nov 1 2026, pt1992u "Leaf anim 100%. Lock in")**. Do not change timing, shadows, frames, glare or geometry without Rob asking.
 
 > Part of the **leaf-flip** family — see [leaf-flip.md](leaf-flip.md) (own clock; not rock/sway, not `bz_cov_side`).
@@ -50,3 +50,8 @@ The fold lives inside the section parent group, so BezelSecDim's fade (mmdim wit
 - the static B-right half and both leaf groups are hidden, a static A-right half shows, and the fold pauses visually, so A is a single opaque stack.
 - the base `BezelBigArt` image under the fold is hidden.
 When the dim lifts, the normal fold resumes. If Python advanced A := B while dimmed, the cover swaps on undim.
+
+## Cold start (5.33.355 COLDLEAF, Rob pt2531u)
+On cold start / first MM open, list 60 and its art + album RPC fill in late. `idle_hinge()` now:
+- does not lock a key while `Container(60).ListItem.DBID` is empty (list not populated);
+- for 6 s after a key locks (before the first fold), re-reads `covers()` about once a second and, if the list changed (late thumb / albums), takes the new list and restarts the hold from A. Fold look/timing unchanged (LOCKED).

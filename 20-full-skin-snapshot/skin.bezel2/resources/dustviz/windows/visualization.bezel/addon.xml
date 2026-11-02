@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="visualization.bezel" version="0.2.0" name="Bezel Viz" provider-name="Rob / DustViz">
+  <requires>
+<import addon="kodi.binary.global.main" minversion="2.0.0" version="2.0.2"/>
+<import addon="kodi.binary.global.general" minversion="1.0.4" version="1.0.5"/>
+<import addon="kodi.binary.global.gui" minversion="5.15.0" version="5.15.0"/>
+<import addon="kodi.binary.global.filesystem" minversion="1.1.7" version="1.1.9"/>
+<import addon="kodi.binary.instance.visualization" minversion="4.0.0" version="4.0.0"/></requires>
+  <extension point="xbmc.player.musicviz" library_windows="visualization.bezel.dll"/>
+  <extension point="xbmc.addon.metadata">
+    <platform>windows-x86_64</platform>
+    <license>GPL-2.0-or-later</license>
+    <summary lang="en_GB">Bezel viz engine: soft sprite style packs driven by audio bins</summary>
+    <description lang="en_GB">Engine-only visualisation for the Bezel skin. Loads style packs from special://skin/viz.addons/. SCAFFOLD v0.1 - mostly stubs.</description>
+    <assets><icon>resources/icon.png</icon></assets>
+  </extension>
+</addon>
