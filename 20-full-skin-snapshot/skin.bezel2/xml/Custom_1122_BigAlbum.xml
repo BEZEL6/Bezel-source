@@ -12,8 +12,26 @@
 	<visible>String.IsEqual(Window(Home).Property(bz_splash_done),1) + !Window.IsActive(fullscreenvideo) + !Window.IsActive(slideshow) + !Window.IsActive(screensaver) + !Window.IsActive(1113)</visible>
 	<animation effect="fade" start="0" end="100" time="600" tween="sine" easing="inout">WindowOpen</animation><animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 	<controls>
-		<control type="group"><visible>$EXP[bz_railvis] + !String.IsEqual(Window(Home).Property(bz_rail),hide)</visible><include>BezelSecDim</include><!-- 5.33.314 Rob t2384: MM dim / Global dim wired to big album (cast+art+NP) -->
-			<animation effect="fade" start="0" end="100" time="400" tween="sine" easing="inout">Visible</animation><animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout">Hidden</animation>
+		<!-- 5.33.366 Rob t2616 GLOBAL ARTWORK GROUP 6400: album layer (cover + leaf-flip/sway + cast) + Compact NP (rides 6397/FS rails) + poster layer, one shared frame.
+		     Both layers are ALWAYS drawn (never Visible=false) so textures stay warm and the sway clocks never restart; Music<->Movies/TV is an opacity crossfade only.
+		     Colour strip and MM Warm underlay are NOT in this group. bz_rail=hide is the only hard hide. -->
+		<control type="group" id="6400"><visible>!String.IsEqual(Window(Home).Property(bz_rail),hide)</visible>
+		<!-- POSTER LAYER 6401 (under the album), 5.33.367 Rob t2622: the ONE Movies/TV poster. Full BezelVPLPoster (sway, cast, glares, LOOK, badges, frame) lives here;
+		     the per-screen mounts are gone (only BezelVPLPosterTap stays on the screens). All list-60 data comes from the bz_flip Home mirror (bz_v60_*), since 1122 can't see list 60.
+		     Opacity: 100 while the poster screen is up (bz_vpl_on = old mount gates) or a Music<->Videos handoff runs; 0 otherwise. Always drawn, never Visible=false, so texture + sway stay warm.
+		     BezelSecDim inside (the old mounts sat in the section parent group's SecDim). -->
+		<control type="group" id="6401"><!-- one inverse fade (Kodi multiplies fade anims) -->
+			<animation effect="fade" start="100" end="0" time="400" tween="sine" easing="inout" condition="String.IsEmpty(Window(Home).Property(bz_vpl_on)) + ![[Window.IsActive(videos) + [String.IsEqual(Window(Home).Property(bz_tovideo),fade) | String.IsEqual(Window(Home).Property(bz_m2v_flat),true)]] | String.IsEqual(Window(Home).Property(bz_tomusic),true)]">Conditional</animation>
+			<control type="group"><!-- handoff pre-warm (same mirrored texture): only during the Music<->Videos crossfade, before bz_pready arms the swaying stack -->
+				<animation effect="fade" start="100" end="0" time="400" tween="sine" easing="inout" condition="![[Window.IsActive(videos) + [String.IsEqual(Window(Home).Property(bz_tovideo),fade) | String.IsEqual(Window(Home).Property(bz_m2v_flat),true)]] | String.IsEqual(Window(Home).Property(bz_tomusic),true)]">Conditional</animation>
+				<control type="image"><left>990</left><top>120</top><width>600</width><height>900</height><aspectratio>scale</aspectratio><diffuse>bezel/art_mask.png</diffuse><fadetime>300</fadetime>
+					<texture background="true">$INFO[Window(Home).Property(bz_v60_art)]</texture></control>
+			</control>
+			<control type="group"><include>BezelSecDim</include><include>BezelVPLPoster</include></control><!-- steady swaying poster -->
+		</control>
+		<!-- ALBUM LAYER: opacity-gated by bz_railvis (was Visible= in .309-.365) — no remount, sway/flip clocks unbroken, cover stays loaded. -->
+		<control type="group" id="6402"><include>BezelSecDim</include><!-- 5.33.314 Rob t2384: MM dim / Global dim wired to big album (cast+art+NP) -->
+			<animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout" condition="!$EXP[bz_railvis]">Conditional</animation>
 			<control type="group"><visible>!$EXP[bz_gridm] | $EXP[bz_np]</visible>
 				<animation effect="fade" start="100" end="0" time="600" tween="sine" easing="inout" reversible="false" condition="String.IsEqual(Window(Home).Property(bz_tovideo),fade)">Conditional</animation>
 				<animation effect="fade" start="100" end="0" time="500" tween="sine" easing="inout" reversible="false" condition="String.IsEqual(Window(Home).Property(bz_m2v_flat),true)">Conditional</animation>
@@ -22,5 +40,6 @@
 				<control type="group"><left>-480</left><animation effect="fade" start="0" end="100" time="0" delay="600" condition="!$EXP[bz_railc]">WindowOpen</animation><animation type="Conditional" condition="!$EXP[bz_railc] + String.IsEqual(Skin.String(bz_at_fsslide),1)"><effect type="slide" start="0,0" end="480,0" time="480" tween="sine" easing="inout"/><effect type="fade" start="100" end="0" time="0" delay="480"/></animation><animation type="Conditional" condition="!$EXP[bz_railc] + String.IsEqual(Skin.String(bz_at_fsslide),2)"><effect type="slide" start="0,0" end="480,0" time="380" tween="sine" easing="inout"/><effect type="fade" start="100" end="0" time="0" delay="380"/></animation><animation type="Conditional" condition="!$EXP[bz_railc] + [String.IsEmpty(Skin.String(bz_at_fsslide)) | String.IsEqual(Skin.String(bz_at_fsslide),3)]"><effect type="slide" start="0,0" end="480,0" time="280" tween="sine" easing="inout"/><effect type="fade" start="100" end="0" time="0" delay="280"/></animation><animation type="Conditional" condition="!$EXP[bz_railc] + String.IsEqual(Skin.String(bz_at_fsslide),4)"><effect type="slide" start="0,0" end="480,0" time="180" tween="sine" easing="inout"/><effect type="fade" start="100" end="0" time="0" delay="180"/></animation><include>BezelMusicPlayingArt</include></control><!-- centre copy (camera 960): parked at home under alpha 0; reverse = shows at once and slides with the home copy -->
 			</control>
 		</control>
+		</control><!-- /6400 -->
 	</controls>
 </window>

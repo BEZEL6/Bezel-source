@@ -64,3 +64,4 @@
 
 - `music-fanart-fs.md` — Music Fanart FS dialog 1121
 - `keyboard.md` — DialogKeyboard variants; Add Source strip keyboard (5.33.229)
+- `artwork-group.md` — global artwork group 6400 in 1122 (album + Compact NP + poster layers; opacity crossfade) (.366)

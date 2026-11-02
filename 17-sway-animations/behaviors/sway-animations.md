@@ -360,3 +360,10 @@ The big album, its sway, next-song fade, cast and compact NP no longer live in t
 - **Cause:** Kodi stops processing (freezes) child animations of a hidden group. The album sway lives under `BezelMusicPlayingArt`'s top group (`!Player.HasAudio | !bz_navtune` — hidden under Tuner), but `BezelAlbumCast` in 1122 had no such gate, so under Tuner the album's Conditional pulse froze while the cast pulse kept running. Before 5.33.314 MyMusicNav's `bz_sway_restart` re-zeroed both and hid the drift; now nothing does.
 - **Fix:** `BezelAlbumCast` outer grouplist carries the identical gate. Album and cast now hide/freeze and resume together, same phase. No new timer; still the same `bz_sway_go` / `bz_sway_pulse` Conditional zoom+fade.
 - **Rule:** any gate on an album-sway ancestor must also be on `BezelAlbumCast` (and vice versa).
+
+
+## Global artwork group (5.33.366)
+See `artwork-group.md`. Big album + Compact NP now sit in 1122 group 6400 / album layer 6402, opacity-gated by `bz_railvis` (no Visible remount, sway clock unbroken). Poster layer 6401 pre-warms Videos poster and crossfades in during Music↔Movies/TV handoff. MM Warm underlay unchanged.
+
+## 5.33.367 — poster stage
+The swaying Movies/TV poster (BezelVPLPoster) now draws only in dialog 1122 layer 6401, fed by the bz_flip list-60 Home mirror (bz_v60_*, bz_vpl_on). Screens keep only the tap target. See `artwork-group.md`.

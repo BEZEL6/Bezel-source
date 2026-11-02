@@ -383,3 +383,10 @@ While music plays under MM (`bz_mmmushide`), the entire poster-slot stack group 
 
 ## 5.33.346 — t2488 album frame posters
 MM A/B poster lane (bz_pos_a/bz_pos_b, 6 images in Includes_Bezel) is now gated `Window.IsActive(videos)`: Movies/TV posters never paint into the Music album frame after Movies→Music under MM. ReloadSkin.
+
+
+## Global artwork group (5.33.366)
+See `artwork-group.md`. Big album + Compact NP now sit in 1122 group 6400 / album layer 6402, opacity-gated by `bz_railvis` (no Visible remount, sway clock unbroken). Poster layer 6401 pre-warms Videos poster and crossfades in during Music↔Movies/TV handoff. MM Warm underlay unchanged.
+
+## 5.33.367 — poster stage
+The swaying Movies/TV poster (BezelVPLPoster) now draws only in dialog 1122 layer 6401, fed by the bz_flip list-60 Home mirror (bz_v60_*, bz_vpl_on). Screens keep only the tap target. See `artwork-group.md`.

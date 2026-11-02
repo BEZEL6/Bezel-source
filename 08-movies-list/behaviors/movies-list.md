@@ -174,3 +174,6 @@ Double-tap hint (BezelDtapHint) is fixed at y978 h30 in the colour strip. List 6
 - Row 1 (y296, width 410 = text column 150..560, strip starts ~570): SxE, YEAR, STUDIO (TV, max 200 then truncates), MPAA, RUNTIME.
 - Row 2 (y336, width 410): GENRE pill on its own line, max 410, truncates (e.g. "SCI-FI & FANTASY / ACTION & ADVENT…"). Row hidden when no genre.
 - Season/episode name 342→382, plot 346→386 (h 620→580). Replaces 345's 780 widen.
+
+## 5.33.367 — poster stage
+The swaying Movies/TV poster (BezelVPLPoster) now draws only in dialog 1122 layer 6401, fed by the bz_flip list-60 Home mirror (bz_v60_*, bz_vpl_on). Screens keep only the tap target. See `artwork-group.md`.

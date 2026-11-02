@@ -249,6 +249,54 @@ if home.getProperty('bz_flip_running') != 'true':
         for c in ('6291', '6292', '6298', '6295', '6293'):
             if xbmc.getCondVisibility('Control.IsVisible(%s)' % c):
                 xbmc.executebuiltin('SetFocus(%s)' % c); return
+    # 5.33.367 Rob t2622: list-60 -> Home mirror for the 1122 poster stage (layer 6401). Dialog 1122 can't read Container(60)
+    # (t4097), so every list-60 value BezelVPLPoster needs is copied here each poll. Frozen with the rest of poster_clock while a
+    # modal / busy / info dialog is up (Container(60) reads empty from a script then), so the stage never blanks.
+    _V60_INFOWIN = '[Window.IsActive(music) | Window.IsActive(musicplaylist) | Window.IsActive(favourites) | Window.IsActive(favouritesbrowser) | Window.IsActive(programs) | Window.IsActive(games)]'
+    _V60_GRIDV = 'Window.IsActive(videos) + Skin.HasSetting(bz_grid_video) + [Container(60).Content(movies) | Container(60).Content(tvshows) | Container(60).Content(seasons)]'
+    def _v60_set(k, v):
+        if home.getProperty(k) != v:
+            if v: home.setProperty(k, v)
+            else: home.clearProperty(k)
+    def v60_mirror():
+        cv = xbmc.getCondVisibility; il = xbmc.getInfoLabel
+        vid = cv('Window.IsActive(videos)'); oth = (not vid) and cv(_V60_INFOWIN)
+        if not (vid or oth) or not cv('Control.IsVisible(60)'):
+            _v60_set('bz_vpl_on', ''); return
+        par = cv('Container(60).ListItem.IsParentFolder')
+        if vid:   # = $VAR[BezelPoster60V]
+            a = ''
+            if par: a = il('Container(60).ListItemNoWrap(1).Art(poster)') or il('Container(60).ListItemNoWrap(1).Art(tvshow.poster)')
+            if not a: a = il('Container(60).ListItem.Art(poster)') or il('Container(60).ListItem.Art(tvshow.poster)')
+            if not a and home.getProperty('bz_arthold'): a = home.getProperty('bz_hold_poster')
+            if not a: a = il('Container(60).ListItem.Icon')
+            _v60_set('bz_v60_art', a)
+            on = not cv(_V60_GRIDV) and not cv('Container.Content(episodes)') and not cv('Container.Content(actors)')
+        else:     # = $VAR[BezelPoster60M] (music) ; other info-list windows have no art var
+            a = ''
+            if cv('Window.IsActive(music)'):
+                if par: a = il('Container(60).ListItemNoWrap(1).Art(thumb)')
+                if not a: a = il('Container(60).ListItem.Art(thumb)') or il('Container(60).ListItem.Icon')
+            _v60_set('bz_m60_art', a)
+            on = (not cv('[Window.IsActive(music) | Window.IsActive(musicplaylist)] + [Container.Content(artists) | Container.Content(albums) | Container.Content(songs)]')) and not cv('Container.Content(episodes)')
+        _v60_set('bz_v60_lbl', '1' if il('Container(60).ListItem.Label') else '')
+        _v60_set('bz_v60_parent', '1' if par else '')
+        _v60_set('bz_v60_scroll', '1' if cv('Container(60).Scrolling') else '')
+        _v60_set('bz_v60_watched', '1' if cv('Integer.IsGreater(Container(60).ListItem.PlayCount,0)') else '')
+        _v60_set('bz_v60_resume', '1' if cv('Container(60).ListItem.IsResumable') else '')
+        _v60_set('bz_v60_episodes', '1' if cv('Container.Content(episodes)') else '')
+        _v60_set('bz_vpl_on', '1' if on else '')
+    def m_mirror():   # 5.33.368 Rob t2636: Music NP + idle list art mirrored into Home for the dual-preloaded 1122 big album (hold last when unseen)
+        cv = xbmc.getCondVisibility; il = xbmc.getInfoLabel
+        if cv('Player.HasAudio') and not cv('Window.IsActive(visualisation)'):
+            a = il('Player.Art(thumb)')
+            if a: _v60_set('bz_m_np_art', a)
+        if cv('Window.IsActive(music)') and cv('Control.IsVisible(60)') and not home.getProperty('bz_m_idle_lock'):   # = BezelPoster60 music path; 5.33.369 MMHOLD: frozen on MM open until under_adv's first random step
+            a = ''
+            if cv('Container(60).ListItem.IsParentFolder'): a = il('Container(60).ListItemNoWrap(1).Art(thumb)')
+            if not a: a = il('Container(60).ListItem.Art(thumb)') or il('Container(60).ListItem.Icon')
+            if a: _v60_set('bz_m_idle_art', a)
+        if not home.getProperty('bz_m_idle_art') and home.getProperty('bz_cov_last'): home.setProperty('bz_m_idle_art', home.getProperty('bz_cov_last'))   # = bz_cov_last fallback
     def poster_clock():
         key = None; since = time.time(); was = False; closed_at = None; opened = 0; got = False; sw = [0]; pend = [None, 0.0]; sw_prev = [0]; sw_path = ['']; sw_top = [False]; sw_tchg = [0.0]
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
@@ -263,6 +311,10 @@ if home.getProperty('bz_flip_running') != 'true':
             if key is not None and xbmc.getCondVisibility('Window.IsActive(videos) + [Window.IsVisible(busydialog) | Window.IsVisible(busydialognocancel) | System.HasModalDialog | Window.IsVisible(1111) | !String.IsEmpty(Window(Home).Property(bz_xinfo))]') and not home.getProperty('bz_vback'):  # 4.3 item 15: the poster stays while the info is up
                 if mon.waitForAbort(0.1): break
                 continue
+            try: m_mirror()
+            except Exception: pass
+            try: v60_mirror()   # 5.33.367: after the modal freeze, so a dialog never blanks the 1122 stage
+            except Exception: pass
             # ALLBOTTOM2: hidden top *All never keeps focus (direction-aware), and Down-wrap off the last row goes to the bottom All row
             if xbmc.getCondVisibility('Control.HasFocus(60)'):
                 try: _pos = int(xbmc.getInfoLabel('Container(60).CurrentItem') or 0); _n = int(xbmc.getInfoLabel('Container(60).NumItems') or 0)
@@ -477,8 +529,14 @@ if home.getProperty('bz_flip_running') != 'true':
     # fanart / poster changes. Hold N s after the MM opens, then one step every D s (wraps). Closing the MM / Select lands on the
     # advanced item (it IS the list position). K24: never during MM warm / Container.IsUpdating / dialogs; only Control.Move (no Container.Update).
     def under_adv():
-        opened = None; last = 0.0
+        opened = None; last = 0.0; navwas = [False]
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
+            # 5.33.369 MMHOLD (Rob t2641-t2652): MM opens from Music -> lock bz_m_idle_art on the focused list-60 cover (warm/path churn can't swap it);
+            # unlock on the first UADVRAND step (after hold) or MM close. Random never runs with MM closed (list browsing).
+            _nv = home.getProperty('bz_nav') == 'true'
+            if _nv and not navwas[0] and home.getProperty('bz_m_idle_art'): home.setProperty('bz_m_idle_lock', '1')
+            if not _nv: home.clearProperty('bz_m_idle_lock')
+            navwas[0] = _nv
             on = (home.getProperty('bz_nav') == 'true' and not home.getProperty('bz_mmstart') and not home.getProperty('bz_mmwarm')
                   and not home.getProperty('bz_navtune') and not home.getProperty('bz_navset') and not home.getProperty('bz_navsub') and not home.getProperty('bz_kset')   # F10 batch2: pause while Tuner / settings card / submenu open
                   and not xbmc.getCondVisibility('Skin.HasSetting(bz_uadv_off)')
@@ -488,6 +546,7 @@ if home.getProperty('bz_flip_running') != 'true':
                 now = time.time()
                 try: hold = int(xbmc.getInfoLabel('Skin.String(bz_uadv_hold)') or 5); dly = int(xbmc.getInfoLabel('Skin.String(bz_uadv_delay)') or 8)
                 except Exception: hold, dly = 5, 8
+                hold = max(3, hold)   # 5.33.369 MMHOLD: focused art always holds >= 3 s on MM entry
                 if opened is None: opened = now; last = now + hold - dly
                 elif now - opened >= hold and now - last >= dly:
                     last = now
@@ -500,6 +559,7 @@ if home.getProperty('bz_flip_running') != 'true':
                     if n > lo:
                         while nxt == pos: nxt = _rnd.randint(lo, n)
                     if n and nxt != pos: xbmc.executebuiltin('Control.Move(60,%d)' % (nxt - pos))
+                    home.clearProperty('bz_m_idle_lock')   # 5.33.369 MMHOLD: hold over -> mirror follows the random steps
                     home.setProperty('bz_uadv_n', str(nxt))
             if mon.waitForAbort(0.25): break
     _bzstart(under_adv)
@@ -1553,4 +1613,4 @@ if home.getProperty('bz_flip_running') != 'true':
         home.clearProperty('bz_flipping')
         home.clearProperty('bz_sway_hold')
         home.clearProperty('bz_sway_pulse'); home.clearProperty('bz_sway_go'); home.clearProperty('bz_big_go'); home.clearProperty('bz_big_pulse')
-        for k in ('bz_albumid', 'bz_pswayon', 'bz_ppulse', 'bz_ppulse2', 'bz_pready', 'bz_vreq', 'bz_sway_pulse2', 'bz_castL', 'bz_castR'): home.clearProperty(k)
+        for k in ('bz_albumid', 'bz_pswayon', 'bz_ppulse', 'bz_ppulse2', 'bz_pready', 'bz_vreq', 'bz_sway_pulse2', 'bz_castL', 'bz_castR', 'bz_vpl_on', 'bz_v60_art', 'bz_m60_art', 'bz_v60_lbl', 'bz_v60_parent', 'bz_v60_scroll', 'bz_v60_watched', 'bz_v60_resume', 'bz_v60_episodes'): home.clearProperty(k)

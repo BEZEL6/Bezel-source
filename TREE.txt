@@ -1,4 +1,4 @@
-Bezel-source (organized systems) — copies from skin.bezel2 5.33.365
+Bezel-source (organized systems) — copies from skin.bezel2 5.33.369
 No source code was modified; these are organizational copies only.
 
 .
@@ -274,6 +274,7 @@ No source code was modified; these are organizational copies only.
 19-behaviors-docs/behaviors
 19-behaviors-docs/behaviors/README.md
 19-behaviors-docs/behaviors/addons.md
+19-behaviors-docs/behaviors/artwork-group.md
 19-behaviors-docs/behaviors/bezel-logo-back.md
 19-behaviors-docs/behaviors/big-album.md
 19-behaviors-docs/behaviors/context-menu.md

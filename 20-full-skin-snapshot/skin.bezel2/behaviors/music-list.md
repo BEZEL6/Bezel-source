@@ -310,3 +310,10 @@ Music section art fades in (no pop), ~400 ms: big album 1122 rail image fadetime
 
 ## List bottom (5.33.347, t2491)
 Double-tap hint (BezelDtapHint) is fixed at y978 h30 in the colour strip. List 60 clip grouplist + list are 858 tall from bz_top 120, so the list ends at y978, right above the hint. PVR lists (50) use the same 858. Any new section list must end at y978 or higher.
+
+
+## Global artwork group (5.33.366)
+See `artwork-group.md`. Big album + Compact NP now sit in 1122 group 6400 / album layer 6402, opacity-gated by `bz_railvis` (no Visible remount, sway clock unbroken). Poster layer 6401 pre-warms Videos poster and crossfades in during Music↔Movies/TV handoff. MM Warm underlay unchanged.
+
+## 5.33.367 — poster stage
+The swaying Movies/TV poster (BezelVPLPoster) now draws only in dialog 1122 layer 6401, fed by the bz_flip list-60 Home mirror (bz_v60_*, bz_vpl_on). Screens keep only the tap target. See `artwork-group.md`.
