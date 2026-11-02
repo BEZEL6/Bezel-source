@@ -264,7 +264,7 @@
 		<font><name>bz_b15</name><filename>Ubuntu-Bold.ttf</filename><size>15</size></font><font><name>bz_b12</name><filename>Ubuntu-Bold.ttf</filename><size>12</size></font><!-- BETA 2 pills --><!-- BETA 1.1 player pills -->
 		<font><name>bz_splash60</name><filename>Raleway-Light.ttf</filename><size>60</size></font><!-- BEZEL 3.0 splash -->
 		<font><name>bz_splash_sup</name><filename>Raleway-SemiBold.ttf</filename><size>26</size></font><font><name>bz_ral21</name><filename>Raleway-SemiBold.ttf</filename><size>21</size></font><!-- 4.3.0 O84 cycle aid -->
-		<font><name>bz_splash_kv</name><filename>Ubuntu-Regular.ttf</filename><size>22</size></font>
+		<font><name>bz_splash_kv</name><filename>Ubuntu-Regular.ttf</filename><size>22</size></font><font><name>bz_splash68b</name><filename>Montserrat-Bold.ttf</filename><size>68</size></font><font><name>bz_splash28m</name><filename>Montserrat-Medium.ttf</filename><size>28</size></font><font><name>bz_splash20r</name><filename>Montserrat-Regular.ttf</filename><size>20</size></font><!-- 5.33.316 splash -->
 		<font>
 			<name>bz_m26</name>
 			<filename>Ubuntu-Medium.ttf</filename>
@@ -616,7 +616,7 @@
 		<font><name>bz_b15</name><filename>arial.ttf</filename><size>15</size></font><font><name>bz_b12</name><filename>arial.ttf</filename><size>12</size></font>
 		<font><name>bz_splash60</name><filename>Raleway-Light.ttf</filename><size>60</size></font><!-- BEZEL 3.0 splash -->
 		<font><name>bz_splash_sup</name><filename>Raleway-SemiBold.ttf</filename><size>26</size></font><font><name>bz_ral21</name><filename>Raleway-SemiBold.ttf</filename><size>21</size></font><!-- 4.3.0 O84 cycle aid -->
-		<font><name>bz_splash_kv</name><filename>Ubuntu-Regular.ttf</filename><size>22</size></font>
+		<font><name>bz_splash_kv</name><filename>Ubuntu-Regular.ttf</filename><size>22</size></font><font><name>bz_splash68b</name><filename>Montserrat-Bold.ttf</filename><size>68</size></font><font><name>bz_splash28m</name><filename>Montserrat-Medium.ttf</filename><size>28</size></font><font><name>bz_splash20r</name><filename>Montserrat-Regular.ttf</filename><size>20</size></font><!-- 5.33.316 splash -->
 		<font>
 			<name>bz_m26</name>
 			<filename>Ubuntu-Medium.ttf</filename>

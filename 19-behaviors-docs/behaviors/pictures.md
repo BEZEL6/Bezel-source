@@ -2,7 +2,7 @@
 
 **Object:** `MyPics.xml` · view `63` (`View_63_BezelPictureList`, Includes_Bezel ~L2279) · side `9000` (`6`, `7`, `9` radio, `624`, `621`) · section menu `1119` (7940–7947)
 **Where:** Opened from MM PICTURES (`bz_mm.py GO['pictures']`)
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-01 · 5.33.242
 **Status:** Live in 5.33.207. Kodi Pictures in BEZEL chrome. Back at the sources root, or Left when navok, opens the MM. Menu or double-tap opens the section menu. Draft: not Rob-approved.
 **Skin:** skin.bezel2
 
@@ -111,3 +111,19 @@ Double-tap = 1119 (`bz_dtap`). Single tap = Select after the tap window.
 
 ## Related
 context-menu.md · media-sources.md · touch-group.md · section-transitions.md
+
+## Warm strip (current, 5.33.242)
+
+### Simple
+Pictures now looks like Media Sources and the MM: your folders and pictures are rows inside the colour strip, the MM art stays behind, and the focused picture shows on the right. Nothing fades in — the strip is already there when the MM closes.
+
+### How it works
+- `View_63_BezelPictureList` (Includes_Bezel) puts list 63 at strip 570,120 (rows 48 px, 390 wide, » on folders) under `BezelMMStripChrome box=true`, title `BzPicTitle` (PICTURES at root, else folder name) + `PICTURES · N ITEMS` breadcrumb.
+- Rows, title and footer hide under the MM (`!bz_navmenu`); the strip chrome stays, so the MM strip lands on an identical strip (no blink).
+- MyPics wrapper group lost `BezelWindowFade` (234/1117 pattern). Held lane (bz_fan_a/b) draws behind; black + section fanart only when `bz_fan_on` is empty.
+- Right: `BezelArtworkPanel` with resolution · date taken. The old info-pairs column was dropped.
+- Back/Left/MM handlers on 63 unchanged; Up/Down wrap 63. Touch scrollbar at 952,232.
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/pictures.md) · [state](../state/pictures.md) · [motion](../motion/pictures.md) · [art](../art/pictures.md) · [input](../input/pictures.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

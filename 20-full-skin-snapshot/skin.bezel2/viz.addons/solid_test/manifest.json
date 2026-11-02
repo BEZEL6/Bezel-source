@@ -1,0 +1,15 @@
+{
+  "id": "solid_test",
+  "name": "Solid Test (engine smoke pack)",
+  "version": "0.1.0",
+  "engine_min": "0.1.0",
+  "atlas": "textures/",
+  "textures": ["glow_disc"],
+  "layers": [
+    {"id": "light_behind", "kind": "light_behind", "texture": "glow_disc", "additive": true, "parallax": 0.1},
+    {"id": "haze",         "kind": "haze",         "texture": "glow_disc", "additive": true, "parallax": 0.3},
+    {"id": "dust",         "kind": "dust",         "texture": "glow_disc", "additive": true, "parallax": 0.8},
+    {"id": "strobe",       "kind": "strobe_fx",    "texture": "glow_disc", "additive": true, "parallax": 0.0}
+  ],
+  "defaults": {"particle_cap": 400, "spawn_rate": 60, "swirl": 0.3, "drift": 0.05}
+}

@@ -51,3 +51,84 @@ Focus shows a `mm_round.png` pill (border 20, 150 ms fade). Without focus there 
 mm-list.md · np-bar.md · mm-warm.md
 
 **5.33.210:** 6960 FULL (and 6910) with Music active + audio → `ActivateWindow(1121)` (Music Fanart FS, sway unbroken); other sections / kill switch `bz_m1121_off` → `ActivateWindow(visualisation)`.
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/Includes_Bezel.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| $PARAM[id] | button | 590,150 | 350×$PARAM[h] | `SetFocus(60)/SetFocus(6192)/noop/noop` | `$PARAM[vis]` |
+| 6185 | list | 0,0 | 600×480 | `SetProperty(bz_back_close,true,home)/6185/6185/6185` | `—` |
+| 6899 | group | —,— | —×— | `—/—/—/—` | `!Window.IsActive(fullscreenvideo) + !Window.IsActive(visualisation)` |
+| 6898 | button | 0,0 | 1920×1080 | `6996/ClearProperty(bz_nav,home)/6996/6996` | `$EXP[bz_navmenu]` |
+| 6894 | group | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window(Home).Property(bz_mmidle))` |
+| 6957 | button | 128,80 | 44×46 | `noop/6958/noop/6996` | `—` |
+| 6958 | button | 176,80 | 44×46 | `6957/6959/noop/6996` | `—` |
+| 6959 | button | 224,80 | 44×46 | `6958/6960/noop/6996` | `—` |
+| 6960 | button | 286,86 | 86×34 | `6959/noop/noop/6996` | `—` |
+| 6966 | button | 112,78 | 122×44 | `noop/6967/noop/6996` | `—` |
+| 6967 | button | 242,78 | 122×44 | `6966/noop/noop/6996` | `—` |
+| 6996 | list | 0,40 | 390×728 | `Skin.SetString(bz_last_mmsub_music,$VAR[BzMMPrev_music])/Skin.SetString(bz_last_mmsub_music,$VAR[BzMMNext_music])/6966/SetFocus(6996,0,absolute)` | `$EXP[bz_navmenu] + !Window.IsVisible(1118) + !String.IsEqual(Window(Home).Property(bz_n…` |
+| 6910 | button | 318,34 | 116×52 | `noop/noop/noop/6996` | `—` |
+| 6900 | grouplist | 20,128 | 410×720 | `—/—/6910/—` | `—` |
+| 6901 | button | —,— | 410×64 | `—/—/6910/—` | `—` |
+| 6941 | button | —,— | 410×46 | `—/—/ClearProperty(bz_navsub,home)/—` | `String.IsEqual(Window(Home).Property(bz_navsub),music)` |
+| 6942 | button | —,— | 410×46 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_navsub),music)` |
+| 6943 | button | —,— | 410×46 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_navsub),music)` |
+| 6944 | button | —,— | 410×46 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_navsub),music)` |
+| 6945 | button | —,— | 410×46 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_navsub),music)` |
+| 6946 | button | —,— | 410×46 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_navsub),music)` |
+| 6947 | button | —,— | 410×46 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_navsub),music)` |
+| 6902 | button | —,— | 410×64 | `—/—/—/—` | `—` |
+| 6951 | button | —,— | 410×46 | `—/—/ClearProperty(bz_navsub,home)/—` | `String.IsEqual(Window(Home).Property(bz_navsub),movies)` |
+| 6952 | button | —,— | 410×46 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_navsub),movies)` |
+| 6953 | button | —,— | 410×46 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_navsub),movies)` |
+| 6954 | button | —,— | 410×46 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_navsub),movies)` |
+| 6955 | button | —,— | 410×46 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_navsub),movies)` |
+| 6956 | button | —,— | 410×46 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_navsub),movies)` |
+| 6903 | button | —,— | 410×64 | `—/—/—/—` | `—` |
+| 6961 | button | —,— | 410×46 | `—/—/ClearProperty(bz_navsub,home)/—` | `String.IsEqual(Window(Home).Property(bz_navsub),tv)` |
+| 6962 | button | —,— | 410×46 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_navsub),tv)` |
+| 6963 | button | —,— | 410×46 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_navsub),tv)` |
+| 6964 | button | —,— | 410×46 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_navsub),tv)` |
+| 6965 | button | —,— | 410×46 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_navsub),tv)` |
+| 6904 | button | —,— | 410×64 | `—/—/—/—` | `—` |
+| 6908 | button | —,— | 410×64 | `—/—/—/6906` | `—` |
+| 6906 | button | —,— | 410×53 | `—/—/6908/—` | `—` |
+| 6907 | button | —,— | 410×34 | `—/—/—/—` | `—` |
+| 6919 | button | —,— | 410×34 | `—/—/—/—` | `—` |
+| … | 127 more ids not listed | | | | |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `$PARAM[main]`
+- `$PARAM[onclick]`
+- `60`
+- `6299`
+- `6390`
+- `6901`
+- `6902`
+- `6903`
+- `Action(Back)`
+- `Action(Info)`
+- `Action(PageDown)`
+- `Action(PageUp)`
+- `Action(Select)`
+- `Action(firstpage)`
+- `Action(lastpage)`
+- `Action(nextletter)`
+- `ActivateWindow(1107)`
+- `ActivateWindow(1115)`
+- `ActivateWindow(1117)`
+- `ActivateWindow(1120)`
+- `ActivateWindow(1121)`
+- `ActivateWindow(12006)`
+- `ActivateWindow(Favourites)`
+- `ActivateWindow(Settings)`
+- `ActivateWindow(ShutdownMenu)`
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/mm-mini-player.md) · [state](../state/mm-mini-player.md) · [motion](../motion/mm-mini-player.md) · [art](../art/mm-mini-player.md) · [input](../input/mm-mini-player.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

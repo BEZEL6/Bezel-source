@@ -36,3 +36,39 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ## Related
 info-options.md · context-menu.md · dialog-busy.md
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/DialogConfirm.xml`
+
+_No id’d controls in this file (layout comes from includes)._
+
+**Source:** `xml/Includes_BezelDialogs.xml` include `BzStdProgress`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 9000 | grouplist | 0,100 | 390×754 | `—/—/—/—` | `—` |
+| 10 | button | —,— | 390×58 | `—/—/—/—` | `—` |
+| 11 | button | —,— | 390×58 | `—/—/—/—` | `—` |
+| 12 | button | —,— | 390×58 | `—/—/—/—` | `—` |
+| 1 | label | 0,30 | 410×46 | `—/—/—/—` | `—` |
+| 9 | textbox | 0,106 | 410×480 | `—/—/—/—` | `—` |
+| 20 | progress | 0,610 | 410×12 | `—/—/—/—` | `Window.IsActive(progressdialog) + !String.IsEmpty(System.Progressbar)` |
+
+**Source:** `xml/Includes_BezelRefresh.xml` include `BzRefreshProgress`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 1 | label | -3000,— | 10×10 | `—/—/—/—` | `—` |
+| 20 | progress | 596,248 | 200×16 | `—/—/—/—` | `—` |
+| 9 | textbox | 598,292 | 345×110 | `—/—/—/—` | `—` |
+| 9000 | grouplist | 580,410 | 370×200 | `—/—/—/—` | `—` |
+| 10 | button | —,— | 370×52 | `—/—/—/—` | `—` |
+| 11 | button | —,— | 370×52 | `—/—/—/—` | `—` |
+| 12 | button | —,— | 370×52 | `—/—/—/—` | `—` |
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/dialog-confirm.md) · [state](../state/dialog-confirm.md) · [motion](../motion/dialog-confirm.md) · [art](../art/dialog-confirm.md) · [input](../input/dialog-confirm.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

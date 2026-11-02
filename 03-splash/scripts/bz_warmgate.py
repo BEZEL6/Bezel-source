@@ -155,4 +155,21 @@ def main():
             if all(home.getProperty('bz_warm_ready_' + s) for s in PATHS):
                 break
             mon.waitForAbort(0.1)
+        rescue_startup()
+
+def rescue_startup():
+    # 5.33.312: if Kodi's startup add-on auto-install/update dialog swallowed
+    # Startup.xml's ReplaceWindow(StartupWindow), we stay stuck on the blank
+    # Startup window. Once modal/progress dialogs are gone, re-issue it ONCE.
+    end = time.time() + 120
+    while time.time() < end and not mon.abortRequested():
+        if not xbmc.getCondVisibility('Window.IsActive(startup)'):
+            return
+        if not xbmc.getCondVisibility('System.HasActiveModalDialog | Window.IsActive(extendedprogressdialog) | Window.IsActive(progressdialog) | Window.IsActive(busydialog) | Window.IsActive(busydialognocancel)'):
+            mon.waitForAbort(0.5)
+            if xbmc.getCondVisibility('Window.IsActive(startup) + !System.HasActiveModalDialog'):
+                xbmc.executebuiltin('ReplaceWindow(%s)' % (xbmc.getInfoLabel('System.StartupWindow') or 'home'))
+            return
+        mon.waitForAbort(0.25)
+
 main()

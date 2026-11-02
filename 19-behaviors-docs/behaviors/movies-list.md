@@ -143,3 +143,26 @@ None specified.
 
 ## Related
 mm-list.md · mm-warm.md · tv-list.md · video-osd.md · section-transitions.md
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/movies-list.md) · [state](../state/movies-list.md) · [motion](../motion/movies-list.md) · [art](../art/movies-list.md) · [input](../input/movies-list.md) · [theme](../theme/tokens.md) · [screens](../port-refs/movies-list/) · [PORT_INDEX](../PORT_INDEX.md)
+
+## L1 titles strip style (5.33.283, current)
+On the L1 titles path (`$EXP[bz_vstrip]`: videodb://movies/titles/ or videodb://tvshows/titles/, list view, not grid/actors) list 60 group + ALL row 6098 ride into the colour strip 570..960 (zoom 86.67% @120,120 + slide 510 — same as Music `bz_mstrip`). Strip info pairs / plot / TV clearlogo + fanart title are faded off. Meta lives **inside the fanart stage only** at 150,196: small line (Movies: director · TV: studio), big uppercase title 150,226 (bz_mm34), outlined pills y296 (year, MPAA, runtime[movies], genre), plot textbox 150,346 400×620. Hidden under MM / Info / `..`. Poster group (BezelVPLPoster) scaled 66.67% and moved into the big-album slot 1140,220 600×600 (2:3 kept → 400×600 centred). Nav/focus/MM warm unchanged.
+
+## L1 strip clearart (5.33.285, Rob approved)
+On L1 titles strip (`bz_vstrip`): when the item has clearlogo (preferred) or clearart, it replaces the big title in the fanart meta block — image at 150,211, 430×90, left/centre, aspect keep (`BzVStripLogo`). No logo/clearart → bold uppercase text title. Director (Movies) / Studio (TV), pills and plot unchanged. Colour-strip clearart stays off on L1. Hides with the meta group (Info up / MM open / `..`). Poster size unchanged.
+
+**Current (5.33.290):** Movies clearart unchanged at 150,211 430×90; control now gated `!Container.Content(tvshows)` — TV has its own control at 150,228 430×64 (see tv-list.md).
+
+- 5.33.293: `bz_vstrip` also covers Movies RECENTLY ADDED (`videodb://recentlyaddedmovies/`, Content movies) — same strip-list as TITLES. YEARS/ACTORS/SETS/GENRES still old layout.
+
+## Strip-list coverage (5.33.294)
+bz_vstrip (L1 strip-list) now covers every pill path once the list holds titles: Movies TITLES, RECENTLY ADDED, YEARS, ACTORS, SETS, GENRES; TV SHOWS (+L2 seasons/L3 episodes), WATCHING, YEARS, ACTORS, RECENT, GENRES. Gated on Container.Content(movies / tvshows|seasons|episodes), so category folder lists (year/actor/genre/set names) keep the old layout.
+
+## Folder-name levels (5.33.295)
+Year/actor/genre/set/tag name rows (Content years/actors/genres/sets/tags under videodb://movies/ or tvshows/) use strip-list via `bz_vfold` ⊂ `bz_vstrip`; folder name shows as title, no clearart/pills unless present.
+
+## Strip-only list (5.33.298)
+List 60 is always the colour-strip list — the old full-size off-strip list is parked at `/workspace/b401/parked_old_list/` (RESTORE.md). Every list view (Music L1–L3, Movies/TV, Music root, sources, files, non-library) draws in the strip: the list group is laid out 450×1038 at x120/y120 and always shrunk 86.67% (center 120,120) + slid 510 → on screen x570–960, y120–1020 (390×900, fills the strip, ~13.8 rows of 75). Grouplist clip (t4533) is 450×1038 so nothing paints past y1020. ALL row 6098 always rides the same shrink/slide. Left still goes to FULLSCREEN 6886 first on Music (5.33.297); Up/Down wrap to 6097/6098 unchanged; A–Z bars 6100/6500 stay at x78.

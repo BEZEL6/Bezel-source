@@ -4,7 +4,8 @@
 
 **Object:** Main Menu warm underlay (`scripts/bz_flip.py` → `mm_warm`, `ab_clock`, `_ABLane`) + cold-start warm gate (`scripts/bz_warmgate.py`)  
 **Where:** Under `$EXP[bz_navmenu]` (`String.IsEqual(Window(Home).Property(bz_nav),true)`, `Includes_Bezel.xml` line ~348), strip `6996` focused  
-**Last updated:** 2026-10-31 (5.33.214 Background dim top stop = No dim; 5.33.213, Background dim acts on poster + fanart together; 5.33.211 WARM HOLD)  
+**Last updated:** 2026-11-02 · 5.33.309
+**Poster slot family split (5.33.227):** the poster-slot live images (section twin and MM live twin) are each two controls — a Videos one (`$VAR[BezelPoster60V]`, `!Window.IsActive(music)`) and a Music one (`$VAR[BezelPoster60M]`, `Window.IsActive(music)`). Kodi image `fadetime` crossfades from whatever texture the control last held, so one shared control carried the last Music album into the next poster crossfade on a section switch. Each family now has its own texture memory; Music art never enters a poster control. The intended Music→video album fade-out is still only `bz_xalb` / the `bz_mart` Hidden fade.  
 **Idle (5.33.217):** Background dim (mmdim) is gated off while `bz_mmidle=1` — art goes full opacity during MM idle fade; restored on wake (see mm-list.md).  
 **Status:** LOCKED. Live since 5.33.203 (Rob approved Oct 31 2026). **Section enter/exit (mirror-enter) locked Oct 31 2026 evening** after Rob confirmed the black flash was fixed on 5.33.207. This file describes how things work now. It is not a changelog. Any change needs Rob's approval.  
 **Skin:** skin.bezel2
@@ -34,7 +35,7 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 | MM-open seed | While MM is closed and music/videos is active (and nothing is updating and no modal is open), every lane runs `seed()`. With 1107/1117 active, only `fan` is seeded | `ab_clock` |
 | Lane not fed | Live MM twin image is shown (`fadetime` 3000) | Includes_Bezel |
 | Backdrop cycle | `BDW = 10.0` s parked → new random image from `special://skin/extras/backdrop/` | `mm_warm` |
-| Music playing | `$EXP[bz_mmmushide]` (any strip section with a Videos underlay: Movies, TV, Favourites/other held-WARM sections) hides the MM poster lane and shows `$VAR[BzWarmMusicArt]` in the BezelVPLPoster slot (visible = `$EXP[bz_mmmushide]` only; 5.33.218 removed `!String.IsEmpty($VAR[..])`, a boolean parse error that kept the slot dead outside Music): Visible 600 / Hidden 300 / fadetime 600. Re-latch is a 400 ms Conditional on `bz_mushref` | Includes_Bezel |
+| Music playing | `$EXP[bz_mmmushide]` (any strip section with a Videos underlay: Movies, TV, Favourites/other held-WARM sections) hides the MM poster lane and shows `$VAR[BzWarmMusicArt]` as a square 600×600 framed album in the BezelVPLPoster slot (5.33.222; hidden in Music artists/albums/songs where BezelMusicPlayingArt draws; visible = `$EXP[bz_mmmushide]`; 5.33.218 removed `!String.IsEmpty($VAR[..])`, a boolean parse error that kept the slot dead outside Music): Visible 600 / Hidden 300 / fadetime 600. Re-latch is a 400 ms Conditional on `bz_mushref` | Includes_Bezel |
 | Warm gate | `MIN=5.0` · `CAP=15.0` · `FADE=3.0` s. Each section warms a random 400-item `Files.GetDirectory` window | bz_warmgate.py |
 | GBD | `BezelGlobalBackdrop` is hidden while `Home.bz_warm_gate` is set | Includes_Bezel |
 | Tuner WARM 2.0.1 rows | `bz_at_warmsplash` (Startup splash, empty = On) · `bz_at_warmmusicposters` (Album art during music, empty = On) · `bz_at_abfade` (A/B fade length, **not wired**: XML is fixed at 1500 ms) | Includes_Tuner |
@@ -259,8 +260,8 @@ Clear: `if not home.getProperty('bz_nav') and SS: SS.clear()`.
 **Wiring:**
 - `<expression name="bz_mmmushide">Player.HasAudio + !Player.HasVideo + $EXP[bz_navmenu] + !String.IsEqual(Skin.String(bz_at_warmmusicposters),Off)</expression>`
 - Hidden while true: MM poster live twin (`$VAR[BezelPoster60]`) and pos A/B (`!$EXP[bz_mmmushide]` in their visible). In BezelVPLPoster the gate also covers cast shadow (animated and static), blur/frame, LOOK, glare and lit dust. The fanart lane is never gated. The music album flip group is not affected (playing cover already wins).
-- Album image: `<visible>$EXP[bz_mmmushide] + !String.IsEmpty($VAR[BzWarmMusicArt])</visible>`, rect `bz_art_x`, `bz_top`, 600 × `bz_h`, aspect `keep`, fadetime 600, Visible 0→100 600 ms sine, Hidden 100→0 300 ms sine, plus Conditional 0→100 400 ms (`reversible=false`) on `!Empty(Home.bz_mushref)`.
-- `BzWarmMusicArt`: `Player.Art(thumb)` > `Player.Art(album.thumb)` > `MusicPlayer.Cover` > `Player.Icon` > `DefaultAlbumCover.png`.
+- Album image (5.33.222): square Music-style album, not poster aspect. `<visible>$EXP[bz_mmmushide] + !(Music/MusicPlaylist window with artists/albums/songs content)</visible>` — in Music content the real Music sway album (BezelMusicPlayingArt) is the only album; this slot never doubles it. Rect 990, 270, 600 × 600 (centred on the poster sway pivot 1290,570, rides the poster sway), aspect `scale`, `art_mask` diffuse, plus a `bz_frame_soft` 602×602 frame with the same gate, fadetime 600, Visible 0→100 600 ms sine, Hidden 100→0 300 ms sine, plus Conditional 0→100 400 ms (`reversible=false`) on `!Empty(Home.bz_mushref)`.
+- `BzWarmMusicArt`: `Player.Art(thumb)` > `Player.Art(album.thumb)` > `MusicPlayer.Cover` > `Player.Icon`, else empty (5.33.276: no `DefaultAlbumCover.png` placeholder).
 - Tuner row "Album art during music" (`Includes_Tuner.xml`, `id=warmmusicposters`): Left/Right set `Skin.String(bz_at_warmmusicposters)` to `Off` or On/empty, and set `bz_mushref` (AlarmClock clears it after 1 s).
 - Known limitation: switching it Off while music is already playing waits for the next A/B refresh. Setting it before playback works straight away.
 - `bz_at_abfade` slider exists but is not wired. Fades are fixed at 1500 ms.
@@ -329,5 +330,53 @@ MM → SETTINGS opens dialog 1130 over the section instead of replacing it, so W
 | Lane | `_ABLane('mart', settle 0.25, load 0.5, empty_flag)` in `bz_flip.py` `ab_clock`, fed by `_ab_mart()`: Music window only; `Container(60).ListItem.Art(thumb)` else `.Icon` (parent folder `..` → next item), `Default*` skipped. Same preload-hidden → side flip as the Videos poster lane. |
 | Properties | `bz_mart_a` / `bz_mart_b` / `bz_mart_side` / `bz_mart_on` / `bz_mart_empty`. Music never writes `bz_pos_*` (BUG-010 kept: Videos owns `bz_pos`). |
 | XML | Includes_Bezel.xml poster group, after the MM pos A/B twins: two images gated `$EXP[bz_navmenu] + !$EXP[bz_mmmushide] + Window.IsActive(music) + bz_mart_on + !bz_mart_empty` + side. Visible 0→100 1500 ms sine (only while `bz_ab_live`, so MM open = full opacity same frame), Hidden 100→0 1500 ms sine, texture fadetime 0. |
-| Live twin | `BezelPoster60` MM twin (fadetime 3000) now yields in Music whenever the mart lane has art; it still covers no-art items (stand-ins) and Videos before `bz_pos_on`. |
+| Live twin | `BezelPoster60` MM twin (fadetime 3000) now yields in Music whenever the mart lane has art; it still covers no-art items (blank — no stand-ins, 5.33.276) and Videos before `bz_pos_on`. |
 | Leaving Music | `_ab_mart` returns empty → `bz_mart_empty=1` → lane hidden in Videos. Mirror-enter seed keeps the front side on the current Music item while MM is closed. Music playing (mushide) path unchanged. |
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/mm-warm.md) · [state](../state/mm-warm.md) · [motion](../motion/mm-warm.md) · [art](../art/mm-warm.md) · [input](../input/mm-warm.md) · [theme](../theme/tokens.md) · [screens](../port-refs/mm-warm/) · [PORT_INDEX](../PORT_INDEX.md)
+
+
+## No-art (5.33.276)
+
+**Simple:** No fake art anywhere. If an item has no art, its slot just shows empty.
+
+**How it works:** stand-ins never display (extras/standins/ left on disk, unwired); no `DefaultAlbumCover.png` in `BzWarmMusicArt`; idle big album and poster window no longer fade out for no-art.
+
+**Wiring:** `bz_noart60` / `bz_vnoart` expressions and their two Conditional fades deleted from Includes_Bezel.xml.
+
+## Music warm = the big-album rail, unbroken (5.33.281)
+**Simple:** With music playing, opening the menu over Music keeps the exact same big album + compact NP (album rail 6367/6377/6397/6382, whichever `bz_at_fsslide` picks) on screen. No second warm copy, no re-fade.
+
+**How it works:** The rail lives in `View_60_BezelInfoList` (Music artists/albums/songs group) and was never hidden by MM. The break was inside `BezelMusicPlayingArt` cover faces A/B: the playing face was a twin pair — section image `!$EXP[bz_navmenu]` (fadetime 0) and MM image `$EXP[bz_navmenu]` (fadetime 3000, BZMMXF). Opening MM swapped controls, so the album re-loaded and faded in over 3 s. Both faces sit inside the `Player.HasAudio` group, so the section image now has no MM gate and the MM twin + pos A/B lanes are `false` (they could only show with `!Player.HasAudio`, which is impossible there). Dust: ambient (BELOW include + 1114 ABOVE) no longer fades out under MM while Music artists/albums/songs is the underlay; Tuner (`bz_navtune`) still fades it. Glare rides the faces (no MM gate). `bz_mmmushide` is for Videos-family underlays only and does not touch the Music rail.
+
+## Big album rail on non-Music underlays (5.33.289)
+- The Music big album rail (grouplists 6367/6377/6397/6382 + compact NP) is ONE shared include `BezelMusicRail` (Includes_Bezel.xml, defined just above `View_60_BezelInfoList`).
+- Music view: mounted in `View_60_BezelInfoList` with the original gate `[music|musicplaylist] + [artists|albums|songs]` — unchanged.
+- Other View_60 underlays (Programs/Games/Favourites/Playlist): same include, extra OR gate `$EXP[bz_mmmushide] + !music + !musicplaylist`.
+- Movies/TV (MyVideoNav): mounted after `View_60_BezelVideoPosterList`, gate `$EXP[bz_mmmushide]` (= audio, no video, MM open, warm music posters not Off). Closes with MM → normal section UI when you Select into Movies/TV.
+- The old framed 600×600 `BzWarmMusicArt` stand-in (+ its frame) in `BezelVPLPoster` is retired (`visible=false`); poster lane still hides under mushide.
+- Caveat: Kodi tears down window controls on Music↔other window swaps, so the rail remounts → album/NP cut + sway restart (accepted by Rob).
+
+
+## Big album (5.33.309 P1)
+The big album, its sway, next-song fade, cast and compact NP no longer live in this screen. They live in the always-open dialog **1122** — see [big-album.md](big-album.md). This screen only decides where the album sits (Home prop `bz_rail`: `home` / `centre` / `hide`). The old album grouplists 6367/6377/6397/6382 and their focus buttons (6368/6369, 6378/6379, 6398/6399, 6383/6384) are deleted; nothing focuses into an album rail any more.
+
+## 5.33.314
+- MM warm focus on Music no longer fires `bz_sway_restart` (MyMusicNav onload removed). Big album 1122 dims with BezelSecDim under MM like the section art.
+
+## Poster watched/resume badge under MM music (5.33.323)
+Rob t2414: the TV/movie poster corner badge (dot + check / play_badge, Includes_Bezel.xml ~2863, x1518 y136) drew on top of the big album when MM was open with music playing over a Videos screen. Its group was gated only `Window.IsActive(videos) + PlayCount/IsResumable`, while the poster frame beside it already had `!$EXP[bz_mmmushide]`. The badge group now has `+ !$EXP[bz_mmmushide]` too, so it hides with the poster lane under MM music and comes back on TV/Movies normally. The list-row badges are unchanged.
+
+## Poster stack under mushide (current, 5.33.328)
+While music plays under MM (`bz_mmmushide`), the entire poster-slot stack group (`bz_pready` group in Includes_Bezel: Videos/Music twins, live twins, MM A/B pos lanes, Music A/B art lanes) is hidden at the parent, so focusing Movies/TV never shows or fades a poster behind the 1122 big album. Frame, cast, LOOK, glare/dust, badges were already mushide-gated.
+
+## Movies flash on MM pass-through (flagged 2026-11-02, t2446)
+- Repro: MM open on TV SHOWS, press Up twice / Down twice at ~0.25 s per press. Movies sits between Music and TV, and the in-place park (Tuner Background warm delay, default step 1 = 0.2 s) runs out while you pass it. That fires an in-place `Container.Update(videodb://movies/titles/)` swap and MMWARM2 `_hold` (focus locked to 6996 during the repaint) → Movies list flashes in and input feels pulled. Log: label MUSIC while FolderPath already movies.
+- Proposed fix (not applied; changes your 0.2 s tuning): in-place swap also gated at ≥0.5 s like window switches (bz_flip.py ~L622), or raise Tuner Background warm delay. Needs FULL restart if applied.
+
+## 5.33.336 — Movies flash / pull-back fixed (t2453, supersedes earlier flagged diagnosis note)
+- Root cause was focus, not the 0.2 s warm delay (unchanged). `_bzstrip` treated strip Position 0 (MUSIC row) as "fresh" and did SetFocus(6996,bz_mmlive=Movies,absolute), which yanked you back. It also re-SetFocused an already-focused strip, restarting the row focus anim (the flash).
+- Fix: `_bzstrip` returns early when 6996 already has focus. `_restore2` reads the live strip row before bouncing and forces SetFocus(6996,live,absolute) directly. The `_defer` mm bounce is forced the same way.
+- Smoke: TV→up,up (0.3 s) lands on MUSIC and stays; down,down lands on TV and stays; Movies→Music mid-warm stays on Music.

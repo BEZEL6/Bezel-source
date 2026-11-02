@@ -115,3 +115,7 @@ Double-tap = 1119.
 
 ## Related
 context-menu.md · music-controls.md · music-list.md · section-transitions.md
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/playlists.md) · [state](../state/playlists.md) · [motion](../motion/playlists.md) · [art](../art/playlists.md) · [input](../input/playlists.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

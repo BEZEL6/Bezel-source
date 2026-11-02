@@ -2,7 +2,7 @@
 
 **Object:** `Custom_1119_SecCtx.xml` dialog `1119` · grouplist `9000` · buttons `7901–7947` (40 rows); `scripts/bz_ctx.py`, `scripts/bz_dtap.py`  
 **Where:** Options+Info template shell (black left mask, BezelLogo, 450 fanart crop `BzCIStage`, title at 150,150, `BzCIStripBG` strip, rows at 582,166)  
-**Last updated:** 2026-10-31 · 5.33.207  
+**Last updated:** 2026-11-01 · 5.33.242
 **Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
 **Skin:** skin.bezel2
 
@@ -56,3 +56,87 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ## Related
 info-options.md · favourites.md · keymaps.md · pictures.md · playlists.md
+
+## Warm source variant (current, 5.33.242)
+Menu on a source row (1117 / SOURCES 1132 / Pictures sources root) now draws Kodi's context menu in the Warm strip: `DialogContextMenu` with `$EXP[bz_ctxwarm]` hides BezelStdFrame, shows `BezelMMStripChrome` (w 450) at 570,120 titled with the item + `SOURCE · OPTIONS`, and slides grouplist 996 to 570,232. Rows are still Kodi's own (Edit source / Remove source …) — whatever Kodi offers for that list.
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/Custom_1119_SecCtx.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 9000 | grouplist | 582,166 | 360×430 | `Close/Close/noop/noop` | `—` |
+| 7901 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(programs) | Window.IsActive(games) | Window.IsActive(addonbrowser)]` |
+| 7902 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(programs) | Window.IsActive(games) | Window.IsActive(addonbrowser)]` |
+| 7903 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(programs) | Window.IsActive(games) | Window.IsActive(addonbrowser)] + …` |
+| 7905 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(programs) | Window.IsActive(games) | Window.IsActive(addonbrowser)]` |
+| 7906 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(programs) | Window.IsActive(games) | Window.IsActive(addonbrowser)] | …` |
+| 7907 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(programs) | Window.IsActive(games) | Window.IsActive(addonbrowser)] | …` |
+| 7908 | button | —,— | —×— | `—/—/—/—` | `Window.IsActive(programs)` |
+| 7909 | button | —,— | —×— | `—/—/—/—` | `Window.IsActive(games)` |
+| 7910 | button | —,— | —×— | `—/—/—/—` | `Window.IsActive(addonbrowser)` |
+| 7911 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(musicplaylist) | Window.IsActive(videoplaylist)]` |
+| 7912 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(musicplaylist) | Window.IsActive(videoplaylist)]` |
+| 7913 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(musicplaylist) | Window.IsActive(videoplaylist)]` |
+| 7914 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(musicplaylist) | Window.IsActive(videoplaylist)]` |
+| 7915 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(musicplaylist) | Window.IsActive(videoplaylist)]` |
+| 7916 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(musicplaylist) | Window.IsActive(videoplaylist)]` |
+| 7917 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(musicplaylist) | Window.IsActive(videoplaylist)]` |
+| 7918 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(musicplaylist) | Window.IsActive(videoplaylist)]` |
+| 7919 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(musicplaylist) | Window.IsActive(videoplaylist)]` |
+| 7920 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(tvchannels) | Window.IsActive(radiochannels)]` |
+| 7921 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(tvchannels) | Window.IsActive(radiochannels)] | [Window.IsActive(tvgui…` |
+| 7922 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(tvchannels) | Window.IsActive(radiochannels)] | [Window.IsActive(tvgui…` |
+| 7923 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(tvchannels) | Window.IsActive(radiochannels)]` |
+| 7924 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(tvrecordings) | Window.IsActive(radiorecordings)]` |
+| 7925 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(tvrecordings) | Window.IsActive(radiorecordings)]` |
+| 7926 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(tvrecordings) | Window.IsActive(radiorecordings)]` |
+| 7927 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(tvtimers) | Window.IsActive(radiotimers) | Window.IsActive(tvtimerrule…` |
+| 7928 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(tvtimers) | Window.IsActive(radiotimers) | Window.IsActive(tvtimerrule…` |
+| 7929 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(tvtimers) | Window.IsActive(radiotimers) | Window.IsActive(tvtimerrule…` |
+| 7904 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(programs) | Window.IsActive(games) | Window.IsActive(addonbrowser)] | …` |
+| 7930 | button | —,— | —×— | `—/—/—/—` | `[[Window.IsActive(tvchannels) | Window.IsActive(radiochannels)] | [Window.IsActive(tvgu…` |
+| 7931 | button | —,— | —×— | `—/—/—/—` | `[Window.IsActive(tvchannels) | Window.IsActive(radiochannels)]` |
+| 7932 | button | —,— | —×— | `—/—/—/—` | `[[Window.IsActive(tvchannels) | Window.IsActive(radiochannels)] | [Window.IsActive(tvgu…` |
+| 7940 | button | —,— | —×— | `—/—/—/—` | `Window.IsActive(pictures) + !ListItem.IsFolder` |
+| 7941 | button | —,— | —×— | `—/—/—/—` | `Window.IsActive(pictures) + ListItem.IsFolder + !ListItem.IsParentFolder` |
+| 7942 | button | —,— | —×— | `—/—/—/—` | `Window.IsActive(pictures) + !ListItem.IsFolder` |
+| 7943 | button | —,— | —×— | `—/—/—/—` | `Window.IsActive(pictures)` |
+| 7944 | button | —,— | —×— | `—/—/—/—` | `Window.IsActive(pictures)` |
+| 7945 | button | —,— | —×— | `—/—/—/—` | `Window.IsActive(pictures)` |
+| 7946 | button | —,— | —×— | `—/—/—/—` | `Window.IsActive(pictures)` |
+| … | 1 more ids not listed | | | | |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `ActivateWindow(PVRChannelManager)`
+- `ActivateWindow(TVGuide)`
+- `ActivateWindow(TVSearch)`
+- `ActivateWindow(addonbrowser,addons://more/executable/,return)`
+- `ActivateWindow(addonbrowser,addons://more/game/,return)`
+- `ActivateWindow(addonbrowser,addons://repos/,return)`
+- `ActivateWindow(pvrsettings)`
+- `Addon.OpenSettings($INFO[ListItem.Property(Addon.ID)])`
+- `AlarmClock(bzsc,Action(Delete),00:00,silent)`
+- `AlarmClock(bzsc,Action(Info),00:00,silent)`
+- `AlarmClock(bzsc,Action(MoveItemDown),00:00,silent)`
+- `AlarmClock(bzsc,Action(MoveItemUp),00:00,silent)`
+- `AlarmClock(bzsc,Action(Record),00:00,silent)`
+- `AlarmClock(bzsc,Action(Select),00:00,silent)`
+- `AlarmClock(bzsc,Container.NextSortMethod,00:00,silent)`
+- `AlarmClock(bzsc,Container.SortDirection,00:00,silent)`
+- `AlarmClock(bzsc,SendClick(20),00:00,silent)`
+- `AlarmClock(bzsc,SendClick(21),00:00,silent)`
+- `AlarmClock(bzsc,SendClick(22),00:00,silent)`
+- `AlarmClock(bzsc,SendClick(26),00:00,silent)`
+- `AlarmClock(bzsc,SlideShow($INFO[Container.FolderPath]),00:00,silent)`
+- `AlarmClock(bzsc,SlideShow($INFO[Container.FolderPath],recursive),00:00,silent)`
+- `Dialog.Close(1119,true)`
+- `RunScript(special://skin/scripts/bz_ctx.py,fav)`
+- `UpdateAddonRepos`
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/context-menu.md) · [state](../state/context-menu.md) · [motion](../motion/context-menu.md) · [art](../art/context-menu.md) · [input](../input/context-menu.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

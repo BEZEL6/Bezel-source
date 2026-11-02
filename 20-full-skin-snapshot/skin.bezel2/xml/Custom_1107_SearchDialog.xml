@@ -20,7 +20,7 @@
 		<!-- stage block -->
 		<control type="image"><left>20</left><top>20</top><width>410</width><height>860</height><texture border="10" colordiffuse="A0000000">bezel/mm_round_a60.png</texture></control>
 		<control type="label"><left>44</left><top>40</top><width>380</width><height>30</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><label>SEARCH</label></control>
-		<control type="list" id="9000"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
+		<control type="list" id="9000"><onback>SetProperty(bz_nav,true,home)</onback><onback>Dialog.Close(1107,true)</onback><!-- 5.33.235 Rob t1837: control onback consumes Back so dialog never closed; close explicitly --><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
 			<onup>9000</onup><ondown>9000</ondown><onleft>9000</onleft><onright>9000</onright>
 			<left>40</left><top>80</top><width>370</width><height>740</height><scrolltime>200</scrolltime>
 			<itemlayout width="370" height="66">

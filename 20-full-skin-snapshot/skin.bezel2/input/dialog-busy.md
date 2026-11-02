@@ -1,0 +1,22 @@
+# Busy dialog — dialog-busy
+
+**Object:** `dialog-busy` · **Layer:** input (actions) · **Last updated:** 2026-11-01 · 5.33.267 · **Status:** current-state, extracted from live XML/Python
+**Blueprint siblings:** [behavior](../behaviors/dialog-busy.md) · [layout](../layout/dialog-busy.md) · [state](../state/dialog-busy.md) · [motion](../motion/dialog-busy.md) · [art](../art/dialog-busy.md) · [input](../input/dialog-busy.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+## Simple
+It is Kodi's "working…" indicator, restyled. It waits a moment before showing, so quick loads never flash it. It stays out of the way during music, video, caching and flips.
+
+**This layer in one line:** what each remote key / touch does on this object, as edges between controls.
+
+## Deep (rebuild detail)
+> **Verification (phase 2 hand-check):** auto-extracted rows are kept only where the control id is named in [behavior](../behaviors/dialog-busy.md); others were stripped as stray. Kept rows are *unverified at runtime* unless a section says hand-verified.
+Navigation edges from live controls (Kodi actions → port action names in [keymap-overview](keymap-overview.md)).
+
+| control | Left | Right | Up | Down | Back |
+|---|---|---|---|---|---|
+| 100 | `` | `` | `304` | `120` | `` |
+| 150 | `` | `` | `130` | `170` | `` |
+| 300 | `8` | `9603` | `9603` | `9603` | `` |
+
+**Semantics from behavior (verbatim lines):**
+- How it works.** The open fade has a Tuner delay. A load that finishes inside the delay closes the dialog before anything is drawn. The visible group then hides itself in every case where BEZEL already shows its own feedback or where a spinner would cover playback. The close fade waits 500 ms, so a busy that blinks off and back on does not flicker. That close fade only runs when no video is playing.

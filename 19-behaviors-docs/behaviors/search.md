@@ -2,7 +2,7 @@
 
 **Object:** `Custom_1107_SearchDialog.xml` dialog `1107` · list `9000` (3 static rows)
 **Where:** Opened from MM SEARCH (`bz_mm.py GO['search']`)
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-01 (5.33.235)
 **Status:** Live in 5.33.207. Three search rows; Back returns to the MM. Draft: not Rob-approved.
 **Skin:** skin.bezel2
 
@@ -19,7 +19,7 @@ Pick SEARCH on the main menu and a small panel offers three kinds of search. Bac
 1. `bz_mm.py` clears `bz_nav` first, so the MM starts closing.
 2. It then opens 1107, which fades in with the standard section fade.
 3. Focus is pinned to list 9000. Every direction points back at 9000, so you can't wander off the list.
-4. Back sets `bz_nav=true` (the MM reopens on its row) and Kodi closes the dialog.
+4. Back sets `bz_nav=true` (the MM reopens on its row), then `Dialog.Close(1107,true)` closes the dialog (a control onback consumes Back, so Kodi will not close it by itself).
 
 ### Wiring
 | Item | Value |
@@ -27,7 +27,7 @@ Pick SEARCH on the main menu and a small panel offers three kinds of search. Bac
 | Opener | `bz_mm.py` GO search: `ClearProperty(bz_nav,home)` + `ActivateWindow(1107)` |
 | Window | dialog, include `BezelSecFadeInDialog` (WindowOpen fade 0→100, 400 ms sine out, `DepthDialog`) |
 | defaultcontrol | `always` 9000 |
-| List 9000 | onup/ondown/onleft/onright → 9000 · onback `SetProperty(bz_nav,true,home)` · static content |
+| List 9000 | onup/ondown/onleft/onright → 9000 · onback `SetProperty(bz_nav,true,home)` + `Dialog.Close(1107,true)` · static content |
 
 ---
 
@@ -69,3 +69,24 @@ None specified.
 
 ## Related
 mm-list.md · section-transitions.md
+
+## Text entry
+Search text uses the strip keyboard (`BzStripKeyboard`, see keyboard.md) since 5.33.239.
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/Custom_1107_SearchDialog.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 9000 | list | 40,80 | 370×740 | `9000/9000/9000/9000` | `—` |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `Dialog.Close(1107,true)`
+- `SetProperty(bz_nav,true,home)`
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/search.md) · [state](../state/search.md) · [motion](../motion/search.md) · [art](../art/search.md) · [input](../input/search.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
