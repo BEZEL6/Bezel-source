@@ -77,3 +77,7 @@ Shared Music / Movies / TV. Code: `bz_flip.py` seed + `Includes_Bezel.xml` condi
 
 ## Related
 mm-list.md · mm-warm.md · settings.md · video-osd.md
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/section-transitions.md) · [state](../state/section-transitions.md) · [motion](../motion/section-transitions.md) · [art](../art/section-transitions.md) · [input](../input/section-transitions.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

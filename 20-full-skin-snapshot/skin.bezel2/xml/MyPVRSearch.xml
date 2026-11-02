@@ -16,7 +16,7 @@
 					<left>570</left>
 					<top>120</top>
 					<width>390</width>
-					<height>900</height>
+					<height>858</height><!-- 5.33.347 t2491: ends y978 above dtap hint -->
 					<onleft>9000</onleft>
 					<onright>73</onright>
 					<onup>50</onup>

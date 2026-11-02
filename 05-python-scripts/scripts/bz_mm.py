@@ -19,7 +19,7 @@ GO = {
  'tv': ['SetProperty(bz_navroot,videodb://tvshows/titles/,home)', 'RunScript(special://skin/scripts/bz_cmd.py,go,videodb://tvshows/titles/)'],
  'mv': ['RunScript(special://skin/scripts/bz_cmd.py,go,videodb://musicvideos/)'],
  'recent': ['SetProperty(bz_navroot,musicdb://recentlyplayedalbums/,home)', 'RunScript(special://skin/scripts/bz_cmd.py,tomusic,musicdb://recentlyplayedalbums/)'],
- 'fav': ['ClearProperty(bz_nav,home)', 'ActivateWindow(Favourites)'],
+ 'fav': ['ClearProperty(bz_nav,home)', 'ActivateWindow(favouritesbrowser)'],
  'playlists': ['RunScript(special://skin/scripts/bz_cmd.py,tomusic,special://musicplaylists/)'],
  'search': ['ClearProperty(bz_nav,home)', 'ActivateWindow(1107)'],
  'pictures': ['ClearProperty(bz_nav,home)', 'ActivateWindow(pictures)'],

@@ -6,7 +6,9 @@
 	<!-- 5.33.203: drop always=true (BUG-002 pattern) + absolute SetFocus so first Down is not eaten by 6996→7800 handoff -->
 	<defaultcontrol>7800</defaultcontrol>
 	<onload>ClearProperty(bz_tunesrc,home)</onload><onload>SetProperty(bz_pwrswap,1,home)</onload><!-- t4943 K52: skip 6996 slides on POWER swap -->
+	<onload>CancelAlarm(bzpwrf,true)</onload><!-- 5.33.322 Rob t2409: kill a pending close-alarm SetFocus(6996) so it cannot steal focus after reopen -->
 	<onload>SetFocus(7800,0,absolute)</onload>
+	<onload>AlarmClock(bzpwrfoc,SetFocus(7800,0,absolute),00:00,silent,false)</onload><!-- 5.33.322 Rob t2409: re-assert absolute focus one tick later, after the 6996 -> 7800 hand-off settles, so the first Down moves SHUTDOWN -> QUIT -->
 	<onunload condition="!String.IsEqual(Window(Home).Property(bz_tunesrc),pwr)">AlarmClock(bzpwrf,SetFocus(6996),00:00,silent,false)</onunload>
 	<onunload>AlarmClock(bzpwrsw,ClearProperty(bz_pwrswap,home),00:01,silent,false)</onunload>
 	<include>BezelSecFadeIn</include><!-- 5.33.177 section fade-in standard (was instant) -->

@@ -2,4 +2,4 @@
 
 All skin textures / media
 
-Files copied from skin.bezel2 5.33.196.
+Files copied from skin.bezel2 5.33.350 (media unchanged; nomedia attach).

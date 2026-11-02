@@ -55,3 +55,145 @@ Cast 50 Select opens Movies filtered by that actor and closes everything. Remove
 
 ## Related
 context-menu.md · dialog-confirm.md · favourites.md
+
+**Section page (music) also:** Album View 9978 (above View Type) — A · 3B ALBUM / D · SONGS + DISCS (default D), skin bool `bz_albview_a`. See music-list.md.
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/DialogVideoInfo.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 50 | list | 593,476 | 352×108 | `noop/noop/9000/noop` | `!String.IsEmpty(Container(50).ListItem(0).Label)` |
+| 9000 | grouplist | 582,166 | 360×276 | `Close/Close/noop/50` | `—` |
+| 9980 | button | —,— | —×— | `—/—/9000/—` | `String.IsEmpty(Window.Property(bz_ci_more))` |
+| 9969 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec) + [String.IsEqual(ListItem.DBType,tvsho…` |
+| 9979 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec)` |
+| 9971 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec)` |
+| 9972 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec)` |
+| 9973 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec)` |
+| 9989 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec)` |
+| 9981 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec)` |
+| 9982 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec) + [Container.Content(MusicVideos)]` |
+| 9983 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec) + [System.HasLocks]` |
+| 9984 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec) + [Integer.IsGreater(Playlist.Length(vi…` |
+| 9985 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec) + [Container.Content(addons)]` |
+| 9986 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec) + [Container.Content() + String.IsEmpty…` |
+| 9987 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec) + [Container.Content(studios) + !System…` |
+| 9988 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec) + [!String.IsEmpty(Container.PluginName)]` |
+| 9990 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec)` |
+| 8 | button | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window.Property(bz_ci_more)) + !String.IsEqual(ListItem.DBType,tvshow) +…` |
+| 9081 | button | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window.Property(bz_ci_more)) + [String.IsEqual(ListItem.DBType,movie) | …` |
+| 9082 | button | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window.Property(bz_ci_more)) + [String.IsEqual(ListItem.DBType,movie) | …` |
+| 9085 | button | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window.Property(bz_ci_more)) + String.IsEqual(ListItem.DBType,tvshow)` |
+| 11 | button | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window.Property(bz_ci_more)) + !String.IsEmpty(ListItem.Trailer)` |
+| 443 | button | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window.Property(bz_ci_more)) + !String.IsEmpty(ListItem.SetID)` |
+| 9089 | button | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window.Property(bz_ci_more))` |
+| 7710 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),1)` |
+| 6 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),1)` |
+| 13 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),1) + !String.IsEmpty(ListItem.Director)` |
+| 7 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),1) + Control.IsEnabled(7)` |
+| 9095 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),1) + !String.IsEqual(ListItem.DBType,season)` |
+| 9097 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),1)` |
+| 9098 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),1) + !String.IsEmpty(ListItem.DBID) + !Strin…` |
+| 9096 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),1)` |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `Action(Queue)`
+- `Action(ToggleWatched)`
+- `ActivateWindow(Videos,videodb://movies/sets/$INFO[ListItem.SetId]/?setid=$INFO[ListItem.SetId],return)`
+- `ActivateWindow(Videos,videodb://tvshows/titles/$INFO[ListItem.DBID]/,return)`
+- `ActivateWindow(addonbrowser,addons://more/video/,return)`
+- `ActivateWindow(videoplaylist)`
+- `Addon.OpenSettings($INFO[Container.PluginName])`
+- `AlarmClock(bzci_back,SetFocus(9000,1,absolute),00:00,silent)`
+- `AlarmClock(bzci_back,SetFocus(9980),00:00,silent)`
+- `AlarmClock(bzci_sec,SetFocus(9979),00:00,silent)`
+- `ClearProperty(bz_ci_more)`
+- `Container.NextSortMethod`
+- `Container.SortDirection`
+- `Dialog.Close(all,true)`
+- `Dialog.Close(movieinformation)`
+- `InstallAddon(resource.images.studios.white)`
+- `QueueMedia($VAR[BzPlayNextPath],playnext)`
+- `RunScript(special://skin/scripts/bz_cmd.py,chooseart,$INFO[ListItem.DBType],$INFO[ListItem.DBID])`
+- `RunScript(special://skin/scripts/bz_ctx.py,fav)`
+- `RunScript(special://skin/scripts/bz_ctx.py,remove,$INFO[ListItem.DBType],$INFO[ListItem.DBID])`
+- `SendClick(10)`
+- `SendClick(11)`
+- `SendClick(16)`
+- `SendClick(19)`
+- `SendClick(622)`
+
+**Source:** `xml/DialogMusicInfo.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 50 | list | -2000,0 | 10×10 | `—/—/—/—` | `false` |
+| 9000 | grouplist | 582,166 | 360×420 | `Close/Close/noop/9000` | `—` |
+| 9980 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),1)` |
+| 9978 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec)` |
+| 9979 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec)` |
+| 9971 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec)` |
+| 9972 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec)` |
+| 9973 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec)` |
+| 9974 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec)` |
+| 9975 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec)` |
+| 9976 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec) + !Container.Content(addons)` |
+| 9977 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec) + Integer.IsGreater(Playlist.Length(mus…` |
+| 9978 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec) + Container.Content(addons)` |
+| 9968 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec) + !String.IsEmpty(Container.PluginName)` |
+| 9969 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec) + String.IsEmpty(Container.FolderPath) …` |
+| 9967 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),sec)` |
+| 8 | button | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window.Property(bz_ci_more)) + !String.IsEqual(ListItem.DBType,artist)` |
+| 9081 | button | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window.Property(bz_ci_more)) + !String.IsEqual(ListItem.DBType,artist)` |
+| 9082 | button | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window.Property(bz_ci_more))` |
+| 9095 | button | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window.Property(bz_ci_more))` |
+| 9083 | button | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window.Property(bz_ci_more)) + !String.IsEqual(ListItem.DBType,artist) +…` |
+| 9084 | button | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window.Property(bz_ci_more)) + String.IsEqual(ListItem.DBType,artist) + …` |
+| 9089 | button | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window.Property(bz_ci_more))` |
+| 7710 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),1)` |
+| 6 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),1)` |
+| 7 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),1) + Control.IsEnabled(7)` |
+| 12 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),1)` |
+| 9096 | button | —,— | —×— | `—/—/—/—` | `String.IsEqual(Window.Property(bz_ci_more),1)` |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `Action(Queue)`
+- `ActivateWindow(Music,"musicdb://albums/?artist=$VAR[BzCIArtistQ]&albumartistonly=true",return)`
+- `ActivateWindow(Music,musicdb://artists/$INFO[ListItem.DBID]/,return)`
+- `ActivateWindow(addonbrowser,addons://more/audio/,return)`
+- `ActivateWindow(musicplaylist)`
+- `Addon.Default.Set(xbmc.player.musicviz)`
+- `Addon.OpenSettings($INFO[Container.PluginName])`
+- `AlarmClock(bzci_back,SetFocus(9000,1,absolute),00:00,silent)`
+- `AlarmClock(bzci_back,SetFocus(9980),00:00,silent)`
+- `AlarmClock(bzci_sec,SetFocus(9979),00:00,silent)`
+- `ClearProperty(bz_ci_more)`
+- `Container.NextSortMethod`
+- `Container.SortDirection`
+- `Dialog.Close(all,true)`
+- `Dialog.Close(musicinformation)`
+- `QueueMedia($VAR[BzPlayNextPath],playnext)`
+- `RunScript(special://skin/scripts/bz_cmd.py,chooseart,$INFO[ListItem.DBType],$INFO[ListItem.DBID])`
+- `RunScript(special://skin/scripts/bz_ctx.py,fav)`
+- `SendClick(16)`
+- `SendClick(19)`
+- `SendClick(622)`
+- `SetFocus(9000,0,absolute)`
+- `SetProperty(bz_ci_more,1)`
+- `SetProperty(bz_ci_more,sec)`
+- `Skin.Reset(bz_albumlist)`
+
+**Source:** `xml/Custom_1111_XInfo.xml`
+
+_No id’d controls in this file (layout comes from includes)._
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `Dialog.Close(1111,true)`
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/info-options.md) · [state](../state/info-options.md) · [motion](../motion/info-options.md) · [art](../art/info-options.md) · [input](../input/info-options.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

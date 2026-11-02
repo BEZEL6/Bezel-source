@@ -1,3 +1,5 @@
+- 2026-11-02 5.33.317 (Rob t2397 "Remove the wait"): stub/side albums (BezelFSPlayNext) no open wait — sdelay 3000→0 on 1120, MusicVisualisation, 1121 + include default; sfade 2000 kept. bak ../bak_5.33.316_pre317. ReloadSkin. No zip.
+- 2026-11-02 5.33.311: Custom_1122 centre copy WindowOpen fade end=100 (was ending at 0 → centre invisible after slide, found in 310 smoke); centre opens full alpha after 600ms then slide owns it. Plus L3 meta: small artist / big album. Pushed skin.bezel2-5.33.311.zip → HPLaptop Downloads. FULL restart (bz_flip.py changed in 309).
 - 2026-10-31 5.33.190 BUG-028 FIXED: hide MM list 6996 under Tuner/BEZEL Settings; guard bz_flip strip focus.
 - 2026-10-31 5.33.188 BUG-011 (Rob voice): restore Tuner-row MM-start hold dropped in .187 warm-151 rollback (same as .186). Hold bz_mmstart until 6996 on bz_mmstartrow (6s cap); do not latch pre-start bz_mmlive; pin navstrip/mmlive/mmpos to start row during hold. Startup-only. FULL restart. bak scripts/bz_flip.py.bak_5.33.187_pre188_bug011. No zip.
 - 2026-10-31: pushed skin.bezel2-5.33.187.zip → HPLaptop C:\Users\rober\Downloads\ (~32MB). Warm = 5.33.151 base + artists-only Music underlay + BUG-010 Music/poster lane split. FULL restart. Includes bloom cast / BackTrap / TV desc from .182–.186 non-warm work.
@@ -128,3 +130,119 @@ Movies-only: keep `bz_movposter_hold` + new `bz_movfanart_hold` while on TV/othe
 - 2026-11-01 5.33.220: Add-ons (new 1131) + Media Sources 1117 + AddonBrowser + DialogAddonInfo rebuilt as Warm strip menus (Rob t1727s5849 👍, t1729–t1731). FileBrowser stays stock.
 - 2026-11-01 5.33.221 (Rob t1737/t1738/t1739/t1741): Warm strip menus (Add-ons 1131, Media Sources 1117, AddonBrowser zip/repo/category follow-ons, DialogAddonInfo, Settings 1130) now use Bezel list highlight bar ($VAR[BzATHiTex]/BzATHiCol, text BzATHiText) and Bezel np_pill32 pills (replaced mm_pill_ol outline + ad_pill_on/off). Buttons use HasFocus sibling image ($VAR in button texturefocus didn't render). Smoke /workspace/b401/smoke221/. Bak /workspace/bak221/. XML only → ReloadSkin (FULL restart recommended if coming from <220).
 - 2026-11-01 5.33.221 (Rob 👍): Music big-album touch 6180 wired to Dialogue FS (6390 bz_pndlg_ok + fsslide onclicks → ActivateWindow(1120)). Docs music-list.md, dialogue-fs.md.
+
+- 2026-11-01 ~02:40 ET 5.33.227 (Rob pt1804u) Music art briefly in poster crossfade on section switch. Cause: poster-slot live images (section twin fadetime 300 + MM live twin fadetime 3000) used shared $VAR[BezelPoster60] with Music thumb branches; the control kept the last Music album as its texture, so switching to Movies/TV crossfaded from that album into the poster. Fix in place: split each into a Videos control (BezelPoster60V) + Music control (BezelPoster60M) — separate texture memory. A/B lanes, mushide, BUG-010, mvidfade untouched; no K40. XML only → ReloadSkin. Bak /workspace/b401/bak_5.33.226_pre227_0240. Not zipped. Not device-smoked.
+- Rob t1849u: first MM→Music focus after cold start still flashed row 1. 5.33.238 RANDFLASH3: bz_randpend 'w' watchdog 4s→15s fail-safe (cold DB load outlasted it); set after noop check; window-switch Music list wait ≤12s. FULL restart. Not zipped.
+
+- 5.33.262 GLARESPLIT (Rob t1949u): idle fold glare split into L/R 300x600 halves (aspectratio align crop + art_mask_hl/hr half masks, no squash). Static L hidden ph2, static R hidden ph1; ph1 leaf carries R glare, ph2 leaf carries L glare. Rest: both static halves.
+
+- 5.33.263 GLARESWAP (Rob t1953u): half-glare aligns swapped L<->R (static+leaf). GLAREPOP (Rob t1954u): removed bz_hf_ph hides on static half glares (no pop).
+
+## 5.33.268 — Music layer 3 new album strip, step 1 (Rob t2022u–t2024u, Nov 1 2026)
+- New in-album left strip per Mock 1 (mock_album_disc_view option D) + Mock 2 (mock_album_list_d_approve): header top, no 450 slot, 60px track rows, white pill focus, no thumbs. `$EXP[bz_l3]` (View D + MM closed). Includes_Bezel.xml only + new media/bezel/l3_pill.png. XML/media → ReloadSkin. Not zipped.
+- Left: disc header rows, right song panel at mock size, drop A/D toggle.
+
+## 5.33.269 — L3 right song panel (Rob t2026u, Nov 1 2026)
+- Big album art scale (3B 330²), not jumbo; static swap on song change (no anim — Rob no). Title rest bz_m40 no-scroll (fixes "| MU" marquee seam). XML only → ReloadSkin. Not zipped.
+- Optional parked: big album anim on song change — Rob said no.
+
+## 5.33.270 — MERGED13: Artists → one song list with album headers (Rob t2053u/t2054u/t2057u, Nov 1 2026 ~17:15 ET)
+- Parked/reverted 5.33.268/269 L3 strip + right-panel edits: Includes_Bezel.xml restored from the 5.33.267 backup (the only diffs were 268/269). l3_pill.png + the 269 XML were moved to /workspace/b401/parked_l3_268_269/. No dual L3.
+- bz_flip.py: Artists root → artists/ID/ hops to artists/ID/-1/ (all songs), sort Album asc. Back from merged → artists/ID/ → Action(Back) → Artists. Gated !bz_nav !bz_mmwarm.
+- Includes_Bezel: new $EXP[bz_m13]; bz_discbar fix-in-place also fires in bz_m13 on track 1 → album header bar; $VAR[BzDiscBarLabel] (ALBUM · YEAR / ALBUM · DISC n / DISC n · title).
+- Backups *.bak-5.33.269-*, /workspace/b401/bz_flip.py.bak-5.33.269-*. Smoke /workspace/b401/smoke_270_merged13/. .py → FULL restart. Not zipped.
+
+## 2026-11-01 17:45 ET — 5.33.271 t2061 remove View D cover slot from merged Music list
+Rob: "Take out" the black box above the merged song list. Gated the View D cover-column groups (FF141414 mask + BezelInAlbumArt + album title/artist header; Includes_Bezel ~L1542/2198/2199) with `+ !$EXP[bz_m13]`. Normal album View D unchanged. Album header disc bars, big album, strip, fold, sway, MM, ALLHIDE untouched. Rows stay in covercol slots (list height is fixed; ungating the 900 slide left the bottom half empty and rows spilled above the panel — reverted). XML only → ReloadSkin. Smoke: /workspace/b401/smoke_271_nocovercol/. Not zipped/pushed.
+
+## 5.33.272 — Nov 01 2026 17:44 ET — MERGED13 full-height rebuild (Rob t2062)
+- bz_covercol excludes bz_m13; new dedicated 75px item/focused layouts for bz_m13 (full height, header bars); bz_allpull_inall gated !bz_m13; bz_nojumbo blocks idle jumbo zoom on Artists root + merged list. Fold lock untouched. ReloadSkin (XML). Not zipped.
+
+- **5.33.273 NOFRAME (Rob t2065u, Nov 1 2026):** big white "panel frame" on Music right art was NOT a panel control — it was the hinge-fold stack group (Includes_Bezel.xml ~L1097: static half-frames bz_frame_half_l/r + shades) and the two glare groups (~L1117, ~L1121) still running the idle jumbo zoom 100→150 around 1440,420 (→990,120 900²) because 272 gated only the art layers with `!$EXP[bz_nojumbo]`. Gate added to those 3 zoom-ins. On Artists L1 + merged songs the fold half-frames/glare now stay locked to the 600² art at 1140,220 (thin edge only). Fold, sway, glare, 6180 touch untouched. ReloadSkin (XML). Smoke /workspace/b401/smoke_273_noframe/. Not zipped.
+
+- 2026-11-01 ~5:50 PM ET — 5.33.272 zipped (/workspace/skin.bezel2-5.33.272.zip, 48995220 B, sha256 633e48f8206d38e345a83d66f7c704fb7f747128c49d8e11a103efed146e437c). Push to HPLaptop failed: machine unreachable.
+
+## 5.33.274 THREELEVEL mock + old view options removed (Rob pt2094u "Mock the 3 level list. Be sure to remove old view types from options") — Nov 1 2026 ~6:55 PM ET
+- Native Artists → Albums (artists/ID/) → album Songs; 270 merged hop already removed in bz_flip.py; bz_m13 now = any Artists songs list (L3).
+- L2 artist albums full-height: bz_covercol clause 2 + `!$EXP[bz_artistalbums]`.
+- Removed: DialogMusicInfo 9978 Album View (A/D), 9979 View Type (grid/album list/cover column); 9980 now focuses 9971. 6880 view pill music onclicks stripped (pill already hidden). bz_flip resets bz_albview_a + bz_grid_music at start.
+- Open: L2 `..` above list top + ALL ALBUMS row floating. Smoke /workspace/b401/smoke_274_3level/. .py → FULL restart. Not zipped/pushed. Backup /workspace/b401/bak_5.33.274_previewopts_*.
+
+## 5.33.275 L2ALLFIX + L3 NOTITLE (Rob pt2096u + steer "Keep all albums. Why is so far away?") — Nov 1 2026 ~7:00 PM ET
+- ALL ALBUMS 6097 KEPT. Float cause: `bz_allpick` still included `[bz_artistalbums + bz_allrow]` (old cover-column disc-picker slides +390/+45/+N) → now `bz_allpick = bz_mdiscpick` only. Dropped the L2 +20 nudge on 6097. ALL ALBUMS now sits directly under the last album row.
+- L2 `..` leak above list: allpull120 pulls list up 120 (.. + hidden *All) but `..` was not blanked → ALLHIDE2 groups get `!ListItem.IsParentFolder | !bz_artistalbums` (8 layouts). Back still goes up.
+- L3 (bz_m13): regular 60px list — 75px m13 item/focused layouts disabled (condition `false`, parked in place); album header disc bar no longer drawn for bz_m13 (bz_discbar = TotalDiscs>1 + !bz_m13).
+- XML only → ReloadSkin. Smoke /workspace/b401/smoke_275_l3_notitle/. Backup /workspace/b401/bak_5.33.274_pre275_*. Not zipped/pushed.
+
+
+## 5.33.276 (Nov 1 2026)
+- Rob: "take it all out, it never worked" — removed all no-art behavior: DefaultAlbumCover.png dropped from BzWarmMusicArt; idle big-album bz_noart60 fade and poster-window bz_vnoart fade removed; bz_noart60/bz_vnoart expressions deleted. Stand-ins: no live wiring remained in XML/scripts; extras/standins/ left on disk, never displayed. ReloadSkin.
+
+- 2026-11-01 19:16 ET — 5.33.276 shipped/pushed: skin.bezel2-5.33.276.zip (32110811 B, sha256 d335cee0…47cf) → HPLaptop Downloads. All no-art paths removed. ReloadSkin.
+
+## 5.33.277 FSMETA (Rob pt2142u "Build") — Nov 1 2026 ~8:30 PM ET
+- 1121 Music Fanart FS: Music-meta block (small artist 150,196 / big album 150,226 / year+genre pills 150,296); on open year pill expands right into pill-shaped NP progress bar (600ms sine), genre fades. 6-cycle pill 6421 moved to FULLSCREEN-pill spot 140,136 (labels + cycle unchanged, per Rob steer). BezelNPInPlace old title/progress overlay hidden while 1121 visible.
+- DEFERRED: list-in-strip (View_60_BezelInfoList shared by 5 windows, ~30 fixed 450px widths — own build), Music-section meta on fanart + FULLSCREEN 6886 move to fanart UL (collide with list 60 rows until strip list lands), album leaf flip across screens.
+- Backup /workspace/b401/bak_5.33.276_pre277/. XML only → ReloadSkin. Not GUI-smoked (no audio decoder in box Kodi). Not zipped.
+
+## 5.33.278 STRIPLIST + MUSICMETA (Rob pt2147u "Push when done") — Nov 1 2026 ~8:40 PM ET
+- Music (artists/albums/songs, `$EXP[bz_mstrip]`): list 60 group + cover group + ALL row 6098 ride into colour strip 570..960 via Conditional zoom 86.67% (center 120,120) + slide 450 — layout only, nav/focus/MM warm/controls unchanged (Rob steer). L1 full list; L3 (covercol) cover above half list. Strip text (info pairs/bio) faded off under bz_mstrip.
+- Music meta on BzCIStage fanart block: small line 150,196 (ARTIST / artist / artist · album), big ListItem.Label 150,226, year+genre pills y296 (disabled buttons, np_pill32).
+- FULLSCREEN pill 6886 grouplist moved 786,136 → 140,136 (fanart UL), behaviour unchanged.
+- FS 277 morph (1121) untouched. Leaf/fold untouched (fold sits on big album 1140,220, not moved).
+- NOT done: L2 artist-albums album-above (would need bz_covercol change = list behaviour change, against steer). Touch hit on scaled list not verified. Not GUI-smoked.
+- Backup /workspace/b401/bak_5.33.277_pre278. XML only → ReloadSkin.
+
+- 5.33.279 (pt2150u) Wire MM/warm big-album leaf fold after 5 s; conflict cleared: idle_hinge ok() no longer requires HasFocus(60) under MM warm Music (6996/6897). Idle list hold stays 10 s. Fold look untouched; playing-anim parked.
+
+## 5.33.280 (Nov 1 2026)
+- Music L2/L3 half list (bz_mhalf → bz_covercol): small album at top of strip, list under it, no big strip title (BezelArtistMeta3B hidden). Strip slide 450→510.
+- Meta = FS fanart format: small artist bz_mm18s, big title bz_mm34 uppercase, outlined pills np_pill32_ol.png (also in Custom_1121 year/genre).
+- FULLSCREEN pill 6886: Left from list 60 (music strip, pill visible) → 6886; Left on 6886 → list 60 + open MM; Select unchanged (1121 when bz_m1121ok, else visualisation).
+- Open: L2 ALL ALBUMS row 6097/6098 not shown in half-list mode.
+
+## 5.33.281 WARMRAIL (Rob pt2174u) — Nov 1 2026 ~9:15 PM ET
+- Music warm BG = same big-album rail family (6367/6377/6397/6382), unbroken. Cause: BezelMusicPlayingArt face A/B twin swap on bz_navmenu (fadetime 0 → 3000 MM twin) re-faded the album on MM open. Fix in place: section face un-gated; MM twin false (inside Player.HasAudio group). No new group.
+- Dust: ambient BELOW + 1114 fade-under-MM skipped when Music list content is underlay. Glare already ungated.
+- L2 ALL ALBUMS (6097 hidden by bz_covercol via bz_mhalf) — NOT fixed (row nav/allpick entangled), noted.
+- Backup /workspace/b401/bak_5.33.280_pre281. XML only → ReloadSkin. Not zipped. Not GUI-smoked.
+
+## 5.33.282 ALLHALF (Rob pt2178u) — Nov 1 2026 ~9:20 PM ET
+- L2 ALL ALBUMS 6097 now shows in half-list (artist albums). Fix in place: new `bz_allhalf` = bz_mhalf + bz_artistalbums; 6097 visible `!covercol | allpick | allhalf`. Covercol rows are 75px from y450 (.. pulled 75) vs 6097 60/item stacking → +15/item (N 1–14) and −135 when `..` row, under bz_allhalf only. Lands flush under last album. L1 (not covercol) and L3 (allhalf false) untouched. Existing y1020 clip gate (≤6 rows) kept. 6098 (video) untouched.
+- Backup /workspace/b401/bak_5.33.281_pre282. XML only → ReloadSkin (done). Not zipped. Not GUI-smoked on L2.
+- 5.33.286 t2210/t2211: 1121 FS pill→bar zoom centre fix (0,16), extend 600→1200ms, bar opacity →60%.
+
+- **5.33.288** (Rob t2214, Nov 1 2026): FS fanart 6-cycle pill 6421 — Select/Down on Controls no longer opens 1115; Select cycles Controls→Visualizer like other modes, Down → 6420.
+
+## 5.33.291 — TV studio into pill (Rob t2223/t2224)
+- TV L1 vstrip meta: studio text line removed; studio now a Bezel pill in the year/MPAA/genre row (tvshows only). TV clearart 150,200 430×92 above pills. ReloadSkin.
+- Mocks /workspace/b401/mock_tv_l2l3/: L2 seasons plain half list (no season art), L3 episodes plain half list (no episode thumb); title/clearart carry L1–L3. Awaiting 👍.
+
+## 5.33.300 docs — LEAF-FLIP own behaviour (Rob pt2265u) — Nov 1 2026 ~11:59 PM ET
+- New behaviors/leaf-flip.md = leaf-flip family index (bz_hf_*, 1400 ms×2, slit x1440). Idle = live/locked (idle-big-album-fold.md), while-play next-song PARKED, FS stubs PLANNED. MUST NOT share rock/sway clock or bz_cov_side full flip.
+- Cross-links: README index, idle-big-album-fold, sway-animations, music-list. Docs-only, no XML/py, no bump, no restart.
+
+## 5.33.316 — SPLASH tighter mock built (Rob pt2395u) — Nov 2 2026 ~3:30 AM ET
+- BezelWarmGate visuals replaced per /workspace/b401/mock_splash_315/splash_v2.png: near-black, one logo 280 @50% (80FFFFFF), BEZEL Montserrat-Bold 68 + dynamic version dimmer, bottom credit "Design by Robert Politano" 20px @50% + small US flag (us_flag.png regenerated 54×28, shown 27×14).
+- Removed logoglow multiimage + logo pulse. Warm-gate timing/props/fade untouched. New fonts bz_splash68b/28m/20r. Backup /workspace/b401/bak_5.33.315_pre316. No zip/push.
+- Fix: same visible gate on BezelAlbumCast outer grouplist (Includes_Bezel.xml). Docs: behaviors/sway-animations.md. ReloadSkin. Backup bak_5.33.317_pre318. Not zipped.
+
+## 5.33.319 — Rob t2399 "Progress bar opacity 25" (Nov 2 2026)
+- Custom_1121_MusicFanartFS.xml FS pill progress bar: ring/inner/fill colordiffuse 99 (~60%) → 40 (25%). No Tuner row existed (hardcoded). behaviors/music-fanart-fs.md updated. ReloadSkin. Backup bak_5.33.318_pre319. Not zipped.
+
+## 5.33.320 — Rob t2402/t2403 "music stops in fullscreen, viz close → big album no art; doesn't heal" (Nov 2 2026)
+- Cause: on stop bz_flip clears bz_cov_a/b and BezelBigArt falls to BezelPoster60, which only resolves Window.IsActive(music)+Container(60) art; after FS/viz close with no resolvable list art the 1122 big album had nothing, permanently.
+- Fix: bz_flip saves last cover to Home bz_cov_last at stop; BezelBigArt falls back to it when no Music list art. Files: scripts/bz_flip.py, xml/Includes_Bezel.xml, behaviors/music-list.md. FULL restart. Backup bak_5.33.319_pre320. Not zipped.
+
+## 5.33.321 — Rob t2408 "Ignore quick back presses at home" (Nov 2 2026)
+- Cause: Home <home> keymap had no Back mapping → Kodi default Back = ShutdownMenu → Power 1118 on quick/CEC double Back during Home bounce.
+- Fix: Back keys → noop in resources/keymaps/bezel2_np_tab.xml <home>. Docs keymaps.md + home-splash.md. FULL restart. Backup bak_5.33.320_pre321. Not zipped.
+
+## 5.33.322 — Rob t2409 "Power menu needs two Down after open" (Nov 2 2026)
+- Likely cause: onload SetFocus(7800,0,absolute) fired before the 6996->7800 hand-off finished and/or a pending bzpwrf close-alarm SetFocus(6996) landed after reopen, so first Down was spent re-focusing.
+- Fix: Custom_1118 onload CancelAlarm(bzpwrf) + delayed AlarmClock re-assert of SetFocus(7800,0,absolute). behaviors/power-menu.md. ReloadSkin. Backup bak_5.33.321_pre322. Not zipped.
+- **5.33.323** (Rob t2414 "Tv show watch flag get drawn in big album group"): xml/Includes_Bezel.xml poster-corner watched/resume badge group gated `!$EXP[bz_mmmushide]` (matched the frame next to it). Docs: behaviors/mm-warm.md. ReloadSkin. Backup bak_5.33.322_pre323/.
+- 5.33.323 zipped (Rob t2418 "Build push"): /workspace/skin.bezel2-5.33.323.zip, 50.3 MB, sha256 500f3504…71f8e0; FULL restart after install.
+
+- 5.33.344 (Nov 2 2026, t2489): MM FAVOURITES opened last section — ActivateWindow(Favourites) is not a Kodi 21 window name; now favouritesbrowser (bz_mm.py GO fav + Includes_Bezel ~496). FULL restart (.py). Not zipped.
+- 5.33.345 t2490 TV pills clipped: VSTRIP meta pill grouplist width 400→780 (Includes_Bezel). ReloadSkin.

@@ -46,3 +46,25 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ## Related
 video-osd.md · pause-overlay.md · keymaps.md
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/VideoFullScreen.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 0 | group | —,— | —×— | `—/—/—/—` | `—` |
+| 10 | label | 45,15 | 1770×100 | `—/—/—/—` | `—` |
+| 11 | label | 45,45 | 1770×100 | `—/—/—/—` | `—` |
+| 12 | label | 45,75 | 1770×100 | `—/—/—/—` | `—` |
+| 1 | group | —,— | 110×110 | `—/—/—/—` | `Player.Caching + Integer.IsGreater(Player.CacheLevel,0)` |
+| 1 | image | —,— | 110×110 | `—/—/—/—` | `—` |
+| 1 | image | —,— | 92×92 | `—/—/—/—` | `—` |
+| 1 | image | —,— | 92×92 | `—/—/—/—` | `—` |
+| 1 | label | —,— | 200×200 | `—/—/—/—` | `—` |
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/fullscreen-video.md) · [state](../state/fullscreen-video.md) · [motion](../motion/fullscreen-video.md) · [art](../art/fullscreen-video.md) · [input](../input/fullscreen-video.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

@@ -65,3 +65,30 @@ mm-list.md · context-menu.md · keymaps.md · favourites.md
 - Button/radiobutton rows (1117, DialogAddonInfo) use `<texturefocus/>` plus a sibling image `visible Control.HasFocus(<id>)` — a `$VAR` inside button `texturefocus` did not render in these dialogs.
 - Value pills (‹ AUTO ›, ‹ OFF ›, radios): Bezel pill `bezel/np_pill32.png` border 12 — 33FFFFFF fill for value / radio off, E6FFFFFF for radio on. Old `mm_pill_ol` outline and `ad_pill_on/off` are no longer used.
 - Zip / repository / category follow-ons (AddonBrowser strip) get the same bar. File manager stays stock.
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/AddonBrowser.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 60 | list | 0,112 | 390×720 | `SetProperty(bz_nav,true,home)/9000/60/60` | `—` |
+| 9000 | grouplist | —,50 | —×— | `—/—/—/—` | `—` |
+| 201 | label | —,— | —×— | `—/—/—/—` | `—` |
+| 7 | radiobutton | —,— | —×— | `—/—/—/—` | `Control.IsEnabled(7)` |
+| 8 | radiobutton | —,— | —×— | `—/—/—/—` | `Control.IsEnabled(8)` |
+| 9 | button | —,— | —×— | `—/—/—/—` | `—` |
+| 5 | button | —,— | —×— | `—/—/—/—` | `—` |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `RunScript(special://skin/scripts/bz_cmd.py,backdrop)`
+- `SetProperty(bz_nav,true,home)`
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/addons.md) · [state](../state/addons.md) · [motion](../motion/addons.md) · [art](../art/addons.md) · [input](../input/addons.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+## 5.33.335 — no section list bleed under the Add-ons strip (t2451)
+- The section list 60 under 1131 showed through the translucent Warm strip. List 60 (both Includes_Bezel copies) now fades out (150 ms) while 1131, 1130, 1117 or 1132 is visible; the double-tap/controls hint (BezelDtapHint) hides under those dialogs too. Left meta panel and poster (Warm art) stay. Smoke: `audit_settings_levels/335_addons_pre.png` (bleed) → `335_addons_post.png` (clean), `335_addons_closed.png` (back to MM).

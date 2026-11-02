@@ -2,7 +2,7 @@
 
 **Object:** `Includes_Bezel.xml` expression `bz_np` (L2746) · Home prop `bz_np` · `MyMusicNav.xml` proxy `6385`, NP block `6390` · `BezelMiniPlayer`
 **Where:** Section screens while media plays
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-02 · 5.33.309
 **Status:** Live in 5.33.207. `bz_np` marks NP mode. The music window saves it on unload and can refocus the NP block on load. Under the MM, transport is the mini-player. Draft: not Rob-approved.
 **Skin:** skin.bezel2
 
@@ -77,3 +77,15 @@ None specified.
 
 ## Related
 mm-mini-player.md · now-playing.md · music-list.md · music-controls.md
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/np-bar.md) · [state](../state/np-bar.md) · [motion](../motion/np-bar.md) · [art](../art/np-bar.md) · [input](../input/np-bar.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+## 5.33.302 current state (Music Fanart FS 1121)
+- Pill→progress bar (FSMETA, 150,296): the fill `progress` now has a real clear `texturebg` (np_pill32, border 12, 00FFFFFF) so Kodi scales the fill to the 24px track inside the 780×32 pill. (Empty texturebg left the fill at native 32px height, off-centre below the pill — worst at low % / long files / paused entry.)
+- Old Fanart-FS cycle-pill **shadow** grouplist (530,130, BzFSShSlide L1 + 4 rings) is gated exactly like pill 6391: hidden while 1121 is visible and in album viz. 1121 draws its own cycle pill 6421 at 140,136 (no shadow).
+
+
+## Big album (5.33.309 P1)
+The big album, its sway, next-song fade, cast and compact NP no longer live in this screen. They live in the always-open dialog **1122** — see [big-album.md](big-album.md). This screen only decides where the album sits (Home prop `bz_rail`: `home` / `centre` / `hide`). The old album grouplists 6367/6377/6397/6382 and their focus buttons (6368/6369, 6378/6379, 6398/6399, 6383/6384) are deleted; nothing focuses into an album rail any more.

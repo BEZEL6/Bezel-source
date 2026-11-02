@@ -82,3 +82,7 @@ None specified.
 
 ## Related
 fullscreen-video.md · pause-overlay.md · keymaps.md
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/video-osd.md) · [state](../state/video-osd.md) · [motion](../motion/video-osd.md) · [art](../art/video-osd.md) · [input](../input/video-osd.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

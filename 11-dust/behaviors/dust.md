@@ -49,3 +49,29 @@ Presets (`bz_tune.py dust`: subtle / mid / …) set density, size, brightness, f
 
 ## Related
 skin-settings-tuner.md · mm-list.md · home-splash.md · mm-warm.md
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/Custom_1114_Dust.xml`
+
+_No id’d controls in this file (layout comes from includes)._
+
+**Source:** `xml/Includes_Dust3.xml`
+
+_No id’d controls in this file (layout comes from includes)._
+
+**Source:** `xml/Includes_Dust3.xml` include `BezelLitDust`
+
+_No id’d controls in this file (layout comes from includes)._
+
+**Source:** `xml/Includes_Dust3.xml` include `BezelLitDustP`
+
+_No id’d controls in this file (layout comes from includes)._
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/dust.md) · [state](../state/dust.md) · [motion](../motion/dust.md) · [art](../art/dust.md) · [input](../input/dust.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+**5.33.281:** ambient dust (BezelAmbientBelow + 1114) fade-under-MM is skipped while Music artists/albums/songs is the warm underlay, so dust stays unbroken with the album rail. Other sections unchanged; Tuner still fades it.

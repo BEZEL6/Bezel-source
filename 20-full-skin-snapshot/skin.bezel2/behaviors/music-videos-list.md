@@ -133,3 +133,7 @@ None specified.
 
 ## Related
 movies-list.md · tv-list.md · video-osd.md
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/music-videos-list.md) · [state](../state/music-videos-list.md) · [motion](../motion/music-videos-list.md) · [art](../art/music-videos-list.md) · [input](../input/music-videos-list.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

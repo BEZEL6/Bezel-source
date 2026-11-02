@@ -2,4 +2,4 @@
 
 Addon root, fonts, colors, language, themes, shared includes entry
 
-Files copied from skin.bezel2 5.33.196.
+Files copied from skin.bezel2 5.33.350.

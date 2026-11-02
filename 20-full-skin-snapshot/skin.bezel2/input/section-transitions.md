@@ -1,0 +1,20 @@
+# Section transitions (STANDARD) — section-transitions
+
+**Object:** `section-transitions` · **Layer:** input (actions) · **Last updated:** 2026-11-01 · 5.33.267 · **Status:** current-state, extracted from live XML/Python
+**Blueprint siblings:** [behavior](../behaviors/section-transitions.md) · [layout](../layout/section-transitions.md) · [state](../state/section-transitions.md) · [motion](../motion/section-transitions.md) · [art](../art/section-transitions.md) · [input](../input/section-transitions.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+## Simple
+, **How it works**, **Wiring** (live tree).
+
+**This layer in one line:** what each remote key / touch does on this object, as edges between controls.
+
+## Deep (rebuild detail)
+> **Verification (phase 2 hand-check):** auto-extracted rows are kept only where the control id is named in [behavior](../behaviors/section-transitions.md); others were stripped as stray. Kept rows are *unverified at runtime* unless a section says hand-verified.
+Navigation edges from live controls (Kodi actions → port action names in [keymap-overview](keymap-overview.md)).
+
+| control | Left | Right | Up | Down | Back |
+|---|---|---|---|---|---|
+| 100 | `` | `` | `304` | `120` | `` |
+
+**Semantics from behavior (verbatim lines):**
+- Everything else** uses a WindowOpen-only fade include. With no WindowClose animation, closing is an instant swap back to the window below, which is already drawn.

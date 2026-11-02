@@ -2,7 +2,7 @@
 
 **Object:** `Custom_1112_NowPlaying.xml` dialog `1112` (zorder 1) · keymap `bezel2_np_tab.xml` (`<music>`, `<window1112>`) · `bz_cmd.py tab` / `np` / `npctl`
 **Where:** Over the Music window list view while music plays
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-02 · 5.33.309
 **Status:** Live in 5.33.207. Now Playing is a modal dialog over the music list, so the album sway underneath never resets. Tab/Display toggles it, Back/Left/logo close it, and the main menu can open on top of it. In the Music section, the compact NP rides the album grouplist 6397. Draft: not Rob-approved.
 **Skin:** skin.bezel2
 
@@ -44,7 +44,7 @@ While music plays in the music list, press Tab (keyboard) or Display (remote) an
 
 ### Simple
 - The big NP block has focus. Left/Right change song, and Select opens the colour-block controls.
-- Tapping the album flips it to its track list.
+- Tapping the album does nothing in Now Playing (the track-list flip is deleted, 5.33.309).
 - Tapping the top-left logo, or pressing Back, ends Now Playing.
 
 ### How it works
@@ -52,7 +52,7 @@ While music plays in the music list, press Tab (keyboard) or Display (remote) an
    - **6299:** the music window's Back trap. Focusing it closes the dialog.
    - **6385:** NP toggle. It refocuses 6390 and runs `npctl`.
    - **60:** Stands in for the list. When the slide menu's "back to list" target lands here, it clears the MM props and refocuses 6390. That's how the **main menu opens on top of Now Playing**: `BezelNavMenu` is drawn last inside this dialog, so the dialog stays open underneath.
-2. **Album tap (6381).** An 800×800 hit area. It's visible only when the audio latch is set and there's no back/flip animation. It opens the existing album flip with the dialog still up. The track list is the shared `BezelFlipText` include, and Back returns to proxy 60, which goes to Now Playing.
+2. **Album tap (6381):** deleted in 5.33.309 with the track-list flip.
 3. **6390 block:**
    - Back clears `bz_np` and goes to 6299, which closes the dialog.
    - Left → Previous.
@@ -103,3 +103,14 @@ Album tap 6381 = flip. Logo tap 6387 = close.
 
 ## Related
 np-bar.md · music-controls.md · music-list.md · dialogue-fs.md · keymaps.md
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/now-playing.md) · [state](../state/now-playing.md) · [motion](../motion/now-playing.md) · [art](../art/now-playing.md) · [input](../input/now-playing.md) · [theme](../theme/tokens.md) · [screens](../port-refs/now-playing/) · [PORT_INDEX](../PORT_INDEX.md)
+
+
+## Big album (5.33.309 P1)
+The big album, its sway, next-song fade, cast and compact NP no longer live in this screen. They live in the always-open dialog **1122** — see [big-album.md](big-album.md). This screen only decides where the album sits (Home prop `bz_rail`: `home` / `centre` / `hide`). The old album grouplists 6367/6377/6397/6382 and their focus buttons (6368/6369, 6378/6379, 6398/6399, 6383/6384) are deleted; nothing focuses into an album rail any more.
+
+## Over Music Level 2 / 3 (5.33.324)
+Opening Now Playing over the L2 album list or L3 song list fades the shared strip small album out with the list rows and meta (bz_np Conditional fade, 1000 ms sine). See music-list.md.

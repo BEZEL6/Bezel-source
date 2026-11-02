@@ -3,16 +3,16 @@
      5.33.65 (Rob t429-t434): Play Next as a Music-only dialog, separate from Kodi FS (MusicVisualisation).
      Opened only by Music NP Right (6390, $EXP[bz_pndlg_ok]). The Music window's own playing art (BezelMusicPlayingArt) slides 1140->660 and
      the NP/fanart stage slides off left (5.0 s sine inout, Conditional on Window.IsActive(1120)) so sway never restarts.
-     This dialog only draws the sides + NP bar (shared BezelFSPlayNext, sides sdelay 3000 / sfade 2000 — 3 s delay, 2 s fade; Oct 31 2026 same defaults for viz FS album) and handles keys.
+     This dialog only draws the sides + NP bar (shared BezelFSPlayNext, sides sdelay 0 / sfade 2000 — 5.33.317 no wait, 2 s fade; Oct 31 2026 same defaults for viz FS album) and handles keys.
      REMOVE: delete this file + the 6390 onright condition bz_pndlg_ok + the two "5.33.65 Dialogue FS dialog slide" animations. Tuner off: Skin.SetBool(bz_pndlg_off). -->
 <window type="dialog" id="1120">
 	<defaultcontrol always="true">6400</defaultcontrol>
-	<onload condition="String.IsEmpty(Skin.String(bz_dfs_mode))">Skin.SetString(bz_dfs_mode,album)</onload><!-- 5.33.109: pill defaults to album --><onunload>ClearProperty(bz_pnfoc,home)</onunload><onunload>ClearProperty(bz_pnsel,home)</onunload><onunload condition="String.IsEqual(Skin.String(bz_at_fsslide),1)">AlarmClock(bz_pvret,SetFocus(6368),00:00,silent)</onunload><onunload condition="String.IsEqual(Skin.String(bz_at_fsslide),2)">AlarmClock(bz_pvret,SetFocus(6378),00:00,silent)</onunload><onunload condition="[String.IsEmpty(Skin.String(bz_at_fsslide)) | String.IsEqual(Skin.String(bz_at_fsslide),3)]">AlarmClock(bz_pvret,SetFocus(6398),00:00,silent)</onunload><onunload condition="String.IsEqual(Skin.String(bz_at_fsslide),4)">AlarmClock(bz_pvret,SetFocus(6383),00:00,silent)</onunload><!-- 5.33.90: every 1120 close -> Music focus 6398 (grouplist 6397 scrolls back 0) -> onfocus 6390 -->
+	<onload condition="String.IsEmpty(Skin.String(bz_dfs_mode))">Skin.SetString(bz_dfs_mode,album)</onload><!-- 5.33.109: pill defaults to album --><onunload>ClearProperty(bz_pnfoc,home)</onunload><onunload>ClearProperty(bz_pnsel,home)</onunload><onload>SetProperty(bz_rail,centre,home)</onload><onunload>SetProperty(bz_rail,home,home)</onunload><onunload condition="$EXP[bz_navmenu]">AlarmClock(bz_pvret,SetFocus(6996),00:00,silent)</onunload><onunload condition="!$EXP[bz_navmenu]">AlarmClock(bz_pvret,SetFocus(60),00:00,silent)</onunload><!-- 5.33.309 P1: big album lives in 1122; bz_rail centre slides it 1140->660, home slides it back; focus returns to the list (or the menu) -->
 	<controls>
 		<control type="group">
 			<animation effect="fade" start="100" end="0" time="600" tween="sine" easing="inout">WindowClose</animation>
 			<control type="group"><animation effect="fade" start="0" end="100" time="600" delay="1000" tween="sine" easing="inout">WindowOpen</animation><!-- NP bar arrives as the album settles -->
-				<include content="BezelFSPlayNext"><param name="vis" value="Player.HasAudio"/><param name="sdelay" value="3000"/><param name="sfade" value="2000"/><param name="sides" value="!String.IsEqual(Skin.String(bz_dfs_mode),album)"/></include>
+				<include content="BezelFSPlayNext"><param name="vis" value="Player.HasAudio"/><param name="sdelay" value="0"/><param name="sfade" value="2000"/><param name="sides" value="!String.IsEqual(Skin.String(bz_dfs_mode),album)"/></include>
 			</control>
 		</control>
 		<control type="button" id="6400"><left>660</left><top>220</top><width>600</width><height>600</height><label></label><texturefocus></texturefocus><texturenofocus></texturenofocus>
