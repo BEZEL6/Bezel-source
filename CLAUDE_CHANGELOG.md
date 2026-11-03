@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.447
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.448
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 448 | "BIG ALBUM SWAY ANIM LOOKS LIKE ITS WRONG SEQUENCE AGAIN WITH GLARE AND DUST" | **IDLESEQ**: idle glare + lit dust follow the playing album sequence |
 | 447 | "VERY LONG PAUSES WHEN ENTERING SECTIONS" (from MM, 5+ s) on 446; "ISSUE WAS CAUSED BY YOUR CHANGE" | **TICKCACHE reverted**: bz_flip.py = 445 |
 | 446 | Rob sent the 445 kodi.log (perf lines) | **TICKCACHE**: per-thread, per-tick cache for Home property / condition / infolabel reads in bz_flip.py |
 | 445 | "START WITH THE ONE THAT WILL OPTIMIZE BEZEL THE MOST"; "SYNCING THE SWAY SHADOWS, GLARE, LIT DUST… THE LAST FIX SEEMS TO OF LOST SYNC AGAIN" | **SYNCANCHOR** (stub cast clock re-anchors on 1122 reopen + full album gate); **PERFCOUNT** (optimization #1 step 1: per-thread Kodi call counts in kodi.log) |
@@ -208,6 +209,18 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.448 — IDLESEQ (idle big album glare + lit dust sequence)
+- **Found:** the idle big album sway (`bz_big_go` 0→−13 in 5 s, then `bz_big_pulse` 12250 pulse: hold −13 for 2 s, −13→+13 over 10 s) is identical to the playing album's sway, but its glare/dust ran a different sequence:
+  - **Mirrored:** at −13 the *flipped* glare (`BzATGlareTex` flipx, upper-right by default) and the *right* dust box. The playing album (433 LITSWAP, confirmed by Rob) shows the upper-left glare A + left box at −13 and glare B + right box at +13. 444 IDLELIT copied the idle glare's side mapping, so the new idle dust was mirrored too.
+  - **Shape:** the idle glare pulses were one 12250 sine crossfade (100→0 / 0→100 over the whole half, both ~50% mid-swing). The playing album is dark mid-swing: A `100→100 12250` + `100→0 3450 delay 2000`, B `100→100 12250` + `0→100 3450 delay 8550`.
+- **Change (Includes_Bezel line of the idle glare group, XML only):**
+  - `flipx` moved from glare image 1 (A timing) to image 2 (B timing).
+  - The two IDLELIT `BezelLitDust` include blocks swapped between the A and B groups; each box keeps its mask.
+  - The 4 idle pulse anims now use the playing album's two-effect shape; conditions and reversibility are unchanged.
+  - Lead-ins (`bz_big_go` 5000) are unchanged.
+  - Sync lint: all idle family pulses share `bz_big_pulse` with 12250 / 3450 timing.
+- **Check:** no music, Music list with the idle big album. At the left end (−13), the upper-left glare and left dust are lit; they go dark as it swings; at the right end (+13), the right side lights. Compare with the playing album.
 
 ## 5.33.447 — TICKCACHE reverted
 - Rob on 446: very long pauses (5+ s) entering sections from the MM, which started with 446. `scripts/bz_flip.py` is restored byte-for-byte to 5.33.445. The 446 file is kept outside the skin (`tools/bz_flip.446_tickcache.py` in the repo) for study.

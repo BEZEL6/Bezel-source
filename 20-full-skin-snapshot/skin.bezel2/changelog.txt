@@ -1,3 +1,6 @@
+5.33.448 (2026-11-03)
+- IDLESEQ (Rob: "BIG ALBUM SWAY ANIM LOOKS LIKE ITS WRONG SEQUENCE AGAIN WITH GLARE AND DUST"): the idle big album's glare + lit dust ran mirrored to the playing album (at -13 the flipped glare + right dust box) and crossfaded over the whole swing. Now the same sequence as the playing album: at -13 the upper-left glare + left box, fading out 2.0-5.45 s into each 12.25 s half; at +13 the flipped glare + right box, fading in 8.55-12.0 s; dark mid-swing. Sway itself unchanged.
+
 5.33.447 (2026-11-03)
 - TICKCACHE REVERTED (Rob: very long pauses, 5+ s, entering sections from the MM on 446, caused by that change). scripts/bz_flip.py is back to 5.33.445 exactly (SYNCANCHOR + PERFCOUNT kept).
 
