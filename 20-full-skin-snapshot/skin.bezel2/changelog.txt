@@ -1,3 +1,76 @@
+5.33.407 (2026-11-03)
+- MIDLEFADE: Tuner › ALBUM / POSTER › MM album fade (bz_at_midlefade). Idle Music big-album A/B dissolve speed 200/250/300/400/500/600/800 ms (default 400 empty|4). Wired on Includes_Bezel 6402 idle slots; bz_flip mid-fade guard = fade+50 ms. Reset everything/art clears it. FULL restart.
+
+5.33.406 (2026-11-03)
+- ALWAYSSWAY: poster sway flags stay armed every window; idle album rock ungated (no bz_idlerock); album frame keyed on bz_m_idle_* not Container(60). Idle rock Tuner info ALWAYS ON. FULL restart.
+
+5.33.405 (2026-11-03)
+- LEAFFLIP: idle leaf flip off by default (Skin.HasSetting(bz_leafflip)); Tuner ALBUM/POSTER › Leaf flip. FULL restart.
+
+5.33.404 (2026-11-03)
+- POSTERCENTER fix: bz_art_x constant 990→1140 so poster texture sits in the moved frame (frame/glare/sway were already at 1140; art still used the old constant). ReloadSkin.
+
+5.33.403 (2026-11-03)
+- DEFFADE: Poster↔album fade default 800 ms (empty|7; was 400). Background art crossfade default 1 s (empty|3; was 3 s). Tuner + 1122 A2P gates + BZMMXF base + bz_tune DEF. FULL restart.
+
+5.33.402 (2026-11-03)
+- POSTERCENTER: Movies/TV poster stack shares album sway center 1440,570 (box 1140,120 600×900; was 990,120 / center 1290). Frame, blur, glare, shadow, LOOK, tap 6280, and BezelXInfo sway centers move with it. ReloadSkin.
+
+5.33.401 UADVFOCUS (Rob t2864): UADVRAND / under_adv only steps list 60 while Control.HasFocus(6996) (MM strip focused). Focus off the strip → pause random; last idle/warm item stays held. SETHOLD + MMHOLD unchanged. bz_flip.py. FULL restart.
+
+5.33.400 STRESSFIX (Rob stress 399 fails): F1 Media Sources Back lands on MEDIA SOURCES (msret latch + bz_msretrow, same pattern as setret). F3 Recently Played Back lands on RECENTLY PLAYED (musicdb://recentlyplayed → row 6905). F2 Music→Movies stale poster during bz_mmwarm: v60 dualpick/dualrec + lanes hold last type art until warm _restore; residual first-session Movies visit with no Movies hold can still blip last TV poster ~0.4s. bz_flip.py only. FULL restart.
+
+5.33.399 ONEART (Rob t2807–t2814): MS 1117 empty poster fixed (Visible=bz_pready → opacity $EXP[bz_pshow]; setkids hold last bz_v60_art). All art-lane Visible remounts → Conditional opacity (Includes_Bezel, Includes_BezelDialogs, 1117, MyPics); dead visible=false art images removed. FULL restart.
+
+5.33.398 NOAUTOHIDE (Rob t2799u): MM auto-hide removed (mm_idle/park/wake/Tuner row); strip stays visible whenever MM is open. FULL restart.
+
+5.33.397 MMAUDIO (Rob t2789–t2793): big album on every MM section while audio plays (bz_mmaudio). FULL restart.
+
+5.33.396 SETHOLD (Rob t2785u): no UADVRAND while MM strip on SETTINGS; held art through wake. bz_flip.py. FULL restart.
+
+5.33.395 ARTHOLD (Rob t2780 + MM art black): (1) Info/Options exit fanart flash — BezelFanartLayer section fanart no longer fades 100->0 on bz_infoup (BzCIStage already covers the same 120..960 rect opaque; on dialog close the underlay reversed 0->100 = flash). (2) MM->Add-ons/Settings art black — bz_flip v60_mirror bz_setopen latch now HOLDS bz_vpl_on + art through the nav-clear gap (was clearing bz_vpl_on -> 6401 faded to black); latch ends on any SETTINGS kid ($EXP[bz_setkids]). MM Files + Kodi (systeminfo) now set the same latch. Files: xml/Includes_Bezel.xml, scripts/bz_flip.py, scripts/bz_mm.py, behaviors/info-options.md, behaviors/artwork-group.md. FULL restart. Not zipped.
+
+5.33.394 A2PFADE (Rob t2776/t2778 "Make one" / "give tuner for a2p"): new Tuner ALBUM / POSTER > Poster ↔ album fade (bz_at_a2pfade, 7 steps 200/250/300/400/500/600/800 ms, default 400 = empty|4). Custom_1122 6401 poster fade, 6402 album fade and the handoff pre-warm fade each split into 7 mutually exclusive Conditional fades (gate logic, bz_a2p_hold, sway unchanged). Reset album restores 400 ms. Info media/bezel/info/a2p_fade.png. ReloadSkin. Not zipped.
+
+5.33.390 — ART_TREE: global artwork home branched by state (poster live/hold/meta, album idle/np, gates) in bz_flip.py; leave-clear derives from it; bz_tree_check.py verifies. Doc behaviors/artwork-group.md. No behaviour change. FULL restart.
+
+5.33.388 MSDD + SETART (Rob 👍 t2719 / "Media sources menues need global artwork" / "group anything under the mm settings"): Media Sources SOURCES » no longer opens dialog 1132 — source list 9150 + per-source dropdown 9160 (OPEN/RENAME/REMOVE/REFRESH, Pictures no REFRESH) moved into the 1117 colour strip (bz_msdd/bz_srcdd); 1132 parked. Global artwork group (1122/6400) now covers every MM SETTINGS kid via new $EXP[bz_setkids] (bz_railvis) + bz_flip _SETKIDS (poster 6401 staged from held MM bz_pos lane); 1117 local right-art copy removed. Files: Custom_1117, Custom_1132 (comment), Includes_Bezel, bz_set.py, bz_flip.py, behaviors/media-sources.md. FULL restart. Not zipped.
+
+5.33.387 IDLEPARK (Rob t2714 "MM loses focus and doesn't hide on auto hide"): mm_idle hide step fixed in place. It did SetFocus(6897) then checked focus after only 50 ms; on Shield the park often wasn't focused yet, so bz_mmidle never set (no hide) and the late SetFocus then stranded focus on the invisible 6897 park (strip unfocused) with no retry. Now polls up to 1 s for the park; held -> hide (+clears any stray bz_mmtap); never held -> hand focus back to 6996 (_bzstrip). Also: if focus is found on 6897 with no hide armed (late SetFocus), the hide completes instead of stranding. 386 MMTAP latch unchanged. bz_flip.py only. FULL restart. Not zipped.
+
+5.33.385 DUALHOLD (Rob t2700-t2702 GO): split poster holds. bz_v60_mov = last Movies poster, bz_v60_tv = last TV poster, recorded by v60_mirror whenever list 60 promotes art in that type (movies/sets/videodb://movies vs tvshows/seasons/episodes/videodb://tvshows). Target = MM highlighted strip row (Container(6996) sec) while MM is on the strip, else the Videos list type. When the list is not yet the target type (Music, other Videos type, or Container.IsUpdating) the mirror stops staging list-60 art and sets bz_v60_art = matching hold, so 6401 fades up a movie for Movies and a show for TV. XML unchanged (6401 still reads bz_v60_art; opacity-only; no Music art). First-ever visit to a type with no hold yet = old shared hold / preload as before. Both props cleared on skin leave. bz_flip.py only. FULL restart. Not zipped.
+
+5.33.384 IDLEAB: idle Music big album (1122) is now dual A/B — slots bz_m_idle_a / bz_m_idle_b, bz_m_idle_side = shown slot. m_mirror stages a new cover (UADVRAND random step / focus) into the HIDDEN slot, promotes after 0.6 s preload, then flips side -> 400 ms sine opacity crossfade A->B (same timing as DUALM NP/idle fade). Hidden slot never rewritten while visible or <0.45 s after a flip (no mid-fade texture swap). bz_m_idle_art kept = cover on screen; MMHOLD / 383 IDLERESET locks unchanged. bz_flip.py + Includes_Bezel.xml. FULL restart. Not zipped.
+
+5.33.383 IDLERESET: MM auto-hide wake now restarts the idle album/poster hold — the cover on screen at wake is re-locked (bz_m_idle_lock) and the UADVRAND timer restarts (bz_uadv_hold, default 5 s, min 3 s) before random resumes every bz_uadv_delay. Before: random timer kept running through hide, so a step could swap art right as the strip faded back in. bz_flip.py under_adv. FULL restart.
+
+5.33.382 — POSTERWARM (Rob t2698u "Music artwork drawn in poster during section change; why isn't poster warmed from the mirror"): Cause: the 1122 poster layer 6401 (BezelVPLPoster) still carried the old per-screen Music twins (static + MM live twin, Window.IsActive(music)) and BezelPoster60S LOOK art, all reading bz_m60_art (Music list thumb). The bz_v60_art mirror WAS warm (held last Videos poster), but while the Music window is still active — bz_vpl_on can be on in Music non-artist/album/song lists, and bz_tomusic / Music->Videos handoff hold 6401 up — the layer drew the Music twin, then on the window flip swapped to the Videos twin = Music cover in the poster frame + texture swap mid-fade. Fix: Music twins + BezelPoster60S now read bz_v60_art (held poster mirror) — poster layer can only ever show the warm poster; album art stays in 6402. Music A/B lanes bz_mart_a/b inside 6401 also repointed to bz_v60_art. bz_m60_art still mirrored (unused by the stage). XML only → ReloadSkin.
+5.33.381 — GLARESYNC (Rob t2696u "poster glare not synced with poster sway"): Poster glare A/B + lit dust (BezelLitDustP) sat under the bz_pready + !mushide <visible> group (and its own !mushide visible) inside the 6401 BezelVPLPoster sway group. A hidden Kodi group stops processing its children, so the glare pulse froze while the sway pulse kept running; on re-show the pulse re-anchored to "now" = out of phase. Fix: glare block hoisted out of the visible group (still a child of the same sway/camera group, same z-order under frame.png); mushide added to its fade gates (no <visible>). Album: glares only gated by Player.HasAudio/bz_swayright, bz_cov_side no longer flips (5.33.301), timings identical (12250/2000/3450/8550) — in sync, no change. No stale per-screen glare left (6401 is the only BezelVPLPoster mount). XML only → ReloadSkin.
+
+5.33.380 — Rob t2694u #3: MM auto-hide wake dropped into a section. Cause: wake key is eaten by park 6897, then bz_flip re-focused strip 6996 after only 50 ms — a fast 2nd press (Back = ClearProperty(bz_nav) close MM, Select = bz_mm open section, L/R = pill) landed on the still-invisible strip. Also arm set bz_mmidle (hides 6894) before the queued SetFocus(6897) landed. Fix: WAKEGRACE 0.5 s park on no-op 6897 before strip refocus; arm hides only once 6897 holds focus. FULL restart.
+5.33.379 — Rob t2697: blank artwork on Options+Info. Cause: with DialogVideoInfo/DialogMusicInfo on top, bz_flip v60_mirror read Control.IsVisible(60) from the dialog -> false -> cleared bz_vpl_on (1122 poster 6401 faded to 0); music bz_railvis Container.Content() also went false under the dialog -> big album 6402 faded. Fix: v60_mirror holds while Info visible; bz_railvis gets Music+Info clause. FULL restart.
+5.33.378 — Rob t2694u #2: exit from Kodi FS (Fanart FS / Music Fanart FS 1121 / NP) opened from MM returns to MM, not the section list. Cause: opener / bz_flip auto-close cleared bz_nav and FS onunload + fs_was forced SetFocus(60). Fix: bz_fsmm latch (bz_cmd + bz_flip) reopens MM on exit; onunload SetFocus(60) gated. FULL restart.
+5.33.377
+- FSMATCH (Rob t2694u #1): Kodi Fanart FS (MusicVisualisation) now uses the Music Fanart FS dialog 1121 fanart-stage layout: shared include BezelFSMeta (artist · album 150,196 / song title 150,226 / year pill→progress 150,296) mounted in both; BezelNPInPlace old title (150,162)/artist/album/progress (150,323)+time (729,305) hidden in viz; cycle pill 6391 moved 530,130 right → 140,136 left (NPInPlace params pillx/pilly/pillal), live shadow copies off in viz, "press down to open" hint 530,166 → 140,172. Keys unchanged. XML only - ReloadSkin.
+
+5.33.376
+- FANARTFADE (Rob t2692/t2693): section-list fanart (BezelFanartLayer main $VAR[BezelFanart] + Fanart Pop FG, !$EXP[bz_navmenu]) was hard fadetime 0 under a 5.0.3 #7 comment, so bz_tune_patch.py's BETA 2.6 item 10 regex never matched and LIST Tuner Fanart fade (bz_at_fanart) was ignored -> hard pop scrolling Music/Movies/TV lists. Restored marker, default 200 ms. MM A/B untouched. XML only - ReloadSkin.
+
+5.33.374
+- IDLEWAKE (Rob t2682): waking MM auto-hide (bz_mmidle / park 6897) no longer resets the idle album. mm_warm treated focus on 6897 as leaving the strip and wiped last/done; on wake it re-evaluated the row as a fresh open and could re-arm a Music warm (artists reload + RANDSTART/_restore jump), so the current random idle cover snapped away. mm_warm now holds its state while idle/6897 is focused. FULL restart (.py).
+
+5.33.373
+- MM ENTER FADE (Rob t2680): opening MM (section->MM / open nav) now fades MM chrome in 0->100 over 400 ms sine out, same as section open (bz_secfade / BezelSecFadeIn). Was 150 ms linear on the BezelNavMenu chrome group. Close unchanged (existing 480 ms Hidden). Art lanes untouched: mirror-enter (207) seed still shows art at full the same frame, so fade is chrome over seeded art, never black->art. 372 poster hold / idle sync / 370 setopen latch / mini-player Stop untouched. XML only - ReloadSkin.
+
+5.33.372
+- POSTERHOLD (Rob t2671-t2677): Music->Movies/TV (NP / album->poster) no black framed poster. v60_mirror stages new poster art in hidden 1122 preload slot bz_v60_next for 0.6 s before promoting to bz_v60_art (never blank/undecoded); list-60 gap keeps bz_vpl_on (1.5 s grace / MM open / handoff). Poster follows the MM random idle list row. Music bz_m_* unchanged. FULL restart (.py).
+
+5.33.371
+- MM MINI-PLAYER STOP (Rob t2665, mockup A): audio row Prev | Play/Pause | Next | Stop | FULL. New 6961 PlayerControl(Stop) (np_stop.png, same 1120/bz_np/Back extras), nav 6957<->6958<->6959<->6961<->6960. Positions 124/166/208/250, FULL 302 w76 (was 286/86). XML only - ReloadSkin.
+
+5.33.370
+- SETPOSTER FIX (Rob t2660): MM > Settings / Add-ons no longer flashes the old held Movies/TV poster (6401). bz_mm sets Home bz_setopen before ClearProperty(bz_nav); v60_mirror keeps bz_vpl_on empty while latched; latch clears when 1130/1131/1117 is active (2 s failsafe). FULL restart (.py).
+
 5.33.212
 - TUNER FIX: Main Menu > Background dim level Left/Right swapped to match other sliders (Right = brighter / less dim, Left = darker). Values, labels, fade ends unchanged. ReloadSkin.
 
@@ -137,3 +210,5 @@
 ﻿[B]0.0.1[/B]
 • Initial commit
 5.33.64 - Play Next fullscreen Music look (Tuner FULLSCREEN MUSIC > Play Next)
+5.33.375 - LEAFWAKE (Rob pt2688u): after MM auto-hide wake / idle artist switch the fold no longer ghosts (glare+shadow moving, no leaf). idle_hinge pauses hold while bz_lfdim (MM open & not auto-hide, or gdim 1-6), aborts+re-arms if dim hits mid-fold, restarts hold on undim so the next flip runs with current art. Fold shadow/landing overlays also gated !bz_lfdim. FULL restart.
+5.33.386 - MMTAP (Rob t2705): strip-wide quick-tap ignore on MM 6996. Every Select/Back/Left/Right action on the strip is gated on !bz_mmtap; the first press runs and sets bz_mmtap last; bz_flip mm_tap clears it 400 ms later, so a rapid 2nd tap can't re-open/close a section or double-step a pill. Up/Down untouched. Auto-hide wake 0.5 s 6897 park unchanged. FULL restart.

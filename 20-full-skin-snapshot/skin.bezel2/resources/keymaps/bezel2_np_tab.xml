@@ -43,6 +43,12 @@
 		<joystick profile="game.controller.shield"><a holdtime="500">NotifyAll(bz,bz_ctx)</a></joystick>
 		<keyboard><key id="61453" mod="longpress">NotifyAll(bz,bz_ctx)</key><key id="61711" mod="longpress">NotifyAll(bz,bz_ctx)</key><key id="61643" mod="longpress">NotifyAll(bz,bz_ctx)</key><menu>NotifyAll(bz,bz_ctx)</menu><menu mod="longpress">NotifyAll(bz,bz_ctx)</menu></keyboard>
 		<remote><menu>NotifyAll(bz,bz_ctx)</menu><title>NotifyAll(bz,bz_ctx)</title><contentsmenu>NotifyAll(bz,bz_ctx)</contentsmenu><rootmenu>NotifyAll(bz,bz_ctx)</rootmenu><topmenu>NotifyAll(bz,bz_ctx)</topmenu><enter mod="longpress">NotifyAll(bz,bz_ctx)</enter></remote>
+		<!-- 5.33.321 Rob t2408: Home is a bounce pad; ignore quick/CEC-repeat Back here so Kodi default Back -> ShutdownMenu (Power 1118) never fires -->
+		<keyboard><escape>noop</escape><backspace>noop</backspace><browser_back>noop</browser_back></keyboard>
+		<remote><back>noop</back></remote>
+		<gamepad><b>noop</b><back>noop</back></gamepad>
+		<joystick profile="game.controller.default"><b>noop</b></joystick>
+		<joystick profile="game.controller.shield"><b>noop</b></joystick>
 	</home>
 	<music>
 		<keyboard><return mod="longpress">NotifyAll(bz,bz_ctx)</return><enter mod="longpress">NotifyAll(bz,bz_ctx)</enter></keyboard>

@@ -79,3 +79,7 @@ Earlier docs said a "Touch master On/Off" lived in the Tuner. No touch master ro
 
 ## Related
 keymaps.md · skin-settings-tuner.md · context-menu.md · bezel-logo-back.md · fanart-fs.md · play-next.md
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/touch-group.md) · [state](../state/touch-group.md) · [motion](../motion/touch-group.md) · [art](../art/touch-group.md) · [input](../input/touch-group.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

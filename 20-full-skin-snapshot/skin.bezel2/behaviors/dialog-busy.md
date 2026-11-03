@@ -28,3 +28,21 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ## Related
 dialog-confirm.md · keymaps.md · skin-settings-tuner.md
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/DialogBusy.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 10 | label | —,— | —×— | `—/—/—/—` | `false` |
+
+**Source:** `xml/Includes_Tuner.xml` include `BezelATBusyOpen`
+
+_No id’d controls in this file (layout comes from includes)._
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/dialog-busy.md) · [state](../state/dialog-busy.md) · [motion](../motion/dialog-busy.md) · [art](../art/dialog-busy.md) · [input](../input/dialog-busy.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

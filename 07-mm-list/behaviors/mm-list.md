@@ -65,7 +65,7 @@ Every non-library GO entry first runs `ClearProperty(bz_nav)`. `bz_mm.py` drops 
 | Section | Order |
 |---------|--------|
 | MUSIC | ARTISTS → ALBUMS → GENRES → RECENT SONGS → RECENT ALBUMS |
-| MOVIES | TITLES → RECENTLY ADDED → YEARS → ACTORS → SETS → GENRES |
+| MOVIES | TITLES → RECENTLY ADDED → YEARS (5.33.398: Actors/Sets/Genres deleted) |
 | TV | SHOWS → WATCHING → YEARS → ACTORS → RECENT → GENRES |
 
 The last choice is remembered across sessions. On a cold start the pills reset to index 1 (Artists / Titles / Shows, t5012).
@@ -74,7 +74,7 @@ The last choice is remembered across sessions. On a cold start the pills reset t
 
 **Wiring.**
 - `onleft`/`onright` gated on `ListItem.Property(sec)` = music/movies/tv, using `$VAR[BzMMPrev_*]` / `$VAR[BzMMNext_*]` (Includes_Bezel ~465–470). Empty or 1: Prev → 5 (music) / 6 (movies, tv). Next → 2.
-- `SUBS` paths: music `artists, albums, genres, recentlyaddedsongs, recentlyaddedalbums` · movies `titles, recentlyaddedmovies, years, actors, sets, genres` · tv `titles, inprogresstvshows, years, actors, recentlyaddedepisodes, genres`.
+- `SUBS` paths: music `artists, albums, genres, recentlyaddedsongs, recentlyaddedalbums` · movies `titles, recentlyaddedmovies, years` (stored pill >3 clamps to Titles) · tv `titles, inprogresstvshows, years, actors, recentlyaddedepisodes, genres`.
 
 ## Pill UI and strip chrome
 
@@ -85,10 +85,16 @@ The last choice is remembered across sessions. On a cold start the pills reset t
 ## Related
 mm-warm.md (LOCKED) · mm-mini-player.md · music-list.md · movies-list.md · tv-list.md · media-sources.md
 
-## Idle auto-hide (5.33.216)
-- **When:** MM open, Tuner/BEZEL Settings closed, no modal, focus on 6996, `Skin.String(bz_at_mmidle)` ≠ Off (default On), Kodi global idle ≥ 30 s.
-- **Hide:** `bz_flip.py` `mm_idle()` sets focus to park button **6897** (2×2 off-screen, no textures, inside group 6899) then sets `Window(Home).Property(bz_mmidle)=1`. Wrapper group **6894** (all strip/label/glow groups of BezelNavMenu, not the dim veil or button 6898) is `Visible String.IsEmpty(bz_mmidle)` → Hidden fade 100→0 1500 ms sine. Warm art, dim and mini-player stay.
-- **Wake:** any key on 6897 (up/down/left/right/select/back) → `ClearProperty(bz_mmidle,home)`; touch/mouse wake when idle time < 1 s. Group fades in 200 ms; `mm_idle` restores focus via `_bzstrip` (same row). The first key only wakes; it does not navigate. MM close clears `bz_mmidle`.
-- **Background undim (5.33.217):** every `BezelSecDim` mmdim Conditional also needs `String.IsEmpty(Window(Home).Property(bz_mmidle))`. While idle the mmdim fades go false → section art/fanart reverses to full opacity (100%) over 600 ms. Wake clears `bz_mmidle` → Tuner Background dim reapplies (600 ms). gdim (closed MM) unchanged.
-- **Idle label (5.33.219):** XML group in BezelNavMenu (sibling before park button 6897, outside 6894), Visible `$EXP[bz_navmenu] + !String.IsEmpty(Window(Home).Property(bz_mmidle))`. Two stacked labels right of the Bezel logo: `PRESS ANY` (left 108, top 36) / `BUTTON` (top 58), `bz_mm17`, textcolor `6EFFFFFF` (~43%). Fade in 1500 ms sine with the idle fade; wake hides it in 200 ms. Logo stays.
-- **Tuner:** MAIN MENU › Auto-hide menu (`mmidle`, LEFT Off / RIGHT On), info `bezel/info/mm_autohide.png`.
+## Kodi FS from MM (5.33.378)
+Leaving Fanart FS / 1121 / NP opened while MM was open returns to MM (`bz_fsmm` latch), not the section list. Video FS not covered (video playback starts from a section).
+
+## Quick-tap ignore (current, 5.33.386)
+- **Whole strip:** any Select / Back / Left / Right on 6996 runs once, then sets Home `bz_mmtap`. All 6996 actions are conditioned on `String.IsEmpty(bz_mmtap)`, so a second press within **400 ms** does nothing. `bz_flip.py mm_tap()` clears the latch 400 ms after it appears (50 ms poll). Up/Down are not latched (fast scrolling stays free).
+- Scope: strip only. Once Back/Select hands focus to list 60 / another window, that target is not latched.
+
+**No MM auto-hide (5.33.398 NOAUTOHIDE, Rob t2799u):** the strip 6996 / group 6894 stays visible and focusable the whole time MM is open. There is no idle fade, no park button 6897, no `bz_mmidle`, no idle label / clearart stage, no wake path (WAKEGRACE/IDLEPARK/IDLERESET), and no Tuner Auto-hide row. mmdim and the colour backdrop follow plain MM-open rules. MMHOLD on MM open is unchanged.
+
+## 5.33.400 — MM reopen row map
+- Recently Played (music window, `Container.FolderPath` starts with `musicdb://recentlyplayed`) → Back reopens the MM on row 3 (**RECENTLY PLAYED**), not MUSIC. This is F3. Smoke: CurrentItem 4. PASS.
+- Media Sources return → row 9 via the msret latch (see media-sources.md).
+- SetFocus map: {6902:1, 6903:2, 6905:3, 6904:3, 6908:8, 6919:9, 6909:10, 6920:9}.

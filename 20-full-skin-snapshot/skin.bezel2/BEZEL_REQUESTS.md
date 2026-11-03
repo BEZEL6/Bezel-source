@@ -59,3 +59,11 @@
 ## 5.33.112 (Oct 30 2026) — t786
 - Cause: 1120 onunload -> SetFocus(6398) (grouplist scroll-home button) whose onfocus forwarded to NP block 6390, so focus stuck on NP/controls. Now 6398 -> list 60 (6996 if MM open). Viz Play Next exit: onunload AlarmClock SetFocus(60) (gated !bz_navmenu). t783/t784 already in .111. t785 Overlay FX deferred. Backup ../bak_5.33.111_pre112_t786. XML only -> ReloadSkin.
 - 5.33.127 (Rob t909/t913 parked .125 bugs): (1) strip cast fade-out on 1120/viz never ran — 4 fade animations were self-closed with condition but no type; now type Conditional (fade 250 out / 600 back). (2) Play Next side pn_cast gated on offset(±1) Cover too — no stub cast without real cover. (3) NP centre: verified centred on album (1140–1740, t885); no change. (4) Up-next (right) side labels align right. Backup rebuild/bak_5.33.126_pre127. XML → ReloadSkin.
+
+## 5.33.261 — GLAREFOLD (Rob t1946u / t1947u)
+- Static full-album 600x600 glare (above hinge) now `<visible>String.IsEmpty(Window(Home).Property(bz_hf_ph))</visible>` + 400 ms sine Visible fade-in; removed ph1 Conditional fade (which faded back in mid-ph2).
+- Added 300x600 half glare (BzATGlareTex / BzATGlare8C) inside ph1 leaf group (right half of A) and ph2 landing leaf group (left half of B, flipx) so glare rotates with the page.
+
+- 5.33.303 (t2294u): Tuner MAPS section + Music screen map pages 1–5 (mapmusic1–5), big right panel 1000,210 880x810. XML only, ReloadSkin. Not zipped.
+
+- 5.33.405 LEAFFLIP (t2882u): "Disable leaf flip anim. Keep a toggle for it" — idle_hinge gated by Skin.HasSetting(bz_leafflip), default OFF; Tuner ALBUM / POSTER › Leaf flip. FULL restart.

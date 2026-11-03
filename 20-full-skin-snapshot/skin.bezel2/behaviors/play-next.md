@@ -2,8 +2,8 @@
 
 **Object:** `Custom_1120_PlayNext.xml` dialog `1120` with `bz_dfs_mode` ≠ album · main `6400`, **big album pill** `6401` (`BezelBigAlbumPill`, Includes_Bezel ~L940), tiles `6405`/`6406` · album viz in `MusicVisualisation.xml` (same pill `6401`, `6407`/`6408`, `bz_pnoff` + `bz_dfs_mode`) · sides `BezelFSPlayNext`
 **Where:** Dialogue FS (1120) over Music, and the FS album viz
-**Last updated:** 2026-10-31
-**Status:** Live. The big album pill toggles ALBUM ↔ PREV/NEXT on both windows, with one shared Skin.String. The prev/next side albums fade in after a 3 s delay over 2 s. Draft: not Rob-approved.
+**Last updated:** 2026-11-02 · 5.33.309
+**Status:** Live. The big album pill toggles ALBUM ↔ PREV/NEXT on both windows, with one shared Skin.String. The prev/next side albums fade in over 2 s with no wait (5.33.317; was 3 s delay). Draft: not Rob-approved.
 **Skin:** skin.bezel2
 
 **Naming:** control `6401` is the **big album pill** (ALBUM ↔ PREV/NEXT). It isn't the fan art pill `6391`.
@@ -85,11 +85,11 @@ When the view opens, the centre album and now-playing appear immediately. The si
 
 ### How it works
 - The shared include `BezelFSPlayNext` takes `sdelay`/`sfade` params.
-- 1120 passes 3000 / 2000 explicitly. MusicVisualisation uses the include defaults, which are the same values.
+- 1120, MusicVisualisation and 1121 pass 0 / 2000 explicitly; include default sdelay is also 0 (5.33.317, was 3000).
 - The sides gate is `sides = !album`.
 
 ### Wiring
-- `Custom_1120_PlayNext.xml` L15: `BezelFSPlayNext` vis `Player.HasAudio`, `sdelay` 3000, `sfade` 2000, `sides` `!String.IsEqual(Skin.String(bz_dfs_mode),album)`.
+- `Custom_1120_PlayNext.xml` L15: `BezelFSPlayNext` vis `Player.HasAudio`, `sdelay` 0, `sfade` 2000, `sides` `!String.IsEqual(Skin.String(bz_dfs_mode),album)`.
 
 ---
 
@@ -134,3 +134,15 @@ Prev/next tiles 6405/6406 (1120) and 6407/6408 (viz) play offset ∓1.
 big-album-pill.md · dialogue-fs.md · fanart-fs.md · sway-animations.md · music-list.md
 
 **5.33.210:** Play Next is also **copied into Music Fanart FS 1121** (double-Select → album viz, sides + big album pill 6401 with main 6420). 1121 never opens or stacks 1120; `bz_pndlg_ok` is false while 1121 is visible.
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/play-next.md) · [state](../state/play-next.md) · [motion](../motion/play-next.md) · [art](../art/play-next.md) · [input](../input/play-next.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+## 5.33.308 — Up Next rows (Rob pt2310u / pt2311u, mock A approved)
+- List 6395 rows draw each label once, with one soft shadow (the 5.33.49 soft L1). The four shadow-ring copies per label are gone (12 labels removed).
+- The focused row uses the Bezel highlight bar: a white hi_outline_sq outline over a low-opacity black fill (hi_rounded at 40000000). It used to be a 99FFFFFF white block. Focused text is now white (title FF, artist B3).
+
+
+## Big album (5.33.309 P1)
+The big album, its sway, next-song fade, cast and compact NP no longer live in this screen. They live in the always-open dialog **1122** — see [big-album.md](big-album.md). This screen only decides where the album sits (Home prop `bz_rail`: `home` / `centre` / `hide`). The old album grouplists 6367/6377/6397/6382 and their focus buttons (6368/6369, 6378/6379, 6398/6399, 6383/6384) are deleted; nothing focuses into an album rail any more.

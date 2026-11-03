@@ -2,7 +2,7 @@
 
 **Object:** `Custom_1115_MusicControls.xml` dialog `1115` (zorder 2, `DepthOSD`) · rows `6401–6413` · viz-settings page `6420–6427` + `6429` · `scripts/bz_vizset.py`
 **Where:** Over Music / visualisation / Dialogue FS while audio plays. Right-hand panel at x 570
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-02 · 5.33.309
 **Status:** Live in 5.33.207. Transport rows, the Viz settings sub-page, the TUNER hand-off and Right → Dialogue FS all work as described here. Draft: Rob hasn't approved or re-smoked it.
 **Skin:** skin.bezel2
 
@@ -119,3 +119,11 @@ None specified beyond normal focus/click. Tapping the dim area (full-screen butt
 
 ## Related
 fanart-fs.md · dialogue-fs.md · music-viz-settings.md · skin-settings-tuner.md · play-next.md
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/music-controls.md) · [state](../state/music-controls.md) · [motion](../motion/music-controls.md) · [art](../art/music-controls.md) · [input](../input/music-controls.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+
+## Big album (5.33.309 P1)
+The big album, its sway, next-song fade, cast and compact NP no longer live in this screen. They live in the always-open dialog **1122** — see [big-album.md](big-album.md). This screen only decides where the album sits (Home prop `bz_rail`: `home` / `centre` / `hide`). The old album grouplists 6367/6377/6397/6382 and their focus buttons (6368/6369, 6378/6379, 6398/6399, 6383/6384) are deleted; nothing focuses into an album rail any more.

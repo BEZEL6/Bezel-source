@@ -1,0 +1,16 @@
+# BEZEL logo / Back button — bezel-logo-back
+
+**Object:** `bezel-logo-back` · **Layer:** art (media) · **Last updated:** 2026-11-01 · 5.33.267 · **Status:** current-state, extracted from live XML/Python
+**Blueprint siblings:** [behavior](../behaviors/bezel-logo-back.md) · [layout](../layout/bezel-logo-back.md) · [state](../state/bezel-logo-back.md) · [motion](../motion/bezel-logo-back.md) · [art](../art/bezel-logo-back.md) · [input](../input/bezel-logo-back.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+## Simple
+The BEZEL logo sits top-left and takes the skin tint. About every 30 seconds it does one spin.
+
+**This layer in one line:** every image file this object draws, its pixel size, and which windows use it.
+
+## Deep (rebuild detail)
+| path | px | used in |
+|---|---|---|
+| `bezel/logo.png` | 256×256 | xml/DialogNotification.xml, xml/Includes.xml, xml/Includes_Bezel.xml, xml/Includes_DialogSelect.xml |
+
+colordiffuse/mask per control: see texture tags in live XML at the [layout](../layout/bezel-logo-back.md) line refs. Global inventory: [media-map](media-map.md).

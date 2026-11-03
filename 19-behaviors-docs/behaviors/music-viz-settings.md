@@ -49,3 +49,40 @@ A short list of music-visualisation options: hide or animate the background fan 
 
 ## Related
 music-controls.md · fanart-fs.md
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/Custom_1105_MusicOSDSettings.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 5000 | grouplist | —,— | 600×700 | `—/—/5000/5000` | `—` |
+| 5001 | radiobutton | —,— | 600×— | `—/—/—/—` | `—` |
+| 5002 | radiobutton | —,— | —×— | `—/—/—/—` | `—` |
+| 5004 | button | —,— | 600×— | `—/—/—/—` | `—` |
+| 5005 | button | —,— | 600×— | `—/—/—/—` | `—` |
+| 5006 | button | —,— | 600×— | `—/—/—/—` | `Visualisation.HasPresets` |
+| 5007 | button | —,— | 600×— | `—/—/—/—` | `—` |
+| 5008 | button | —,— | 600×— | `—/—/—/—` | `!String.IsEmpty(Skin.String(LyricScript_Path))` |
+| 5009 | button | —,— | 600×— | `—/—/—/—` | `—` |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `ActivateWindow(AddonBrowser,addons://repository.xbmc.org/xbmc.player.musicviz/,return)`
+- `ActivateWindow(visualisationpresetlist)`
+- `Addon.Default.OpenSettings(xbmc.player.musicviz)`
+- `Addon.Default.Set(xbmc.player.musicviz)`
+- `Addon.OpenSettings($INFO[Skin.String(LyricScript_Path)])`
+- `Dialog.Close(1105)`
+- `Dialog.Close(all)`
+- `Skin.SetAddon(LyricScript_Path,xbmc.python.lyrics)`
+- `Skin.ToggleSetting(animate_background_fanart)`
+- `Skin.ToggleSetting(hide_background_fanart)`
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/music-viz-settings.md) · [state](../state/music-viz-settings.md) · [motion](../motion/music-viz-settings.md) · [art](../art/music-viz-settings.md) · [input](../input/music-viz-settings.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+## DustViz auto-install (5.33.358)
+`scripts/bz_dustviz.py` copies the bundled `visualization.bezel` from `resources/dustviz/<plat>/` into `special://home/addons/` when versions differ, enables it, and sets it as the music visualisation. Platforms: `windows` (x64 DX11 dll), `android` (Shield aarch64 GLES), `linux` (desktop). Any other platform is skipped.

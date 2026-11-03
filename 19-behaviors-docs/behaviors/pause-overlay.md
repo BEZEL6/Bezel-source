@@ -60,3 +60,15 @@ The music "ghost logo" pause lives in Dialogue FS (`bezel/logo_pause.png`, dialo
 
 ## Related
 fullscreen-video.md · video-osd.md
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/Custom_1116_PauseScreen.xml`
+
+_No id’d controls in this file (layout comes from includes)._
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/pause-overlay.md) · [state](../state/pause-overlay.md) · [motion](../motion/pause-overlay.md) · [art](../art/pause-overlay.md) · [input](../input/pause-overlay.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

@@ -2,7 +2,7 @@
 
 **Object:** `Custom_1120_PlayNext.xml` dialog `1120` · main `6400` (660,220, 600×600) · **big album pill** `6401` (shared `BezelBigAlbumPill`) · touch sides `6405`/`6406` · side albums `BezelFSPlayNext` · album grouplist `6397`  
 **Where:** Music section, over the left fanart stage  
-**Last updated:** 2026-11-01 · 5.33.221
+**Last updated:** 2026-11-02 · 5.33.352
 **Status:** draft. This doc matches the live tree. Rob has not approved it and it has not been re-smoked.  
 **Skin:** skin.bezel2
 
@@ -70,3 +70,81 @@ big-album-pill.md · play-next.md · music-controls.md · fullscreen-pill.md · 
 
 ## Touch: big album tap (5.33.221)
 - Button `6180` (Includes_Bezel `BezelMusicPlayingArt`, left 1140 top 220, 600×600; visible while `bz_audio_latch` and no back/flip anim) now has the same Dialogue FS onclicks as remote 6390 when `$EXP[bz_pndlg_ok]`: SetFocus fsslide slot (`bz_at_fsslide` 1→6369, 2→6379, empty/3→6399, 4→6384) then `ActivateWindow(1120)`. When `bz_pndlg_ok` is false the tap does nothing.
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/Custom_1120_PlayNext.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 6400 | button | 660,220 | 600×600 | `PlayerControl(Previous)/PlayerControl(Next)/6401/SetProperty(bz_noop,1,home)` | `—` |
+| 6405 | button | 90,250 | 540×540 | `—/—/—/—` | `!String.IsEqual(Skin.String(bz_dfs_mode),album) + !String.IsEmpty(MusicPlayer.offset(-1…` |
+| 6406 | button | 1290,250 | 540×540 | `—/—/—/—` | `!String.IsEqual(Skin.String(bz_dfs_mode),album) + !String.IsEmpty(MusicPlayer.offset(1)…` |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `AlarmClock(bz_fsretclr,ClearProperty(bz_fsret,home),00:01,silent)`
+- `ClearProperty(bz_pnfoc,home)`
+- `Dialog.Close(1120)`
+- `PlayerControl(Play)`
+- `Playlist.PlayOffset(music,-1)`
+- `Playlist.PlayOffset(music,1)`
+- `SetProperty(bz_fsret,true,home)`
+- `SetProperty(bz_pnfoc,6403,home)`
+- `Skin.SetString(bz_dfs_mode,album)`
+
+**Source:** `xml/Includes_Bezel.xml` include `BezelBigAlbumPill`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 6401 | button | —,— | auto×32 | `Skin.Reset(bz_dfs_mode)/Skin.Reset(bz_dfs_mode)/$PARAM[main]/$PARAM[main]` | `—` |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `$PARAM[main]`
+- `AlarmClock(bz_fsretclr,ClearProperty(bz_fsret,home),00:01,silent)`
+- `Dialog.Close(1120)`
+- `SetProperty(bz_fsret,true,home)`
+- `Skin.Reset(bz_dfs_mode)`
+- `Skin.SetString(bz_dfs_mode,album)`
+
+**Source:** `xml/Includes_Bezel.xml` include `BezelFSPlayNext`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 6402 | button | 96,252 | 96×96 | `6404/6403/6401/—` | `—` |
+| 6403 | button | 252,252 | 96×96 | `6402/6404/6401/—` | `—` |
+| 6404 | button | 408,252 | 96×96 | `6403/6402/6401/—` | `—` |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `6390`
+- `Action(Back)`
+- `ClearProperty(bz_np,home)`
+- `Dialog.Close(1120)`
+- `PlayerControl(Next)`
+- `PlayerControl(Play)`
+- `PlayerControl(Previous)`
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/dialogue-fs.md) · [state](../state/dialogue-fs.md) · [motion](../motion/dialogue-fs.md) · [art](../art/dialogue-fs.md) · [input](../input/dialogue-fs.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+
+## Big album (5.33.309 P1)
+The big album, its sway, next-song fade, cast and compact NP no longer live in this screen. They live in the always-open dialog **1122** — see [big-album.md](big-album.md). This screen only decides where the album sits (Home prop `bz_rail`: `home` / `centre` / `hide`). The old album grouplists 6367/6377/6397/6382 and their focus buttons (6368/6369, 6378/6379, 6398/6399, 6383/6384) are deleted; nothing focuses into an album rail any more.
+
+## Auto open after 30 s idle in Music (5.33.325)
+- While music is playing and the Music window is active, Dialogue FS (1120) opens by itself after **30 seconds with no button press**.
+- Runs in `bz_flip.py` main loop: `getGlobalIdleTime() >= 30`, opens once per idle period; any key press re-arms it.
+- Same gate as the big-album tap (`bz_pndlg_ok`: Dialogue FS not disabled, audio not video, Music window, no viz, not already in 1120/1121) plus: no modal dialog, not 1111/1112/context menu/music info/fullscreen video, main menu not open, Now Playing not open, `_np_safe()`.
+- Sets `bz_rail=centre` then `ActivateWindow(1120)` (same as the remote/touch open).
+- Tuner > FULLSCREEN MUSIC > **Open after 30 s idle in Music** (ON default; OFF = `Skin.HasSetting(bz_fsauto_off)`). Separate from the older Music > Auto fullscreen music slider (`bz_at_autonp`, opens Now Playing).
+
+- Transport-bar prev/next song pills (shared BezelNPInPlace, also seen behind Dialogue FS) match cycle pill 6391 chrome as of 5.33.326 — see fanart-fs.md.
+
+## DustViz layer (5.33.352)
+- Bottom layer of the window is `BezelDustViz` (Includes_Bezel.xml): `visualisation` control id **6399**, full 1920×1080, drawn **behind** all Bezel chrome. Same include in Dialogue FS 1120, Music Fanart FS 1121 and MusicVisualisation — one place to change.
+- Visible: `Player.HasAudio + !Player.HasVideo + System.HasAddon(visualization.bezel) + !Skin.HasSetting(bz_dustviz_off)`; 400ms fade-in.
+- The viz (visualization.bezel) only paints its rect from Kodi's audio bins; no input, no focus, no skin access. Skin → viz triggers only via Home properties.
+- Install: Startup runs `scripts/bz_dustviz.py` — copies bundled `resources/dustviz/<android|linux>/visualization.bezel` into special://home/addons when the version differs, UpdateLocalAddons, enables it, sets `musicplayer.visualisation`, sets Home `bz_dustviz_ok`. Windows: no binary, skipped (logged).
+- Kill switch: `Skin.SetBool(bz_dustviz_off)`.

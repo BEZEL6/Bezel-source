@@ -38,3 +38,26 @@ Warm strip like 1130/1131/1117: group at 570,120, full-screen 8C dim, `BezelMMSt
 
 ## Related
 files-filemanager.md · media-sources.md · keymaps.md
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/FileBrowser.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 411 | label | 34,30 | 340×48 | `—/—/—/—` | `—` |
+| 412 | label | 36,78 | 336×24 | `—/—/—/—` | `—` |
+| 450 | panel | 0,112 | 390×672 | `9100/9100/450/9100` | `—` |
+| 451 | panel | 0,112 | 390×672 | `9100/9100/451/9100` | `—` |
+| 60 | scrollbar | 380,112 | 8×672 | `450/9100/—/—` | `false` |
+| 9100 | grouplist | 20,808 | 360×32 | `9100/9100/450/450` | `—` |
+| 413 | button | —,— | 70×32 | `—/—/—/—` | `—` |
+| 414 | button | —,— | 100×32 | `—/—/—/—` | `—` |
+| 415 | button | —,— | 120×32 | `—/—/—/—` | `Control.IsEnabled(415)` |
+| 416 | button | —,— | 120×32 | `—/—/—/—` | `Control.IsEnabled(416)` |
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/filebrowser.md) · [state](../state/filebrowser.md) · [motion](../motion/filebrowser.md) · [art](../art/filebrowser.md) · [input](../input/filebrowser.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

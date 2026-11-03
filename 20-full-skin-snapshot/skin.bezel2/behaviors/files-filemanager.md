@@ -39,3 +39,26 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ## Related
 filebrowser.md · media-sources.md · addons.md · keymaps.md
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/FileManager.xml`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 20 | list | 570,120 | 390×900 | `21/21/20/20` | `—` |
+| 60 | scrollbar | -400,120 | 8×900 | `20/20/—/—` | `—` |
+| 101 | label | —,— | 340×56 | `—/—/—/—` | `false` |
+| 21 | list | 570,120 | 390×900 | `20/20/21/21` | `—` |
+| 61 | scrollbar | -400,120 | 8×900 | `21/21/—/—` | `—` |
+| 102 | label | —,— | 340×56 | `—/—/—/—` | `false` |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `RunScript(special://skin/scripts/bz_cmd.py,backdrop)`
+- `SetProperty(bz_nav,true,home)`
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/files-filemanager.md) · [state](../state/files-filemanager.md) · [motion](../motion/files-filemanager.md) · [art](../art/files-filemanager.md) · [input](../input/files-filemanager.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)

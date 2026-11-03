@@ -3,7 +3,7 @@
 **Object:** `MyVideoNav.xml` · list `60` (movies nodes) · grouplist (Includes_Bezel ~L2638) · ALL `6098` · A–Z `6500`
 **Where:** Main menu MOVIES → video window
 **Last updated:** 2026-10-31
-**Status:** Live in 5.33.207. List 60 has edge-to-ALL without wrap. Left opens the MM when the A–Z bar is hidden, and Back at the armed root opens the MM. The A–Z bar has no black background. Movies poster hold applies. Draft: not Rob-approved.
+**Status:** Live in 5.33.393. List 60 has edge-to-ALL without wrap. Left opens the MM when the A–Z bar is hidden, and Back at the armed root opens the MM. The A–Z bar has no black background. Movies poster hold applies. Draft: not Rob-approved.
 **Skin:** skin.bezel2
 
 Each section has three layers: **Simple**, **How it works**, **Wiring** (live tree).
@@ -24,13 +24,13 @@ MOVIES on the main menu (or one of its pills) opens the movie library behind the
 
 Pill subs come from `bz_mm.py SUBS`. See mm-warm.md → Section enter / exit, and section-transitions.md.
 
-Pills: TITLES → RECENTLY ADDED → YEARS → ACTORS → SETS → GENRES.
+Pills: TITLES → RECENTLY ADDED → YEARS → wrap (5.33.393: ACTORS / SETS / GENRES removed from the MM pill; stored pill 4–6 falls back to TITLES).
 
 ### Wiring
 | Item | Value |
 |---|---|
 | GO | `SetProperty(bz_navroot,videodb://movies/titles/,home)` · `RunScript(bz_cmd.py,go,videodb://movies/titles/)` |
-| SUBS | `videodb://movies/titles/`, `recentlyaddedmovies/`, `movies/years/`, `movies/actors/`, `movies/sets/`, `movies/genres/` |
+| SUBS | `videodb://movies/titles/`, `recentlyaddedmovies/`, `movies/years/` |
 
 ---
 
@@ -143,3 +143,46 @@ None specified.
 
 ## Related
 mm-list.md · mm-warm.md · tv-list.md · video-osd.md · section-transitions.md
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/movies-list.md) · [state](../state/movies-list.md) · [motion](../motion/movies-list.md) · [art](../art/movies-list.md) · [input](../input/movies-list.md) · [theme](../theme/tokens.md) · [screens](../port-refs/movies-list/) · [PORT_INDEX](../PORT_INDEX.md)
+
+## L1 titles strip style (5.33.283, current)
+On the L1 titles path (`$EXP[bz_vstrip]`: videodb://movies/titles/ or videodb://tvshows/titles/, list view, not grid/actors) list 60 group + ALL row 6098 ride into the colour strip 570..960 (zoom 86.67% @120,120 + slide 510 — same as Music `bz_mstrip`). Strip info pairs / plot / TV clearlogo + fanart title are faded off. Meta lives **inside the fanart stage only** at 150,196: small line (Movies: director · TV: studio), big uppercase title 150,226 (bz_mm34), outlined pills y296 (year, MPAA, runtime[movies], genre), plot textbox 150,346 400×620. Hidden under MM / Info / `..`. Poster group (BezelVPLPoster) scaled 66.67% and moved into the big-album slot 1140,220 600×600 (2:3 kept → 400×600 centred). Nav/focus/MM warm unchanged.
+
+## L1 strip clearart (5.33.285, Rob approved)
+On L1 titles strip (`bz_vstrip`): when the item has clearlogo (preferred) or clearart, it replaces the big title in the fanart meta block — image at 150,211, 430×90, left/centre, aspect keep (`BzVStripLogo`). No logo/clearart → bold uppercase text title. Director (Movies) / Studio (TV), pills and plot unchanged. Colour-strip clearart stays off on L1. Hides with the meta group (Info up / MM open / `..`). Poster size unchanged.
+
+**Current (5.33.290):** Movies clearart unchanged at 150,211 430×90; control now gated `!Container.Content(tvshows)` — TV has its own control at 150,228 430×64 (see tv-list.md).
+
+- 5.33.293: `bz_vstrip` also covers Movies RECENTLY ADDED (`videodb://recentlyaddedmovies/`, Content movies) — same strip-list as TITLES. YEARS/ACTORS/SETS/GENRES still old layout.
+
+## Strip-list coverage (5.33.294)
+bz_vstrip (L1 strip-list) now covers every pill path once the list holds titles: Movies TITLES, RECENTLY ADDED, YEARS, ACTORS, SETS, GENRES; TV SHOWS (+L2 seasons/L3 episodes), WATCHING, YEARS, ACTORS, RECENT, GENRES. Gated on Container.Content(movies / tvshows|seasons|episodes), so category folder lists (year/actor/genre/set names) keep the old layout.
+
+## Folder-name levels (5.33.295)
+Year/actor/genre/set/tag name rows (Content years/actors/genres/sets/tags under videodb://movies/ or tvshows/) use strip-list via `bz_vfold` ⊂ `bz_vstrip`; folder name shows as title, no clearart/pills unless present.
+
+## Strip-only list (5.33.298)
+List 60 is always the colour-strip list — the old full-size off-strip list is parked at `/workspace/b401/parked_old_list/` (RESTORE.md). Every list view (Music L1–L3, Movies/TV, Music root, sources, files, non-library) draws in the strip: the list group is laid out 450×1038 at x120/y120 and always shrunk 86.67% (center 120,120) + slid 510 → on screen x570–960, y120–1020 (390×900, fills the strip, ~13.8 rows of 75). Grouplist clip (t4533) is 450×1038 so nothing paints past y1020. ALL row 6098 always rides the same shrink/slide. Left still goes to FULLSCREEN 6886 first on Music (5.33.297); Up/Down wrap to 6097/6098 unchanged; A–Z bars 6100/6500 stay at x78.
+
+## List bottom (5.33.347, t2491)
+Double-tap hint (BezelDtapHint) is fixed at y978 h30 in the colour strip. List 60 clip grouplist + list are 858 tall from bz_top 120, so the list ends at y978, right above the hint. PVR lists (50) use the same 858. Any new section list must end at y978 or higher.
+
+## 5.33.350 (t2490) — VSTRIP meta pills: two rows (shared TV + Movies group, Includes_Bezel VSTRIP META)
+- Row 1 (y296, width 410 = text column 150..560, strip starts ~570): SxE, YEAR, STUDIO (TV, max 200 then truncates), MPAA, RUNTIME.
+- Row 2 (y336, width 410): GENRE pill on its own line, max 410, truncates (e.g. "SCI-FI & FANTASY / ACTION & ADVENT…"). Row hidden when no genre.
+- Season/episode name 342→382, plot 346→386 (h 620→580). Replaces 345's 780 widen.
+
+## 5.33.367 — poster stage
+The swaying Movies/TV poster (BezelVPLPoster) now draws only in dialog 1122 layer 6401, fed by the bz_flip list-60 Home mirror (bz_v60_*, bz_vpl_on). Screens keep only the tap target. See `artwork-group.md`.
+
+- 5.33.382 POSTERWARM: Music→Movies/TV — the 1122 poster layer never draws Music art (twins read held `bz_v60_art`); see artwork-group.md.
+
+## Dual poster holds (5.33.385 DUALHOLD)
+- `bz_v60_mov` = last Movies poster, `bz_v60_tv` = last TV poster. Written by `v60_mirror` (`_v60_dualrec`) right after list-60 art is staged, only when the Videos list type (movies/sets vs tvshows/seasons/episodes) equals the target and the container is not updating.
+- Target (`_v60_target`): MM open on strip 6996 → highlighted row `sec` (movies/tv; music/other = no target, nothing changes). MM closed → current Videos list type.
+- `_v60_dualpick`: if the list is not the target type yet (on Music, on the other Videos type, or loading), list-60 staging is skipped and `bz_v60_art` is set straight to the matching hold (already decoded on its earlier visit). 6401 / BezelVPLPoster still reads only `bz_v60_art` → opacity-only layer swap, never Music art.
+- No hold yet for that type (first visit this session) → keeps whatever `bz_v60_art` held; list 60 preload fills it (~0.6 s) as before.
+- Both props cleared on Bezel leave with the other `bz_v60_*` props.

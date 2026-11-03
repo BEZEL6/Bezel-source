@@ -2,8 +2,8 @@
 
 **Object:** Shared sway clock + album / poster rotatey + stub cast opacity  
 **Where:** Music big album (Dialogue FS / Play Next / viz) · Movies/TV poster (`BezelVPLPoster`) · stub side casts (`pn_cast.png`)  
-**Last updated:** 2026-10-31  
-**Status:** Live. One Python clock drives the album and poster sway flags. The album cast sits outside the sway group (5.33.205 edge-drift fix). Draft: not Rob-approved, not re-smoked.  
+**Last updated:** 2026-11-03 · 5.33.416 (415 SWAYCONT)
+**Status:** Live. One Python clock drives the album and poster sway flags. The album cast sits outside the sway group (5.33.205) and, since 5.33.299, outside the album slide rails too (include `BezelAlbumCast`). Draft: not Rob-approved, not re-smoked.  
 **Skin:** skin.bezel2 (Estuary fork)
 
 > Per-object behavior file (same family as `mm-list.md`). Documents **current live math and settings**. Tuner can patch some XML times; clock reads `D` from live XML.
@@ -15,9 +15,9 @@
 Three layers: **Simple** (below), **How it works** (plain English, below), **Wiring** (Code map and every technical section after it, taken from the live tree).
 
 ### Simple
-- The big album (Music) and the poster (Movies/TV) slowly rock left and right, like a picture tilting on a wall.
-- The soft shadows beside the album get darker and lighter in time with that rocking.
-- When the screen reloads, the rocking starts again from flat instead of jumping.
+- The big album (Music) and the poster (Movies/TV) slowly sway (3D turn left and right). There is no 2D rock any more (5.33.408).
+- The soft shadows beside the album get darker and lighter in time with that sway.
+- When the screen reloads, the sway starts again from flat instead of jumping.
 - A few Tuner sliders change how long it pauses and how fast it moves.
 
 ### How it works
@@ -32,7 +32,16 @@ While the skin script is running it wakes every twentieth of a second. It rememb
 - `bz_sway_pulse` → looping swing between the two tipped extremes  
 - `bz_sway_pulse2` → later gate (kept for a cross-wobble that album no longer uses)
 
-Movies/TV use a **separate poster clock** (`poster_clock`) with the same idea: `bz_pswayon` then `bz_ppulse` / `bz_ppulse2`. Title changes do **not** restart the poster sway.
+**Shared art clock (5.33.391).** Poster and album sway on ONE clock. `poster_clock` still raises `bz_pswayon` (+4 s) → `bz_ppulse` (+9 s) → `bz_ppulse2` (+14 s), but its anchor is no longer "now": `_art_sw_anchor()` places the poster's pulse onset on the album pulse grid (`t0 + 7.4 + k·24.5 s`, 24.5 s = Kodi pulse cycle of the 12250 ms anim). Master epoch = album `t0` while the music latch is on; with no music a free-running epoch (`sway['art0']`, set once) stands in. Published as Home `bz_art_t0`. So across a Music↔Videos crossfade in group 6400 both layers are at the same point of the swing. Title changes do **not** restart the poster sway. Limits: the anchor is taken when the poster arms (entering Videos); if the album clock restarts while the poster is already swinging, the poster keeps its old phase until Videos is left and re-entered. Tuner hold `D` changes the album period only (poster XML stays 12250 ms) — at default D=2.0 they match. Mirror direction is unchanged (album −13→+13, poster +13→−13, same timing).
+
+
+**Sway only, armed at startup (5.33.408 NOROCK/SWAYSTART, Rob pt2914u).** Album rock is gone; both art layers sway from Home cold start:
+- **Poster:** `poster_clock` sets `sw = [_art_sw_anchor(time.time())]` when the thread starts (Home onload runs `bz_flip.py`), before any loop `continue`, on the shared art clock (`bz_art_t0`). `bz_pswayon` (+4 s) → `bz_ppulse` (+9 s) → `bz_ppulse2` (+14 s) then advance in every window. Never disarmed; flags clear only on Bezel leave.
+- **Album, no music (idle big album):** `bt0` is set on the first `sway_clock` tick with the latch off, i.e. at startup. `bz_big_go` (+2.5 s) / `bz_big_pulse` (+7.5 s) now drive a **rotatey SWAY** on the idle album stack group (Includes_Bezel ~l.1071, `<camera x="1440" y="570"/>`): lead-in 0→−13° in 5 s, then the same pulse as the playing album (12250 ms, −13↔+13 sine, 2 s still). Gates: `!Window.IsActive(1120) + !Window.IsActive(visualisation)`. The old 2D `rotate` ±4° rock (8.5 s pulse) was removed. `bz_big_go` still also fades the idle glare.
+- **Album, music playing:** rotatey sway on `bz_audio_latch` / `bz_sway_go` / `bz_sway_pulse` unchanged.
+- Tuner: the **Idle rock** row is removed (`BzATVal_idlerock` left as an unused var reading "OFF (sway only)"; `bz_idlerock` unused). Sway controls stay under ALBUM / POSTER › SWAY.
+- Idle album phase is on its own `bt0` (startup / music stop), not snapped to `bz_art_t0`; at cold start they are within a tick of each other.
+- Leaf flip (`bz_leafflip`, default OFF) does not gate either sway.
 
 **Hold and restart.**  
 When art must remount cleanly (window reload, etc.), the script sets `bz_sway_hold`, briefly freezes the swing, clears the hold, resets `t0`, and lets the Conditional animations start again from flat. While hold is set, phase flags stay off so XML does not keep swinging on a stale timeline. `bz_sway_restart` is the explicit “start over from flat” path.
@@ -157,7 +166,7 @@ Typical (inside 12250 pulse window):
 **Center:** x **1290**. Shared by Movies + TV; Music untouched.
 
 ### Arming
-- Arms once: `bz_pready` after real item + **0.25 s** quiet, not scrolling.
+- Arms once: `bz_pready` after real item + **0.25 s** quiet, not scrolling; held after that (5.33.413 — not cleared when leaving Videos).
 - Phase timer `sw[0] = now` at arm.
 - **Title changes never remount** (t4815). Cleared only when Videos is left.
 
@@ -307,3 +316,79 @@ Casts **do not** own Conditional timers. Mid-cycle stub / viz / Play Next load j
 **Fix (code only):** Move album cast (`BzCastTex_a`, left 480 × width 480 → right edge 960) **outside** the flip/sway rotate tree in `BezelMusicPlayingArt`. Keep zoom+fade grow about `960,520`. Remove all cast `rotatey` / counter-`rotatey`. Vis still gated on `Player.HasAudio`, sway mode, and `bz_back`. Poster cast unchanged.
 
 **Smoke:** ReloadSkin (or FULL restart if props sticky). Music playing, watch strip right edge through short and long sway peak — cast edge should stay flush, no crawl.
+
+## Idle (no audio) big album — current (5.33.231)
+- Idle album: bz_big_go / bz_big_pulse drive rotatey sway (no rock) from startup (5.33.408).
+- Idle hinge flip every 10 s — see music-list.md.
+
+## Idle Big Album fold (current state, 5.33.245)
+> Leaf flip is its own behaviour — [leaf-flip.md](leaf-flip.md); it does not use the sway clock (section below is history; locked look = idle-big-album-fold.md).
+- Where: big-album group in `xml/Includes_Bezel.xml` (1140,220 600×600, same rect/zoom as the Music sway album). Driver: `scripts/bz_flip.py` `idle_hinge()`.
+- When: idle only. That means no audio, Music window open, list 60 focused, not under MM/nav/randpend/back.
+- Cycle: an artist row steps through that artist's albums by year and wraps. An album row alternates between the album and the artist face. Any change of focus or playback resets the cycle.
+- Fold: phase 1 folds the right half of the current cover onto itself (rotatey 0→-90 about x1440, 2200 ms sine in). Phase 2 unfolds the next cover's left half (90→0, 2200 ms sine out). The next cover's right half is visible underneath the whole time. When the fold ends, A := B, so the cover lines up with no jump. The baked shadows `hf_shd_r` / `hf_shd_l` and the 45% darkening fade with the fold.
+- Hold: 10 s between folds.
+- Preload: `bz_hf_b` (the next cover) is set as soon as the hold starts and is drawn under A for the whole 10 s. B textures load sync, so nothing is blank mid-fold.
+- Rock: removed in 5.33.408; no Tuner row.
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/sway-animations.md) · [state](../state/sway-animations.md) · [motion](../motion/sway-animations.md) · [art](../art/sway-animations.md) · [input](../input/sway-animations.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+
+## Album cast — strip binding (5.33.299 CASTPIN, current)
+- **Rule (Rob):** the album cast gets its *timing* from big-album sway (`bz_audio_latch` / `bz_sway_go` / `bz_sway_hold` / `bz_sway_pulse` Conditional zoom+fade, 5500 ms short pulse) but *draws only on the fanart-stage colour strip*. Its right edge is bound to the strip edge **x960** in every scenario — no exceptions.
+- **Where:** `Includes_Bezel.xml` include `BezelAlbumCast` (fixed screen space, 480×580 at x480,y230, right edge x960). Mounted once in the Music window right before the album rails (6367/6377/6397/6382), and once in `MusicVisualisation.xml` before the PlayNext `-480` mount. No longer inside `BezelMusicPlayingArt`, so rail scroll, the 1121 / Play Next slide and the -480 offset never move it.
+- **Tuner:** `acx` (cast X) row removed in 5.33.300 (dead since .299); right edge cannot leave x960. `acy` still slides vertically. `aclen` / `acstyle` zooms are horizontal about `960,520` so the right edge stays pinned; long lengths grow leftward only.
+- Still fades out (250 ms) when 1120 / 1121 / visualisation is active; static (`bz_acast_static`) and animated variants unchanged.
+
+## Cast pin + clip + poster zero (5.33.300 CAST300, current)
+- **Album clip:** `BezelAlbumCast` body sits in a clip `grouplist` left 570 / width 390 / height 1080 (`usecontrolcoords`), inner group left −570 so child coords stay screen-space. Cast can only draw inside the colour strip x570–960; Soft / Long 170% / Length 125–175% spill is clipped at x570 instead of painting meta/list (Rob t2254u). Zero unchanged: 480/230/480×580, zoom centre 960,520, right edge x960.
+- **Poster cast zero:** Movies/TV strip cast (BezelVPLPoster) and Info-block cast — animated + static — now left **480** (was 485), zoom centre **960,570** (was 965,570), width 480 → right edge **x960** = strip edge, same as album. Poster cast is not clipped.
+- **Removed:** old BETA 2.2 Short cast grouplist (`cast_shadow_short.png`, `visible=false`) deleted; Tuner `acx` row + its Val/Step/Bar vars + L/R handlers deleted.
+
+## Album change while playing (5.33.301 ALBUM SWAY NEXT SONG FADE)
+- Next song from a **different album**: `bz_flip.py` sets `bz_cov_x` (new art, preloaded `LOAD_WAIT`), then `bz_cov_xf` → an overlay image on top of the front face (both faces carry it, inside the sway rotatey tree) fades 0→100 in **900 ms** while sway keeps running — the cover stays tipped.
+- After 1.0 s the front face (`bz_cov_<side>`) adopts the new art; 0.4 s later `bz_cov_xf` clears (instant, same art beneath).
+- **No** `bz_cov_side` change, **no** `bz_sway_hold`, **no** `bz_flipping` glare dip, **no** sway restart on this path. Full spin parked for next-song.
+- Same album: art stays, no fade. Play start: front face takes the cover, no flip. Rock clock and idle leaf untouched.
+
+## 5.33.307 — Fanart FS album viz sway follows the album (Rob)
+- In Fanart FS (1121) album viz, the playing album now moves with a real left -480 (the same as MusicVisualisation.xml), not a Conditional slide. The sway camera moves with it, so the album sways centred at 660 and the tip no longer freezes.
+- On each FS Slide speed rail, an outer slot holds two inner copies: one normal, and one at left -480 shown when Fanart FS is open with bz_pnoff not 1. The rail ignores a child's left, which is why the outer slot is there. Each copy slides in over the rail's speed (480/380/280/180 ms).
+
+
+## Big album (5.33.309 P1)
+The big album, its sway, next-song fade, cast and compact NP no longer live in this screen. They live in the always-open dialog **1122** — see [big-album.md](big-album.md). This screen only decides where the album sits (Home prop `bz_rail`: `home` / `centre` / `hide`). The old album grouplists 6367/6377/6397/6382 and their focus buttons (6368/6369, 6378/6379, 6398/6399, 6383/6384) are deleted; nothing focuses into an album rail any more.
+
+## 5.33.314 — restart list (current)
+`bz_sway_restart` fires only from: MusicVisualisation onload, MyPlaylist onload, Tuner Short-sway toggle. **Not** MyMusicNav (removed 314 — MM Music↔Movies/TV must not reset album sway) and not 1121.
+
+## Album cast sync gate (5.33.318 CASTSYNC, current)
+- **Bug (Rob t2398):** big-album colour-strip cast drifted out of phase with the album tip.
+- **Cause:** Kodi stops processing (freezes) child animations of a hidden group. The album sway lives under `BezelMusicPlayingArt`'s top group (`!Player.HasAudio | !bz_navtune` — hidden under Tuner), but `BezelAlbumCast` in 1122 had no such gate, so under Tuner the album's Conditional pulse froze while the cast pulse kept running. Before 5.33.314 MyMusicNav's `bz_sway_restart` re-zeroed both and hid the drift; now nothing does.
+- **Fix:** `BezelAlbumCast` outer grouplist carries the identical gate. Album and cast now hide/freeze and resume together, same phase. No new timer; still the same `bz_sway_go` / `bz_sway_pulse` Conditional zoom+fade.
+- **Rule:** any gate on an album-sway ancestor must also be on `BezelAlbumCast` (and vice versa).
+
+
+## Global artwork group (5.33.366)
+See `artwork-group.md`. Big album + Compact NP now sit in 1122 group 6400 / album layer 6402, opacity-gated by `bz_railvis` (no Visible remount, sway clock unbroken). Poster layer 6401 pre-warms Videos poster and crossfades in during Music↔Movies/TV handoff. MM Warm underlay unchanged.
+
+## 5.33.367 — poster stage
+The swaying Movies/TV poster (BezelVPLPoster) now draws only in dialog 1122 layer 6401, fed by the bz_flip list-60 Home mirror (bz_v60_*, bz_vpl_on). Screens keep only the tap target. See `artwork-group.md`.
+
+## 5.33.381 GLARESYNC rule
+Glare + lit dust must ride the sway clock: never put a <visible> on any group between the sway group and the glare pulse groups (hidden = children frozen, pulse re-anchors on re-show = phase drift). Gate glare with Conditional fades only. Poster: glare block is a direct child of the 1440,570 camera group inside the BezelVPLPoster sway group, gated by fades on bz_ppulse/bz_pready/bz_vbackanim/bz_mmmushide. Album: glares inside covers, visible only Player.HasAudio/bz_swayright (stable while playing). Timings shared: hold 12250, swing 10000 d2000, glare A 100→0 3450 d2000, B 0→100 3450 d8550.
+- MMAUDIO (5.33.397): while the MM is open and audio is playing (no video), `$EXP[bz_mmaudio]` keeps the big album (6402) up on every strip row — Music, Movies, TV, Recent, Favourites, Search, Pictures, Add-ons, Settings, Media Sources, Power. It forces `bz_railvis` true and `bz_artposter` false, so the poster layer 6401 stays down. With no audio, or with MM closed, the existing Music album / A2P poster rules apply. Includes_Bezel.xml.
+
+## MM album fade (5.33.407 MIDLEFADE)
+Idle Music big-album A/B dissolve (slots `bz_m_idle_a`/`bz_m_idle_b`, 6402 in Includes_Bezel) runs at `Skin.String(bz_at_midlefade)`: steps 1–7 = 200/250/300/400/500/600/800 ms, **default 400 ms** (empty|4). Tuner › ALBUM / POSTER › **MM album fade** (slider). bz_flip.py promote guard = fade + 50 ms (default 0.45 s). Separate from A2P (`bz_at_a2pfade`) and WARM art crossfade (`bz_at_mmxfade`). Reset art/everything clears it.
+
+## 5.33.414 GLAREONE (2026-11-03, Rob t2929u)
+Album glare restored to ONE static 600x600 texture (art_mask.png) over the idle big album — GLARESPLIT 300x600 halves (art_mask_hl/hr) removed from static + leaf groups. Sweep (5 s go) + 8.5 s pulse pair, zoom/fade/sway unchanged. Whole glare hidden during hinge fold (bz_hf_a). Cover single when leaf off.
+
+## Current state — 5.33.415 SWAYCONT (shared idle/playing clock)
+- ONE clock: `sway['bt0']` arms at Home startup (bz_flip `sway_clock`) and is never cleared by music start/stop. `sway['t0']` = that same value while playing (latch on adopts `bt0`; no re-zero). Effective clock = `t0` or `bt0`.
+- `bz_sway_go` / `bz_sway_pulse` / `bz_sway_pulse2` and `bz_big_go` / `bz_big_pulse` all derive from that one clock, so they are set from startup onward.
+- Playing-album sway + glare Conditionals no longer require `bz_audio_latch` (only `!bz_sway_hold`), so the playing tree swings in lockstep (hidden) during idle; music start crossfades idle → playing at the same angle/phase instead of restarting from flat.
+- `bz_sway_restart` (music window reload) / flip hold still re-anchor — and now re-anchor `bt0` too, keeping both trees on one phase.

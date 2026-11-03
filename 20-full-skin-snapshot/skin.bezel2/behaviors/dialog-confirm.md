@@ -2,11 +2,13 @@
 
 **Object:** `DialogConfirm.xml` (Kodi yes/no) · include `BzStdProgress` (Includes_BezelDialogs ~514) or `BzRefreshProgress` (Includes_BezelRefresh ~112) · grouplist `9000` with buttons `10` / `11` / `12`  
 **Where:** Colour strip at 570,120 (390×900) plus body text in the fanart block (140,220)  
-**Last updated:** 2026-10-31 · 5.33.207  
+**Last updated:** 2026-11-03 · 5.33.420
 **Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
 **Skin:** skin.bezel2
 
 Each section has three layers: **Simple** (what it does and why), **How it works** (the flow end to end, with the order and the races), and **Wiring** (props, conditions, controls, scripts and timings, all read from the live tree).
+
+**Focus ownership (5.33.420 MODALGUARD).** While the Confirm (yesnodialog) or any modal is up, Python never pulls focus to MM strip 6996. `scripts/bz_flip.py` `_modal_blocks_strip()` (`System.HasModalDialog | Window.IsActive(yesnodialog) | Window.IsVisible(yesnodialog)`) gates every reclaim: `_bzstrip`, MM-start `bz_mmstart` row hold + 6 s focus loop (keep-this-skin dialog on skin switch), open-MM section SetFocus, warm `_defer`/`_restore2` bounces, mini-player song-change refocus. `bz_warmgate.py` strip bounce has the same guard. Result: No (10) / Yes (11) keep focus; the MM-start loop just waits (still times out at 6 s).
 
 ---
 
@@ -22,6 +24,12 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 - Layout: `Window.IsActive(musicinformation) + Window.IsActive(progressdialog)` → `BzRefreshProgress`, else `BzStdProgress`.
 - `BzStdProgress`: B3 black full-screen dim · strip `$VAR[BzMMStrip]` · "CONFIRM" title `bz_mm34` · grouplist 9000 (top 100, 390×754, vertical) with buttons 10 (No), 11 (Yes), 12 (custom), each 390×58 `bz_mm28` with focus bar `$VAR[BzATHiTex]` / `$VAR[BzMMBarCol]` · heading label 1 · textbox 9 (autoscroll 3000/4000/5000) · progress 20 (only with `progressdialog` and `System.Progressbar`).
 
+## Warm look (5.33.364, global)
+
+**Simple.** Every Yes/No is Warm, everywhere — not just Media Sources. Same Warm underlay (BzMSUnderlay: black + MM fanart lane at MM dim) and Warm MM strip chrome (BezelMMStripChrome box) behind the CONFIRM rows.
+
+**Wiring.** `BzStdProgress`: `BzMSUnderlay` visible `!Window.IsActive(fullscreenvideo) + !Window.IsActive(visualisation)`; over fullscreen video / visualisation only, the old B3 dim shows instead so playback stays visible. BzMSUnderlay itself draws nothing when 1117 is under (1117 is the underlay). Strip chrome `!Window.IsActive(1117)`. `bz_msflow` expression still exists but no longer gates the confirm. Refresh-over-Music-info path (`BzRefreshProgress`) unchanged. Callers: bz_ctx remove, bz_wipe, bz_tune reset, msclean, Add Source scan ask, source Remove, core Kodi yes/no.
+
 ## Keys
 
 **Simple.** Up and Down move between No and Yes. Select chooses. Back cancels, which is the same as No.
@@ -36,3 +44,43 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 ## Related
 info-options.md · context-menu.md · dialog-busy.md
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/DialogConfirm.xml`
+
+_No id’d controls in this file (layout comes from includes)._
+
+**Source:** `xml/Includes_BezelDialogs.xml` include `BzStdProgress`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 9000 | grouplist | 0,100 | 390×754 | `—/—/—/—` | `—` |
+| 10 | button | —,— | 390×58 | `—/—/—/—` | `—` |
+| 11 | button | —,— | 390×58 | `—/—/—/—` | `—` |
+| 12 | button | —,— | 390×58 | `—/—/—/—` | `—` |
+| 1 | label | 0,30 | 410×46 | `—/—/—/—` | `—` |
+| 9 | textbox | 0,106 | 410×480 | `—/—/—/—` | `—` |
+| 20 | progress | 0,610 | 410×12 | `—/—/—/—` | `Window.IsActive(progressdialog) + !String.IsEmpty(System.Progressbar)` |
+
+**Source:** `xml/Includes_BezelRefresh.xml` include `BzRefreshProgress`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 1 | label | -3000,— | 10×10 | `—/—/—/—` | `—` |
+| 20 | progress | 596,248 | 200×16 | `—/—/—/—` | `—` |
+| 9 | textbox | 598,292 | 345×110 | `—/—/—/—` | `—` |
+| 9000 | grouplist | 580,410 | 370×200 | `—/—/—/—` | `—` |
+| 10 | button | —,— | 370×52 | `—/—/—/—` | `—` |
+| 11 | button | —,— | 370×52 | `—/—/—/—` | `—` |
+| 12 | button | —,— | 370×52 | `—/—/—/—` | `—` |
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/dialog-confirm.md) · [state](../state/dialog-confirm.md) · [motion](../motion/dialog-confirm.md) · [art](../art/dialog-confirm.md) · [input](../input/dialog-confirm.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+## Media Sources look (5.33.363, current state)
+In any Media Sources flow (`bz_msflow` = 1117 active, mediasource dialog active, or folder path starts with sources://), the Yes/No dialog uses the Warm look: no dark full-screen dim. It draws the shared Media Sources underlay `BzMSUnderlay` (the same one the Add Source dialog uses: held fanart + poster). Over Videos it also draws the MM strip chrome (`BezelMMStripChrome` box). Over 1117 it uses 1117's own chrome, and 1117 hides its rows while `yesnodialog` is open. Outside Media Sources the dialog is unchanged (dark dim, flat strip).
+This covers every Yes/No in these flows: the scan question after Add Source OK, Remove source, the CLEAN LIBRARY confirm, and Edit source questions.

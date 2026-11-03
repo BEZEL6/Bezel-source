@@ -118,6 +118,7 @@ if action == 'tab':
         if xbmc.getCondVisibility('Window.IsActive(1112)'):
             home.clearProperty('bz_np'); xbmc.executebuiltin('Dialog.Close(1112)'); sys.exit(0)
         if home.getProperty('bz_audio_latch') == 'true' and home.getProperty('bz_np') != 'true' and xbmc.getCondVisibility('Player.HasAudio + !Player.HasVideo + Window.IsActive(music) + !Window.IsActive(visualisation) + Control.IsVisible(60) + ![Skin.HasSetting(bz_grid_music) + [Container(60).Content(albums) | Container(60).Content(artists)]] + !System.HasModalDialog'):
+            if home.getProperty('bz_nav') == 'true': home.setProperty('bz_fsmm', '1')   # 5.33.378: FS from MM -> exit back to MM
             home.clearProperty('bz_nav'); home.clearProperty('bz_navtune'); home.clearProperty('bz_navbez'); home.clearProperty('bz_np_was')
             if not xbmc.getCondVisibility('Control.HasFocus(60)'): xbmc.executebuiltin('SetFocus(60)')
             home.setProperty('bz_npdlg', 'true'); home.setProperty('bz_np', 'true')
@@ -281,6 +282,7 @@ if action in ('np', 'nptoggle'):
     # np1 test: music playing + already in the music library list view (view 60, not the grid): Now Playing opens as a dialog over the
     # music window (Custom_1112_NowPlaying.xml), so the album sway underneath never resets. Every other route keeps the in-place panel below.
     if action == 'np' and home.getProperty('bz_np') != 'true' and xbmc.getCondVisibility('Window.IsActive(music) + !Window.IsActive(visualisation) + Control.IsVisible(60) + ![Skin.HasSetting(bz_grid_music) + [Container(60).Content(albums) | Container(60).Content(artists)]] + !Window.IsActive(1112)'):
+        if home.getProperty('bz_nav') == 'true': home.setProperty('bz_fsmm', '1')   # 5.33.378
         home.clearProperty('bz_nav'); home.clearProperty('bz_navtune'); home.clearProperty('bz_navbez'); home.clearProperty('bz_np_was')
         # np2: hand the music window's focus back to the list first (the slide-menu card / A-Z bar / art are hidden once the dialog is up),
         # so after the dialog closes the keys move the list and Left opens the slide menu again
@@ -623,6 +625,7 @@ if action == 'start':
 
     for _k in ('music', 'movies', 'tv'):   # t4075: restore MM pill last-used after ReloadSkin / cold start
         _v = xbmc.getInfoLabel('Skin.String(bz_last_mmsub_%s)' % _k)
+        if _k == 'movies' and _v.isdigit() and int(_v) > 3: _v = ''   # 5.33.393 Movies pills 1-3 only
         if _v and not home.getProperty('bz_mmsub_' + _k): home.setProperty('bz_mmsub_' + _k, _v)
     if not xbmc.getInfoLabel('Skin.String(bz_attn_outline)'):   # attnqueue #9: global outline bar default once (Tuner LOOK > bar shape still changes it)
         xbmc.executebuiltin('Skin.SetString(bz_at_hishape,5)'); xbmc.executebuiltin('Skin.SetString(bz_attn_outline,1)')
