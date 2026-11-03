@@ -1,3 +1,8 @@
+5.33.451 (2026-11-03)
+- ALLCOUNT (Rob: "SOME ARTIST DONT SHOW THE ALL ALBUM FOLDER EVEN WITH MULTI ALBUMS"): Kodi's Container.NumItems never counts the parent '..' row; the 443 ALL rule assumed it did, so artists with exactly 2 albums (with '..' in the list) got no ALL ALBUMS row. Rule now: real rows = NumItems minus Kodi's hidden *All row; ALL shows at 2+.
+- L2PULL (Rob screenshot: music level 2 list not on the small album's bottom edge, ALL ALBUMS over the last album): artist album lists with no '..' and Kodi's hidden *All in the first slot were pulled up only half a row. Now a full row, so the first album sits on the small album's bottom edge and ALL ALBUMS lands under the last album.
+- NOWRAPGUARD (Rob: "SCROLL TO END OF LIST NAVS TO HOME"): two old list-wrap guards in bz_flip misread fast moves in short lists (top -> last row in one step looked like an Up-wrap and sent focus to the top / ALL; last -> first in a 2-row list sent focus to ALL). The lists never wrap on their own (both edges have actions), so the guards are off. Skin.SetBool(bz_wrapguard) turns them back on.
+
 5.33.450 (2026-11-03)
 - VIZNPBAR (Rob: "ADD NP BAR TO KODI FULLSCREEN VIZ WHEN BIG ALBUM IS CENTER" - it only showed on the FS fanart dialog): the compact NP bar (artist / title / progress / time) under the centred big album now shows in Kodi FS viz. The viz window's own copy sat under dialog 1122 (which draws the big album above the viz window) and was covered; in viz the bar is now drawn inside 1122, the viz window copy is off there. Fanart FS dialog 1121 and Play Next 1120 unchanged.
 

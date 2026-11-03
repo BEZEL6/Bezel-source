@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.450
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.451
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 451 | "SOME ARTIST DONT SHOW THE ALL ALBUM FOLDER EVEN WITH MULTI ALBUMS, SCROLL TO END OF LIST NAVS TO HOME"; L2 screenshot (gap under small album, ALL over last album) | **ALLCOUNT**, **L2PULL**, **NOWRAPGUARD** |
 | 450 | "ADD NP BAR TO KODI FULLSCREEN VIZ WHEN BIG ALBUM IS CENTER" ("only the FS fanart dialogue fullscreen") | **VIZNPBAR**: compact NP bar under the centred album in Kodi FS viz, drawn in 1122 |
 | 449 | "2 AND 5" (optimizations: texture packing, list conditions) | **XBTPACK**: media/Textures.xbt with the 1128 small textures |
 | 448 | "BIG ALBUM SWAY ANIM LOOKS LIKE ITS WRONG SEQUENCE AGAIN WITH GLARE AND DUST" | **IDLESEQ**: idle glare + lit dust follow the playing album sequence |
@@ -211,6 +212,40 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.451 — ALLCOUNT + L2PULL + NOWRAPGUARD
+- **ALLCOUNT:** Kodi 21 `GUIBaseContainer::GetLabel(CONTAINER_NUM_ITEMS)` returns `size − 1` when item 0 is the parent folder. So `Container(60).NumItems` never counts `..`, but `ListItemAbsolute(n)` does index it.
+  - 443's `bz_all2` assumed `..` was counted. For `[.., A1, A2]` (NumItems 2) and `[.., *All, A1, A2]` (NumItems 3) it returned false, so 2-album artists got no ALL row.
+  - New rule: `NumItems > 2 | [NumItems == 2 + !bz_allhas]` (real rows = NumItems − stock *All ≥ 2).
+  - Truth table checked:
+
+    | List | Row |
+    |---|---|
+    | `[..,A1,A2]` | ✓ |
+    | `[..,*All,A1,A2]` | ✓ |
+    | `[*All,A1,A2]` | ✓ |
+    | `[A1,A2]` | ✓ |
+    | `[..,A1]` | ✗ |
+    | `[..,*All,A1]` | ✗ |
+    | `[A1]` | ✗ |
+
+  - Other `NumItems` uses (6097 slide tables, `bz_alllong >14`, seasons/discs `>1`) were tuned on device with Kodi's real count and are not changed.
+- **L2PULL** (Rob's screenshot, Daft Punk, 2 albums, no `..`):
+  - The list started half a row below the small album's bottom edge, so ALL ALBUMS (6097, already at the right y ≈ 600) sat over the second album.
+  - Cause: `bz_allpull60` (hidden stock *All at row 0, no `..`) slides −60 inside the cover-column 50% zoom (−30 on screen), but an L2 row is 150 in that space (75 on screen). The `..` pull right above it already uses −150.
+  - Change in the View_60_BezelInfoList list: −60 stays for every other context; `bz_allpull60 + bz_covercol + bz_artistalbums` → −150.
+  - The 6097 button tables are not changed (measured from the screenshot: the button top already sat where the last album ends after the fix).
+  - **Not changed / to watch:** L2 with `..` *and* *All (`bz_allpull120`) totals −270 (−135 on screen) for two hidden slots of 75; that may leave a 15 px gap. It wasn't in the screenshot, so left as is (the 6097 comment says it was tuned flush).
+- **NOWRAPGUARD** (`bz_flip.py` list-60 watcher):
+  - Two branches assumed Kodi's native list wrap: (a) "last poll on the top row, now on the last row" = Up-wrap, then SetFocus ALL or `SetFocus(60,0,absolute)`; (b) "last poll on the last row, now row ≤ 1" = Down-wrap, then SetFocus ALL.
+  - Both lists (music 1540, video 2945) have `onup` / `ondown` actions at both edges (ALL row or `bz_topedge` / `bz_bottomedge`, read by nothing), so Kodi never wraps them. The branches only fired on real moves: a fast Down to the end of a short list (≤ 4 rows, or the last 3 of a 7+ row list) jumped to the top ("navs to home"), and Up in a 2-row list jumped to ALL.
+  - Both are now gated on `Skin.HasSetting(bz_wrapguard)` (off by default).
+  - The hidden *All / `..` bounces and Back-to-ALL (`bz_allret`) are unchanged.
+- **Check:**
+  - Artists with 2, 3 and 15+ albums: ALL ALBUMS shows. The first album sits flush on the small album's bottom edge, and ALL ALBUMS sits right under the last album.
+  - Hold Down to the end of short and long lists: focus stays on the last row, or goes to ALL / the bottom pill.
+  - Up from the first row goes to ALL when shown, else stays.
+  - TV seasons: same checks.
 
 ## 5.33.450 — VIZNPBAR (compact NP bar in Kodi FS viz)
 - **Rob:** the NP bar under the centred big album showed on the FS fanart dialog (1121) but not in Kodi's fullscreen visualisation.

@@ -578,6 +578,10 @@ if home.getProperty('bz_flip_running') != 'true':
                     xbmc.executebuiltin('Control.Move(60,1)'); sw_path[0] = _fp; sw_prev[0] = 0; mon.waitForAbort(0.15); continue  # 5.33.96: TV seasons open on the first real season, never '..'
                 if sw_path[0] != _fp: sw_path[0] = _fp; sw_prev[0] = 0  # 5.33.95: folder change (open/Back) is never an Up-wrap — stale pos sent disc picker to Disc 2 + ALL
                 _prev = sw_prev[0]; sw_prev[0] = _pos
+                # 5.33.451 NOWRAPGUARD (Rob: "SCROLL TO END OF LIST NAVS TO HOME"): list 60 has onup/ondown actions at both edges (ALL row / bz_topedge / bz_bottomedge), so Kodi never wraps it
+                # natively; the two 'wrap' guards below only misfired - reaching the last row of a short list in one poll (from the top) looked like an Up-wrap -> focus to the top row / ALL,
+                # and Up from the last to the first row of a 2-row list looked like a Down-wrap -> ALL. Both off; Skin.SetBool(bz_wrapguard) restores them.
+                _wrapg = xbmc.getCondVisibility('Skin.HasSetting(bz_wrapguard)')
                 _tw = sw_top[0]; sw_top[0] = (time.time() - sw_tchg[0] > 0.8) and (_pos <= (0 if xbmc.getCondVisibility('String.IsEqual(Container(60).ListItemAbsolute(0).Label,..)') else 1)) and not _fchg  # 5.33.96: last poll sat on the top row ('..' or first)
                 # t5111: Contains not EndsWith — TV *All is .../-1/?tvshowid=N; bounce every nav hit so Up/Down never stick on the invisible slot
                 if xbmc.getCondVisibility('String.Contains(Container(60).ListItem.FolderPath,/-1/) + !String.Contains(Container.FolderPath,/-1/) + !Container(60).Scrolling'):  # t4112/t4113: only the hidden *All row itself, never items inside the All seasons folder (was auto-scrolling)
@@ -593,12 +597,12 @@ if home.getProperty('bz_flip_running') != 'true':
                 # t5111: inside All, ALLHIDE blanks parent .. — bounce to first real item so it is not selectable
                 elif xbmc.getCondVisibility('String.Contains(Container.FolderPath,/-1/) + Container(60).ListItem.IsParentFolder + !Container(60).Scrolling'):
                     xbmc.executebuiltin('Control.Move(60,1)' if _n > _pos else 'noop'); mon.waitForAbort(0.15)  # 5.33.95: let the bounce land before re-reading (double-move skipped Disc 1)
-                elif _tw and _n >= 2 and (_pos == _n or (_n > 6 and _pos >= _n - 3)) and not _fchg:  # 5.33.96: tolerate rapid taps past the wrap before the poll
+                elif _wrapg and _tw and _n >= 2 and (_pos == _n or (_n > 6 and _pos >= _n - 3)) and not _fchg:   # 5.33.451 NOWRAPGUARD: off (see _wrapg)  # 5.33.96: tolerate rapid taps past the wrap before the poll
                     # 5.33.96: Up-wrap off the top ('..' or first row) -> ALL row if shown, else stay put (no wrap to the last item)
                     if xbmc.getCondVisibility('Control.IsVisible(%d)' % _ab): xbmc.executebuiltin('SetFocus(%d)' % _ab)
                     else: xbmc.executebuiltin('SetFocus(60,0,absolute)')  # top row ('..' or first item)
                     sw_prev[0] = 0; sw_top[0] = True
-                elif _prev and _n and _prev == _n and _pos <= 1 and xbmc.getCondVisibility('Control.IsVisible(%d)' % _ab):
+                elif _wrapg and _prev and _n and _prev == _n and _pos <= 1 and xbmc.getCondVisibility('Control.IsVisible(%d)' % _ab):   # 5.33.451 NOWRAPGUARD
                     xbmc.executebuiltin('SetFocus(%d)' % _ab); xbmc.executebuiltin('Control.Move(60,-1)'); sw_prev[0] = 0  # t4112: focus All first so the wrap-to-top never shows
             else: sw_prev[0] = 0; sw_top[0] = False
             vid = xbmc.getCondVisibility('Window.IsActive(videos) + Control.IsVisible(60)')
