@@ -304,14 +304,14 @@ if home.getProperty('bz_flip_running') != 'true':
     def _v60_dualpick():   # returns True when the list is NOT the target type (caller must not stage list-60 art over the hold)
         lt = _v60_ltype(); tg = _v60_target(lt)
         if not tg: return False
-        if tg == lt and not xbmc.getCondVisibility('Container.IsUpdating'): return False
+        if tg == lt and not xbmc.getCondVisibility('Container.IsUpdating') and not home.getProperty('bz_mmwarm'): return False   # 5.33.400 F2 WARMLANE: list 60 is on Kodi's pre-restore row until warm _restore lands -> keep the type hold
         h = home.getProperty(_V60_HK[tg])
         if h and home.getProperty('bz_v60_art') != h:
             _v60_pend[0] = ''; _v60_set('bz_v60_next', ''); _v60_set('bz_v60_art', h)
         return True
     def _v60_dualrec():
         lt = _v60_ltype(); a = home.getProperty('bz_v60_art')
-        if lt and a and not xbmc.getCondVisibility('Container.IsUpdating') and _v60_target(lt) == lt: _v60_set(_V60_HK[lt], a)
+        if lt and a and not home.getProperty('bz_mmwarm') and not xbmc.getCondVisibility('Container.IsUpdating') and _v60_target(lt) == lt: _v60_set(_V60_HK[lt], a)   # 5.33.400 F2: never record a pre-restore poster as the hold
     def v60_mirror():
         cv = xbmc.getCondVisibility; il = xbmc.getInfoLabel
         vid = cv('Window.IsActive(videos)'); oth = (not vid) and cv(_V60_INFOWIN)
@@ -326,8 +326,8 @@ if home.getProperty('bz_flip_running') != 'true':
             if home.getProperty('bz_pos_on') and not cv('Player.HasAudio + !Player.HasVideo'):
                 pa = home.getProperty('bz_pos_b' if home.getProperty('bz_pos_side') == 'b' else 'bz_pos_a')
                 if pa: _v60_art_stage(pa)
-                _v60_set('bz_vpl_on', '1' if home.getProperty('bz_v60_art') or pa else '')
-            else: _v60_set('bz_vpl_on', '')
+            # 5.33.399 ONEART: SETTINGS kids (MS 1117 / Settings / Add-ons / Files) HOLD last art -- never clear the gate here
+            _v60_set('bz_vpl_on', '1' if home.getProperty('bz_v60_art') and not cv('Player.HasAudio + !Player.HasVideo') else '')   # audio -> album owns the slot (unchanged)
             return
         if cv('Window.IsVisible(movieinformation) | Window.IsVisible(musicinformation) | Window.IsVisible(songinformation)'): return   # 5.33.379 Rob t2697: Info/Options on top -> list 60 unreadable from dialog; HOLD poster/art + bz_vpl_on (was cleared -> blank art)
         _dmis = _v60_dualpick()   # 5.33.385 DUALHOLD
@@ -940,12 +940,16 @@ if home.getProperty('bz_flip_running') != 'true':
         had = False; t = 0
         big_t = [0]; fw_t = [0]; sj = [None, 0]; rp = [None, 0, None]; pl = [None, 0]; nav_was = [False, 0]; auto_spin = [time.time() + 30, 0]; biglogo_spin = [time.time() + 30, 0]; casc = [None, None]; casc_t = [0]; casc_pend = [None, 0, None]; dview = [None, 0]; fguard = [0]; autonp = [False]; autonp_t = [0]; autonp_np = [False]; autoinfo = [None]; fsauto = [False]
         navlk = [0.0]; navgr = [0.0]; navop = [0.0, 0]; mmst = [0]; fs_was = [False, 0]; gfirst = ['', 0]
+        msret = [False, 0.0]   # 5.33.400 F1: left Media Sources -> MM on MEDIA SOURCES (not the TV/Movies window under it)
         setret = [False, 0.0]   # F8 batch2 (t3930): Settings family was active -> Back reopens MM on SETTINGS (not TV)
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
             now = time.time()
             _sw = xbmc.getCondVisibility('Window.IsActive(1130) | Window.IsActive(settings) | Window.IsActive(systemsettings) | Window.IsActive(interfacesettings) | Window.IsActive(mediasettings) | Window.IsActive(playersettings) | Window.IsActive(servicesettings) | Window.IsActive(pvrsettings) | Window.IsActive(gamesettings) | Window.IsActive(skinsettings) | Window.IsActive(profiles) | Window.IsActive(systeminfo)')
             if setret[0] and not _sw: setret[1] = now   # F8: left Settings just now
             setret[0] = _sw
+            _msw = xbmc.getCondVisibility('Window.IsActive(1117) | Window.IsActive(1132)')   # 5.33.400 F1: Media Sources family (hub over the section)
+            if msret[0] and not _msw: msret[1] = now
+            msret[0] = _msw
             # 3.2.1 item 14: leaving fullscreen music (Now Playing 1112, the in-place Now Playing, visualisation, controls 1115) -> focus the music list (60)
             fsm = home.getProperty('bz_np') == 'true' or xbmc.getCondVisibility('Window.IsActive(1112) | Window.IsActive(1115) | Window.IsActive(visualisation)')
             # 5.33.378 Rob t2694u #2: FS opened while MM was open (or <0.8s after the opener cleared it) -> latch bz_fsmm; exit FS reopens MM, not the section list
@@ -1181,8 +1185,8 @@ if home.getProperty('bz_flip_running') != 'true':
                 home.clearProperty('bz_nav'); nv = False; xbmc.log('BEZEL menu: reopen inside the close grace ignored', xbmc.LOGWARNING)
             if home.getProperty('bz_navgrace') and now - navgr[0] >= 0.8: home.clearProperty('bz_navgrace')
             if nav_was[0] and not nv:
-                home.clearProperty('bz_navset'); home.clearProperty('bz_navsub'); home.clearProperty('bz_navnp'); home.clearProperty('bz_navset2'); home.clearProperty('bz_kset'); home.clearProperty('bz_navtune'); home.clearProperty('bz_navstrip'); home.clearProperty('bz_setret')   # 3.1
-            if nv and not nav_was[0]: home.clearProperty('bz_setret') if not (setret[1] and now - setret[1] < 4.0) else None; had = False; t = 0; stuck[1] = 0; navop[0] = now   # 3.0.2: every open starts clean (a fast close + reopen kept 'had' and closed at once)
+                home.clearProperty('bz_navset'); home.clearProperty('bz_navsub'); home.clearProperty('bz_navnp'); home.clearProperty('bz_navset2'); home.clearProperty('bz_kset'); home.clearProperty('bz_navtune'); home.clearProperty('bz_navstrip'); home.clearProperty('bz_setret'); home.clearProperty('bz_msretrow')   # 3.1 / 5.33.400
+            if nv and not nav_was[0]: home.clearProperty('bz_setret') if not (setret[1] and now - setret[1] < 4.0) else None; home.clearProperty('bz_msretrow') if not (msret[1] and now - msret[1] < 4.0) else None; had = False; t = 0; stuck[1] = 0; navop[0] = now   # 3.0.2: every open starts clean (a fast close + reopen kept 'had' and closed at once)
             if not nv: home.clearProperty('bz_mmlive')   # t4092
             nav_was[0] = nv
             # 2.0a3.4: logo long press. This Kodi has no <onlongclick>; a touch long press / mouse long click sends ContextMenu,
@@ -1215,6 +1219,8 @@ if home.getProperty('bz_flip_running') != 'true':
                     elif home.getProperty('bz_np') and xbmc.getCondVisibility('Player.HasMedia'): tgt = 6902 if xbmc.getCondVisibility('Player.HasVideo') else 6901   # 3.1: the current section
                     elif xbmc.getCondVisibility('Window.IsActive(settings) | Window.IsActive(systemsettings) | Window.IsActive(interfacesettings) | Window.IsActive(mediasettings) | Window.IsActive(playersettings) | Window.IsActive(servicesettings) | Window.IsActive(pvrsettings) | Window.IsActive(gamesettings) | Window.IsActive(skinsettings) | Window.IsActive(profiles) | Window.IsActive(systeminfo)'): tgt = 6909   # 4.7.8: Back from Settings lands on SETTINGS
                     elif home.getProperty('bz_setret') or (setret[1] and now - setret[1] < 4.0): tgt = 6909; setret[1] = 0; home.setProperty('bz_setret', '1'); home.setProperty('bz_mmpos', '10')   # F8 oct27f: latch SETTINGS for the whole open (tick 2+ fell to TV)   # F8 batch2: Back from Settings -> MM on SETTINGS
+                    elif home.getProperty('bz_msretrow') or (msret[1] and now - msret[1] < 4.0): tgt = 6920; msret[1] = 0; home.setProperty('bz_msretrow', '1'); home.setProperty('bz_mmpos', '9')   # 5.33.400 F1: Back from Media Sources -> MM on MEDIA SOURCES (latched for the whole open, same as setret)
+                    elif xbmc.getCondVisibility('Window.IsActive(music) + String.StartsWith(Container.FolderPath,musicdb://recentlyplayed)'): tgt = 6905   # 5.33.400 F3: Back from Recently Played root -> RECENTLY PLAYED row (was MUSIC)
                     elif xbmc.getCondVisibility('Window.IsActive(music)'): tgt = 6901
                     elif xbmc.getCondVisibility('Window.IsActive(videos) + [Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)]'): tgt = 6903
                     elif xbmc.getCondVisibility('Window.IsActive(videos) + Container.Content(musicvideos)'): tgt = 6904
@@ -1225,7 +1231,7 @@ if home.getProperty('bz_flip_running') != 'true':
                     home.setProperty('bz_navstrip', {6902: 'movies', 6903: 'tv', 6909: 'settings'}.get(tgt, 'music'))   # 4.7.8: settings strip case (Back no longer shows Music)   # 3.1 right strip
                     home.clearProperty('bz_navdir')   # beta1 item 7: the bar shows on the row at once
                     if tgt in (6930, 6931): xbmc.executebuiltin('SetFocus(%d)' % tgt)
-                    else: xbmc.executebuiltin('SetFocus(6996,%d,absolute)' % {6902: 1, 6903: 2, 6904: 3, 6908: 8, 6919: 9, 6909: 10}.get(tgt, 0))   # 4.1 O46: the strip list, on the current section
+                    else: xbmc.executebuiltin('SetFocus(6996,%d,absolute)' % {6902: 1, 6903: 2, 6905: 3, 6904: 3, 6908: 8, 6919: 9, 6909: 10, 6920: 9}.get(tgt, 0))   # 4.1 O46: the strip list, on the current section
                     t += 1
                 elif not xbmc.getInfoLabel('System.CurrentControlId') or (xbmc.getCondVisibility('Window.IsActive(1112)') and (not stuck[1] or now - stuck[1] < 0.3)):
                     # BETA 1.1: a blank focus for a moment (a list refresh / track change under the Now Playing dialog) is not the user leaving the menu
@@ -1587,6 +1593,8 @@ if home.getProperty('bz_flip_running') != 'true':
                 elif not home.getProperty('bz_ab_live') and time.time() - open_t >= 0.3: home.setProperty('bz_ab_live', '1')   # 5.33.207: side-flip fades armed only after MM is up (open = full opacity, same frame)
                 if _whold() and xbmc.getCondVisibility(_WHWIN):
                     pass   # 5.33.211 WARM HOLD: MM open over a non-M/M/TV section -> lanes keep the last WARM art (no re-target to that window's art)
+                elif home.getProperty('bz_mmwarm'):
+                    pass   # 5.33.400 F2 WARMLANE: warm swap in flight -> list 60 still sits on Kodi's pre-restore row (stale poster, e.g. Oppenheimer); hold every lane on its last art until _restore lands the real row and bz_mmwarm clears
                 elif not xbmc.getCondVisibility('Container.IsUpdating | System.HasModalDialog'):
                     now = time.time()
                     for ln, rf in lanes: ln.tick(rf(), now)

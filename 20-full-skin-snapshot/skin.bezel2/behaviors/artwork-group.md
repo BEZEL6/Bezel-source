@@ -101,3 +101,21 @@ New art state = add a branch/prop to ART_TREE + draw it in 1122; never a per-win
 - MMAUDIO (5.33.397): while the MM is open and audio is playing (no video), `$EXP[bz_mmaudio]` keeps the big album (6402) up on every strip row — Music, Movies, TV, Recent, Favourites, Search, Pictures, Add-ons, Settings, Media Sources, Power. It forces `bz_railvis` true and `bz_artposter` false, so the poster layer 6401 stays down. With no audio, or with MM closed, the existing Music album / A2P poster rules apply. Includes_Bezel.xml.
 
 **No MM auto-hide (5.33.398 NOAUTOHIDE, Rob t2799u):** the strip 6996 / group 6894 stays visible and focusable the whole time MM is open. There is no idle fade, no park button 6897, no `bz_mmidle`, no idle label / clearart stage, no wake path (WAKEGRACE/IDLEPARK/IDLERESET), and no Tuner Auto-hide row. mmdim and the colour backdrop follow plain MM-open rules. MMHOLD on MM open is unchanged.
+
+## ONE art style (5.33.399 ONEART, Rob t2809–t2814) — current state, supersedes any Visible-gate notes above
+**Simple.** Every art layer (poster 6401 stack, album 6402, MM A/B poster/fanart/music lanes, held fanart under 1117 / Add Source / Pictures) is always mounted. Python (`bz_flip.py`) owns the state as Home properties; XML only draws and fades **opacity** (Conditional fade, sine). No art control uses `<visible>` to come and go, and focus never drives art.
+**Rules.** Navigation (strip 6996, lists, buttons, Tuner rows) = focus. Chrome (panels, dims, frames, labels) may use Visible. Art = opacity only. The only hard hide left is group 6400 `bz_rail=hide`.
+**Wiring.**
+- `$EXP[bz_pshow]` = `bz_pready` (Videos sway armed) **or** `$EXP[bz_setkids]`, and not `bz_mmmushide`. It is the one gate for the swaying poster stack (400 ms opacity) and its frame. Before .399 the stack was `<visible>bz_pready</visible>`, and `bz_pready` only arms inside Videos, so every SETTINGS kid (1117 Media Sources first) remounted the stack empty → blank poster with `bz_vpl_on=1`.
+- SETTINGS kids (1117, 1130, 1131, addonbrowser, Kodi settings, systeminfo/eventlog/filemanager): `v60_mirror` stages the held MM lane if there is one, otherwise **holds the last `bz_v60_art`** and keeps `bz_vpl_on=1` (it used to clear the gate when `bz_pos_on` was empty). With audio only playing, `bz_vpl_on` is cleared → the album owns the slot (unchanged).
+- Lane images that were `<visible>C</visible>` + Visible/Hidden fades are now `Conditional` fade 100→0 on `![C]`, using the old Hidden time (1500 ms lanes, 300/400 elsewhere). The live-only 1500 ms Visible variants (`bz_ab_live`) fold into the single Conditional time.
+- Dead `<visible>false</visible>` art images removed (4).
+- By design (not art layers, kept Visible): NP prev/next cover chips (`MusicPlayer.offset(±1).Cover`), poster frame/blur chrome, black under-cover in 1117. Search/Pictures with no art stay empty — no art invented.
+
+## 5.33.400 — WARMLANE (F2: Music→Movies under the MM)
+- While `bz_mmwarm` is set (a warm swap/restore is in flight), list 60 still sits on Kodi's remembered row (e.g. a stale Oppenheimer/Inception). In that window:
+  - `ab_clock` does not tick the A/B lanes, so the art holds.
+  - `_v60_dualpick` keeps the per-type hold (`bz_v60_mov` / `bz_v60_tv`) and doesn't stage list-60 art.
+  - `_v60_dualrec` doesn't record a hold.
+- The art retargets only after `_restore` lands the session row. The opacity-hold style is unchanged.
+- Known residual: on the first Movies visit of a session there is no `bz_v60_mov` hold yet, so the last poster on screen (which can be a TV poster) can show for about 0.4 s before the correct poster.

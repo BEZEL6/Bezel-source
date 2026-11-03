@@ -1,3 +1,17 @@
+5.33.400 STRESSFIX (Rob stress 399 fails): F1 Media Sources Back lands on MEDIA SOURCES (msret latch + bz_msretrow, same pattern as setret). F3 Recently Played Back lands on RECENTLY PLAYED (musicdb://recentlyplayed → row 6905). F2 Music→Movies stale poster during bz_mmwarm: v60 dualpick/dualrec + lanes hold last type art until warm _restore; residual first-session Movies visit with no Movies hold can still blip last TV poster ~0.4s. bz_flip.py only. FULL restart.
+
+5.33.399 ONEART (Rob t2807–t2814): MS 1117 empty poster fixed (Visible=bz_pready → opacity $EXP[bz_pshow]; setkids hold last bz_v60_art). All art-lane Visible remounts → Conditional opacity (Includes_Bezel, Includes_BezelDialogs, 1117, MyPics); dead visible=false art images removed. FULL restart.
+
+5.33.398 NOAUTOHIDE (Rob t2799u): MM auto-hide removed (mm_idle/park/wake/Tuner row); strip stays visible whenever MM is open. FULL restart.
+
+5.33.397 MMAUDIO (Rob t2789–t2793): big album on every MM section while audio plays (bz_mmaudio). FULL restart.
+
+5.33.396 SETHOLD (Rob t2785u): no UADVRAND while MM strip on SETTINGS; held art through wake. bz_flip.py. FULL restart.
+
+5.33.395 ARTHOLD (Rob t2780 + MM art black): (1) Info/Options exit fanart flash — BezelFanartLayer section fanart no longer fades 100->0 on bz_infoup (BzCIStage already covers the same 120..960 rect opaque; on dialog close the underlay reversed 0->100 = flash). (2) MM->Add-ons/Settings art black — bz_flip v60_mirror bz_setopen latch now HOLDS bz_vpl_on + art through the nav-clear gap (was clearing bz_vpl_on -> 6401 faded to black); latch ends on any SETTINGS kid ($EXP[bz_setkids]). MM Files + Kodi (systeminfo) now set the same latch. Files: xml/Includes_Bezel.xml, scripts/bz_flip.py, scripts/bz_mm.py, behaviors/info-options.md, behaviors/artwork-group.md. FULL restart. Not zipped.
+
+5.33.394 A2PFADE (Rob t2776/t2778 "Make one" / "give tuner for a2p"): new Tuner ALBUM / POSTER > Poster ↔ album fade (bz_at_a2pfade, 7 steps 200/250/300/400/500/600/800 ms, default 400 = empty|4). Custom_1122 6401 poster fade, 6402 album fade and the handoff pre-warm fade each split into 7 mutually exclusive Conditional fades (gate logic, bz_a2p_hold, sway unchanged). Reset album restores 400 ms. Info media/bezel/info/a2p_fade.png. ReloadSkin. Not zipped.
+
 5.33.390 — ART_TREE: global artwork home branched by state (poster live/hold/meta, album idle/np, gates) in bz_flip.py; leave-clear derives from it; bz_tree_check.py verifies. Doc behaviors/artwork-group.md. No behaviour change. FULL restart.
 
 5.33.388 MSDD + SETART (Rob 👍 t2719 / "Media sources menues need global artwork" / "group anything under the mm settings"): Media Sources SOURCES » no longer opens dialog 1132 — source list 9150 + per-source dropdown 9160 (OPEN/RENAME/REMOVE/REFRESH, Pictures no REFRESH) moved into the 1117 colour strip (bz_msdd/bz_srcdd); 1132 parked. Global artwork group (1122/6400) now covers every MM SETTINGS kid via new $EXP[bz_setkids] (bz_railvis) + bz_flip _SETKIDS (poster 6401 staged from held MM bz_pos lane); 1117 local right-art copy removed. Files: Custom_1117, Custom_1132 (comment), Includes_Bezel, bz_set.py, bz_flip.py, behaviors/media-sources.md. FULL restart. Not zipped.

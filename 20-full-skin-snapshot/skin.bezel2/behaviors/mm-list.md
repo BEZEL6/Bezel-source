@@ -93,3 +93,8 @@ Leaving Fanart FS / 1121 / NP opened while MM was open returns to MM (`bz_fsmm` 
 - Scope: strip only. Once Back/Select hands focus to list 60 / another window, that target is not latched.
 
 **No MM auto-hide (5.33.398 NOAUTOHIDE, Rob t2799u):** the strip 6996 / group 6894 stays visible and focusable the whole time MM is open. There is no idle fade, no park button 6897, no `bz_mmidle`, no idle label / clearart stage, no wake path (WAKEGRACE/IDLEPARK/IDLERESET), and no Tuner Auto-hide row. mmdim and the colour backdrop follow plain MM-open rules. MMHOLD on MM open is unchanged.
+
+## 5.33.400 — MM reopen row map
+- Recently Played (music window, `Container.FolderPath` starts with `musicdb://recentlyplayed`) → Back reopens the MM on row 3 (**RECENTLY PLAYED**), not MUSIC. This is F3. Smoke: CurrentItem 4. PASS.
+- Media Sources return → row 9 via the msret latch (see media-sources.md).
+- SetFocus map: {6902:1, 6903:2, 6905:3, 6904:3, 6908:8, 6919:9, 6909:10, 6920:9}.

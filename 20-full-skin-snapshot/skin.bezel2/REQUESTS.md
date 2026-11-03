@@ -282,3 +282,15 @@ Rob: "Take out" the black box above the merged song list. Gated the View D cover
 - Includes_Bezel: 6894 visible/hide-fade gate removed; park button 6897, PRESS ANY BUTTON idle label and auto-hide clearart stage removed; colour backdrop idle fade removed; BezelSecDim mmdim and bz_lfdim no longer special-case bz_mmidle.
 - Tuner: MAIN MENU › Auto-hide menu row, BzATVal_mmidle, its L/R handlers and media/bezel/info/mm_autohide.png removed.
 - Behaviors mm-list / mm-warm / artwork-group / skin-settings-tuner updated. Backup /workspace/b401/bak_5.33.397_pre398. .py → FULL restart. No zip/push.
+
+## 5.33.399 — ONEART (Rob t2807–t2814) · FULL restart · zipped with 400
+- MS 1117 empty poster fixed (poster stack Visible=bz_pready → opacity via $EXP[bz_pshow]; setkids hold last bz_v60_art).
+- All art-lane Visible remounts → Conditional opacity (Includes_Bezel 17, Includes_BezelDialogs 5, 1117 2, MyPics 2+1 group); 4 dead visible=false art images removed.
+- Smoke (flatpak bwrap): Videos→1117 poster shown (bz_vpl_on=1, art held); Videos poster OK. MM-open/audio paths not smoked.
+
+## 5.33.400 — STRESSFIX (Rob stress 399 → Push) · FULL restart · zipped/pushed
+- F1 MS Back→MEDIA SOURCES row (msret latch + bz_msretrow). PASS.
+- F3 Recently Played Back→RECENTLY PLAYED row (FolderPath musicdb://recentlyplayed → 6905). PASS.
+- F2 Music→Movies stale poster: lanes + v60 dualpick/dualrec hold while bz_mmwarm. Residual: first Movies visit of a session with no Movies hold can blip last TV poster ~0.4s (parked).
+- Stress baseline from 399 otherwise kept. Backup bak_5.33.399_pre400/.
+
