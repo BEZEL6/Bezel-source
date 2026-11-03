@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.445
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.446
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 446 | Rob sent the 445 kodi.log (perf lines) | **TICKCACHE**: per-thread, per-tick cache for Home property / condition / infolabel reads in bz_flip.py |
 | 445 | "START WITH THE ONE THAT WILL OPTIMIZE BEZEL THE MOST"; "SYNCING THE SWAY SHADOWS, GLARE, LIT DUST… THE LAST FIX SEEMS TO OF LOST SYNC AGAIN" | **SYNCANCHOR** (stub cast clock re-anchors on 1122 reopen + full album gate); **PERFCOUNT** (optimization #1 step 1: per-thread Kodi call counts in kodi.log) |
 | 444 | Rob batch: auto-hide dim (poster + fanart only), Movies fanart showing Music labels, album stretch on rail slide, idle lit dust, quick-nav pick opening the warm section, music-playing landing, L1 ARTIST caption, Tuner Back | **ALLFIX**, **MMHIDEART/FAN**, **RAILXFADE**, **IDLELIT**, **VPICKLOAD**, **M2VLAND**, L1 caption |
 | 443 | "1 14 ROW IS NOT A RULE, 2 ALWAYS BOTTOM, 3 GROUPED, 4 LIST ONLY, 5 HIDE, 6 COUNT" | **ALLROW2**: no cap (long lists → bottom pill 6088/6089), grouped ALL ALBUMS, single-season/album hide, counts |
@@ -206,6 +207,24 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.446 — TICKCACHE (optimization #1, step 2)
+- **445 measurement** (Rob's kodi.log, 15 min, MM open most of the time, music played once):
+  - bz_flip.py made **~2,950–3,000 Kodi calls/s** steady, about 65% Home `getProperty`, 22% `getCondVisibility`, 13% `getInfoLabel`. Writes and builtins were only a few per second.
+  - Per thread (calls/s): `nav_menu` ~1,110 (≈55 per 50 ms tick), `poster_clock` ~520, `sway_clock` ~475, `ab_clock` ~265, `mm_autohide` ~190, `mm_warm` ~120, `vwarm` ~97. The rest are under 60 each. The top four are 80%.
+  - No BEZEL errors or helper crashes in the log.
+- **Change:** the 445 wrappers in `bz_flip.py` now also cache, per thread, for one tick:
+  - Within one tick (from one `mon.waitForAbort` to the next), a repeated `home.getProperty(k)`, `xbmc.getCondVisibility(c)` or `xbmc.getInfoLabel(l)` returns the first answer.
+  - The cache is dropped on `mon.waitForAbort`, `xbmc.sleep` and `xbmc.executebuiltin`.
+  - The thread's own `setProperty` / `clearProperty` updates that key and drops its cached conditions and labels.
+  - Other threads see a change on their next tick (≤50–100 ms, the same as their poll).
+  - `mon` is wrapped (`_TCMon`).
+  - Audit: no loop in bz_flip.py polls without a `mon.waitForAbort` (AST check; the only two waitless loops are local list/random loops), and there's only one Monitor.
+- **Kill switch:** `Skin.SetBool(bz_nocache)` before the script starts gives 445 behaviour (counting only).
+- **Perf log:** `hit=` now shows cache hits. `total` and the per-thread figures count real Kodi calls only. Compare with 445 to see the saving.
+- **Mock-tested:** repeats are cached; own writes are seen at once; external changes are seen after a wait; SetFocus then HasFocus is fresh; threads are isolated.
+- **Risk:** a code path that reads, expects another thread or the skin to change a value, and reads again *without* waiting would now see the old value until its next wait. None found.
+- **Next (step 3):** with real call counts, cut `nav_menu` / `poster_clock` / `sway_clock` work that runs every tick while it isn't needed (e.g. Settings-family and Media-Sources window checks on every 50 ms tick).
 
 ## 5.33.445 — SYNCANCHOR + PERFCOUNT
 - **SYNCANCHOR** (`bz_flip.py _sway_anchor`). The FS prev/next stub casts (`bz_castL/R`) are driven by Python, which has to copy the phase of the 1122 album pulse. Two gaps in 441:

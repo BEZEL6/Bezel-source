@@ -1,3 +1,6 @@
+5.33.446 (2026-11-03)
+- TICKCACHE (optimization #1, step 2; from Rob's 445 perf log: ~3000 Kodi calls/s, 65% Home getProperty, 22% conditions, 13% infolabels): inside one tick of a bz_flip helper, a repeated Home property / condition / infolabel read is answered from a per-thread cache instead of Kodi (each Kodi call takes the GUI lock). The cache drops at every wait and builtin; the thread's own property writes update it. Other threads see changes on their next tick, as before. Kill switch: Skin.SetBool(bz_nocache). Perf log now also shows cache hits.
+
 5.33.445 (2026-11-03)
 - SYNCANCHOR (Rob: "THE LAST FIX SEEMS TO OF LOST SYNC AGAIN"): the stub cast clock (bz_castL/R, Python) re-anchors when dialog 1122 reopens (screensaver / slideshow / fullscreen video close it, and Kodi restarts every animation in it on reopen); "album drawn" now uses the album's full gate chain (rail != hide, !bz_gridm | bz_np) so a play started under the music grid anchors when the album really starts.
 - PERFCOUNT (optimization #1, step 1): bz_flip.py counts its calls into Kodi per helper thread (helpers now named) and logs one "BEZEL perf" line per minute for the first 15 minutes. Logging only, no behaviour change. Used to pick which loops to merge.

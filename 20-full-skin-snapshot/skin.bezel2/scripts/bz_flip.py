@@ -92,25 +92,75 @@ def _pf_tick(tag):
         now = _t.time()
         if now - _PF['last'] >= 60.0 and now - _PF['t0'] <= 960.0:
             dt = now - _PF['last']; _PF['last'] = now; c = _PF['c']; _PF['c'] = {}
-            tot = sum(sum(v.values()) for v in c.values())
+            tot = sum(n for v in c.values() for t, n in v.items() if t != 'hit')
             parts = sorted(c.items(), key=lambda kv: -sum(kv[1].values()))
-            _xlog('BEZEL perf %.0fs total=%.0f/s | %s' % (dt, tot / dt, ' | '.join('%s %.1f/s (%s)' % (k, sum(v.values()) / dt, ','.join('%s=%d' % x for x in sorted(v.items()))) for k, v in parts)), xbmc.LOGINFO)
+            _xlog('BEZEL perf %.0fs total=%.0f/s | %s' % (dt, tot / dt, ' | '.join('%s %.1f/s (%s)' % (k, sum(n for t, n in v.items() if t != 'hit') / dt, ','.join('%s=%d' % x for x in sorted(v.items()))) for k, v in parts)), xbmc.LOGINFO)
     except Exception: pass
 _xlog = xbmc.log
-def _pf_wrap(fn, tag):
-    def w(*a, **k):
-        _pf_tick(tag); return fn(*a, **k)
-    return w
-for _n, _tg in (('getCondVisibility', 'cv'), ('getInfoLabel', 'il'), ('executebuiltin', 'eb'), ('executeJSONRPC', 'rpc')):
-    try: setattr(xbmc, _n, _pf_wrap(getattr(xbmc, _n), _tg))
+# 5.33.446 TICKCACHE (optimization #1, step 2; Rob's 445 log: ~3000 Kodi calls/s, 65% of them Home getProperty, 22% conditions).
+# Every one of these calls takes Kodi's GUI lock. Within ONE tick of a helper (from one mon.waitForAbort to the next) the same
+# property / condition / infolabel is now read from Kodi once; repeats come from a per-thread cache. The cache of a thread is
+# dropped when it waits (mon.waitForAbort / xbmc.sleep) or runs a builtin; its own set/clearProperty updates it (and drops the
+# cached conditions/labels, which may depend on the property). Other threads see a change on their next tick (≤ one tick,
+# 50-100 ms, same as before). Kill switch: Skin.HasSetting(bz_nocache) at script start = 445 behaviour (counting only).
+_TL = threading.local()
+def _tc():
+    c = getattr(_TL, 'c', None)
+    if c is None: c = _TL.c = ({}, {}, {})   # gp, cv, il
+    return c
+def _tc_drop():
+    c = getattr(_TL, 'c', None)
+    if c is not None: c[0].clear(); c[1].clear(); c[2].clear()
+_raw_cv = xbmc.getCondVisibility; _raw_il = xbmc.getInfoLabel; _raw_eb = xbmc.executebuiltin; _raw_rpc = xbmc.executeJSONRPC; _raw_sl = xbmc.sleep
+_TCON = [True]
+try: _TCON[0] = not _raw_cv('Skin.HasSetting(bz_nocache)')
+except Exception: pass
+def _w_cv(c):
+    if _TCON[0]:
+        d = _tc()[1]
+        if c in d: _pf_tick('hit'); return d[c]
+        _pf_tick('cv'); v = d[c] = _raw_cv(c); return v
+    _pf_tick('cv'); return _raw_cv(c)
+def _w_il(c):
+    if _TCON[0]:
+        d = _tc()[2]
+        if c in d: _pf_tick('hit'); return d[c]
+        _pf_tick('il'); v = d[c] = _raw_il(c); return v
+    _pf_tick('il'); return _raw_il(c)
+def _w_eb(*a, **k):
+    _tc_drop(); _pf_tick('eb'); return _raw_eb(*a, **k)
+def _w_rpc(*a, **k):
+    _pf_tick('rpc'); return _raw_rpc(*a, **k)
+def _w_sl(*a, **k):
+    _tc_drop(); return _raw_sl(*a, **k)
+for _n, _f in (('getCondVisibility', _w_cv), ('getInfoLabel', _w_il), ('executebuiltin', _w_eb), ('executeJSONRPC', _w_rpc), ('sleep', _w_sl)):
+    try: setattr(xbmc, _n, _f)
     except Exception: pass
 class _PFHome(object):
     def __init__(self, w): self._w = w
-    def getProperty(self, k): _pf_tick('gp'); return self._w.getProperty(k)
-    def setProperty(self, k, v): _pf_tick('sp'); return self._w.setProperty(k, v)
-    def clearProperty(self, k): _pf_tick('sp'); return self._w.clearProperty(k)
+    def getProperty(self, k):
+        if _TCON[0]:
+            d = _tc()[0]
+            if k in d: _pf_tick('hit'); return d[k]
+            _pf_tick('gp'); v = d[k] = self._w.getProperty(k); return v
+        _pf_tick('gp'); return self._w.getProperty(k)
+    def setProperty(self, k, v):
+        _pf_tick('sp'); r = self._w.setProperty(k, v)
+        if _TCON[0]:
+            c = _tc(); c[0][k] = v; c[1].clear(); c[2].clear()
+        return r
+    def clearProperty(self, k):
+        _pf_tick('sp'); r = self._w.clearProperty(k)
+        if _TCON[0]:
+            c = _tc(); c[0][k] = ''; c[1].clear(); c[2].clear()
+        return r
     def __getattr__(self, n): return getattr(self._w, n)
 home = _PFHome(home)
+class _TCMon(object):   # 5.33.446 TICKCACHE: a wait = end of this thread's tick
+    def __init__(self, m): self._m = m
+    def waitForAbort(self, *a):
+        _tc_drop(); return self._m.waitForAbort(*a)
+    def __getattr__(self, n): return getattr(self._m, n)
 def now0(): return _t.time()
 def _modal_blocks_strip():   # 5.33.420 MODALGUARD: Confirm/any modal up -> never pull focus to strip 6996 (keep-skin + Yes/No 10/11 lost focus)
     return xbmc.getCondVisibility('System.HasModalDialog | Window.IsActive(yesnodialog) | Window.IsVisible(yesnodialog)')
@@ -134,7 +184,7 @@ if home.getProperty('bz_flip_running') != 'true':
     # np3: the Tab keymap is installed by bz_cmd.py keymap (music window onload), so it also works when this script was already running
     home.setProperty('bz_flip_ver', 'np3')
     xbmc.executebuiltin('RunScript(special://skin/scripts/bz_cmd.py,keymap)')
-    mon = xbmc.Monitor()
+    mon = _TCMon(xbmc.Monitor())   # 5.33.446 TICKCACHE
     LOAD_WAIT = 0.5  # seconds the new cover gets to load (preload image) before the flip
     import time
     # v0.1.24: sway phase. The sway (Includes_Bezel) runs while bz_audio_latch + no bz_sway_hold:
