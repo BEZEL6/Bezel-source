@@ -65,7 +65,7 @@ Every non-library GO entry first runs `ClearProperty(bz_nav)`. `bz_mm.py` drops 
 | Section | Order |
 |---------|--------|
 | MUSIC | ARTISTS → ALBUMS → GENRES → RECENT SONGS → RECENT ALBUMS |
-| MOVIES | TITLES → RECENTLY ADDED → YEARS (5.33.393: Actors/Sets/Genres deleted) |
+| MOVIES | TITLES → RECENTLY ADDED → YEARS (5.33.398: Actors/Sets/Genres deleted) |
 | TV | SHOWS → WATCHING → YEARS → ACTORS → RECENT → GENRES |
 
 The last choice is remembered across sessions. On a cold start the pills reset to index 1 (Artists / Titles / Shows, t5012).
@@ -85,31 +85,11 @@ The last choice is remembered across sessions. On a cold start the pills reset t
 ## Related
 mm-warm.md (LOCKED) · mm-mini-player.md · music-list.md · movies-list.md · tv-list.md · media-sources.md
 
-## Idle auto-hide (5.33.216)
-- **When:** MM open, Tuner/BEZEL Settings closed, no modal, focus on 6996, `Skin.String(bz_at_mmidle)` ≠ Off (default On), Kodi global idle ≥ 30 s.
-- **Hide:** `bz_flip.py` `mm_idle()` sets focus to park button **6897** (2×2 off-screen, no textures, inside group 6899) waits (polling 50 ms, up to 1 s — 5.33.387) until 6897 really holds focus, then clears any stray `bz_mmtap` and sets `Window(Home).Property(bz_mmidle)=1`. If the park never takes focus, focus goes back to 6996 (`_bzstrip`) and it retries next idle tick; if focus is ever found on 6897 with no hide armed, the hide completes (focus is never stranded on the invisible park). Wrapper group **6894** (all strip/label/glow groups of BezelNavMenu, not the dim veil or button 6898) is `Visible String.IsEmpty(bz_mmidle)` → Hidden fade 100→0 1500 ms sine. Warm art, dim and mini-player stay.
-- **Wake:** any key on 6897 (up/down/left/right/select/back) → `ClearProperty(bz_mmidle,home)`; touch/mouse wake when idle time < 1 s. Group fades in 200 ms; `mm_idle` restores focus via `_bzstrip` (same row). The first key only wakes; it does not navigate. MM close clears `bz_mmidle`.
-- **Background undim (5.33.217):** every `BezelSecDim` mmdim Conditional also needs `String.IsEmpty(Window(Home).Property(bz_mmidle))`. While idle the mmdim fades go false → section art/fanart reverses to full opacity (100%) over 600 ms. Wake clears `bz_mmidle` → Tuner Background dim reapplies (600 ms). gdim (closed MM) unchanged.
-- **Idle label (5.33.219):** XML group in BezelNavMenu (sibling before park button 6897, outside 6894), Visible `$EXP[bz_navmenu] + !String.IsEmpty(Window(Home).Property(bz_mmidle))`. Two stacked labels right of the Bezel logo: `PRESS ANY` (left 108, top 36) / `BUTTON` (top 58), `bz_mm17`, textcolor `6EFFFFFF` (~43%). Fade in 1500 ms sine with the idle fade; wake hides it in 200 ms. Logo stays.
-- **Colour backdrop hide (5.33.330):** `BezelGlobalBackdrop` (global colour backdrop, `BzGbdCol`/strip colour) has a Conditional fade 100→0, 1500 ms sine, while `$EXP[bz_navmenu] + bz_mmidle`; reverses on wake.
-- **Fanart stage titles (5.33.330):** only while `bz_mmidle` (MM open, Music or Videos underlay), a BezelNavMenu group (before 6897, outside 6894) shows the focused `Container(60)` item's associated clearart at 150,660 640×250 (keep, bottom-left; `BzMMIdleClear`: clearlogo → tvshow.clearlogo → artist.clearlogo → clearart → tvshow.clearart) and the title at 150,920 (`BzMMIdleTitle`: TV show title → movie title → artist → label). With clearart the title is a small bz_mm24 line; without it the title is large bz_b46. Fades in 1500 ms after 600 ms delay; out 200 ms on wake. Never shown outside auto-hide.
-- **Tuner:** MAIN MENU › Auto-hide menu (`mmidle`, LEFT Off / RIGHT On), info `bezel/info/mm_autohide.png`.
-
-<!-- PORTLINKS -->
----
-**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/mm-list.md) · [state](../state/mm-list.md) · [motion](../motion/mm-list.md) · [art](../art/mm-list.md) · [input](../input/mm-list.md) · [theme](../theme/tokens.md) · [screens](../port-refs/mm-list/) · [PORT_INDEX](../PORT_INDEX.md)
-- 5.33.341: MM auto-hide clearart/title (from 330) never showed, because `String.IsEmpty($VAR[...])` in <visible> is never true. The guards now use direct Container(60) Label/Art conditions. Smoked with Friends: clearlogo + title show over the stage while bz_mmidle is set.
-- **Wake keeps warm state (5.33.374):** `mm_warm` skips (does not reset `last`/`done`) while `bz_mmidle` or focus 6897, so wake never re-warms the underlay; current idle album/random row stays.
-
-
 ## Kodi FS from MM (5.33.378)
 Leaving Fanart FS / 1121 / NP opened while MM was open returns to MM (`bz_fsmm` latch), not the section list. Video FS not covered (video playback starts from a section).
 
-## MM auto-hide wake (5.33.380)
-30 s idle on strip 6996 → SetFocus(6897) park; bz_mmidle set only once 6897 holds focus (fades 6894). Any key on 6897 (Up/Down/L/R/Select/Back) or touch/mouse clears bz_mmidle = wake only (key is consumed). Strip fades in; focus stays parked on no-op 6897 for 0.5 s (WAKEGRACE) so rapid extra presses cannot hit Back-close / Select-open / pill; then bz_flip _bzstrip returns focus to 6996 on the live row. Warm never re-arms during park (.374). Wake always lands on normal MM.
-Wake idle-art (5.33.383): see artwork-group.md IDLERESET — wake restarts the hold then random.
-
 ## Quick-tap ignore (current, 5.33.386)
 - **Whole strip:** any Select / Back / Left / Right on 6996 runs once, then sets Home `bz_mmtap`. All 6996 actions are conditioned on `String.IsEmpty(bz_mmtap)`, so a second press within **400 ms** does nothing. `bz_flip.py mm_tap()` clears the latch 400 ms after it appears (50 ms poll). Up/Down are not latched (fast scrolling stays free).
-- **Auto-hide wake:** unchanged — wake key eaten by park 6897, focus stays there 0.5 s, then strip 6996.
 - Scope: strip only. Once Back/Select hands focus to list 60 / another window, that target is not latched.
+
+**No MM auto-hide (5.33.398 NOAUTOHIDE, Rob t2799u):** the strip 6996 / group 6894 stays visible and focusable the whole time MM is open. There is no idle fade, no park button 6897, no `bz_mmidle`, no idle label / clearart stage, no wake path (WAKEGRACE/IDLEPARK/IDLERESET), and no Tuner Auto-hide row. mmdim and the colour backdrop follow plain MM-open rules. MMHOLD on MM open is unchanged.

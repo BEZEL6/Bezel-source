@@ -122,13 +122,6 @@ id `fsslide`, string `bz_at_fsslide` 1–4 (empty=3). Left/Right in 6970 nav blo
 
 **5.33.210:** Tuner onback `bz_tunesrc=fsctrl` → `ActivateWindow(1121)` when `$EXP[bz_m1121ok]`, else `ActivateWindow(visualisation)`. All Fanart FS / visualisation tuner rows also apply to 1121 (shared includes).
 
-### MAIN MENU › Auto-hide menu (5.33.216)
-`id=mmidle`, toggle, `Skin.String(bz_at_mmidle)` Off / On (empty = On). On = 30 s idle fades the MM strip and the colour backdrop to 0 and shows the focused item's clearart + title on the fanart stage (5.33.330; see mm-list.md). Info art `bezel/info/mm_autohide.png`. Row sits after Background dim level.
-
-<!-- PORTLINKS -->
----
-**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/skin-settings-tuner.md) · [state](../state/skin-settings-tuner.md) · [motion](../motion/skin-settings-tuner.md) · [art](../art/skin-settings-tuner.md) · [input](../input/skin-settings-tuner.md) · [theme](../theme/tokens.md) · [screens](../port-refs/skin-settings-tuner/) · [PORT_INDEX](../PORT_INDEX.md)
-
 ## Strip-only list (5.33.298)
 List 60 is always the colour-strip list — the old full-size off-strip list is parked at `/workspace/b401/parked_old_list/` (RESTORE.md). Every list view (Music L1–L3, Movies/TV, Music root, sources, files, non-library) draws in the strip: the list group is laid out 450×1038 at x120/y120 and always shrunk 86.67% (center 120,120) + slid 510 → on screen x570–960, y120–1020 (390×900, fills the strip, ~13.8 rows of 75). Grouplist clip (t4533) is 450×1038 so nothing paints past y1020. ALL row 6098 always rides the same shrink/slide. Left still goes to FULLSCREEN 6886 first on Music (5.33.297); Up/Down wrap to 6097/6098 unchanged; A–Z bars 6100/6500 stay at x78.
 LIST Tuner rows after strip-only: none flushed (none were off-strip-only). Still wired to strip list 60: pingspeed, rowscroll, rowsoft, zoomtime, fanart, cascspeed, cascstag, hishape, zoomsize. zoomsize left at 100–115%: the focused-row zoom is scissored by the strip grouplist clip, so it cannot spill past the strip edge.
@@ -142,7 +135,8 @@ Section head `MAPS` (toggle `Skin.HasSetting(bz_topen_maps)`, `$VAR[BzTSec_maps]
 - **FULLSCREEN MUSIC > Open after 30 s idle in Music** (5.33.325, id `fsauto`, toggle, default ON, `bz_fsauto_off`): auto-opens Dialogue FS after 30 s idle in Music. Info art reuses `fs_music_delay.png`. See dialogue-fs.md.
 
 ## 5.33.334 — WARM folders merged (t2450)
-- The old MAIN MENU › WARM SYSTEM sub-folder is gone. Its 8 rows (Background warm delay, Section fade, Section fade depth, Background art crossfade, Background dim level, Auto-hide menu, MM debug log, Dump MM state) now sit under the single top-level **WARM 2.0.1** head (`bz_topen_warm20`), after Hold last art / Album art during music / Startup splash / A/B fade length.
 - Row ids and handlers unchanged (same skin strings). `BzTSec_warmsys` variable kept but unused.
 
-- 5.33.394: ALBUM / POSTER gains **Poster ↔ album fade** (`a2pfade`, slider, `bz_at_a2pfade` 1–7, default 4 = 400 ms; LEFT faster / RIGHT slower). Reset album clears it.
+- 5.33.398: ALBUM / POSTER gains **Poster ↔ album fade** (`a2pfade`, slider, `bz_at_a2pfade` 1–7, default 4 = 400 ms; LEFT faster / RIGHT slower). Reset album clears it.
+
+**No MM auto-hide (5.33.398 NOAUTOHIDE, Rob t2799u):** the strip 6996 / group 6894 stays visible and focusable the whole time MM is open. There is no idle fade, no park button 6897, no `bz_mmidle`, no idle label / clearart stage, no wake path (WAKEGRACE/IDLEPARK/IDLERESET), and no Tuner Auto-hide row. mmdim and the colour backdrop follow plain MM-open rules. MMHOLD on MM open is unchanged.

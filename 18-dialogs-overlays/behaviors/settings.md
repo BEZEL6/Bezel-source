@@ -213,4 +213,4 @@ Disabled-by-parent settings (e.g. proxy fields while proxy is off, AirPlay passw
 - 5.33.370: opening Settings from MM sets `bz_setopen` latch so the 6401 poster cannot flash during the nav-clear → 1130 gap (see artwork-group.md).
 
 - 5.33.389 Settings tree: every Settings underlay is a kid of the SETTINGS node (`bz_setkids` = hub | kodi | tools). Global artwork is owned by that node only — see artwork-group.md "Settings tree".
-- SETHOLD: while the MM strip is on the SETTINGS row (`Container(6996).ListItem.Property(sec)` = settings, e.g. after Back from a Settings kid such as FILE MANAGER), `under_adv` does no UADVRAND step, so the held Settings/Files art stays fixed through MM open, auto-hide and wake. Scrolling to another row or closing MM ends the hold. bz_flip.py under_adv. FULL restart.
+- SETHOLD: while the MM strip is on the SETTINGS row (`Container(6996).ListItem.Property(sec)` = settings, e.g. after Back from a Settings kid such as FILE MANAGER), `under_adv` does no UADVRAND step, so the held Settings/Files art stays fixed while MM stays open. Scrolling to another row or closing MM ends the hold. bz_flip.py under_adv. FULL restart.

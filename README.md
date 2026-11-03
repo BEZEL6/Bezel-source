@@ -1,6 +1,6 @@
 # Bezel-source (organized by system)
 
-Source: live Bezel **5.33.397** (`skin.bezel2`) — copies only, no code changes.
+Source: live Bezel **5.33.398** (`skin.bezel2`) — copies only, no code changes.
 Built from the development tree; laptop Downloads stays for finished zips only.
 
 Each numbered folder is one system. Overlap is intentional (e.g. splash ⊂ warm-gate).
@@ -27,7 +27,7 @@ Each numbered folder is one system. Overlap is intentional (e.g. splash ⊂ warm
 - `17-sway-animations/` — Shared sway / poster rotate / stub cast
 - `18-dialogs-overlays/` — Busy, confirm, pause, context, search, power, info
 - `19-behaviors-docs/` — Full behaviors/ documentation set (current .md only)
-- `20-full-skin-snapshot/` — Complete skin.bezel2 5.33.397 tree snapshot for reference (current files; bak ignored). `media/` comes from the 5.33.365 full zip, plus `media/bezel/info/a2p_fade.png` (5.33.394).
+- `20-full-skin-snapshot/` — Complete skin.bezel2 5.33.398 tree snapshot for reference (current files; bak ignored). `media/` comes from the 5.33.365 full zip, plus `media/bezel/info/a2p_fade.png` (5.33.394); `media/bezel/info/mm_autohide.png` removed in 5.33.398.
 
 ## Packaging note
 

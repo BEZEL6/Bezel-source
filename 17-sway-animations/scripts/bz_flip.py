@@ -660,7 +660,7 @@ if home.getProperty('bz_flip_running') != 'true':
     # fanart / poster changes. Hold N s after the MM opens, then one step every D s (wraps). Closing the MM / Select lands on the
     # advanced item (it IS the list position). K24: never during MM warm / Container.IsUpdating / dialogs; only Control.Move (no Container.Update).
     def under_adv():
-        opened = None; last = 0.0; navwas = [False]; idwas = ['']
+        opened = None; last = 0.0; navwas = [False]
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
             # 5.33.369 MMHOLD (Rob t2641-t2652): MM opens from Music -> lock bz_m_idle_art on the focused list-60 cover (warm/path churn can't swap it);
             # unlock on the first UADVRAND step (after hold) or MM close. Random never runs with MM closed (list browsing).
@@ -668,14 +668,6 @@ if home.getProperty('bz_flip_running') != 'true':
             if _nv and not navwas[0] and home.getProperty('bz_m_idle_art'): home.setProperty('bz_m_idle_lock', '1')
             if not _nv: home.clearProperty('bz_m_idle_lock')
             navwas[0] = _nv
-            # 5.33.383 IDLERESET: MM auto-hide wake (bz_mmidle 1 -> clear) = fresh MM entry for idle art: re-lock the shown cover
-            # and restart the UADVRAND hold (bz_uadv_hold, >=3 s) so no random step lands while the strip fades back in.
-            _id = home.getProperty('bz_mmidle')
-            if idwas[0] == '1' and not _id and _nv:
-                opened = None
-                if home.getProperty('bz_m_idle_art'): home.setProperty('bz_m_idle_lock', '1')
-                xbmc.log('BEZEL IDLERESET: MM wake -> idle art hold restarted', xbmc.LOGINFO)
-            idwas[0] = _id
             on = (home.getProperty('bz_nav') == 'true' and not home.getProperty('bz_mmstart') and not home.getProperty('bz_mmwarm')
                   and not home.getProperty('bz_navtune') and not home.getProperty('bz_navset') and not home.getProperty('bz_navsub') and not home.getProperty('bz_kset')   # F10 batch2: pause while Tuner / settings card / submenu open
                   and not xbmc.getCondVisibility('Skin.HasSetting(bz_uadv_off)')
@@ -797,8 +789,6 @@ if home.getProperty('bz_flip_running') != 'true':
                     home.setProperty('bz_lastmusic', _lp)
             if not home.getProperty('bz_nav') and SS: SS.clear()   # WARM 2.0: session store lives only while MM is open
             if home.getProperty('bz_mmpick'): last[0] = None; done[0] = None; continue   # t5030: never start/continue a warm after a pick
-            if home.getProperty('bz_nav') == 'true' and (home.getProperty('bz_mmidle') or xbmc.getCondVisibility('Control.HasFocus(6897)')):
-                continue   # 5.33.374 IDLEWAKE (Rob t2682): MM auto-hide park 6897 is NOT leaving the strip - keep last/done so wake never re-arms a warm (list reload / RANDSTART reset the idle album)
             if home.getProperty('bz_nav') != 'true' or not xbmc.getCondVisibility('Control.HasFocus(6996)'):
                 last[0] = None; done[0] = None; continue
             if home.getProperty('bz_mmstart') or home.getProperty('bz_secload') or home.getProperty('bz_navsub') or home.getProperty('bz_navset') or home.getProperty('bz_navtune') \
@@ -1613,46 +1603,8 @@ if home.getProperty('bz_flip_running') != 'true':
                     lanes[0][0].seed(xbmc.getInfoLabel('$VAR[BezelFanart]'), time.time())
             if mon.waitForAbort(0.05): break
     _bzstart(ab_clock)
-    def mm_idle():   # 5.33.216 MM idle fade: 30 s no input -> strip fades to 0 (veil/Warm stay), focus parked on 6897; any key wakes + SetFocus(6996)
-        IDLE = 30
-        while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
-            hid = home.getProperty('bz_mmidle')
-            if hid == '1':
-                if home.getProperty('bz_nav') != 'true':
-                    home.clearProperty('bz_mmidle')
-                elif xbmc.getGlobalIdleTime() < 1:
-                    home.clearProperty('bz_mmidle')   # touch / mouse / key not routed to 6897
-            elif (home.getProperty('bz_nav') == 'true' and not home.getProperty('bz_mmidle_set')
-                  and xbmc.getCondVisibility('Control.HasFocus(6897) + !System.HasModalDialog')):
-                home.setProperty('bz_mmidle', '1'); home.setProperty('bz_mmidle_set', '1')   # 5.33.387: focus already parked (late SetFocus landed) -> finish the hide instead of stranding focus
-            elif hid == 'w':   # woken by 6897 (ClearProperty) -> restore strip focus next frame
-                pass
-            elif home.getProperty('bz_mmidle_set'):
-                home.clearProperty('bz_mmidle_set')
-                # 5.33.380 WAKEGRACE (Rob t2694 #3): the wake key is eaten by 6897, but a fast 2nd press (Back/Select/L/R) used to land on the
-                # freshly re-focused strip -> Back closed MM / Select opened a section. Park 0.5 s on the no-op 6897 (strip fades in), THEN hand to 6996.
-                if mon.waitForAbort(0.5): break
-                if home.getProperty('bz_nav') == 'true' and not home.getProperty('bz_mmidle') and xbmc.getCondVisibility('Control.HasFocus(6897)'):
-                    _bzstrip(home)
-            elif (home.getProperty('bz_nav') == 'true' and xbmc.getInfoLabel('Skin.String(bz_at_mmidle)') != 'Off'
-                  and not home.getProperty('bz_navtune') and not home.getProperty('bz_navbez')
-                  and xbmc.getGlobalIdleTime() >= IDLE and xbmc.getCondVisibility('Control.HasFocus(6996) + !System.HasModalDialog')):
-                xbmc.executebuiltin('SetFocus(6897)')
-                # 5.33.380: only hide once the park really holds focus (hiding 6894 while 6996 focused let Kodi fall back to list 60)
-                # 5.33.387 IDLEPARK (Rob t2714): 50 ms was too short on Shield -> focus sat on the invisible park with no bz_mmidle
-                # (strip unfocused + never hid, and no retry since 6996 no longer focused). Poll up to 1 s; if the park never holds, give 6996 back.
-                held = False
-                for _ in range(20):
-                    if mon.waitForAbort(0.05): break
-                    if xbmc.getCondVisibility('Control.HasFocus(6897)'): held = True; break
-                if mon.abortRequested(): break
-                if held and home.getProperty('bz_nav') == 'true':
-                    home.clearProperty('bz_mmtap')
-                    home.setProperty('bz_mmidle', '1'); home.setProperty('bz_mmidle_set', '1')
-                elif home.getProperty('bz_nav') == 'true' and not xbmc.getCondVisibility('Control.HasFocus(6996) | System.HasModalDialog'):
-                    _bzstrip(home)
-            if mon.waitForAbort(0.1): break
-    _bzstart(mm_idle)
+    # 5.33.398 NOAUTOHIDE (Rob t2799u): MM auto-hide (mm_idle, park 6897, WAKEGRACE/IDLEPARK/IDLERESET) removed; strip 6996 always shown while MM open
+    home.clearProperty('bz_mmidle'); home.clearProperty('bz_mmidle_set')
     def mm_tap():   # 5.33.386 MMTAP (Rob t2705): strip-wide quick-tap ignore. 6996 Select/Back/Left/Right set bz_mmtap as their last
         # action; every 6996 action is gated on !bz_mmtap, so a 2nd press inside 400 ms is swallowed. Clear 400 ms after first seen.
         LATCH = 0.4; t0 = 0
@@ -1670,15 +1622,15 @@ if home.getProperty('bz_flip_running') != 'true':
         HOLD = 10.0; K = ('bz_hf_a', 'bz_hf_b', 'bz_hf_ph')
         def clr():
             for k in K: home.clearProperty(k)
-        def mmw():   # 5.33.279 MMLEAF (Rob pt2150u): Music warm under MM (strip 6996 or MM-idle park 6897), not mid-swap / submenu
+        def mmw():   # 5.33.279 MMLEAF (Rob pt2150u): Music warm under MM (strip 6996), not mid-swap / submenu
             return (home.getProperty('bz_nav') == 'true' and not home.getProperty('bz_mmwarm') and not home.getProperty('bz_navtune') and not home.getProperty('bz_navbez')
-                    and xbmc.getCondVisibility('!Player.HasAudio + Window.IsActive(music) + [Control.HasFocus(6996) | Control.HasFocus(6897)] + !System.HasModalDialog'))
+                    and xbmc.getCondVisibility('!Player.HasAudio + Window.IsActive(music) + Control.HasFocus(6996) + !System.HasModalDialog'))
         def ok():
             if home.getProperty('bz_randpend'): return False
             if mmw(): return True
             return xbmc.getCondVisibility('!Player.HasAudio + Window.IsActive(music) + Control.HasFocus(60)') and not home.getProperty('bz_nav')
         def dim():   # 5.33.375 LEAFWAKE (Rob pt2688u): mirror XML bz_lfdim (MM open & not auto-hide, or gdim 1-6 MM closed) -> leaf groups hidden, so never step phases (was glare/shadow-only ghost flip)
-            if home.getProperty('bz_nav') == 'true': return not home.getProperty('bz_mmidle')
+            if home.getProperty('bz_nav') == 'true': return True   # 5.33.398: no MM auto-hide
             return xbmc.getInfoLabel('Skin.String(bz_at_gdim)') in ('1', '2', '3', '4', '5', '6')
         def keynow(): return xbmc.getInfoLabel('Container(60).ListItem.DBType') + ':' + xbmc.getInfoLabel('Container(60).ListItem.DBID')
         def covers():

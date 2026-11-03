@@ -276,3 +276,9 @@ Rob: "Take out" the black box above the merged song list. Gated the View D cover
 - DONE: Tuner slider ALBUM / POSTER > Poster ↔ album fade (`bz_at_a2pfade` 1–7 = 200/250/300/**400**/500/600/800 ms) drives 6401, 6402 and handoff pre-warm fades in Custom_1122. Reset album -> 400. ReloadSkin. Not zipped.
 - 5.33.396 (Rob t2785u) SETHOLD: no UADVRAND random step while the MM strip is on the SETTINGS row; held art fixed through auto-hide/wake. bz_flip.py under_adv.
 - 5.33.397 (Rob t2789-t2793) MMAUDIO: big album on every MM row while audio plays (bz_mmaudio in bz_railvis / bz_artposter).
+
+## 5.33.398 NOAUTOHIDE (Rob t2799u "Rip out the mm autohide") — Nov 2 2026 ~9:40 PM ET
+- Removed MM auto-hide entirely: bz_flip.py mm_idle thread (30 s → SetFocus 6897 → bz_mmidle, WAKEGRACE, IDLEPARK) deleted; IDLERESET wake edge in under_adv deleted; mm_warm 6897/bz_mmidle skip deleted; idle_hinge mmw/dim no longer reference 6897/bz_mmidle. Startup clears stale bz_mmidle/bz_mmidle_set.
+- Includes_Bezel: 6894 visible/hide-fade gate removed; park button 6897, PRESS ANY BUTTON idle label and auto-hide clearart stage removed; colour backdrop idle fade removed; BezelSecDim mmdim and bz_lfdim no longer special-case bz_mmidle.
+- Tuner: MAIN MENU › Auto-hide menu row, BzATVal_mmidle, its L/R handlers and media/bezel/info/mm_autohide.png removed.
+- Behaviors mm-list / mm-warm / artwork-group / skin-settings-tuner updated. Backup /workspace/b401/bak_5.33.397_pre398. .py → FULL restart. No zip/push.

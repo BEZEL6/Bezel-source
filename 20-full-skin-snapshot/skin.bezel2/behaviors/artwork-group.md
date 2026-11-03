@@ -1,5 +1,5 @@
 # Artwork group (global artwork stage) — dialog 1122, group 6400
-Version: 5.33.392 · Files: `xml/Custom_1122_BigAlbum.xml`, `xml/Includes_Bezel.xml` (BezelVPLPoster / BezelVPLPosterTap / BezelPoster60S), `scripts/bz_flip.py` (poster_clock → v60_mirror)
+Version: 5.33.398 · Files: `xml/Custom_1122_BigAlbum.xml`, `xml/Includes_Bezel.xml` (BezelVPLPoster / BezelVPLPosterTap / BezelPoster60S), `scripts/bz_flip.py` (poster_clock → v60_mirror)
 
 ## What it is
 One always-open modeless dialog (1122) holds **all** right-side artwork in group **6400**, so nothing remounts when you change section:
@@ -38,7 +38,6 @@ One always-open modeless dialog (1122) holds **all** right-side artwork in group
 
 ## 5.33.368 — Music dual prewarm (DUALM)
 - `bz_flip.py m_mirror()` (same poll as v60_mirror, after modal freeze): `bz_m_np_art` = Player.Art(thumb) while audio (not viz); `bz_m_idle_art` = Music list 60 focus (parent→NoWrap(1) thumb, thumb, icon), fallback `bz_cov_last`. Both hold last value.
-- Big album base image in `BezelMusicPlayingArt` is now two stacked always-drawn images (idle under, NP over), same rect/zoom/sway parent. NP fades 0 on `!Player.HasAudio`; idle fades 0 on `Player.HasAudio` (400 ms sine). No Visible remount. `BezelBigArt` var kept but unused there.
 - 5.33.369 MMHOLD: on MM open `under_adv` sets `bz_m_idle_lock` → `m_mirror` stops updating `bz_m_idle_art` (focused Music cover holds through warm/path churn). Lock clears on the first UADVRAND step (after `bz_uadv_hold`, default 5 s, min 3 s; then every `bz_uadv_delay` 8 s) or on MM close. Random only under MM (+ RANDSTART at startup); never while browsing list 60.
 - 5.33.370 SETPOSTER latch: MM Settings/Add-ons set Home `bz_setopen` before `ClearProperty(bz_nav)`; while set, `v60_mirror` forces `bz_vpl_on` empty so 6401 stays at opacity 0 over the held `bz_v60_art`. Cleared by `v60_mirror` once 1130/1131/1117 is active (2 s failsafe).
 
@@ -50,10 +49,8 @@ One always-open modeless dialog (1122) holds **all** right-side artwork in group
 
 ## Poster warm on Music→Movies/TV (5.33.382)
 The poster layer only ever draws `bz_v60_art` (held last Videos poster, staged via `bz_v60_next`). In Music the mirror does not touch `bz_v60_art`, so it stays warm/decoded; when 6401 fades up for Movies/TV it already has the poster texture — opacity crossfade only, no texture swap. First Videos visit of a session (no held poster yet) shows the poster after the 0.6 s preload promote.
-- 5.33.383 IDLERESET: MM auto-hide wake now restarts the idle album/poster hold — the cover on screen at wake is re-locked (bz_m_idle_lock) and the UADVRAND timer restarts (bz_uadv_hold, default 5 s, min 3 s) before random resumes every bz_uadv_delay. Before: random timer kept running through hide, so a step could swap art right as the strip faded back in. bz_flip.py under_adv. FULL restart.
 
 ## Idle album A/B (current, 5.33.384)
-Idle Music big album in the 1122 album layer draws two always-loaded images: `bz_m_idle_a` / `bz_m_idle_b`; `bz_m_idle_side` (a|b, empty=a) picks the shown one. Each has a Conditional 400 ms sine fade-out when `Player.HasAudio` or it is not the shown side; the NP layer (`bz_m_np_art`) is unchanged. `bz_flip.py` `_m_idle_stage()` (called from `m_mirror`): first cover goes straight into the shown slot; later covers go to the hidden slot, wait 0.6 s to decode, then flip side and set `bz_m_idle_art` (= cover on screen, used by MMHOLD/IDLERESET locks). Hidden slot is not written until 0.45 s after a flip. Random steps (UADVRAND, MM + startup only) therefore crossfade, never pop; after MM wake the 383 hold applies, then the next random step crossfades.
 
 ## Dual poster holds (5.33.385 DUALHOLD)
 - `bz_v60_mov` = last Movies poster, `bz_v60_tv` = last TV poster. Written by `v60_mirror` (`_v60_dualrec`) right after list-60 art is staged, only when the Videos list type (movies/sets vs tvshows/seasons/episodes) equals the target and the container is not updating.
@@ -86,7 +83,6 @@ ART HOME (1122 · 6400 · bz_rail=hide is the only hard hide)
 │   ├── hold   bz_v60_mov (Movies) · bz_v60_tv (TV) — picked by MM row / list type
 │   └── meta   lbl · parent · scroll · watched · resume · episodes · m60_art
 ├── ALBUM layer 6402 (over) — opacity $EXP[bz_railvis]
-│   ├── idle   bz_m_idle_a / _b · side · art (on screen) · lock (MMHOLD/IDLERESET)
 │   └── np     bz_m_np_art (over idle while Player.HasAudio)
 └── GATES (opacity only, 400 ms sine — never Visible remount)
     ├── setkids  $EXP[bz_setkids] + bz_setopen latch → poster 0, album holds
@@ -101,5 +97,7 @@ New art state = add a branch/prop to ART_TREE + draw it in 1122; never a per-win
 **Simple.** Opening Settings, Add-ons, Files or Kodi info from MM keeps the held poster/album up — no fade to black.
 
 **Wiring.** `bz_mm.py` sets `bz_setopen` for settings/addons/files/kodi. `bz_flip.v60_mirror`: while latched, it returns early and holds `bz_vpl_on` + `bz_v60_art` (no clear). Latch ends when any `$EXP[bz_setkids]` window is active (then the SETKIDS branch stages the held MM lane) or after 2 s.
-- SETHOLD: while the MM strip is on the SETTINGS row (`Container(6996).ListItem.Property(sec)` = settings, e.g. after Back from a Settings kid such as FILE MANAGER), `under_adv` does no UADVRAND step, so the held Settings/Files art stays fixed through MM open, auto-hide and wake. Scrolling to another row or closing MM ends the hold. bz_flip.py under_adv. FULL restart.
+- SETHOLD: while the MM strip is on the SETTINGS row (`Container(6996).ListItem.Property(sec)` = settings, e.g. after Back from a Settings kid such as FILE MANAGER), `under_adv` does no UADVRAND step, so the held Settings/Files art stays fixed while MM stays open. Scrolling to another row or closing MM ends the hold. bz_flip.py under_adv. FULL restart.
 - MMAUDIO (5.33.397): while the MM is open and audio is playing (no video), `$EXP[bz_mmaudio]` keeps the big album (6402) up on every strip row — Music, Movies, TV, Recent, Favourites, Search, Pictures, Add-ons, Settings, Media Sources, Power. It forces `bz_railvis` true and `bz_artposter` false, so the poster layer 6401 stays down. With no audio, or with MM closed, the existing Music album / A2P poster rules apply. Includes_Bezel.xml.
+
+**No MM auto-hide (5.33.398 NOAUTOHIDE, Rob t2799u):** the strip 6996 / group 6894 stays visible and focusable the whole time MM is open. There is no idle fade, no park button 6897, no `bz_mmidle`, no idle label / clearart stage, no wake path (WAKEGRACE/IDLEPARK/IDLERESET), and no Tuner Auto-hide row. mmdim and the colour backdrop follow plain MM-open rules. MMHOLD on MM open is unchanged.
