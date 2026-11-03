@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.446
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.447
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 447 | "VERY LONG PAUSES WHEN ENTERING SECTIONS" (from MM, 5+ s) on 446; "ISSUE WAS CAUSED BY YOUR CHANGE" | **TICKCACHE reverted**: bz_flip.py = 445 |
 | 446 | Rob sent the 445 kodi.log (perf lines) | **TICKCACHE**: per-thread, per-tick cache for Home property / condition / infolabel reads in bz_flip.py |
 | 445 | "START WITH THE ONE THAT WILL OPTIMIZE BEZEL THE MOST"; "SYNCING THE SWAY SHADOWS, GLARE, LIT DUST… THE LAST FIX SEEMS TO OF LOST SYNC AGAIN" | **SYNCANCHOR** (stub cast clock re-anchors on 1122 reopen + full album gate); **PERFCOUNT** (optimization #1 step 1: per-thread Kodi call counts in kodi.log) |
 | 444 | Rob batch: auto-hide dim (poster + fanart only), Movies fanart showing Music labels, album stretch on rail slide, idle lit dust, quick-nav pick opening the warm section, music-playing landing, L1 ARTIST caption, Tuner Back | **ALLFIX**, **MMHIDEART/FAN**, **RAILXFADE**, **IDLELIT**, **VPICKLOAD**, **M2VLAND**, L1 caption |
@@ -208,7 +209,17 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
 
-## 5.33.446 — TICKCACHE (optimization #1, step 2)
+## 5.33.447 — TICKCACHE reverted
+- Rob on 446: very long pauses (5+ s) entering sections from the MM, which started with 446. `scripts/bz_flip.py` is restored byte-for-byte to 5.33.445. The 446 file is kept outside the skin (`tools/bz_flip.446_tickcache.py` in the repo) for study.
+- **446 log for the record:**
+  - One full stall, 17:10:33–17:10:53. No bz_flip thread made a Kodi call, so the 60 s perf line came 20 s late.
+  - A TV in-place warm took 20.99 s (445: 0.35–1.45 s).
+  - Real Kodi calls fell from ~3,000/s to ~1,400–2,650/s.
+  - The log also shows Kodi failing to open 4 movie files over NFS for thumbnail extraction (Lincoln, Return of the Jedi 4K83, Stand by Me, The Wanderers), with one open taking 16 s during the stall. The 445 log has the same failures without pauses.
+  - Exactly how the cache produced the stall isn't proven. Any future version of this optimization needs a device A/B before it ships.
+- Rule for the next steps of optimization #1: one change per build, with Rob A/B'ing it against the previous build.
+
+## 5.33.446 — TICKCACHE (REVERTED in 447) (optimization #1, step 2)
 - **445 measurement** (Rob's kodi.log, 15 min, MM open most of the time, music played once):
   - bz_flip.py made **~2,950–3,000 Kodi calls/s** steady, about 65% Home `getProperty`, 22% `getCondVisibility`, 13% `getInfoLabel`. Writes and builtins were only a few per second.
   - Per thread (calls/s): `nav_menu` ~1,110 (≈55 per 50 ms tick), `poster_clock` ~520, `sway_clock` ~475, `ab_clock` ~265, `mm_autohide` ~190, `mm_warm` ~120, `vwarm` ~97. The rest are under 60 each. The top four are 80%.

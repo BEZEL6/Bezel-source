@@ -1,3 +1,6 @@
+5.33.447 (2026-11-03)
+- TICKCACHE REVERTED (Rob: very long pauses, 5+ s, entering sections from the MM on 446, caused by that change). scripts/bz_flip.py is back to 5.33.445 exactly (SYNCANCHOR + PERFCOUNT kept).
+
 5.33.446 (2026-11-03)
 - TICKCACHE (optimization #1, step 2; from Rob's 445 perf log: ~3000 Kodi calls/s, 65% Home getProperty, 22% conditions, 13% infolabels): inside one tick of a bz_flip helper, a repeated Home property / condition / infolabel read is answered from a per-thread cache instead of Kodi (each Kodi call takes the GUI lock). The cache drops at every wait and builtin; the thread's own property writes update it. Other threads see changes on their next tick, as before. Kill switch: Skin.SetBool(bz_nocache). Perf log now also shows cache hits.
 
