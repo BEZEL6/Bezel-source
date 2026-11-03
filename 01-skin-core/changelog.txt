@@ -1,3 +1,14 @@
+5.33.404 (2026-11-03)
+- POSTERCENTER fix: bz_art_x constant 990→1140 so poster texture sits in the moved frame (frame/glare/sway were already at 1140; art still used the old constant). ReloadSkin.
+
+5.33.403 (2026-11-03)
+- DEFFADE: Poster↔album fade default 800 ms (empty|7; was 400). Background art crossfade default 1 s (empty|3; was 3 s). Tuner + 1122 A2P gates + BZMMXF base + bz_tune DEF. FULL restart.
+
+5.33.402 (2026-11-03)
+- POSTERCENTER: Movies/TV poster stack shares album sway center 1440,570 (box 1140,120 600×900; was 990,120 / center 1290). Frame, blur, glare, shadow, LOOK, tap 6280, and BezelXInfo sway centers move with it. ReloadSkin.
+
+5.33.401 UADVFOCUS (Rob t2864): UADVRAND / under_adv only steps list 60 while Control.HasFocus(6996) (MM strip focused). Focus off the strip → pause random; last idle/warm item stays held. SETHOLD + MMHOLD unchanged. bz_flip.py. FULL restart.
+
 5.33.400 STRESSFIX (Rob stress 399 fails): F1 Media Sources Back lands on MEDIA SOURCES (msret latch + bz_msretrow, same pattern as setret). F3 Recently Played Back lands on RECENTLY PLAYED (musicdb://recentlyplayed → row 6905). F2 Music→Movies stale poster during bz_mmwarm: v60 dualpick/dualrec + lanes hold last type art until warm _restore; residual first-session Movies visit with no Movies hold can still blip last TV poster ~0.4s. bz_flip.py only. FULL restart.
 
 5.33.399 ONEART (Rob t2807–t2814): MS 1117 empty poster fixed (Visible=bz_pready → opacity $EXP[bz_pshow]; setkids hold last bz_v60_art). All art-lane Visible remounts → Conditional opacity (Includes_Bezel, Includes_BezelDialogs, 1117, MyPics); dead visible=false art images removed. FULL restart.

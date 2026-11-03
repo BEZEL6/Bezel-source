@@ -671,6 +671,7 @@ if home.getProperty('bz_flip_running') != 'true':
             on = (home.getProperty('bz_nav') == 'true' and not home.getProperty('bz_mmstart') and not home.getProperty('bz_mmwarm')
                   and not home.getProperty('bz_navtune') and not home.getProperty('bz_navset') and not home.getProperty('bz_navsub') and not home.getProperty('bz_kset')   # F10 batch2: pause while Tuner / settings card / submenu open
                   and not xbmc.getCondVisibility('Skin.HasSetting(bz_uadv_off)')
+                  and xbmc.getCondVisibility('Control.HasFocus(6996)')   # 5.33.401 UADVFOCUS (Rob t2864): UADVRAND only while focus is on the MM strip — otherwise hold last list-60 / warm art (no background scroll of section list)
                   and xbmc.getInfoLabel('Container(6996).ListItem.Property(sec)') != 'settings'   # 5.33.396 SETHOLD (Rob t2785u): MM on the SETTINGS row (Settings-kid return; bz_setret is not reliably set on that path) -> no random step (held art fixed through open / auto-hide / wake)
                   and xbmc.getCondVisibility('[Window.IsActive(videos) | Window.IsActive(music)] + Control.IsVisible(60) + !Container.IsUpdating + !System.HasModalDialog + !Window.IsVisible(1113) + !Window.IsVisible(1111) + !Window.IsVisible(1112) + !Player.HasVideo + Integer.IsGreater(Container(60).NumItems,1)'))
             if not on: opened = None

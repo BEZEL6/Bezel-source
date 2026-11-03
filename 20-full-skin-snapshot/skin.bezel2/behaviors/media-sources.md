@@ -117,7 +117,7 @@ DialogMediaSource = MS Warm strip at 570,120: BezelMMStripChrome (bar opacity/sh
 ## Add Source dialog — current state (5.33.363)
 - Opens over 1117 or over Videos (sources://). Over 1117: 1117's own underlay + strip chrome show; the dialog draws no underlay or chrome (no double opacity). Not over 1117: the dialog draws the 1117 underlay itself (StdFrame, held fanart lane bz_fan_a/b at MM dim + fanart opacity, art) plus strip chrome (box).
 - Title: ADD VIDEO SOURCE (etc., from control 2), font bz_mm28.
-- Right art: a movie/TV poster (bz_pos_a/b) sits in the real poster slot, x990 y120, 600×900, same as Videos/1117, with a white frame. When there's no poster but music art (bz_cov_a), the album cover goes in the square album slot, x1140 y220, 600×600.
+- Right art: a movie/TV poster (bz_pos_a/b) sits in the real poster slot, x1140 y120, 600×900, same as Videos/1117, with a white frame. When there's no poster but music art (bz_cov_a), the album cover goes in the square album slot, x1140 y220, 600×600.
 - StdFrame's thin underline (x1040 y998) is covered in this dialog, so no white bar shows under the art.
 
 ## SOURCES list click (5.33.363, current state)

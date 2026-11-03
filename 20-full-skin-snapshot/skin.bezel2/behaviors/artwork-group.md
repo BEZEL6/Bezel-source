@@ -1,5 +1,5 @@
 # Artwork group (global artwork stage) — dialog 1122, group 6400
-Version: 5.33.398 · Files: `xml/Custom_1122_BigAlbum.xml`, `xml/Includes_Bezel.xml` (BezelVPLPoster / BezelVPLPosterTap / BezelPoster60S), `scripts/bz_flip.py` (poster_clock → v60_mirror)
+Version: 5.33.402 · Files: `xml/Custom_1122_BigAlbum.xml`, `xml/Includes_Bezel.xml` (BezelVPLPoster / BezelVPLPosterTap / BezelPoster60S), `scripts/bz_flip.py` (poster_clock → v60_mirror)
 
 ## What it is
 One always-open modeless dialog (1122) holds **all** right-side artwork in group **6400**, so nothing remounts when you change section:
@@ -38,7 +38,8 @@ One always-open modeless dialog (1122) holds **all** right-side artwork in group
 
 ## 5.33.368 — Music dual prewarm (DUALM)
 - `bz_flip.py m_mirror()` (same poll as v60_mirror, after modal freeze): `bz_m_np_art` = Player.Art(thumb) while audio (not viz); `bz_m_idle_art` = Music list 60 focus (parent→NoWrap(1) thumb, thumb, icon), fallback `bz_cov_last`. Both hold last value.
-- 5.33.369 MMHOLD: on MM open `under_adv` sets `bz_m_idle_lock` → `m_mirror` stops updating `bz_m_idle_art` (focused Music cover holds through warm/path churn). Lock clears on the first UADVRAND step (after `bz_uadv_hold`, default 5 s, min 3 s; then every `bz_uadv_delay` 8 s) or on MM close. Random only under MM (+ RANDSTART at startup); never while browsing list 60.
+- 5.33.369 MMHOLD: on MM open `under_adv` sets `bz_m_idle_lock` → `m_mirror` stops updating `bz_m_idle_art` (focused Music cover holds through warm/path churn). Lock clears on the first UADVRAND step (after `bz_uadv_hold`, default 5 s, min 3 s; then every `bz_uadv_delay` 8 s) or on MM close. Random only under MM with strip focus (+ RANDSTART at startup); never while browsing list 60.
+- 5.33.401 UADVFOCUS: `under_adv` also requires `Control.HasFocus(6996)`. Focus off the MM strip → no Control.Move on list 60; last idle/warm item stays held until strip focus returns (then hold timer restarts via `opened = None`).
 - 5.33.370 SETPOSTER latch: MM Settings/Add-ons set Home `bz_setopen` before `ClearProperty(bz_nav)`; while set, `v60_mirror` forces `bz_vpl_on` empty so 6401 stays at opacity 0 over the held `bz_v60_art`. Cleared by `v60_mirror` once 1130/1131/1117 is active (2 s failsafe).
 
 ## 5.33.372 — Poster hold (POSTERHOLD)

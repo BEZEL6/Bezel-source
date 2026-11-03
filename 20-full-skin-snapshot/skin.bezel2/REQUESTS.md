@@ -294,3 +294,9 @@ Rob: "Take out" the black box above the merged song list. Gated the View D cover
 - F2 Music→Movies stale poster: lanes + v60 dualpick/dualrec hold while bz_mmwarm. Residual: first Movies visit of a session with no Movies hold can blip last TV poster ~0.4s (parked).
 - Stress baseline from 399 otherwise kept. Backup bak_5.33.399_pre400/.
 
+
+## 5.33.401 — UADVFOCUS (Rob t2864 "Don’t mm background scroll on section list60 unless focus on MM row") · FULL restart · not zipped
+- `under_adv` UADVRAND now requires `Control.HasFocus(6996)`. If focus leaves the MM strip, random pauses and the last list-60 / warm art stays held.
+- Still paused for: MM closed, mmstart, mmwarm, Tuner/settings/submenu, uadv_off, SETTINGS row (396 SETHOLD), modal/busy, <2 items.
+- Backup bak_5.33.400_pre401/.
+

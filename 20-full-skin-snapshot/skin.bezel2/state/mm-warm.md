@@ -24,7 +24,7 @@ Every `bz_*` name this object's behavior references, with live definition sites 
 
 ### `bz_art_x`
 - set/clear sites: 0 · read sites: 10
-  - `xml/Includes_Bezel.xml` L2360: `<constant name="bz_art_x">990</constant>`
+  - `xml/Includes_Bezel.xml` L2360: `<constant name="bz_art_x">1140</constant>`
   - `xml/Includes_Bezel.xml` L2595: `<left>bz_art_x</left><top>bz_top</top><width>600</width><height>bz_h</height>`
   - `xml/Includes_Bezel.xml` L2598: `<left>bz_art_x</left><top>bz_top</top><width>600</width><height>bz_h</height>`
 

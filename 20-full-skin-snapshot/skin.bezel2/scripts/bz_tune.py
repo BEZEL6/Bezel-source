@@ -50,7 +50,7 @@ elif a[0] == 'reset':
     if a[1] == 'everything' or a[1] == 'menu': xbmc.executebuiltin('Skin.Reset(bz_dtap_off)'); xbmc.executebuiltin('Skin.Reset(bz_at_mmdim)'); xbmc.executebuiltin('Skin.Reset(bz_at_mmwarm)'); xbmc.executebuiltin('Skin.Reset(bz_at_mmdef)')
     if a[1] == 'everything' or a[1] == 'dust':
         for b in ('bz_dust_off', 'bz_adust_off', 'bz_spin_off', 'bz_spin_ccw', 'bz_lspin_off', 'bz_lspin_cw', 'bz_sdust_off', 'bz_fib_off', 'bz_flk_off', 'bz_d3l0_off', 'bz_d3l1_off', 'bz_d3l2_off', 'bz_amb_off', 'bz_alit20', 'bz_plit20', 'bz_mmdust_off'): xbmc.executebuiltin('Skin.Reset(%s)' % b)
-    if a[1] in ('everything', 'art'): xbmc.executebuiltin('Skin.Reset(bz_bigalb_off)'); xbmc.executebuiltin('Skin.Reset(bz_at_a2pfade)')  # 5.33.394 A2PFADE -> 400 ms
+    if a[1] in ('everything', 'art'): xbmc.executebuiltin('Skin.Reset(bz_bigalb_off)'); xbmc.executebuiltin('Skin.Reset(bz_at_a2pfade)')  # 5.33.403 A2PFADE -> 800 ms (empty|7)
     if a[1] in ('everything', 'ashadow'): xbmc.executebuiltin('Skin.Reset(bz_acast_static)')
     if a[1] in ('everything', 'pshadow'): xbmc.executebuiltin('Skin.Reset(bz_pcast_static)')   # 4.1.0 O39
     for sec in PRESETS:
