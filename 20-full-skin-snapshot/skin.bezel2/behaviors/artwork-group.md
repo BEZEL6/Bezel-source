@@ -1,5 +1,5 @@
 # Artwork group (global artwork stage) — dialog 1122, group 6400
-Version: 5.33.413 · Files: `xml/Custom_1122_BigAlbum.xml`, `xml/Includes_Bezel.xml` (BezelVPLPoster / BezelVPLPosterTap / BezelPoster60S), `scripts/bz_flip.py` (poster_clock → v60_mirror)
+Version: 5.33.419 · Files: `xml/Custom_1122_BigAlbum.xml`, `xml/Includes_Bezel.xml` (BezelVPLPoster / BezelVPLPosterTap / BezelPoster60S), `scripts/bz_flip.py` (poster_clock → v60_mirror)
 
 ## What it is
 One always-open modeless dialog (1122) holds **all** right-side artwork in group **6400**, so nothing remounts when you change section:
@@ -54,6 +54,7 @@ The poster layer only ever draws `bz_v60_art` (held last Videos poster, staged v
 ## Idle album A/B (current, 5.33.384)
 
 ## Dual poster holds (5.33.385 DUALHOLD)
+- Both holds are kept decoded by two near-invisible (alpha 01) images in 6401 next to the `bz_v60_next` preload slot (5.33.419 HOLDWARM), so the direct `bz_v60_art` = hold swap on an MM-open Movies↔TV row change is an instant 1000 ms crossfade, never a fade-to-black while the hold reloads.
 - `bz_v60_mov` = last Movies poster, `bz_v60_tv` = last TV poster. Written by `v60_mirror` (`_v60_dualrec`) right after list-60 art is staged, only when the Videos list type (movies/sets vs tvshows/seasons/episodes) equals the target and the container is not updating.
 - Target (`_v60_target`): MM open on strip 6996 → highlighted row `sec` (movies/tv; music/other = no target, nothing changes). MM closed → current Videos list type.
 - `_v60_dualpick`: if the list is not the target type yet (on Music, on the other Videos type, or loading), list-60 staging is skipped and `bz_v60_art` is set straight to the matching hold (already decoded on its earlier visit). 6401 / BezelVPLPoster still reads only `bz_v60_art` → opacity-only layer swap, never Music art.

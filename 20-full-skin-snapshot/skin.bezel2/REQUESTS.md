@@ -312,3 +312,6 @@ Removed the 30 s idle auto-open of Dialogue FS (1120) from bz_flip.py and its Tu
 
 ## 5.33.414 GLAREONE (2026-11-03, Rob t2929u)
 Album glare restored to ONE static 600x600 texture (art_mask.png) over the idle big album — GLARESPLIT 300x600 halves (art_mask_hl/hr) removed from static + leaf groups. Sweep (5 s go) + 8.5 s pulse pair, zoom/fade/sway unchanged. Whole glare hidden during hinge fold (bz_hf_a). Cover single when leaf off.
+
+## 5.33.420 MODALGUARD (2026-11-03, Rob t2944u/t2945u)
+DialogConfirm focus steal fixed: bz_flip `_modal_blocks_strip()` gates all SetFocus(6996)/_bzstrip reclaim (MM-start, open-MM, warm bounces, mini-player) while HasModalDialog/yesnodialog; bz_warmgate bounce guarded. Keep-skin + everyday Yes/No get focus. FULL restart.

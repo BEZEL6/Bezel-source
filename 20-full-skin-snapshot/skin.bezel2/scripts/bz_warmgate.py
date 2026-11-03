@@ -56,7 +56,7 @@ def randstart():
         r = random.randint(lo, hi)
         strip = xbmc.getCondVisibility('Control.HasFocus(6996)')
         xbmc.executebuiltin('SetFocus(60,%d,absolute)' % r)
-        if strip and not (home.getProperty('bz_navtune') or home.getProperty('bz_navbez')):
+        if strip and not (home.getProperty('bz_navtune') or home.getProperty('bz_navbez') or xbmc.getCondVisibility('System.HasModalDialog | Window.IsActive(yesnodialog)')):   # 5.33.420 MODALGUARD
             xbmc.executebuiltin('SetFocus(6996)')   # MM never-break: same-frame bounce back to strip
     except Exception:
         pass

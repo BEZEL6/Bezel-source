@@ -2,11 +2,13 @@
 
 **Object:** `DialogConfirm.xml` (Kodi yes/no) · include `BzStdProgress` (Includes_BezelDialogs ~514) or `BzRefreshProgress` (Includes_BezelRefresh ~112) · grouplist `9000` with buttons `10` / `11` / `12`  
 **Where:** Colour strip at 570,120 (390×900) plus body text in the fanart block (140,220)  
-**Last updated:** 2026-11-02 · 5.33.364
+**Last updated:** 2026-11-03 · 5.33.420
 **Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
 **Skin:** skin.bezel2
 
 Each section has three layers: **Simple** (what it does and why), **How it works** (the flow end to end, with the order and the races), and **Wiring** (props, conditions, controls, scripts and timings, all read from the live tree).
+
+**Focus ownership (5.33.420 MODALGUARD).** While the Confirm (yesnodialog) or any modal is up, Python never pulls focus to MM strip 6996. `scripts/bz_flip.py` `_modal_blocks_strip()` (`System.HasModalDialog | Window.IsActive(yesnodialog) | Window.IsVisible(yesnodialog)`) gates every reclaim: `_bzstrip`, MM-start `bz_mmstart` row hold + 6 s focus loop (keep-this-skin dialog on skin switch), open-MM section SetFocus, warm `_defer`/`_restore2` bounces, mini-player song-change refocus. `bz_warmgate.py` strip bounce has the same guard. Result: No (10) / Yes (11) keep focus; the MM-start loop just waits (still times out at 6 s).
 
 ---
 

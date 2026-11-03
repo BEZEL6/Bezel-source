@@ -65,11 +65,14 @@ home = xbmcgui.Window(10000)
 xbmc.executebuiltin("Skin.Reset(bz_jumbo)"); xbmc.executebuiltin("Skin.Reset(bz_jumbo31)")   # 4.0.1 O36 (Rob): Jumbo / tap-to-enlarge removed; old saved strings cleared
 import time as _t
 def now0(): return _t.time()
+def _modal_blocks_strip():   # 5.33.420 MODALGUARD: Confirm/any modal up -> never pull focus to strip 6996 (keep-skin + Yes/No 10/11 lost focus)
+    return xbmc.getCondVisibility('System.HasModalDialog | Window.IsActive(yesnodialog) | Window.IsVisible(yesnodialog)')
 def _bzstrip(home, row=None):
     # t4094c: hand focus to strip 6996 without rewinding it. A positional SetFocus is queued and can land AFTER keys already moved the
     # strip (late warm rewinds the row). Only force a row when the strip sits at 0 and the live row says otherwise (fresh window).
     # 5.33.190: never steal focus from Tuner 6970 / BEZEL Settings 6968
     if home.getProperty('bz_navtune') or home.getProperty('bz_navbez'): return
+    if _modal_blocks_strip(): return   # 5.33.420 MODALGUARD
     live = row if row is not None else (home.getProperty('bz_mmlive') or home.getProperty('bz_mmpos') or '0')
     if xbmc.getCondVisibility('Control.HasFocus(6996)'): return   # 5.33.336 t2453: strip already focused = never re-SetFocus (re-focus flashed the row; Position 0 = MUSIC row was read as 'fresh' and yanked you back to Movies)
     cur = xbmc.getInfoLabel('Container(6996).Position') or '0'
@@ -750,7 +753,7 @@ if home.getProperty('bz_flip_running') != 'true':
                         if stuck is None: stuck = c
                         elif c != stuck: return   # user moved the list themselves -> leave it
                     xbmc.executebuiltin('SetFocus(60,%d,absolute)' % r)
-                    if mm: xbmc.executebuiltin('SetFocus(6996,%s,absolute)' % (home.getProperty('bz_mmlive') or spos or '0'))   # 5.33.336 forced bounce (see _restore2)   # same-frame bounce: strip 6996 keeps focus
+                    if mm and not _modal_blocks_strip(): xbmc.executebuiltin('SetFocus(6996,%s,absolute)' % (home.getProperty('bz_mmlive') or spos or '0'))   # 5.33.336 forced bounce (see _restore2)   # same-frame bounce: strip 6996 keeps focus
                     _dbgmm('warm2 defer apply row=%d mm=%d' % (r, mm)); mon.waitForAbort(0.03)
             home.setProperty('bz_randpend', '1')   # 5.33.226 RANDFLASH (t1796u): list 60 alpha 0 until the random row lands (no row-1 flash)
             threading.Thread(target=run, daemon=True).start()
@@ -769,7 +772,7 @@ if home.getProperty('bz_flip_running') != 'true':
             if xbmc.getInfoLabel('Container.FolderPath').rstrip('/') != p2.rstrip('/') or xbmc.getCondVisibility('Container.IsUpdating'): home.clearProperty('bz_randpend'); return
             _lv = xbmc.getInfoLabel('Container(6996).Position') if xbmc.getCondVisibility('Control.HasFocus(6996)') else ''
             if _lv: home.setProperty('bz_mmlive', _lv)   # 5.33.336 t2453: live strip row at bounce time
-            xbmc.executebuiltin('SetFocus(60,%d,absolute)' % r); xbmc.executebuiltin('SetFocus(6996,%s,absolute)' % (_lv or home.getProperty('bz_mmlive') or spos or '0')) if not (home.getProperty('bz_navtune') or home.getProperty('bz_navbez')) else None   # 5.33.336: forced same-frame bounce (the HasFocus guard in _bzstrip would see 6996 still focused before SetFocus(60) lands)
+            xbmc.executebuiltin('SetFocus(60,%d,absolute)' % r); xbmc.executebuiltin('SetFocus(6996,%s,absolute)' % (_lv or home.getProperty('bz_mmlive') or spos or '0')) if not (home.getProperty('bz_navtune') or home.getProperty('bz_navbez') or _modal_blocks_strip()) else None   # 5.33.336: forced same-frame bounce (the HasFocus guard in _bzstrip would see 6996 still focused before SetFocus(60) lands)
             dfr = False
             if s2 == 'music': _defer(r, p2, spos); dfr = True   # 5.33.219 RANDSTART path 2: hidden Music list ignored SetFocus -> deferred apply when 60 is visible (MM close / list shown)
             home.setProperty('bz_warmrow', p2.rstrip('/'))   # 5.33.218: tell the grid sync this folder's list row is a WARM row (do not reset to item 0)
@@ -1077,7 +1080,7 @@ if home.getProperty('bz_flip_running') != 'true':
                 if _cid and _cid != '0' and xbmc.getCondVisibility('Control.IsVisible(%s)' % _cid): sj.append(_cid); del sj[2:-1]   # last good focus
                 if home.getProperty('bz_nav') == 'true':
                     fw_t[0] = 0   # MM owns focus (hide-lists guard handles it)
-                    if now - sj[1] < 2.5 and (not _cid or _cid == '0') and not xbmc.getCondVisibility('System.HasModalDialog') and not home.getProperty('bz_navtune') and not home.getProperty('bz_navbez'):
+                    if now - sj[1] < 2.5 and (not _cid or _cid == '0') and not _modal_blocks_strip() and not home.getProperty('bz_navtune') and not home.getProperty('bz_navbez'):
                         xbmc.executebuiltin('SetFocus(6996)')   # MM mini-player: song change dropped the strip focus; 5.33.190 skip while Tuner/Settings
                 elif now - sj[1] < 2.5 and (not _cid or _cid == '0') and len(sj) > 2:
                     xbmc.executebuiltin('SetFocus(%s)' % sj[2]); fw_t[0] = 0   # SONGJUMP: song change dropped focus -> put it back on the SAME control (keeps grid + position)
@@ -1200,7 +1203,8 @@ if home.getProperty('bz_flip_running') != 'true':
                         # releasing same tick as SetFocus let warm read row 0 (Music) then jump; hold is startup-only (bz_mmstart)
                         home.setProperty('bz_navstrip', home.getProperty('bz_mmstartsec') or 'music'); home.setProperty('bz_mmlive', _sr); home.setProperty('bz_mmpos', _sr)
                         if not mmst[0]: mmst[0] = now
-                        if xbmc.getInfoLabel('Container(6996).Position') != _sr and now - mmst[0] <= 6.0: xbmc.executebuiltin('SetFocus(6996,%s,absolute)' % _sr)
+                        if _modal_blocks_strip(): pass   # 5.33.420 MODALGUARD: keep-skin Confirm owns focus
+                        elif xbmc.getInfoLabel('Container(6996).Position') != _sr and now - mmst[0] <= 6.0: xbmc.executebuiltin('SetFocus(6996,%s,absolute)' % _sr)
                         else: home.clearProperty('bz_mmstart'); mmst[0] = 0; xbmc.log('BEZEL MM-start: menu focused row ' + _sr, xbmc.LOGWARNING)
                 elif xbmc.getCondVisibility('Window.IsActive(1113)') or home.getProperty('bz_mmwarm'):
                     if home.getProperty('bz_mmwarm') and not home.getProperty('bz_mmpick') and xbmc.getInfoLabel('System.CurrentControlId') in ('60', '61', '62', '63', '64', '6600'): _bzstrip(home)   # t4094c: list took focus during warm swap -> strip at once
@@ -1208,7 +1212,8 @@ if home.getProperty('bz_flip_running') != 'true':
                 elif home.getProperty('bz_mmstart') and not had:
                     # 4.7.11 MM-first: after the splash, never auto-close the start menu; keep giving it the focus (slow Shield list load) up to 6 s
                     if not mmst[0]: mmst[0] = now
-                    if now - mmst[0] > 6.0: home.clearProperty('bz_mmstart'); mmst[0] = 0; xbmc.log('BEZEL MM-start: focus timeout', xbmc.LOGWARNING)
+                    if _modal_blocks_strip(): pass   # 5.33.420 MODALGUARD: keep-skin Confirm up -> no MM-start steal
+                    elif now - mmst[0] > 6.0: home.clearProperty('bz_mmstart'); mmst[0] = 0; xbmc.log('BEZEL MM-start: focus timeout', xbmc.LOGWARNING)
                     else: xbmc.executebuiltin('SetFocus(6996,%s,absolute)' % (home.getProperty('bz_mmstartrow') or '0')); home.setProperty('bz_navstrip', home.getProperty('bz_mmstartsec') or 'music');   # MMDEF t4014: Tuner Default section on start navop[0] = now; navop[1] = 0; stuck[1] = 0   # 4.7.8+ MM-start: hold the start menu open under the splash (focus can't land yet; it auto-closed before the splash faded)
                 elif not had and t < 30:
                     # 4.1: open on the current section's row (or the first row)
@@ -1228,7 +1233,8 @@ if home.getProperty('bz_flip_running') != 'true':
                     else: tgt = 6901   # 3.1: the menu always opens on a section row
                     home.setProperty('bz_navstrip', {6902: 'movies', 6903: 'tv', 6909: 'settings'}.get(tgt, 'music'))   # 4.7.8: settings strip case (Back no longer shows Music)   # 3.1 right strip
                     home.clearProperty('bz_navdir')   # beta1 item 7: the bar shows on the row at once
-                    if tgt in (6930, 6931): xbmc.executebuiltin('SetFocus(%d)' % tgt)
+                    if _modal_blocks_strip(): pass   # 5.33.420 MODALGUARD
+                    elif tgt in (6930, 6931): xbmc.executebuiltin('SetFocus(%d)' % tgt)
                     else: xbmc.executebuiltin('SetFocus(6996,%d,absolute)' % {6902: 1, 6903: 2, 6905: 3, 6904: 3, 6908: 8, 6919: 9, 6909: 10, 6920: 9}.get(tgt, 0))   # 4.1 O46: the strip list, on the current section
                     t += 1
                 elif not xbmc.getInfoLabel('System.CurrentControlId') or (xbmc.getCondVisibility('Window.IsActive(1112)') and (not stuck[1] or now - stuck[1] < 0.3)):
