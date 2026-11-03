@@ -34,3 +34,7 @@ Leaf flip is its own animation: the cover is cut at the slit (x1440) and the rig
 ## Track-list flip — DELETED (5.33.309)
 Rob (Nov 2 2026): "We don't use it anymore." The tap-to-flip track list is gone: list 6185, include `BezelFlipText`, `BezelNPHeader`, variable `BezelBackPath`, the black back-face panel, the 1112 album tap 6381, `bz_back` / `bz_backanim` / `bz_back_close` / `bz_back_pick` / `bz_back_fade`, and `back_face()` / `play_pick()` in `bz_flip.py` (only the `bz_albumid` tracker is kept, as `album_id()`).
 **Kept, separate from the picker:** leaf flip (this file), sway, album next song fade, the `bz_flipping` glare fade and the `bz_cov_side` album flip.
+
+
+## Enable gate (5.33.405 LEAFFLIP)
+Leaf flip runs only when `Skin.HasSetting(bz_leafflip)` — **default OFF**. Toggle: Tuner › ALBUM / POSTER › Leaf flip (after Idle rock). Off → `idle_hinge()` `ok()` false → `bz_hf_*` cleared, no phases. Look/timing above unchanged (LOCKED).

@@ -2,7 +2,7 @@
 
 **Object:** Shared sway clock + album / poster rotatey + stub cast opacity  
 **Where:** Music big album (Dialogue FS / Play Next / viz) · Movies/TV poster (`BezelVPLPoster`) · stub side casts (`pn_cast.png`)  
-**Last updated:** 2026-11-02 · 5.33.391
+**Last updated:** 2026-11-03 · 5.33.406
 **Status:** Live. One Python clock drives the album and poster sway flags. The album cast sits outside the sway group (5.33.205) and, since 5.33.299, outside the album slide rails too (include `BezelAlbumCast`). Draft: not Rob-approved, not re-smoked.  
 **Skin:** skin.bezel2 (Estuary fork)
 
@@ -33,6 +33,13 @@ While the skin script is running it wakes every twentieth of a second. It rememb
 - `bz_sway_pulse2` → later gate (kept for a cross-wobble that album no longer uses)
 
 **Shared art clock (5.33.391).** Poster and album sway on ONE clock. `poster_clock` still raises `bz_pswayon` (+4 s) → `bz_ppulse` (+9 s) → `bz_ppulse2` (+14 s), but its anchor is no longer "now": `_art_sw_anchor()` places the poster's pulse onset on the album pulse grid (`t0 + 7.4 + k·24.5 s`, 24.5 s = Kodi pulse cycle of the 12250 ms anim). Master epoch = album `t0` while the music latch is on; with no music a free-running epoch (`sway['art0']`, set once) stands in. Published as Home `bz_art_t0`. So across a Music↔Videos crossfade in group 6400 both layers are at the same point of the swing. Title changes do **not** restart the poster sway. Limits: the anchor is taken when the poster arms (entering Videos); if the album clock restarts while the poster is already swinging, the poster keeps its old phase until Videos is left and re-entered. Tuner hold `D` changes the album period only (poster XML stays 12250 ms) — at default D=2.0 they match. Mirror direction is unchanged (album −13→+13, poster +13→−13, same timing).
+
+
+**Always-on sway (5.33.406, Rob t2885/t2886).** Both art layers sway at all times while drawn:
+- **Poster:** `poster_clock` arms `sw` once at thread start on the shared art clock (`_art_sw_anchor`, `bz_art_t0`) and never disarms. `bz_pswayon` (+4 s) → `bz_ppulse` (+9 s) → `bz_ppulse2` (+14 s) advance in every window (Videos, Music, MM, Settings kids, Info). Leaving Videos clears only `bz_pready`, no longer the phase flags, so the poster never drops to flat and never waits up to ~33 s to re-arm. Flags clear only on Bezel leave.
+- **Album, no music:** idle rock (`bz_big_go` at +2.5 s, `bz_big_pulse` at +7.5 s from `bt0`) has no `bz_idlerock` gate now. It runs whenever the music latch is off. The Tuner row reads **ALWAYS ON**. Its XML gates are just `!Window.IsActive(1120) + !Window.IsActive(visualisation)`.
+- **Album, music playing:** the rotatey sway on `bz_audio_latch` / `bz_sway_go` / `bz_sway_pulse` is unchanged.
+- Leaf flip (`bz_leafflip`, default OFF) does not gate either sway.
 
 **Hold and restart.**  
 When art must remount cleanly (window reload, etc.), the script sets `bz_sway_hold`, briefly freezes the swing, clears the hold, resets `t0`, and lets the Conditional animations start again from flat. While hold is set, phase flags stay off so XML does not keep swinging on a stale timeline. `bz_sway_restart` is the explicit “start over from flat” path.
@@ -371,3 +378,6 @@ The swaying Movies/TV poster (BezelVPLPoster) now draws only in dialog 1122 laye
 ## 5.33.381 GLARESYNC rule
 Glare + lit dust must ride the sway clock: never put a <visible> on any group between the sway group and the glare pulse groups (hidden = children frozen, pulse re-anchors on re-show = phase drift). Gate glare with Conditional fades only. Poster: glare block is a direct child of the 1440,570 camera group inside the BezelVPLPoster sway group, gated by fades on bz_ppulse/bz_pready/bz_vbackanim/bz_mmmushide. Album: glares inside covers, visible only Player.HasAudio/bz_swayright (stable while playing). Timings shared: hold 12250, swing 10000 d2000, glare A 100→0 3450 d2000, B 0→100 3450 d8550.
 - MMAUDIO (5.33.397): while the MM is open and audio is playing (no video), `$EXP[bz_mmaudio]` keeps the big album (6402) up on every strip row — Music, Movies, TV, Recent, Favourites, Search, Pictures, Add-ons, Settings, Media Sources, Power. It forces `bz_railvis` true and `bz_artposter` false, so the poster layer 6401 stays down. With no audio, or with MM closed, the existing Music album / A2P poster rules apply. Includes_Bezel.xml.
+
+## MM album fade (5.33.407 MIDLEFADE)
+Idle Music big-album A/B dissolve (slots `bz_m_idle_a`/`bz_m_idle_b`, 6402 in Includes_Bezel) runs at `Skin.String(bz_at_midlefade)`: steps 1–7 = 200/250/300/400/500/600/800 ms, **default 400 ms** (empty|4). Tuner › ALBUM / POSTER › **MM album fade** (slider). bz_flip.py promote guard = fade + 50 ms (default 0.45 s). Separate from A2P (`bz_at_a2pfade`) and WARM art crossfade (`bz_at_mmxfade`). Reset art/everything clears it.

@@ -212,7 +212,7 @@ if home.getProperty('bz_flip_running') != 'true':
             bt0 = sway.get('bt0')   # big album one-shot (5 s) then pulse
             for k, d in (('bz_big_go', 2.5), ('bz_big_pulse', 7.5)):
                 v = bt0 is not None and time.time() - bt0 >= d
-                v = v and xbmc.getCondVisibility('Skin.HasSetting(bz_idlerock)')   # 5.33.231 HINGEFLIP: idle rock is a Tuner toggle, default Off
+                # 5.33.406 ALWAYSSWAY (Rob pt2886u): idle album rock runs at all times (bz_idlerock gate removed; was default Off since 5.33.231)
                 if v and not home.getProperty(k): home.setProperty(k, 'true')
                 elif not v and home.getProperty(k): home.clearProperty(k)
             on2 = on and time.time() - t0 >= 12.4   # 2.0a3.4: cross wobble, a quarter cycle after the swing, so the art keeps moving through the turns
@@ -381,6 +381,9 @@ if home.getProperty('bz_flip_running') != 'true':
     # New cover -> written into the HIDDEN slot only (preload), promoted after 0.6 s (= _v60_art_stage), then side flips -> 400 ms sine opacity A->B.
     # A slot is never rewritten while it is visible or still fading out (0.45 s guard) = no mid-fade texture swap. bz_m_idle_art = cover on screen (lock/hold logic).
     _mi = {'pend': '', 't': 0.0, 'flip': 0.0}
+    _MIF = {'1': 0.2, '2': 0.25, '3': 0.3, '4': 0.4, '5': 0.5, '6': 0.6, '7': 0.8}
+    def _mi_guard():   # 5.33.407 MIDLEFADE: guard = Tuner fade (bz_at_midlefade) + 50 ms; default 400 ms -> 0.45 s
+        return _MIF.get(xbmc.getInfoLabel('Skin.String(bz_at_midlefade)'), 0.4) + 0.05
     def _m_idle_stage(a):
         now = _t.time(); side = home.getProperty('bz_m_idle_side') or 'a'
         if a is None:
@@ -391,10 +394,10 @@ if home.getProperty('bz_flip_running') != 'true':
             _v60_set('bz_m_idle_' + side, a); _v60_set('bz_m_idle_side', side); _v60_set('bz_m_idle_art', a); _mi['pend'] = ''; return
         hid = 'b' if side == 'a' else 'a'
         if a != _mi['pend']:
-            if now - _mi['flip'] < 0.45: _mi['pend'] = a; _mi['t'] = 0.0; return   # hidden slot still fading out -> wait
+            if now - _mi['flip'] < _mi_guard(): _mi['pend'] = a; _mi['t'] = 0.0; return   # hidden slot still fading out -> wait
             _mi['pend'] = a; _mi['t'] = now; _v60_set('bz_m_idle_' + hid, a); return
         if not _mi['t']:
-            if now - _mi['flip'] < 0.45: return
+            if now - _mi['flip'] < _mi_guard(): return
             _mi['t'] = now; _v60_set('bz_m_idle_' + hid, a); return
         if now - _mi['t'] >= 0.6:
             _v60_set('bz_m_idle_side', hid); _v60_set('bz_m_idle_art', a); _mi['flip'] = now; _mi['pend'] = ''
@@ -525,6 +528,8 @@ if home.getProperty('bz_flip_running') != 'true':
             # Texture still crossfades via existing fadetime on $VAR[BezelPoster60]. Movies + TV share this; Music untouched.
             alive = xbmc.getCondVisibility('Window.IsActive(videos)')
             scrolling = xbmc.getCondVisibility('Container(60).Scrolling')
+            if not sw[0]:
+                sw[0] = _art_sw_anchor(now_)   # 5.33.406 ALWAYSSWAY (Rob pt2886u): poster sway armed once at start on the shared art clock, never disarmed (was Videos-only)
             if alive and not home.getProperty('bz_vback') and not home.getProperty('bz_vbackanim'):
                 if not home.getProperty('bz_pready'):
                     # first arm only: need a real item and a short quiet settle
@@ -538,10 +543,10 @@ if home.getProperty('bz_flip_running') != 'true':
                         if e >= t_ and not home.getProperty(q): home.setProperty(q, 'true')
             elif not alive:
                 if home.getProperty('bz_pready'): home.clearProperty('bz_pready')
-                if sw[0]:
-                    sw[0] = 0
-                    for q in ('bz_pswayon', 'bz_ppulse', 'bz_ppulse2'):
-                        if home.getProperty(q): home.clearProperty(q)
+            if sw[0]:   # 5.33.406 ALWAYSSWAY: phase flags advance in every window (MM, Music, Settings kids, Info) — leaving Videos no longer resets the poster to flat
+                e = now_ - sw[0]
+                for q, t_ in (('bz_pswayon', 4), ('bz_ppulse', 9), ('bz_ppulse2', 14)):
+                    if e >= t_ and not home.getProperty(q): home.setProperty(q, 'true')
             if kk is not None and home.getProperty('bz_pfkey') != kk and time.time() - since >= 2.0:
                 home.setProperty('bz_pfkey', kk); home.setProperty('bz_pfanart', xbmc.getInfoLabel('Container(60).ListItem.Art(fanart)'))   # info preload stays at 2 s
             # a tap before the poster / info was ready: flip now that it is (the request is never dropped)
@@ -1635,6 +1640,7 @@ if home.getProperty('bz_flip_running') != 'true':
             return (home.getProperty('bz_nav') == 'true' and not home.getProperty('bz_mmwarm') and not home.getProperty('bz_navtune') and not home.getProperty('bz_navbez')
                     and xbmc.getCondVisibility('!Player.HasAudio + Window.IsActive(music) + Control.HasFocus(6996) + !System.HasModalDialog'))
         def ok():
+            if not xbmc.getCondVisibility('Skin.HasSetting(bz_leafflip)'): return False   # 5.33.405 LEAFFLIP (Rob pt2882u): Tuner toggle, default OFF -> not ok() clears bz_hf_*
             if home.getProperty('bz_randpend'): return False
             if mmw(): return True
             return xbmc.getCondVisibility('!Player.HasAudio + Window.IsActive(music) + Control.HasFocus(60)') and not home.getProperty('bz_nav')

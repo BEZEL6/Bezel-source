@@ -57,3 +57,10 @@ When the dim lifts (e.g. MM auto-hide), the hold restarts and the next fold runs
 On cold start / first MM open, list 60 and its art + album RPC fill in late. `idle_hinge()` now:
 - does not lock a key while `Container(60).ListItem.DBID` is empty (list not populated);
 - for 6 s after a key locks (before the first fold), re-reads `covers()` about once a second and, if the list changed (late thumb / albums), takes the new list and restarts the hold from A. Fold look/timing unchanged (LOCKED).
+
+
+## Enable gate (5.33.405 LEAFFLIP)
+Leaf flip runs only when `Skin.HasSetting(bz_leafflip)` — **default OFF**. Toggle: Tuner › ALBUM / POSTER › Leaf flip (after Idle rock). Off → `idle_hinge()` `ok()` false → `bz_hf_*` cleared, no phases. Look/timing above unchanged (LOCKED).
+
+## MM album fade (5.33.407 MIDLEFADE)
+Idle Music big-album A/B dissolve (slots `bz_m_idle_a`/`bz_m_idle_b`, 6402 in Includes_Bezel) runs at `Skin.String(bz_at_midlefade)`: steps 1–7 = 200/250/300/400/500/600/800 ms, **default 400 ms** (empty|4). Tuner › ALBUM / POSTER › **MM album fade** (slider). bz_flip.py promote guard = fade + 50 ms (default 0.45 s). Separate from A2P (`bz_at_a2pfade`) and WARM art crossfade (`bz_at_mmxfade`). Reset art/everything clears it.

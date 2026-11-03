@@ -1,3 +1,12 @@
+5.33.407 (2026-11-03)
+- MIDLEFADE: Tuner › ALBUM / POSTER › MM album fade (bz_at_midlefade). Idle Music big-album A/B dissolve speed 200/250/300/400/500/600/800 ms (default 400 empty|4). Wired on Includes_Bezel 6402 idle slots; bz_flip mid-fade guard = fade+50 ms. Reset everything/art clears it. FULL restart.
+
+5.33.406 (2026-11-03)
+- ALWAYSSWAY: poster sway flags stay armed every window; idle album rock ungated (no bz_idlerock); album frame keyed on bz_m_idle_* not Container(60). Idle rock Tuner info ALWAYS ON. FULL restart.
+
+5.33.405 (2026-11-03)
+- LEAFFLIP: idle leaf flip off by default (Skin.HasSetting(bz_leafflip)); Tuner ALBUM/POSTER › Leaf flip. FULL restart.
+
 5.33.404 (2026-11-03)
 - POSTERCENTER fix: bz_art_x constant 990→1140 so poster texture sits in the moved frame (frame/glare/sway were already at 1140; art still used the old constant). ReloadSkin.
 

@@ -322,3 +322,6 @@ The swaying Movies/TV poster (BezelVPLPoster) now draws only in dialog 1122 laye
 
 ## Idle album A/B (current, 5.33.384)
 Idle Music big album in the 1122 album layer draws two always-loaded images: `bz_m_idle_a` / `bz_m_idle_b`; `bz_m_idle_side` (a|b, empty=a) picks the shown one. Each has a Conditional 400 ms sine fade-out when `Player.HasAudio` or it is not the shown side; the NP layer (`bz_m_np_art`) is unchanged. `bz_flip.py` `_m_idle_stage()` (called from `m_mirror`): first cover goes straight into the shown slot; later covers go to the hidden slot, wait 0.6 s to decode, then flip side and set `bz_m_idle_art` (= cover on screen, used by MMHOLD/IDLERESET locks). Hidden slot is not written until 0.45 s after a flip. Random steps (UADVRAND, MM + startup only) therefore crossfade, never pop; after MM wake the 383 hold applies, then the next random step crossfades.
+
+## MM album fade (5.33.407 MIDLEFADE)
+Idle Music big-album A/B dissolve (slots `bz_m_idle_a`/`bz_m_idle_b`, 6402 in Includes_Bezel) runs at `Skin.String(bz_at_midlefade)`: steps 1–7 = 200/250/300/400/500/600/800 ms, **default 400 ms** (empty|4). Tuner › ALBUM / POSTER › **MM album fade** (slider). bz_flip.py promote guard = fade + 50 ms (default 0.45 s). Separate from A2P (`bz_at_a2pfade`) and WARM art crossfade (`bz_at_mmxfade`). Reset art/everything clears it.

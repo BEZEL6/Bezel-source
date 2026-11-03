@@ -140,3 +140,6 @@ Section head `MAPS` (toggle `Skin.HasSetting(bz_topen_maps)`, `$VAR[BzTSec_maps]
 - 5.33.398: ALBUM / POSTER gains **Poster ↔ album fade** (`a2pfade`, slider, `bz_at_a2pfade` 1–7, default 4 = 400 ms; LEFT faster / RIGHT slower). Reset album clears it.
 
 **No MM auto-hide (5.33.398 NOAUTOHIDE, Rob t2799u):** the strip 6996 / group 6894 stays visible and focusable the whole time MM is open. There is no idle fade, no park button 6897, no `bz_mmidle`, no idle label / clearart stage, no wake path (WAKEGRACE/IDLEPARK/IDLERESET), and no Tuner Auto-hide row. mmdim and the colour backdrop follow plain MM-open rules. MMHOLD on MM open is unchanged.
+
+## MM album fade (5.33.407 MIDLEFADE)
+Idle Music big-album A/B dissolve (slots `bz_m_idle_a`/`bz_m_idle_b`, 6402 in Includes_Bezel) runs at `Skin.String(bz_at_midlefade)`: steps 1–7 = 200/250/300/400/500/600/800 ms, **default 400 ms** (empty|4). Tuner › ALBUM / POSTER › **MM album fade** (slider). bz_flip.py promote guard = fade + 50 ms (default 0.45 s). Separate from A2P (`bz_at_a2pfade`) and WARM art crossfade (`bz_at_mmxfade`). Reset art/everything clears it.
