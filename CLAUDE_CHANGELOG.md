@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.448
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.449
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 449 | "2 AND 5" (optimizations: texture packing, list conditions) | **XBTPACK**: media/Textures.xbt with the 1128 small textures |
 | 448 | "BIG ALBUM SWAY ANIM LOOKS LIKE ITS WRONG SEQUENCE AGAIN WITH GLARE AND DUST" | **IDLESEQ**: idle glare + lit dust follow the playing album sequence |
 | 447 | "VERY LONG PAUSES WHEN ENTERING SECTIONS" (from MM, 5+ s) on 446; "ISSUE WAS CAUSED BY YOUR CHANGE" | **TICKCACHE reverted**: bz_flip.py = 445 |
 | 446 | Rob sent the 445 kodi.log (perf lines) | **TICKCACHE**: per-thread, per-tick cache for Home property / condition / infolabel reads in bz_flip.py |
@@ -209,6 +210,22 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.449 — XBTPACK (optimization #2, texture bundle)
+- **What:** `media/Textures.xbt` (XBTF v2, Kodi 21 format) holds every `.png` under `media/` that is ≤ 512×512: 1,128 files, 1,011 unique. It's 5.6 MB, against 5.2 MB of PNG and 220.8 MB decoded.
+  - Kodi's texture manager checks the bundle before loose files (`CGUITextureManager::HasTexture`), so these load as pre-decoded BGRA plus a fast LZO unpack, with no PNG inflate/unfilter.
+- **Why large images stay loose:** for an image with `background="true"`, `CGUITexture::AllocResources` first tries the bundle *synchronously* (`Load(name, checkBundleOnly=true)`) and only falls back to the async large-texture loader when the file isn't bundled. Packing the 410 images over 512×512 (1.16 GB decoded: dust sheets 2208², `mmd20_*` 1920×1080, maps, info art, backdrops) would move their load onto the render thread, a hitch risk, so they aren't packed.
+- **Loose files:** all kept. The bundle wins for packed names. The one full-path reference (`special://skin/media/colors/black.png`, bz_wipe) and any future full-path use still find the file. Zip +5.6 MB.
+- **Built with** `tools/xbt_pack.py` (repo; Python + Pillow + LZO 2.10 via ctypes). It mirrors Kodi's TexturePacker:
+  - A8R8G8B8 = BGRA bytes, not premultiplied;
+  - `XB_FMT_OPAQUE` when all alpha is 255;
+  - `lzo1x_999` compression, stored raw when it doesn't shrink the frame;
+  - md5 dedupe;
+  - lower-case `/` paths relative to `media/` (`CTextureBundleXBT::Normalize`).
+- **Verified:** `tools/xbt_verify.py` decodes every entry with `lzo1x_decompress_safe` (Kodi's call) and compares pixels, size and the opaque flag with a fresh decode of the PNG: 1,128 / 1,128 identical.
+- **BUILD RULE (main agent):** after any change to a file in `media/`, re-run `python3 tools/xbt_pack.py <skin>/media <skin>/media/Textures.xbt <liblzo2.so>`. Otherwise Kodi keeps drawing the old bundled copy of a ≤ 512² image. Deleting `media/Textures.xbt` reverts to loose loading.
+- **Expected gain:** faster first draw of skin chrome (window opens, Tuner, MM) and less CPU per texture load. It's modest on a fast PC and more on low-end boxes. No visual change.
+- **Check:** start Kodi, open MM / Tuner / Music / Movies / TV / fullscreen music. Everything should look the same (no missing or black icons, bars, frames, glares). If anything is missing, kodi.log shows `Error loading texture`.
 
 ## 5.33.448 — IDLESEQ (idle big album glare + lit dust sequence)
 - **Found:** the idle big album sway (`bz_big_go` 0→−13 in 5 s, then `bz_big_pulse` 12250 pulse: hold −13 for 2 s, −13→+13 over 10 s) is identical to the playing album's sway, but its glare/dust ran a different sequence:

@@ -1,3 +1,6 @@
+5.33.449 (2026-11-03)
+- XBTPACK (optimization #2): media/Textures.xbt added: the 1128 small skin textures (<= 512x512) pre-decoded and LZO-packed (5.6 MB), so Kodi loads them without PNG decoding. Large images (410 files, > 512x512: backdrops, maps, dust sheets, info art) stay loose so background="true" still loads them off the render thread. Loose PNGs are all kept (Kodi uses the bundle first; full-path references still find the files). Build rule: repack after any media change (tools/xbt_pack.py).
+
 5.33.448 (2026-11-03)
 - IDLESEQ (Rob: "BIG ALBUM SWAY ANIM LOOKS LIKE ITS WRONG SEQUENCE AGAIN WITH GLARE AND DUST"): the idle big album's glare + lit dust ran mirrored to the playing album (at -13 the flipped glare + right dust box) and crossfaded over the whole swing. Now the same sequence as the playing album: at -13 the upper-left glare + left box, fading out 2.0-5.45 s into each 12.25 s half; at +13 the flipped glare + right box, fading in 8.55-12.0 s; dark mid-swing. Sway itself unchanged.
 
