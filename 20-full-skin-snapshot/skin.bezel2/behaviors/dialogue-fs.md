@@ -152,3 +152,5 @@ The big album, its sway, next-song fade, cast and compact NP no longer live in t
 
 ## 5.33.411 NOIDLEFS (2026-11-03)
 Removed the 30 s idle auto-open of Dialogue FS (1120) from bz_flip.py and its Tuner row (FULLSCREEN MUSIC > Open after 30 s idle). Fullscreen music opens ONLY on explicit Select. bz_fsauto_off is now dead. NOAUTOVIZ (409, musicfiles.selectaction forced off) kept.
+
+- 5.33.416 NOBZVIZ: no Bezel Viz layer behind chrome in 1120; Dialogue FS paths unchanged.

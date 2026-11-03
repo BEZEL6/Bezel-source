@@ -9,7 +9,7 @@
 	<defaultcontrol always="true">6400</defaultcontrol>
 	<onload condition="String.IsEmpty(Skin.String(bz_dfs_mode))">Skin.SetString(bz_dfs_mode,album)</onload><!-- 5.33.109: pill defaults to album --><onunload>ClearProperty(bz_pnfoc,home)</onunload><onunload>ClearProperty(bz_pnsel,home)</onunload><onload>SetProperty(bz_rail,centre,home)</onload><onunload>SetProperty(bz_rail,home,home)</onunload><onunload condition="$EXP[bz_navmenu]">AlarmClock(bz_pvret,SetFocus(6996),00:00,silent)</onunload><onunload condition="!$EXP[bz_navmenu]">AlarmClock(bz_pvret,SetFocus(60),00:00,silent)</onunload><!-- 5.33.309 P1: big album lives in 1122; bz_rail centre slides it 1140->660, home slides it back; focus returns to the list (or the menu) -->
 	<controls>
-		<include>BezelDustViz</include><!-- 5.33.352 DustViz behind chrome (first = bottom layer) -->
+		<!-- 5.33.416 NOBZVIZ: Bezel Viz removed -->
 		<control type="group">
 			<animation effect="fade" start="100" end="0" time="600" tween="sine" easing="inout">WindowClose</animation>
 			<control type="group"><animation effect="fade" start="0" end="100" time="600" delay="1000" tween="sine" easing="inout">WindowOpen</animation><!-- NP bar arrives as the album settles -->

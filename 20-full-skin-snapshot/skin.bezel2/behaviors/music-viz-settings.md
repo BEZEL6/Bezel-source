@@ -86,3 +86,6 @@ Actions (`onclick`/`onload`/`onback`) found:
 
 ## DustViz auto-install (5.33.358)
 `scripts/bz_dustviz.py` copies the bundled `visualization.bezel` from `resources/dustviz/<plat>/` into `special://home/addons/` when versions differ, enables it, and sets it as the music visualisation. Platforms: `windows` (x64 DX11 dll), `android` (Shield aarch64 GLES), `linux` (desktop). Any other platform is skipped.
+
+## 5.33.416 NOBZVIZ
+Bezel Viz (visualization.bezel / DustViz) removed from the skin: no bundled pack (`resources/dustviz` gone), no `BezelDustViz` visualisation 6399 in 1120/1121/MusicVisualisation. Startup `bz_dustviz.py` now only forces off `musicfiles.selectaction`, disables visualization.bezel and unselects it as `musicplayer.visualisation`. Fanart FS / Dialogue FS remain as Bezel windows.

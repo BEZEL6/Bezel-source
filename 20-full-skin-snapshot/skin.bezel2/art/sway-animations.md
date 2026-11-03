@@ -16,3 +16,6 @@
 | `bezel/white.png` | 8×8 | xml/AddonBrowser.xml, xml/Custom_1107_SearchDialog.xml, xml/Custom_1115_MusicControls.xml, xml/Custom_1116_PauseScreen.xml |
 
 colordiffuse/mask per control: see texture tags in live XML at the [layout](../layout/sway-animations.md) line refs. Global inventory: [media-map](media-map.md).
+
+## 5.33.414 GLAREONE (2026-11-03, Rob t2929u)
+Album glare restored to ONE static 600x600 texture (art_mask.png) over the idle big album — GLARESPLIT 300x600 halves (art_mask_hl/hr) removed from static + leaf groups. Sweep (5 s go) + 8.5 s pulse pair, zoom/fade/sway unchanged. Whole glare hidden during hinge fold (bz_hf_a). Cover single when leaf off.

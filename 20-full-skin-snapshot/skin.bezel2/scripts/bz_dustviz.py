@@ -1,4 +1,4 @@
-# 5.33.352 DustViz auto-install (Rob t2503): copy bundled visualization.bezel into special://home/addons,
+# 5.33.416 NOBZVIZ: was 5.33.352 DustViz auto-install (Rob t2503): copy bundled visualization.bezel into special://home/addons,
 # enable it and make it the music visualisation. Skin = trigger only; viz draws in Bezel's visualisation rect.
 # Bundles: resources/dustviz/android (Shield aarch64 GLES 0.2.0) / linux (desktop) / windows (x64 DX11 0.2.0, 5.33.358).
 import os, json, shutil, xbmc, xbmcvfs
@@ -11,31 +11,11 @@ def ver(path):
         s = open(os.path.join(path, 'addon.xml'), encoding='utf-8').read()
         i = s.index('version="', s.index('<addon')) + 9; return s[i:s.index('"', i)]
     except Exception: return ''
-def main():
-    cv = xbmc.getCondVisibility
-    plat = 'windows' if cv('System.Platform.Windows') else ('android' if cv('System.Platform.Android') else ('linux' if cv('System.Platform.Linux') else ''))
-    if not plat:
-        xbmc.log('BEZEL dustviz: no bundled binary for this platform - skipped', xbmc.LOGINFO); return
-    src = os.path.join(xbmcvfs.translatePath('special://skin/'), 'resources', 'dustviz', plat, ID)
-    dst = os.path.join(xbmcvfs.translatePath('special://home/addons/'), ID)
-    if not os.path.isdir(src): return
-    if ver(dst) != ver(src):
-        try:
-            if os.path.isdir(dst): shutil.rmtree(dst)
-            shutil.copytree(src, dst)
-            for f in os.listdir(dst):
-                if f.startswith(ID + '.so'): os.chmod(os.path.join(dst, f), 0o755)
-            xbmc.log('BEZEL dustviz: installed %s %s' % (plat, ver(src)), xbmc.LOGINFO)
-        except Exception as e:
-            xbmc.log('BEZEL dustviz: copy failed %s' % e, xbmc.LOGERROR); return
-        xbmc.executebuiltin('UpdateLocalAddons'); xbmc.sleep(1500)
-    for _ in range(10):
-        r = rpc('Addons.SetAddonEnabled', {'addonid': ID, 'enabled': True})
-        if r.get('result') == 'OK': break
-        xbmc.sleep(500)
+def main():   # 5.33.416 NOBZVIZ (Rob): Bezel Viz removed - no install; disable it and unselect it as the music visualisation
     cur = (rpc('Settings.GetSettingValue', {'setting': 'musicplayer.visualisation'}).get('result') or {}).get('value')
-    if cur != ID: rpc('Settings.SetSettingValue', {'setting': 'musicplayer.visualisation', 'value': ID})
-    xbmc.executebuiltin('SetProperty(bz_dustviz_ok,1,home)')
+    if cur == ID: rpc('Settings.SetSettingValue', {'setting': 'musicplayer.visualisation', 'value': ''})
+    rpc('Addons.SetAddonEnabled', {'addonid': ID, 'enabled': False})
+    xbmc.executebuiltin('ClearProperty(bz_dustviz_ok,home)'); xbmc.log('BEZEL: Bezel Viz disabled/unselected', xbmc.LOGINFO)
 def noautoviz():   # 5.33.409 NOAUTOVIZ (Rob pt2915u): Kodi 'Switch to visualisation on playback' (musicfiles.selectaction) popped stock fullscreen on Music Select; Bezel owns FS opens
     r = rpc('Settings.GetSettingValue', {'setting': 'musicfiles.selectaction'})
     if (r.get('result') or {}).get('value') is not False:

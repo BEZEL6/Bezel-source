@@ -148,3 +148,5 @@ On the fanart stage (`bz_pnoff=1`) Kodi Fanart FS draws the same chrome as 1121:
 
 ## Auto-switch off (5.33.409)
 Startup (`bz_dustviz.py` → `noautoviz`) forces Kodi `musicfiles.selectaction` ("Switch to visualisation on playback") to **false** every start. Music Select plays in the Bezel list/NP path; `visualisation` opens only from Bezel routes (FS pill, Tab, 1112 auto-viz, ActivateWindow).
+
+- 5.33.416 NOBZVIZ: no Bezel Viz layer behind chrome; Fanart FS paths unchanged.

@@ -196,10 +196,11 @@ if home.getProperty('bz_flip_running') != 'true':
                 if not sway.get('busy') and sway['t0'] is not None:
                     home.setProperty('bz_flipping', 'true'); home.setProperty('bz_sway_hold', 'true')
                     if mon.waitForAbort(0.25): break
-                    home.clearProperty('bz_sway_hold'); sway['t0'] = time.time()
+                    home.clearProperty('bz_sway_hold'); sway['t0'] = time.time(); sway['bt0'] = sway['t0']   # 5.33.415 SWAYCONT: one shared clock
                     if mon.waitForAbort(0.3): break
                     if not sway.get('busy'): home.clearProperty('bz_flipping')
-            t0 = sway['t0']
+            if sway.get('bt0') is None: sway['bt0'] = time.time()   # 5.33.415 SWAYCONT (Rob pt2930u): ONE shared sway clock from Home startup; music start no longer re-zeroes it
+            t0 = sway['t0'] if sway['t0'] is not None else sway['bt0']
             if home.getProperty('bz_sway_t0') != ('%.3f' % t0 if t0 is not None else ''): home.setProperty('bz_sway_t0', '%.3f' % t0 if t0 is not None else '')   # 3.5.3: for the music -> video wait-for-flat
             go = t0 is not None and not home.getProperty('bz_sway_hold') and time.time() - t0 >= 2.4   # 3.5.1: end of the still hold -> lead-in (5 s)
             if go and not home.getProperty('bz_sway_go'): home.setProperty('bz_sway_go', 'true')
@@ -207,9 +208,7 @@ if home.getProperty('bz_flip_running') != 'true':
             on = t0 is not None and not home.getProperty('bz_sway_hold') and time.time() - t0 >= 7.4
             if on and not home.getProperty('bz_sway_pulse'): home.setProperty('bz_sway_pulse', 'true')
             elif not on and home.getProperty('bz_sway_pulse'): home.clearProperty('bz_sway_pulse')
-            if home.getProperty('bz_audio_latch'): sway['bt0'] = None   # BETA 2.5: big album idle clock: runs only while no music plays (latch off)
-            elif sway.get('bt0') is None: sway['bt0'] = time.time()
-            bt0 = sway.get('bt0')   # big album one-shot (5 s) then pulse
+            bt0 = sway.get('bt0')   # 5.33.415 SWAYCONT: idle clock no longer cleared on latch (was the reset)   # big album one-shot (5 s) then pulse
             for k, d in (('bz_big_go', 2.5), ('bz_big_pulse', 7.5)):
                 v = bt0 is not None and time.time() - bt0 >= d
                 # 5.33.408 NOROCK/SWAYSTART: bz_big_go/bz_big_pulse now drive the idle album SWAY (rotatey), not rock; armed from bt0 at Home startup
@@ -541,8 +540,9 @@ if home.getProperty('bz_flip_running') != 'true':
                     e = now_ - sw[0]
                     for q, t_ in (('bz_pswayon', 4), ('bz_ppulse', 9), ('bz_ppulse2', 14)):   # 3.5.1: 0.5 s delay + 1.5 s fade + 2 s still hold
                         if e >= t_ and not home.getProperty(q): home.setProperty(q, 'true')
-            elif not alive:
-                if home.getProperty('bz_pready'): home.clearProperty('bz_pready')
+            # 5.33.413 P2BHOLD (Rob pt2927u): bz_pready is NOT cleared on leaving Videos any more. Clearing it in Music dropped
+            # $EXP[bz_pshow] -> poster stack at opacity 0; on Music->poster the stack waited 0.25 s re-arm + 400 ms fade = brief black.
+            # Once armed it holds (opacity-hold); only the exit cleanup clears it.
             if sw[0]:   # 5.33.406 ALWAYSSWAY: phase flags advance in every window (MM, Music, Settings kids, Info) — leaving Videos no longer resets the poster to flat
                 e = now_ - sw[0]
                 for q, t_ in (('bz_pswayon', 4), ('bz_ppulse', 9), ('bz_ppulse2', 14)):
@@ -1698,7 +1698,7 @@ if home.getProperty('bz_flip_running') != 'true':
                 if not had: aud_t[0] = time.time(); had = True
                 gone = 0.0
                 if home.getProperty('bz_audio_latch') != 'true':
-                    home.setProperty('bz_audio_latch', 'true'); sway['t0'] = time.time()   # sway (keyed on the latch) starts from flat
+                    home.setProperty('bz_audio_latch', 'true'); sway['t0'] = sway.get('bt0') or time.time(); sway['bt0'] = sway['t0']   # 5.33.415 SWAYCONT: continue the shared idle clock, no restart from flat
             elif home.getProperty('bz_audio_latch') == 'true':
                 gone += 0.15   # t3378 minipop: no 0.45 s fast-drop on !HasMedia (track gap = player briefly empty -> mini player hid)
                 if gone >= 2.5 or xbmc.getCondVisibility('Player.HasVideo'): home.clearProperty('bz_audio_latch'); gone = 0.0; sway['t0'] = None; had = False

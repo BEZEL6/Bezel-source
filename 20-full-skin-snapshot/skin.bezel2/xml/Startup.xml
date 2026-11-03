@@ -2,7 +2,7 @@
 <window>
 	<!-- 5.33.199 WARM GATE: splash is a non-modal property overlay (BezelWarmGateOverlay). Never ActivateWindow(1113) — that modal blocked ReplaceWindow(StartupWindow)/Music (196–198 blank). Order: splash → underlay builds → art warm → fade. -->
 	<!-- Tuner WARM 2.0 > Startup splash (bz_at_warmsplash, default On): Off hides splash VISUALS only; warm-cache always runs. -->
-	<onload>RunScript(special://skin/scripts/bz_dustviz.py)</onload><!-- 5.33.352 DustViz auto-install/enable/select -->
+	<onload>RunScript(special://skin/scripts/bz_dustviz.py)</onload><!-- 5.33.416 NOBZVIZ: noautoviz + Bezel Viz disable/unselect only -->
 	<onload condition="!String.IsEqual(Skin.String(bz_at_warmsplash),Off)">SetProperty(bz_warm_gate,1,home)</onload>
 	<onload>ClearProperty(bz_splash_done,home)</onload>
 	<onload>RunScript(special://skin/scripts/bz_warmgate.py)</onload>

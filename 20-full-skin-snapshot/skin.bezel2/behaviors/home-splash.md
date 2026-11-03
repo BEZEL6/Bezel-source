@@ -2,7 +2,7 @@
 
 **Object:** `Startup.xml` onload · `Home.xml` onload · `scripts/bz_warmgate.py` (warm gate) · `scripts/bz_cmd.py start` · overlay `BezelWarmGateOverlay` (Includes_Bezel ~3617)  
 **Where:** Cold start of Kodi on BEZEL, and every Home load  
-**Last updated:** 2026-11-02 · 5.33.316  
+**Last updated:** 2026-11-03 · 5.33.412
 **Status:** live. The splash is the warm gate of WARM 2.0, which is **LOCKED** (mm-warm.md). Any change needs Rob's approval. This file only describes the startup chain around it.  
 **Skin:** skin.bezel2
 
@@ -33,6 +33,12 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 - Version label y714 h36, `v$INFO[System.AddonVersion(skin.bezel2)]`, font `bz_splash28m` (Montserrat-Medium 28), `FFC8C8CD`.
 - Credit grouplist y1000 h28 centred, gap 12: label "Design by Robert Politano" font `bz_splash20r` (Montserrat-Regular 20) `80FFFFFF` + `bezel/us_flag.png` (54×28 source) drawn 27×14, colordiffuse `80FFFFFF`.
 - Fonts added to both fontsets in Font.xml.
+
+## Art under the splash (5.33.412 ARTUNDERSPLASH)
+
+**Simple.** Big album and poster (dialog 1122, group 6400) load **behind** the splash and dissolve in **with** the 3 s splash fade — no art pop after the splash closes. Dust (1114) still waits for `bz_splash_done`.
+
+**Wiring.** 1122 `<visible>` has no `bz_splash_done` term (opens at startup, zorder 0, modeless). Group 6400 carries two Conditional fades: alpha 0 (time 0) while `bz_warm_gate` is set, and 0→100 over 3000 ms sine when `bz_warm_gate` clears (same moment `bz_warmgate.py dismiss()` starts the overlay's 3 s Hidden fade). Splash Off → gate never set → art shows at once. List-60 section art (Music/Videos windows) already rendered under the overlay.
 
 ## Home.xml onload
 

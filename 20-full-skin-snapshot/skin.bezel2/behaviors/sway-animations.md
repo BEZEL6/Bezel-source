@@ -2,7 +2,7 @@
 
 **Object:** Shared sway clock + album / poster rotatey + stub cast opacity  
 **Where:** Music big album (Dialogue FS / Play Next / viz) · Movies/TV poster (`BezelVPLPoster`) · stub side casts (`pn_cast.png`)  
-**Last updated:** 2026-11-03 · 5.33.408 NOROCK/SWAYSTART
+**Last updated:** 2026-11-03 · 5.33.416 (415 SWAYCONT)
 **Status:** Live. One Python clock drives the album and poster sway flags. The album cast sits outside the sway group (5.33.205) and, since 5.33.299, outside the album slide rails too (include `BezelAlbumCast`). Draft: not Rob-approved, not re-smoked.  
 **Skin:** skin.bezel2 (Estuary fork)
 
@@ -166,7 +166,7 @@ Typical (inside 12250 pulse window):
 **Center:** x **1290**. Shared by Movies + TV; Music untouched.
 
 ### Arming
-- Arms once: `bz_pready` after real item + **0.25 s** quiet, not scrolling.
+- Arms once: `bz_pready` after real item + **0.25 s** quiet, not scrolling; held after that (5.33.413 — not cleared when leaving Videos).
 - Phase timer `sw[0] = now` at arm.
 - **Title changes never remount** (t4815). Cleared only when Videos is left.
 
@@ -383,3 +383,12 @@ Glare + lit dust must ride the sway clock: never put a <visible> on any group be
 
 ## MM album fade (5.33.407 MIDLEFADE)
 Idle Music big-album A/B dissolve (slots `bz_m_idle_a`/`bz_m_idle_b`, 6402 in Includes_Bezel) runs at `Skin.String(bz_at_midlefade)`: steps 1–7 = 200/250/300/400/500/600/800 ms, **default 400 ms** (empty|4). Tuner › ALBUM / POSTER › **MM album fade** (slider). bz_flip.py promote guard = fade + 50 ms (default 0.45 s). Separate from A2P (`bz_at_a2pfade`) and WARM art crossfade (`bz_at_mmxfade`). Reset art/everything clears it.
+
+## 5.33.414 GLAREONE (2026-11-03, Rob t2929u)
+Album glare restored to ONE static 600x600 texture (art_mask.png) over the idle big album — GLARESPLIT 300x600 halves (art_mask_hl/hr) removed from static + leaf groups. Sweep (5 s go) + 8.5 s pulse pair, zoom/fade/sway unchanged. Whole glare hidden during hinge fold (bz_hf_a). Cover single when leaf off.
+
+## Current state — 5.33.415 SWAYCONT (shared idle/playing clock)
+- ONE clock: `sway['bt0']` arms at Home startup (bz_flip `sway_clock`) and is never cleared by music start/stop. `sway['t0']` = that same value while playing (latch on adopts `bt0`; no re-zero). Effective clock = `t0` or `bt0`.
+- `bz_sway_go` / `bz_sway_pulse` / `bz_sway_pulse2` and `bz_big_go` / `bz_big_pulse` all derive from that one clock, so they are set from startup onward.
+- Playing-album sway + glare Conditionals no longer require `bz_audio_latch` (only `!bz_sway_hold`), so the playing tree swings in lockstep (hidden) during idle; music start crossfades idle → playing at the same angle/phase instead of restarting from flat.
+- `bz_sway_restart` (music window reload) / flip hold still re-anchor — and now re-anchor `bt0` too, keeping both trees on one phase.

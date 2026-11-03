@@ -1,5 +1,5 @@
 # Artwork group (global artwork stage) — dialog 1122, group 6400
-Version: 5.33.402 · Files: `xml/Custom_1122_BigAlbum.xml`, `xml/Includes_Bezel.xml` (BezelVPLPoster / BezelVPLPosterTap / BezelPoster60S), `scripts/bz_flip.py` (poster_clock → v60_mirror)
+Version: 5.33.413 · Files: `xml/Custom_1122_BigAlbum.xml`, `xml/Includes_Bezel.xml` (BezelVPLPoster / BezelVPLPosterTap / BezelPoster60S), `scripts/bz_flip.py` (poster_clock → v60_mirror)
 
 ## What it is
 One always-open modeless dialog (1122) holds **all** right-side artwork in group **6400**, so nothing remounts when you change section:
@@ -108,6 +108,7 @@ New art state = add a branch/prop to ART_TREE + draw it in 1122; never a per-win
 **Rules.** Navigation (strip 6996, lists, buttons, Tuner rows) = focus. Chrome (panels, dims, frames, labels) may use Visible. Art = opacity only. The only hard hide left is group 6400 `bz_rail=hide`.
 **Wiring.**
 - `$EXP[bz_pshow]` = `bz_pready` (Videos sway armed) **or** `$EXP[bz_setkids]`, and not `bz_mmmushide`. It is the one gate for the swaying poster stack (400 ms opacity) and its frame. Before .399 the stack was `<visible>bz_pready</visible>`, and `bz_pready` only arms inside Videos, so every SETTINGS kid (1117 Media Sources first) remounted the stack empty → blank poster with `bz_vpl_on=1`.
+- **5.33.413 P2BHOLD:** `bz_pready` arms once in Videos and then **holds** (no clear on leaving Videos; only exit cleanup clears it). Music→Movies/TV poster no longer dips to black (stack stays at opacity 100; window twins/6401 A2P gate the look).
 - SETTINGS kids (1117, 1130, 1131, addonbrowser, Kodi settings, systeminfo/eventlog/filemanager): `v60_mirror` stages the held MM lane if there is one, otherwise **holds the last `bz_v60_art`** and keeps `bz_vpl_on=1` (it used to clear the gate when `bz_pos_on` was empty). With audio only playing, `bz_vpl_on` is cleared → the album owns the slot (unchanged).
 - Lane images that were `<visible>C</visible>` + Visible/Hidden fades are now `Conditional` fade 100→0 on `![C]`, using the old Hidden time (1500 ms lanes, 300/400 elsewhere). The live-only 1500 ms Visible variants (`bz_ab_live`) fold into the single Conditional time.
 - Dead `<visible>false</visible>` art images removed (4).
@@ -120,3 +121,6 @@ New art state = add a branch/prop to ART_TREE + draw it in 1122; never a per-win
   - `_v60_dualrec` doesn't record a hold.
 - The art retargets only after `_restore` lands the session row. The opacity-hold style is unchanged.
 - Known residual: on the first Movies visit of a session there is no `bz_v60_mov` hold yet, so the last poster on screen (which can be a TV poster) can show for about 0.4 s before the correct poster.
+
+## Startup (5.33.412)
+1122 opens under the splash (no `bz_splash_done` gate). Group 6400 alpha 0 while `bz_warm_gate`, then 3000 ms fade-in with the splash fade. See home-splash.md.

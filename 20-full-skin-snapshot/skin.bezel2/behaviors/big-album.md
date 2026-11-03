@@ -1,7 +1,7 @@
 # Big album (dialog 1122)
 
 **Object:** `xml/Custom_1122_BigAlbum.xml` (dialog 1122, zorder 0) · includes `BezelAlbumCast` + 2× `BezelMusicPlayingArt` · expressions `bz_railvis` / `bz_railc` (Includes_Bezel) · Home prop `bz_rail`
-**Last updated:** 2026-11-02 · 5.33.327
+**Last updated:** 2026-11-03 · 5.33.412
 **Status:** built (P1), awaiting device smoke
 
 ## Simple
@@ -36,3 +36,10 @@ The big playing album is one global layer that stays open across sections, like 
 
 ## 5.33.332–333 — under Settings / Add-ons / Media Sources
 - `bz_railvis` also true while audio plays (no video) and 1130, 1131, addonbrowser, 1117 or 1132 is visible (unless Tuner Album art during music = Off). Verified live on 334 with MM closed: shots `audit_settings_levels/334_album_{1130,1131,1117,1132}.png`.
+
+
+## Art under the splash (5.33.412 ARTUNDERSPLASH)
+
+**Simple.** Big album and poster (dialog 1122, group 6400) load **behind** the splash and dissolve in **with** the 3 s splash fade — no art pop after the splash closes. Dust (1114) still waits for `bz_splash_done`.
+
+**Wiring.** 1122 `<visible>` has no `bz_splash_done` term (opens at startup, zorder 0, modeless). Group 6400 carries two Conditional fades: alpha 0 (time 0) while `bz_warm_gate` is set, and 0→100 over 3000 ms sine when `bz_warm_gate` clears (same moment `bz_warmgate.py dismiss()` starts the overlay's 3 s Hidden fade). Splash Off → gate never set → art shows at once. List-60 section art (Music/Videos windows) already rendered under the overlay.
