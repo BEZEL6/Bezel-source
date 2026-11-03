@@ -148,3 +148,7 @@ The big album, its sway, next-song fade, cast and compact NP no longer live in t
 - The viz (visualization.bezel) only paints its rect from Kodi's audio bins; no input, no focus, no skin access. Skin → viz triggers only via Home properties.
 - Install: Startup runs `scripts/bz_dustviz.py` — copies bundled `resources/dustviz/<android|linux>/visualization.bezel` into special://home/addons when the version differs, UpdateLocalAddons, enables it, sets `musicplayer.visualisation`, sets Home `bz_dustviz_ok`. Windows: no binary, skipped (logged).
 - Kill switch: `Skin.SetBool(bz_dustviz_off)`.
+
+
+## 5.33.411 NOIDLEFS (2026-11-03)
+Removed the 30 s idle auto-open of Dialogue FS (1120) from bz_flip.py and its Tuner row (FULLSCREEN MUSIC > Open after 30 s idle). Fullscreen music opens ONLY on explicit Select. bz_fsauto_off is now dead. NOAUTOVIZ (409, musicfiles.selectaction forced off) kept.

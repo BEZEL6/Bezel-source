@@ -91,3 +91,7 @@ Every `bz_*` name this object's behavior references, with live definition sites 
   - `xml/Custom_1120_PlayNext.xml` L10: `<onload condition="String.IsEmpty(Skin.String(bz_dfs_mode))">Skin.SetString(bz_dfs_mode,album)</onload><!-- 5.33.109: pill defaults to album --><onunload>ClearP`
   - `xml/Custom_1120_PlayNext.xml` L10: `<onload condition="String.IsEmpty(Skin.String(bz_dfs_mode))">Skin.SetString(bz_dfs_mode,album)</onload><!-- 5.33.109: pill defaults to album --><onunload>ClearP`
 
+
+
+## 5.33.411 NOIDLEFS (2026-11-03)
+Removed the 30 s idle auto-open of Dialogue FS (1120) from bz_flip.py and its Tuner row (FULLSCREEN MUSIC > Open after 30 s idle). Fullscreen music opens ONLY on explicit Select. bz_fsauto_off is now dead. NOAUTOVIZ (409, musicfiles.selectaction forced off) kept.

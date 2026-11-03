@@ -36,4 +36,11 @@ def main():
     cur = (rpc('Settings.GetSettingValue', {'setting': 'musicplayer.visualisation'}).get('result') or {}).get('value')
     if cur != ID: rpc('Settings.SetSettingValue', {'setting': 'musicplayer.visualisation', 'value': ID})
     xbmc.executebuiltin('SetProperty(bz_dustviz_ok,1,home)')
-if __name__ == '__main__': main()
+def noautoviz():   # 5.33.409 NOAUTOVIZ (Rob pt2915u): Kodi 'Switch to visualisation on playback' (musicfiles.selectaction) popped stock fullscreen on Music Select; Bezel owns FS opens
+    r = rpc('Settings.GetSettingValue', {'setting': 'musicfiles.selectaction'})
+    if (r.get('result') or {}).get('value') is not False:
+        rpc('Settings.SetSettingValue', {'setting': 'musicfiles.selectaction', 'value': False}); xbmc.log('BEZEL: musicfiles.selectaction forced off', xbmc.LOGINFO)
+if __name__ == '__main__':
+    try: noautoviz()
+    except Exception as e: xbmc.log('BEZEL noautoviz failed %s' % e, xbmc.LOGWARNING)
+    main()

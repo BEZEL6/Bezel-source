@@ -325,3 +325,15 @@ Idle Music big album in the 1122 album layer draws two always-loaded images: `bz
 
 ## MM album fade (5.33.407 MIDLEFADE)
 Idle Music big-album A/B dissolve (slots `bz_m_idle_a`/`bz_m_idle_b`, 6402 in Includes_Bezel) runs at `Skin.String(bz_at_midlefade)`: steps 1–7 = 200/250/300/400/500/600/800 ms, **default 400 ms** (empty|4). Tuner › ALBUM / POSTER › **MM album fade** (slider). bz_flip.py promote guard = fade + 50 ms (default 0.45 s). Separate from A2P (`bz_at_a2pfade`) and WARM art crossfade (`bz_at_mmxfade`). Reset art/everything clears it.
+
+
+## Select = play in place (5.33.409)
+Select on a song plays it without Kodi's auto-switch to visualisation (`musicfiles.selectaction` forced off at startup by `bz_dustviz.py`).
+
+## Return from fullscreen (5.33.410 FSBARFLASH)
+- Viz (MusicVisualisation) and Fanart FS (1121) unload set `bz_gridret` (cleared after 3 s) — list 60 + bar stay alpha 0 in grid-first sections until grid 6600 takes focus, then the normal 300 ms grid fade owns the hide (no time-0 pop).
+- The unload `SetFocus(60)` return (bz_vizret / bz_m1121ret) runs only when Music grid-first (`bz_grid_music`) is off; with grid on, Kodi restores focus and bz_flip moves to 6600.
+
+
+## 5.33.411 NOIDLEFS (2026-11-03)
+Removed the 30 s idle auto-open of Dialogue FS (1120) from bz_flip.py and its Tuner row (FULLSCREEN MUSIC > Open after 30 s idle). Fullscreen music opens ONLY on explicit Select. bz_fsauto_off is now dead. NOAUTOVIZ (409, musicfiles.selectaction forced off) kept.

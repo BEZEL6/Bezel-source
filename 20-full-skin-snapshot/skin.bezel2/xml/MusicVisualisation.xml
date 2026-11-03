@@ -14,8 +14,8 @@
 	<onload condition="!String.IsEqual(Window(Home).Property(bz_flip_running),true)">RunScript(special://skin/scripts/bz_flip.py)</onload>
 	<onload>SetProperty(bz_sway_restart,true,home)</onload>
 	<onunload condition="String.IsEqual(Window(Home).Property(bz_fsnp),true)">ClearProperty(bz_np,home)</onunload>
-	<onunload condition="!$EXP[bz_navmenu] + String.IsEmpty(Window(Home).Property(bz_fsmm))">AlarmClock(bz_vizret,SetFocus(60),00:00,silent)</onunload><!-- 5.33.112 t786: Play Next / viz exit -> section list 60 --><onunload>ClearProperty(bz_fsnp,home)</onunload><onunload>ClearProperty(bz_pnoff,home)</onunload><onunload>ClearProperty(bz_pnfoc,home)</onunload><onunload>ClearProperty(bz_vdtap,home)</onunload><!-- 5.33.108 t732: Back in play-next = plain viz FS -->
-	<onunload>SetProperty(bz_gridret,1,home)</onunload><onunload>AlarmClock(bzgridret,ClearProperty(bz_gridret,home),00:01,silent)</onunload><!-- 4.0.1 O22: the section underneath holds its list hidden for 1 s if its grid takes the focus (no list bar flash) -->
+	<onunload condition="!$EXP[bz_navmenu] + String.IsEmpty(Window(Home).Property(bz_fsmm)) + !Skin.HasSetting(bz_grid_music)">AlarmClock(bz_vizret,SetFocus(60),00:00,silent)</onunload><!-- 5.33.112 t786: Play Next / viz exit -> section list 60 --><!-- 5.33.410 FSBARFLASH: skipped when Music grid-first is on --><onunload>ClearProperty(bz_fsnp,home)</onunload><onunload>ClearProperty(bz_pnoff,home)</onunload><onunload>ClearProperty(bz_pnfoc,home)</onunload><onunload>ClearProperty(bz_vdtap,home)</onunload><!-- 5.33.108 t732: Back in play-next = plain viz FS -->
+	<onunload>SetProperty(bz_gridret,1,home)</onunload><onunload>AlarmClock(bzgridret,ClearProperty(bz_gridret,home),00:03,silent)</onunload><!-- 4.0.1 O22: the section underneath holds its list hidden for 1 s if its grid takes the focus (no list bar flash) -->
 	<controls>
 		<control type="group">
 			<visible>String.IsEqual(Window(Home).Property(bz_fsnp),true)</visible>

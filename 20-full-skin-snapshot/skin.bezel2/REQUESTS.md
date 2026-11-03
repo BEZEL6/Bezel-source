@@ -300,3 +300,12 @@ Rob: "Take out" the black box above the merged song list. Gated the View D cover
 - Still paused for: MM closed, mmstart, mmwarm, Tuner/settings/submenu, uadv_off, SETTINGS row (396 SETHOLD), modal/busy, <2 items.
 - Backup bak_5.33.400_pre401/.
 
+
+## 5.33.408 NOROCK/SWAYSTART (Nov 3 2026, Rob t2914u)
+"DISABLE ALBUM ROCK, I JUST WANT SWAY. START POSTER AND ALBUM SWAY ON STARTUP" — idle album 2D rock (±4° rotate) replaced in place by album rotatey sway on bz_big_go/bz_big_pulse (armed at Home startup); Tuner Idle rock row removed; poster sway anchor armed at poster_clock thread start. Files: addon.xml, xml/Includes_Bezel.xml, xml/Includes_Tuner.xml, scripts/bz_flip.py, behaviors/sway-animations.md, leaf-flip.md, idle-big-album-fold.md. FULL restart. Not zipped.
+
+- 5.33.409 NOAUTOVIZ (Rob pt2915u, Nov 3 2026): Music Select popped Kodi stock fullscreen viz. Cause: Kodi setting musicfiles.selectaction (Switch to visualisation on playback) on. Fix: bz_dustviz.py startup forces it off. FULL restart. Follow-up queued: list highlight bar flash on return from FS.
+
+
+## 5.33.411 NOIDLEFS (2026-11-03)
+Removed the 30 s idle auto-open of Dialogue FS (1120) from bz_flip.py and its Tuner row (FULLSCREEN MUSIC > Open after 30 s idle). Fullscreen music opens ONLY on explicit Select. bz_fsauto_off is now dead. NOAUTOVIZ (409, musicfiles.selectaction forced off) kept.

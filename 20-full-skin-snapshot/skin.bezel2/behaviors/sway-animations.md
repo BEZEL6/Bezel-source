@@ -2,7 +2,7 @@
 
 **Object:** Shared sway clock + album / poster rotatey + stub cast opacity  
 **Where:** Music big album (Dialogue FS / Play Next / viz) · Movies/TV poster (`BezelVPLPoster`) · stub side casts (`pn_cast.png`)  
-**Last updated:** 2026-11-03 · 5.33.406
+**Last updated:** 2026-11-03 · 5.33.408 NOROCK/SWAYSTART
 **Status:** Live. One Python clock drives the album and poster sway flags. The album cast sits outside the sway group (5.33.205) and, since 5.33.299, outside the album slide rails too (include `BezelAlbumCast`). Draft: not Rob-approved, not re-smoked.  
 **Skin:** skin.bezel2 (Estuary fork)
 
@@ -15,9 +15,9 @@
 Three layers: **Simple** (below), **How it works** (plain English, below), **Wiring** (Code map and every technical section after it, taken from the live tree).
 
 ### Simple
-- The big album (Music) and the poster (Movies/TV) slowly rock left and right, like a picture tilting on a wall.
-- The soft shadows beside the album get darker and lighter in time with that rocking.
-- When the screen reloads, the rocking starts again from flat instead of jumping.
+- The big album (Music) and the poster (Movies/TV) slowly sway (3D turn left and right). There is no 2D rock any more (5.33.408).
+- The soft shadows beside the album get darker and lighter in time with that sway.
+- When the screen reloads, the sway starts again from flat instead of jumping.
 - A few Tuner sliders change how long it pauses and how fast it moves.
 
 ### How it works
@@ -35,10 +35,12 @@ While the skin script is running it wakes every twentieth of a second. It rememb
 **Shared art clock (5.33.391).** Poster and album sway on ONE clock. `poster_clock` still raises `bz_pswayon` (+4 s) → `bz_ppulse` (+9 s) → `bz_ppulse2` (+14 s), but its anchor is no longer "now": `_art_sw_anchor()` places the poster's pulse onset on the album pulse grid (`t0 + 7.4 + k·24.5 s`, 24.5 s = Kodi pulse cycle of the 12250 ms anim). Master epoch = album `t0` while the music latch is on; with no music a free-running epoch (`sway['art0']`, set once) stands in. Published as Home `bz_art_t0`. So across a Music↔Videos crossfade in group 6400 both layers are at the same point of the swing. Title changes do **not** restart the poster sway. Limits: the anchor is taken when the poster arms (entering Videos); if the album clock restarts while the poster is already swinging, the poster keeps its old phase until Videos is left and re-entered. Tuner hold `D` changes the album period only (poster XML stays 12250 ms) — at default D=2.0 they match. Mirror direction is unchanged (album −13→+13, poster +13→−13, same timing).
 
 
-**Always-on sway (5.33.406, Rob t2885/t2886).** Both art layers sway at all times while drawn:
-- **Poster:** `poster_clock` arms `sw` once at thread start on the shared art clock (`_art_sw_anchor`, `bz_art_t0`) and never disarms. `bz_pswayon` (+4 s) → `bz_ppulse` (+9 s) → `bz_ppulse2` (+14 s) advance in every window (Videos, Music, MM, Settings kids, Info). Leaving Videos clears only `bz_pready`, no longer the phase flags, so the poster never drops to flat and never waits up to ~33 s to re-arm. Flags clear only on Bezel leave.
-- **Album, no music:** idle rock (`bz_big_go` at +2.5 s, `bz_big_pulse` at +7.5 s from `bt0`) has no `bz_idlerock` gate now. It runs whenever the music latch is off. The Tuner row reads **ALWAYS ON**. Its XML gates are just `!Window.IsActive(1120) + !Window.IsActive(visualisation)`.
-- **Album, music playing:** the rotatey sway on `bz_audio_latch` / `bz_sway_go` / `bz_sway_pulse` is unchanged.
+**Sway only, armed at startup (5.33.408 NOROCK/SWAYSTART, Rob pt2914u).** Album rock is gone; both art layers sway from Home cold start:
+- **Poster:** `poster_clock` sets `sw = [_art_sw_anchor(time.time())]` when the thread starts (Home onload runs `bz_flip.py`), before any loop `continue`, on the shared art clock (`bz_art_t0`). `bz_pswayon` (+4 s) → `bz_ppulse` (+9 s) → `bz_ppulse2` (+14 s) then advance in every window. Never disarmed; flags clear only on Bezel leave.
+- **Album, no music (idle big album):** `bt0` is set on the first `sway_clock` tick with the latch off, i.e. at startup. `bz_big_go` (+2.5 s) / `bz_big_pulse` (+7.5 s) now drive a **rotatey SWAY** on the idle album stack group (Includes_Bezel ~l.1071, `<camera x="1440" y="570"/>`): lead-in 0→−13° in 5 s, then the same pulse as the playing album (12250 ms, −13↔+13 sine, 2 s still). Gates: `!Window.IsActive(1120) + !Window.IsActive(visualisation)`. The old 2D `rotate` ±4° rock (8.5 s pulse) was removed. `bz_big_go` still also fades the idle glare.
+- **Album, music playing:** rotatey sway on `bz_audio_latch` / `bz_sway_go` / `bz_sway_pulse` unchanged.
+- Tuner: the **Idle rock** row is removed (`BzATVal_idlerock` left as an unused var reading "OFF (sway only)"; `bz_idlerock` unused). Sway controls stay under ALBUM / POSTER › SWAY.
+- Idle album phase is on its own `bt0` (startup / music stop), not snapped to `bz_art_t0`; at cold start they are within a tick of each other.
 - Leaf flip (`bz_leafflip`, default OFF) does not gate either sway.
 
 **Hold and restart.**  
@@ -316,7 +318,7 @@ Casts **do not** own Conditional timers. Mid-cycle stub / viz / Play Next load j
 **Smoke:** ReloadSkin (or FULL restart if props sticky). Music playing, watch strip right edge through short and long sway peak — cast edge should stay flush, no crawl.
 
 ## Idle (no audio) big album — current (5.33.231)
-- Idle rock (bz_big_go / bz_big_pulse) only when Tuner Idle rock ON (`bz_idlerock`, default OFF).
+- Idle album: bz_big_go / bz_big_pulse drive rotatey sway (no rock) from startup (5.33.408).
 - Idle hinge flip every 10 s — see music-list.md.
 
 ## Idle Big Album fold (current state, 5.33.245)
@@ -327,7 +329,7 @@ Casts **do not** own Conditional timers. Mid-cycle stub / viz / Play Next load j
 - Fold: phase 1 folds the right half of the current cover onto itself (rotatey 0→-90 about x1440, 2200 ms sine in). Phase 2 unfolds the next cover's left half (90→0, 2200 ms sine out). The next cover's right half is visible underneath the whole time. When the fold ends, A := B, so the cover lines up with no jump. The baked shadows `hf_shd_r` / `hf_shd_l` and the 45% darkening fade with the fold.
 - Hold: 10 s between folds.
 - Preload: `bz_hf_b` (the next cover) is set as soon as the hold starts and is drawn under A for the whole 10 s. B textures load sync, so nothing is blank mid-fold.
-- Rock/lean: Tuner ALBUM/POSTER "Idle rock" (`bz_idlerock`) is OFF by default.
+- Rock: removed in 5.33.408; no Tuner row.
 
 <!-- PORTLINKS -->
 ---

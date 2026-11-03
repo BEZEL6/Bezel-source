@@ -18,9 +18,9 @@ Leaf flip is its own animation: the cover is cut at the slit (x1440) and the rig
   | While-play next-song | **Not leaf** (5.33.301) | album change while playing = album sway next song fade inside the sway tree (`bz_cov_x`/`bz_cov_xf`, 900 ms); leaf on that path stays parked |
   | FS stubs leaf | **PLANNED** — not shipped | reuse same 1400 ms × 2 timing / slit model |
 - **MUST NOT:**
-  - share the rock/sway clock (`bz_sway_go`, `bz_big_go`/`bz_big_pulse`, `bz_audio_latch` lead-in, ±13° / −30° tips) — see [sway-animations.md](sway-animations.md);
+  - share the sway clock (idle rock removed 5.33.408) (`bz_sway_go`, `bz_big_go`/`bz_big_pulse`, `bz_audio_latch` lead-in, ±13° / −30° tips) — see [sway-animations.md](sway-animations.md);
   - reuse the `bz_cov_side` full flip (0→90 / −90→0 whole cover, ~1857 ms) — separate path, **parked for next-song since 5.33.301** (XML kept for the music → video path);
-  - be triggered by play start (play start = rock lead-in only).
+  - be triggered by play start (play start = sway lead-in only).
 
 ## Wiring
 | Piece | Where |
@@ -28,7 +28,7 @@ Leaf flip is its own animation: the cover is cut at the slit (x1440) and the rig
 | Props (owned) | `bz_hf_a` current cover · `bz_hf_b` next (preload at hold start) · `bz_hf_ph` 1/2 during phases |
 | Driver | `bz_flip.py` `idle_hinge()` (gate `ok()` idle OR `mmw()`); future uses get their own entry point but same props/timing |
 | XML | hinge group visible `!Player.HasAudio + Window.IsActive(music) + !String.IsEmpty(bz_hf_a)` |
-| Not owned | `bz_cov_side` (album-change flip) · `bz_sway*` / `bz_big_*` / `bz_audio_latch` (rock/sway) |
+| Not owned | `bz_cov_side` (album-change flip) · `bz_sway*` / `bz_big_*` / `bz_audio_latch` (sway; idle rock removed 5.33.408) |
 | Restart | XML/media → ReloadSkin; `bz_flip.py` → FULL restart |
 
 ## Track-list flip — DELETED (5.33.309)
@@ -37,4 +37,4 @@ Rob (Nov 2 2026): "We don't use it anymore." The tap-to-flip track list is gone:
 
 
 ## Enable gate (5.33.405 LEAFFLIP)
-Leaf flip runs only when `Skin.HasSetting(bz_leafflip)` — **default OFF**. Toggle: Tuner › ALBUM / POSTER › Leaf flip (after Idle rock). Off → `idle_hinge()` `ok()` false → `bz_hf_*` cleared, no phases. Look/timing above unchanged (LOCKED).
+Leaf flip runs only when `Skin.HasSetting(bz_leafflip)` — **default OFF**. Toggle: Tuner › ALBUM / POSTER › Leaf flip (Idle rock row removed 5.33.408). Off → `idle_hinge()` `ok()` false → `bz_hf_*` cleared, no phases. Look/timing above unchanged (LOCKED).

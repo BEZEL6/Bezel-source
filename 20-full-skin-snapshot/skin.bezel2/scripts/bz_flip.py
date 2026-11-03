@@ -212,7 +212,7 @@ if home.getProperty('bz_flip_running') != 'true':
             bt0 = sway.get('bt0')   # big album one-shot (5 s) then pulse
             for k, d in (('bz_big_go', 2.5), ('bz_big_pulse', 7.5)):
                 v = bt0 is not None and time.time() - bt0 >= d
-                # 5.33.406 ALWAYSSWAY (Rob pt2886u): idle album rock runs at all times (bz_idlerock gate removed; was default Off since 5.33.231)
+                # 5.33.408 NOROCK/SWAYSTART: bz_big_go/bz_big_pulse now drive the idle album SWAY (rotatey), not rock; armed from bt0 at Home startup
                 if v and not home.getProperty(k): home.setProperty(k, 'true')
                 elif not v and home.getProperty(k): home.clearProperty(k)
             on2 = on and time.time() - t0 >= 12.4   # 2.0a3.4: cross wobble, a quarter cycle after the swing, so the art keeps moving through the turns
@@ -432,7 +432,7 @@ if home.getProperty('bz_flip_running') != 'true':
         home.setProperty('bz_art_t0', '%.3f' % t0)
         return on - 9.0
     def poster_clock():
-        key = None; since = time.time(); was = False; closed_at = None; opened = 0; got = False; sw = [0]; pend = [None, 0.0]; sw_prev = [0]; sw_path = ['']; sw_top = [False]; sw_tchg = [0.0]
+        key = None; since = time.time(); was = False; closed_at = None; opened = 0; got = False; sw = [_art_sw_anchor(time.time())]; pend = [None, 0.0]; sw_prev = [0]; sw_path = ['']; sw_top = [False]; sw_tchg = [0.0]   # 5.33.408 SWAYSTART (Rob pt2914u): poster sway armed at thread start (Home cold start), before any loop continue
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
             # t4465: remember the focused actor (dir) so the actor folder small art shows the actor thumb
             try:
@@ -1058,15 +1058,7 @@ if home.getProperty('bz_flip_running') != 'true':
                     autonp[0] = True
                     xbmc.log('BEZEL auto NP: open after %ss' % _ad, xbmc.LOGWARNING)
                     _np_open('auto')   # 4.6.0: guarded (cooldown + busy check right before the launch)
-            # 5.33.325 t2420u/t2421u: Music section + music playing + 30 s no input -> Dialogue FS (1120). Once per idle period (any key re-arms).
-            # Tuner > FULLSCREEN MUSIC > Open after 30 s idle in Music (bz_fsauto_off). Uses the same gate as the big-album tap (bz_pndlg_ok).
-            if xbmc.getGlobalIdleTime() < 30: fsauto[0] = False
-            elif not fsauto[0] and not xbmc.getCondVisibility('Skin.HasSetting(bz_fsauto_off)'):
-                if xbmc.getCondVisibility('!Skin.HasSetting(bz_pndlg_off) + Player.HasAudio + !Player.HasVideo + Window.IsActive(music) + !Window.IsActive(visualisation) + !Window.IsActive(1120) + !Window.IsVisible(1121) + !System.HasModalDialog + !Window.IsActive(1111) + !Window.IsActive(1112) + !Window.IsActive(contextmenu) + !Window.IsActive(musicinformation) + !Window.IsActive(fullscreenvideo)') \
-                        and not home.getProperty('bz_nav') and not home.getProperty('bz_np') and _np_safe():
-                    fsauto[0] = True
-                    xbmc.log('BEZEL auto Dialogue FS: open after 30s idle', xbmc.LOGWARNING)
-                    home.setProperty('bz_rail', 'centre'); xbmc.executebuiltin('ActivateWindow(1120)')
+            # 5.33.411 NOIDLEFS (t2919u/t2920u): 30 s idle auto Dialogue FS REMOVED. FS opens only on explicit Select. Never re-add without Rob asking.
             if casc_pend[0] and now >= casc_pend[1]: home.setProperty('bz_casc', casc_pend[0]); home.setProperty('bz_casc_fp', casc_pend[2]); casc_pend[0] = None   # beta2.2: unhide + cascade on the same tick
             if casc_t[0] and now - casc_t[0] > casc_len() and home.getProperty('bz_casc'):   # 4.0.1 O21 root cause: was a fixed 0.7 s, which cut rows 6-15 (still animating until ~1.25 s) and snapped them in at the end   # 3.5.7: rows created later (scroll / deep return) must not replay it
                 home.clearProperty('bz_casc'); casc_t[0] = 0

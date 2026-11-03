@@ -60,7 +60,7 @@ On cold start / first MM open, list 60 and its art + album RPC fill in late. `id
 
 
 ## Enable gate (5.33.405 LEAFFLIP)
-Leaf flip runs only when `Skin.HasSetting(bz_leafflip)` — **default OFF**. Toggle: Tuner › ALBUM / POSTER › Leaf flip (after Idle rock). Off → `idle_hinge()` `ok()` false → `bz_hf_*` cleared, no phases. Look/timing above unchanged (LOCKED).
+Leaf flip runs only when `Skin.HasSetting(bz_leafflip)` — **default OFF**. Toggle: Tuner › ALBUM / POSTER › Leaf flip (Idle rock row removed 5.33.408). Off → `idle_hinge()` `ok()` false → `bz_hf_*` cleared, no phases. Look/timing above unchanged (LOCKED).
 
 ## MM album fade (5.33.407 MIDLEFADE)
 Idle Music big-album A/B dissolve (slots `bz_m_idle_a`/`bz_m_idle_b`, 6402 in Includes_Bezel) runs at `Skin.String(bz_at_midlefade)`: steps 1–7 = 200/250/300/400/500/600/800 ms, **default 400 ms** (empty|4). Tuner › ALBUM / POSTER › **MM album fade** (slider). bz_flip.py promote guard = fade + 50 ms (default 0.45 s). Separate from A2P (`bz_at_a2pfade`) and WARM art crossfade (`bz_at_mmxfade`). Reset art/everything clears it.

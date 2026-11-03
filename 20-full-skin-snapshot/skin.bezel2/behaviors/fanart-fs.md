@@ -144,3 +144,7 @@ On the fanart stage (`bz_pnoff=1`) Kodi Fanart FS draws the same chrome as 1121:
 ## Exit rule (5.33.378)
 - FS opened **from MM** (MM open, or MM closed by the opener <0.8 s before FS): `bz_fsmm` latches (bz_cmd tab/np + bz_flip FS rise edge). On FS exit bz_flip reopens MM (`bz_nav=true`, normal open path → strip 6996 on the current section row); the `SetFocus(60)` onunload alarm and fs_was list re-focus are skipped.
 - FS opened **from inside a section** (list / FULLSCREEN pill 6886): exit → section list 60 (intended, unchanged).
+
+
+## Auto-switch off (5.33.409)
+Startup (`bz_dustviz.py` → `noautoviz`) forces Kodi `musicfiles.selectaction` ("Switch to visualisation on playback") to **false** every start. Music Select plays in the Bezel list/NP path; `visualisation` opens only from Bezel routes (FS pill, Tab, 1112 auto-viz, ActivateWindow).
