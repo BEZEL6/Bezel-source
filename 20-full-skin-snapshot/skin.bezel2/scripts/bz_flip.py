@@ -79,6 +79,38 @@ home = xbmcgui.Window(10000)
 # BEZEL 3.1: Jumbo (900 px) album art is the default; set it once per profile, after that the tap / OK toggle and the tuner own it
 xbmc.executebuiltin("Skin.Reset(bz_jumbo)"); xbmc.executebuiltin("Skin.Reset(bz_jumbo31)")   # 4.0.1 O36 (Rob): Jumbo / tap-to-enlarge removed; old saved strings cleared
 import time as _t
+# 5.33.445 PERFCOUNT (optimization #1 step 1, Rob: "START WITH THE ONE THAT WILL OPTIMIZE BEZEL THE MOST"): count every call this
+# script makes into Kodi (cond / infolabel / builtin / Home property get+set), per helper thread. Each call takes Kodi's GUI lock, so
+# these counts say which loops to merge first. Logging only: one 'BEZEL perf' line per 60 s, for the first 15 min after start. No
+# behaviour change (the wrappers call straight through; a failure inside the counter is swallowed).
+_PF = {'c': {}, 'n': {}, 't0': _t.time(), 'last': _t.time()}
+def _pf_tick(tag):
+    try:
+        th = threading.current_thread(); nm = _PF['n'].get(th)
+        if nm is None: nm = _PF['n'][th] = re.sub(r'^Thread-\d+ ?', '', th.name).strip('()') or 'anon'
+        d = _PF['c'].setdefault(nm, {}); d[tag] = d.get(tag, 0) + 1
+        now = _t.time()
+        if now - _PF['last'] >= 60.0 and now - _PF['t0'] <= 960.0:
+            dt = now - _PF['last']; _PF['last'] = now; c = _PF['c']; _PF['c'] = {}
+            tot = sum(sum(v.values()) for v in c.values())
+            parts = sorted(c.items(), key=lambda kv: -sum(kv[1].values()))
+            _xlog('BEZEL perf %.0fs total=%.0f/s | %s' % (dt, tot / dt, ' | '.join('%s %.1f/s (%s)' % (k, sum(v.values()) / dt, ','.join('%s=%d' % x for x in sorted(v.items()))) for k, v in parts)), xbmc.LOGINFO)
+    except Exception: pass
+_xlog = xbmc.log
+def _pf_wrap(fn, tag):
+    def w(*a, **k):
+        _pf_tick(tag); return fn(*a, **k)
+    return w
+for _n, _tg in (('getCondVisibility', 'cv'), ('getInfoLabel', 'il'), ('executebuiltin', 'eb'), ('executeJSONRPC', 'rpc')):
+    try: setattr(xbmc, _n, _pf_wrap(getattr(xbmc, _n), _tg))
+    except Exception: pass
+class _PFHome(object):
+    def __init__(self, w): self._w = w
+    def getProperty(self, k): _pf_tick('gp'); return self._w.getProperty(k)
+    def setProperty(self, k, v): _pf_tick('sp'); return self._w.setProperty(k, v)
+    def clearProperty(self, k): _pf_tick('sp'); return self._w.clearProperty(k)
+    def __getattr__(self, n): return getattr(self._w, n)
+home = _PFHome(home)
 def now0(): return _t.time()
 def _modal_blocks_strip():   # 5.33.420 MODALGUARD: Confirm/any modal up -> never pull focus to strip 6996 (keep-skin + Yes/No 10/11 lost focus)
     return xbmc.getCondVisibility('System.HasModalDialog | Window.IsActive(yesnodialog) | Window.IsVisible(yesnodialog)')
@@ -213,7 +245,18 @@ if home.getProperty('bz_flip_running') != 'true':
         # Since 415 SWAYCONT the clock runs from Home startup, but Kodi starts the 1122 album's pulse anim only when its group is drawn
         # (Player.HasAudio) with the condition true - usually the first play, minutes later - and then keeps wall-clock phase (hidden = frozen,
         # condition not re-read). Mirror that: record the time the album's condition turns true WHILE drawn; only re-read it while drawn.
-        vis = xbmc.getCondVisibility('Player.HasAudio') and home.getProperty('bz_navtune') != 'true'
+        # 5.33.445 SYNCANCHOR (Rob: "THE LAST FIX SEEMS TO OF LOST SYNC AGAIN"): two holes in the 441 test.
+        # (1) 1122 is a dialog with its own <visible> (closes under screensaver / slideshow / fullscreen video). When it reopens Kodi
+        #     restarts every animation in it, so the album pulse re-starts from zero; the stub anchor kept the old start -> stubs out of
+        #     step after a screensaver. Now: 1122 not visible = anchor dropped, re-taken the moment the album is drawn again.
+        # (2) 'drawn' now = the album's full gate chain (6400 rail != hide, 6402 inner !bz_gridm | bz_np), not just HasAudio + !Tuner, so
+        #     a play started under the music grid anchors when the album actually starts, not when the music starts.
+        if not xbmc.getCondVisibility('Window.IsVisible(1122)'):
+            sway['cl'] = sway['cs'] = False; sway['pl'] = sway['ps'] = None; return
+        vis = xbmc.getCondVisibility('Player.HasAudio + !String.IsEqual(Window(Home).Property(bz_navtune),true) + !String.IsEqual(Window(Home).Property(bz_rail),hide)'
+                                     ' + [![Window.IsActive(music) + Skin.HasSetting(bz_grid_music) + [Container(60).Content(albums) | Container(60).Content(artists)]]'
+                                     ' | [String.IsEqual(Window(Home).Property(bz_np),true) + [Window.IsActive(music) | String.IsEqual(Window(Home).Property(bz_fsnp),true)]'
+                                     ' + String.IsEqual(Window(Home).Property(bz_audio_latch),true) + !Player.HasVideo]]')
         if not vis: return
         hold = bool(home.getProperty('bz_sway_hold')); right = xbmc.getCondVisibility('Skin.HasSetting(bz_swayright)')
         cl = (not hold) and bool(home.getProperty('bz_sway_pulse')) and not right            # = album long pulse condition
@@ -667,7 +710,7 @@ if home.getProperty('bz_flip_running') != 'true':
                     if n >= 5:
                         home.setProperty('bz_flip_fail', f.__name__); home.clearProperty('bz_flip_running'); return
                     if mon.waitForAbort(1.0): return
-        t = threading.Thread(target=_guard, daemon=True); _bzth.append(t); t.start()
+        t = threading.Thread(target=_guard, daemon=True, name=f.__name__); _bzth.append(t); t.start()   # 5.33.445 PERFCOUNT: thread named after its helper
     def km_leave_watch():   # 5.33.194 keymap quarantine: skin switched away from skin.bezel2 -> remove all BEZEL keymaps, stop helpers
         import sys as _s; _s.path.insert(0, os.path.dirname(os.path.abspath(__file__))); import bz_km
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':

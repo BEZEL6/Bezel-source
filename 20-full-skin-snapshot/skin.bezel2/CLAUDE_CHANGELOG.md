@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.444
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.445
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 445 | "START WITH THE ONE THAT WILL OPTIMIZE BEZEL THE MOST"; "SYNCING THE SWAY SHADOWS, GLARE, LIT DUST… THE LAST FIX SEEMS TO OF LOST SYNC AGAIN" | **SYNCANCHOR** (stub cast clock re-anchors on 1122 reopen + full album gate); **PERFCOUNT** (optimization #1 step 1: per-thread Kodi call counts in kodi.log) |
 | 444 | Rob batch: auto-hide dim (poster + fanart only), Movies fanart showing Music labels, album stretch on rail slide, idle lit dust, quick-nav pick opening the warm section, music-playing landing, L1 ARTIST caption, Tuner Back | **ALLFIX**, **MMHIDEART/FAN**, **RAILXFADE**, **IDLELIT**, **VPICKLOAD**, **M2VLAND**, L1 caption |
 | 443 | "1 14 ROW IS NOT A RULE, 2 ALWAYS BOTTOM, 3 GROUPED, 4 LIST ONLY, 5 HIDE, 6 COUNT" | **ALLROW2**: no cap (long lists → bottom pill 6088/6089), grouped ALL ALBUMS, single-season/album hide, counts |
 | 442 | "TAKE A LOOK AT THE BEZEL ALL SEASON ALL ALBUM CUSTOM FOLDERS MAKE BETTER AND FIX IF NEEDED" | **ALLTOGGLE**: BEZEL ALL rows follow the View All toggles; no blank `..` slot with All Albums off |
@@ -205,6 +206,20 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.445 — SYNCANCHOR + PERFCOUNT
+- **SYNCANCHOR** (`bz_flip.py _sway_anchor`). The FS prev/next stub casts (`bz_castL/R`) are driven by Python, which has to copy the phase of the 1122 album pulse. Two gaps in 441:
+  1. 1122 is a dialog with its own `<visible>` (it closes under screensaver, slideshow and fullscreen video). On reopen, Kodi restarts every animation in it, so the album, its colour-strip cast and the glares all restart together. The Python anchor kept the old start, so the stubs drifted after a screensaver. Now, when `Window.IsVisible(1122)` is false, the anchor is dropped and taken again the first time the album is drawn.
+  2. "Album drawn" is now the album's full gate chain: HasAudio, no Tuner, `bz_rail != hide`, and `!bz_gridm | bz_np` (both expanded inline). Before, it was only HasAudio plus no Tuner, so a play started under the music grid anchored too early.
+- **PERFCOUNT** (optimization #1, step 1, measuring only):
+  - `xbmc.getCondVisibility/getInfoLabel/executebuiltin/executeJSONRPC` and Home `get/set/clearProperty` are wrapped with a per-thread counter.
+  - `_bzstart` threads are named after their helper.
+  - One `BEZEL perf` line per 60 s goes to kodi.log, for the first 15 min after start. Then it stops logging; the counting itself is a dict increment.
+  - Purpose: pick which loops to merge, based on data. There are ~18 helper threads, many polling at 20 Hz, and every call takes Kodi's GUI lock.
+- **Sync lint** (repo `tools/sync_lint.py`, not in the zip): groups every sway-family animation by condition and timing.
+  - In 1122 today, all members use the same triggers.
+  - Only one cosmetic difference: the album long pulse has `+ !Skin.HasSetting(bz_swayright)` and the cast/glare long pulses don't. Their parent groups already gate on it, so nothing to fix.
+- **Check:** play music, let the screensaver start, wake, open Play Next / Viz. The stub casts brighten/dim with the album swing. Same check with the music grid on at play start. Then send kodi.log (`BEZEL perf` lines) after ~10 min of normal use.
 
 ## 5.33.444 — batch (Rob's answers 15:13 + bugs)
 - **ALLFIX:** 443 shipped `$EXP[bz_all2]` with two unfilled `%s` placeholders (a Python format slip), so the ALL-row condition was broken. Now `String.IsEqual(Container(60).ListItemAbsolute(0).Label,..)`. Rob's rule: the ALL row shows only for TV shows with 2+ seasons, artists with 2+ albums, and albums with 2+ discs.

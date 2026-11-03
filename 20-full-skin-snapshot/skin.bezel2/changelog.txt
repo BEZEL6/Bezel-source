@@ -1,3 +1,7 @@
+5.33.445 (2026-11-03)
+- SYNCANCHOR (Rob: "THE LAST FIX SEEMS TO OF LOST SYNC AGAIN"): the stub cast clock (bz_castL/R, Python) re-anchors when dialog 1122 reopens (screensaver / slideshow / fullscreen video close it, and Kodi restarts every animation in it on reopen); "album drawn" now uses the album's full gate chain (rail != hide, !bz_gridm | bz_np) so a play started under the music grid anchors when the album really starts.
+- PERFCOUNT (optimization #1, step 1): bz_flip.py counts its calls into Kodi per helper thread (helpers now named) and logs one "BEZEL perf" line per minute for the first 15 minutes. Logging only, no behaviour change. Used to pick which loops to merge.
+
 5.33.444 (2026-11-03)
 - ALLFIX: 443 shipped $EXP[bz_all2] with two unfilled '%s' placeholders (broken condition = ALL rows wrong/missing). Fixed; ALL row needs 2+ real seasons / albums / discs (Rob: "ALL ROW ONLY IN TV SEASONS MORE THAN 1, MUSIC ARTIST MORE THAN 1 ALBUM, ALBUM DISC MORE THAN 1").
 - MMHIDEART / MMHIDEFAN (Rob: auto-hide removes the MM dim from "JUST POSTER AND FANART"; "MOVIES FANART HAS MUSIC LABELS" when the menu is hidden): new BezelSecDimArt (mmdim lifted while bz_mmhid) on the 1122 poster layer only (album layer keeps BezelSecDim); the MMHIDE stage now starts with an undimmed, opaque copy of the MM fanart lane (BezelFanartLayer 120,120 840x900, fades in 1500 with the hide, out 250 on wake) that also covers the dimmed section behind it, so its labels no longer show over the fanart.
