@@ -144,3 +144,5 @@ Section head `MAPS` (toggle `Skin.HasSetting(bz_topen_maps)`, `$VAR[BzTSec_maps]
 ## 5.33.334 — WARM folders merged (t2450)
 - The old MAIN MENU › WARM SYSTEM sub-folder is gone. Its 8 rows (Background warm delay, Section fade, Section fade depth, Background art crossfade, Background dim level, Auto-hide menu, MM debug log, Dump MM state) now sit under the single top-level **WARM 2.0.1** head (`bz_topen_warm20`), after Hold last art / Album art during music / Startup splash / A/B fade length.
 - Row ids and handlers unchanged (same skin strings). `BzTSec_warmsys` variable kept but unused.
+
+- 5.33.394: ALBUM / POSTER gains **Poster ↔ album fade** (`a2pfade`, slider, `bz_at_a2pfade` 1–7, default 4 = 400 ms; LEFT faster / RIGHT slower). Reset album clears it.

@@ -49,7 +49,9 @@ When Music is idle (nothing playing) and list 60 is focused, the big album turns
 The fold lives inside the section parent group, so BezelSecDim's fade (mmdim with MM open, gdim 1–6 with MM closed) applies to it, and Kodi fades each layer separately, which made the stacked halves show through. Expression `bz_lfdim` is true whenever that fade is active. While it is true:
 - the static B-right half and both leaf groups are hidden, a static A-right half shows, and the fold pauses visually, so A is a single opaque stack.
 - the base `BezelBigArt` image under the fold is hidden.
-When the dim lifts, the normal fold resumes. If Python advanced A := B while dimmed, the cover swaps on undim.
+- the fold shadow / landing overlays (all `bz_hf_ph`-driven) are hidden too.
+- `idle_hinge()` `dim()` mirrors `bz_lfdim` (bz_nav && !bz_mmidle, or MM closed && gdim 1–6): the hold timer is paused and no phases run, so there is no glare/shadow-only ghost flip. If dim lands mid-fold the fold aborts and re-arms. A focus/artist change while dimmed just sets the new A (no fold).
+When the dim lifts (e.g. MM auto-hide), the hold restarts and the next fold runs with the current cover (5 s under MM, 10 s idle list). (5.33.375 LEAFWAKE)
 
 ## Cold start (5.33.355 COLDLEAF, Rob pt2531u)
 On cold start / first MM open, list 60 and its art + album RPC fill in late. `idle_hinge()` now:

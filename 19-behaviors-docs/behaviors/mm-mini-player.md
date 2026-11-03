@@ -1,6 +1,6 @@
 # MM mini-player
 
-**Object:** `Includes_Bezel.xml` audio row `6957` Prev · `6958` Play/Pause · `6959` Next · `6960` FULL; video group (t4304, `Player.HasVideo`) `6966` Play/Pause · `6967` Stop  
+**Object:** `Includes_Bezel.xml` audio row `6957` Prev · `6958` Play/Pause · `6959` Next · `6961` Stop · `6960` FULL; video group (t4304, `Player.HasVideo`) `6966` Play/Pause · `6967` Stop  
 **Where:** Above the MM strip (the strip slides down 120 when `Player.HasMedia`)  
 **Last updated:** 2026-10-31 · 5.33.207  
 **Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
@@ -21,10 +21,11 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 **Wiring.** Buttons at top 80, 44×46, no textures. Icon images are 28×28 and a 24×3 white underline shows on focus.
 | id | left | Icon | onclick | left / right |
 |---|---|---|---|---|
-| 6957 | 128 | `np_prev.png` | `PlayerControl(Previous)` | noop / 6958 |
-| 6958 | 176 | `np_pause.png` (`!Player.Paused`) / `np_play.png` (Paused) | `PlayerControl(Play)` | 6957 / 6959 |
-| 6959 | 224 | `np_next.png` | `PlayerControl(Next)` | 6958 / 6960 |
-| 6960 | 286, top 86, 86×34 | label FULL, font `bz_mm17`, `mm_full_ol.png` / `mm_full.png` (border 12, "FULL pill B") | see below | 6959 / noop |
+| 6957 | 124 | `np_prev.png` | `PlayerControl(Previous)` | noop / 6958 |
+| 6958 | 166 | `np_pause.png` (`!Player.Paused`) / `np_play.png` (Paused) | `PlayerControl(Play)` | 6957 / 6959 |
+| 6959 | 208 | `np_next.png` | `PlayerControl(Next)` | 6958 / 6961 |
+| 6961 | 250 | `np_stop.png` | `PlayerControl(Stop)` (+1120/bz_np/Back extras) | 6959 / 6960 |
+| 6960 | 302, top 86, 76×34 | label FULL, font `bz_mm17`, `mm_full_ol.png` / `mm_full.png` (border 12, "FULL pill B") | see below | 6959 / noop |
 
 - 6957–6959 extra clicks: 1120 active → `Dialog.Close(1120)`. Otherwise `ClearProperty(bz_np,home)` + `Action(Back)`.
 - 6960: 1112 active → `Dialog.Close(1112,true)`. Clear `bz_nav` / `bz_navtune` / `bz_navbez`. `Player.HasVideo` → `ActivateWindow(fullscreenvideo)`, else `ActivateWindow(visualisation)`. From any section, Music included, this lands on real Fanart FS (`MusicVisualisation.xml`) with the `<visualisation>` keymap — no Music bounce (removed t1584).
@@ -65,10 +66,11 @@ mm-list.md · np-bar.md · mm-warm.md
 | 6899 | group | —,— | —×— | `—/—/—/—` | `!Window.IsActive(fullscreenvideo) + !Window.IsActive(visualisation)` |
 | 6898 | button | 0,0 | 1920×1080 | `6996/ClearProperty(bz_nav,home)/6996/6996` | `$EXP[bz_navmenu]` |
 | 6894 | group | —,— | —×— | `—/—/—/—` | `String.IsEmpty(Window(Home).Property(bz_mmidle))` |
-| 6957 | button | 128,80 | 44×46 | `noop/6958/noop/6996` | `—` |
-| 6958 | button | 176,80 | 44×46 | `6957/6959/noop/6996` | `—` |
-| 6959 | button | 224,80 | 44×46 | `6958/6960/noop/6996` | `—` |
-| 6960 | button | 286,86 | 86×34 | `6959/noop/noop/6996` | `—` |
+| 6957 | button | 124,80 | 44×46 | `noop/6958/noop/6996` | `—` |
+| 6958 | button | 166,80 | 44×46 | `6957/6959/noop/6996` | `—` |
+| 6959 | button | 208,80 | 44×46 | `6958/6961/noop/6996` | `—` |
+| 6961 | button | 250,80 | 44×46 | `6959/6960/noop/6996` | `—` |
+| 6960 | button | 302,86 | 76×34 | `6961/noop/noop/6996` | `—` |
 | 6966 | button | 112,78 | 122×44 | `noop/6967/noop/6996` | `—` |
 | 6967 | button | 242,78 | 122×44 | `6966/noop/noop/6996` | `—` |
 | 6996 | list | 0,40 | 390×728 | `Skin.SetString(bz_last_mmsub_music,$VAR[BzMMPrev_music])/Skin.SetString(bz_last_mmsub_music,$VAR[BzMMNext_music])/6966/SetFocus(6996,0,absolute)` | `$EXP[bz_navmenu] + !Window.IsVisible(1118) + !String.IsEqual(Window(Home).Property(bz_n…` |
@@ -132,3 +134,6 @@ Actions (`onclick`/`onload`/`onback`) found:
 <!-- PORTLINKS -->
 ---
 **Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/mm-mini-player.md) · [state](../state/mm-mini-player.md) · [motion](../motion/mm-mini-player.md) · [art](../art/mm-mini-player.md) · [input](../input/mm-mini-player.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+
+**5.33.371 (t2665, mockup A):** audio row adds `6961` Stop between Next and FULL. Prev 124 · Play 166 · Next 208 · Stop 250 (42px pitch); FULL 302 w76. 6996 onup still → 6958 for audio.

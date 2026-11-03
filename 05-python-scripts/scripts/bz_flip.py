@@ -316,11 +316,11 @@ if home.getProperty('bz_flip_running') != 'true':
         cv = xbmc.getCondVisibility; il = xbmc.getInfoLabel
         vid = cv('Window.IsActive(videos)'); oth = (not vid) and cv(_V60_INFOWIN)
         if home.getProperty('bz_setopen'):   # 5.33.370 Rob t2660: MM->Settings/Add-ons/Sources latch; keep 6401 gated through the nav-clear gap
-            if cv('Window.IsActive(1130) | Window.IsActive(1131) | Window.IsActive(1117)'): home.clearProperty('bz_setopen')
+            if cv(_SETKIDS): home.clearProperty('bz_setopen')   # 5.33.395: any SETTINGS kid (incl. filemanager/systeminfo/addonbrowser) ends the latch
             elif _t.time() - _setopen_t[0] > 2.0 and _setopen_t[0]: home.clearProperty('bz_setopen'); _setopen_t[0] = 0
             else:
                 if not _setopen_t[0]: _setopen_t[0] = _t.time()
-                _v60_set('bz_vpl_on', ''); return
+                return   # 5.33.395 Rob: HOLD poster/art + bz_vpl_on through the MM->Settings-kid gap (was clearing bz_vpl_on -> 6401 faded to black on Add-ons/Settings open)
         else: _setopen_t[0] = 0
         if cv(_SETKIDS):   # 5.33.388 Rob: every MM SETTINGS kid shows the global artwork group (poster 6401 from the held MM lane; album via bz_railvis)
             if home.getProperty('bz_pos_on') and not cv('Player.HasAudio + !Player.HasVideo'):
@@ -679,6 +679,7 @@ if home.getProperty('bz_flip_running') != 'true':
             on = (home.getProperty('bz_nav') == 'true' and not home.getProperty('bz_mmstart') and not home.getProperty('bz_mmwarm')
                   and not home.getProperty('bz_navtune') and not home.getProperty('bz_navset') and not home.getProperty('bz_navsub') and not home.getProperty('bz_kset')   # F10 batch2: pause while Tuner / settings card / submenu open
                   and not xbmc.getCondVisibility('Skin.HasSetting(bz_uadv_off)')
+                  and xbmc.getInfoLabel('Container(6996).ListItem.Property(sec)') != 'settings'   # 5.33.396 SETHOLD (Rob t2785u): MM on the SETTINGS row (Settings-kid return; bz_setret is not reliably set on that path) -> no random step (held art fixed through open / auto-hide / wake)
                   and xbmc.getCondVisibility('[Window.IsActive(videos) | Window.IsActive(music)] + Control.IsVisible(60) + !Container.IsUpdating + !System.HasModalDialog + !Window.IsVisible(1113) + !Window.IsVisible(1111) + !Window.IsVisible(1112) + !Player.HasVideo + Integer.IsGreater(Container(60).NumItems,1)'))
             if not on: opened = None
             else:

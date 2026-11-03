@@ -21,6 +21,8 @@ One always-open modeless dialog (1122) holds **all** right-side artwork in group
 `bz_pready`, `bz_pswayon`, `bz_ppulse(2)` unchanged in timing; since 5.33.391 the poster's sway anchor is phase-locked to the album sway clock (`_art_sw_anchor`, Home `bz_art_t0`) so 6401 and 6402 swing on ONE clock and stay in phase through the crossfade (see `sway-animations.md`). All mirror props clear on bz_flip exit.
 
 ## Opacity — one shared gate (5.33.392 A2P)
+
+- **5.33.394:** fade time (6401, 6402, handoff pre-warm) is driven by Tuner `bz_at_a2pfade` (ALBUM / POSTER > Poster ↔ album fade): 7 mutually exclusive Conditional fades per layer, 200/250/300/**400**/500/600/800 ms. "400 ms" below = default step.
 - `$EXP[bz_artposter]` (Includes_Bezel) = `bz_vpl_on` | Videos handoff (`Window.IsActive(videos)` + `bz_tovideo=fade` / `bz_m2v_flat`) | `bz_tomusic`.
 - **6401 poster:** 100 when `bz_artposter`, else 0 — 400 ms sine. Never Visible=false → texture + sway stay warm.
 - **6402 album:** 0 when `bz_artposter` (except during `bz_tomusic`, return trip unchanged) **or** (`!bz_railvis` and no `bz_a2p_hold`), else 100 — **400 ms sine** (was 300). Same gate + same frame + same duration as 6401 → album→poster is ONE dissolve.
@@ -92,3 +94,12 @@ ART HOME (1122 · 6400 · bz_rail=hide is the only hard hide)
     └── handoff  bz_tovideo / bz_m2v_flat / bz_tomusic → poster 100 during crossfade
 ```
 New art state = add a branch/prop to ART_TREE + draw it in 1122; never a per-window art copy.
+
+
+## MM → Settings kids latch (5.33.395)
+
+**Simple.** Opening Settings, Add-ons, Files or Kodi info from MM keeps the held poster/album up — no fade to black.
+
+**Wiring.** `bz_mm.py` sets `bz_setopen` for settings/addons/files/kodi. `bz_flip.v60_mirror`: while latched, it returns early and holds `bz_vpl_on` + `bz_v60_art` (no clear). Latch ends when any `$EXP[bz_setkids]` window is active (then the SETKIDS branch stages the held MM lane) or after 2 s.
+- SETHOLD: while the MM strip is on the SETTINGS row (`Container(6996).ListItem.Property(sec)` = settings, e.g. after Back from a Settings kid such as FILE MANAGER), `under_adv` does no UADVRAND step, so the held Settings/Files art stays fixed through MM open, auto-hide and wake. Scrolling to another row or closing MM ends the hold. bz_flip.py under_adv. FULL restart.
+- MMAUDIO (5.33.397): while the MM is open and audio is playing (no video), `$EXP[bz_mmaudio]` keeps the big album (6402) up on every strip row — Music, Movies, TV, Recent, Favourites, Search, Pictures, Add-ons, Settings, Media Sources, Power. It forces `bz_railvis` true and `bz_artposter` false, so the poster layer 6401 stays down. With no audio, or with MM closed, the existing Music album / A2P poster rules apply. Includes_Bezel.xml.

@@ -2,7 +2,7 @@
 
 **Object:** `DialogVideoInfo.xml` / `DialogMusicInfo.xml` · grouplist `9000` (582,166, 360 wide), cast list `50` (video); `Custom_1111_XInfo.xml` (legacy 1111, closes itself)  
 **Where:** Movies / TV / Music (and Pictures) item info  
-**Last updated:** 2026-11-02 · 5.33.379  
+**Last updated:** 2026-11-02 · 5.33.395  
 **Status:** draft. This doc matches the live tree. The left fanart mask has been off since 5.33.205. Rob has not approved it.  
 **Skin:** skin.bezel2
 
@@ -32,6 +32,12 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 **Simple.** The poster (Movies/TV) or big album (Music) from the global artwork group 1122 stays visible on the right while Options+Info is open. Info has no art of its own; the left BzCIStage (120..960) shows fanart.
 
 **Wiring.** `bz_flip.v60_mirror` returns early (holds `bz_vpl_on` + `bz_v60_art`) while `movieinformation | musicinformation | songinformation` is visible — list 60 can't be read from the dialog. `bz_railvis` has a `Window.IsActive(music) + Info visible` clause so 6402 stays at 100. BzCIStage: black backer + `$VAR[BzCIStageFan]` (bz_secfan if label matches, else BezelMIFanart).
+
+## Exit (5.33.395)
+
+**Simple.** Closing Info/Options leaves the section fanart exactly as it was — no flash.
+
+**Wiring.** Section fanart (`BezelFanartLayer` images) has no `bz_infoup` fade; the dialog's opaque BzCIStage covers the same 120..960 rect while open, so nothing has to fade back in on close. Logo / list chrome still fade 150 ms on `bz_infoup`.
 
 ## Pages
 

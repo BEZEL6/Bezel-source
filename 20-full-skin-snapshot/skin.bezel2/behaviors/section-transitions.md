@@ -2,7 +2,7 @@
 
 **Object:** `bz_secload` / `bz_secfade` (MyVideoNav / MyMusicNav section parent group) · `bz_cmd.py _bz_load_then_close` · includes `BezelSecFadeIn`, `BezelSecFadeInDialog`, `BezelWindowFade`, `BezelOpenCloseSet`, `BezelSecDim` (Includes_Animations / Includes_Bezel ~L3548)
 **Where:** Every section and sub-page opened from the main menu
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-02 (5.33.373)
 **Status:** Standard (Rob voice Oct 30 2026). Fade in only, 400 ms sine out. No fade-out, zoom or slide on close. Section↔MM art handoff is LOCKED with Warm 2.0 mirror-enter (5.33.207; see mm-warm.md → Section enter / exit).
 **Skin:** skin.bezel2
 
@@ -81,3 +81,14 @@ mm-list.md · mm-warm.md · settings.md · video-osd.md
 <!-- PORTLINKS -->
 ---
 **Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/section-transitions.md) · [state](../state/section-transitions.md) · [motion](../motion/section-transitions.md) · [art](../art/section-transitions.md) · [input](../input/section-transitions.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+
+## MM enter (5.33.373)
+
+### Simple
+Opening the main menu now uses the same 400 ms fade-in as opening a section. Closing the MM is unchanged.
+
+### How it works
+- The BezelNavMenu chrome group (`$EXP[bz_navmenu]`, Includes_Bezel ~L495) fades 0→100 over 400 ms, sine out, on Visible. Its Hidden fade (480 ms, delay 120) is the existing close.
+- Art lanes (1122 / bz_fan_* / bz_pos_* / 6401) are NOT faded: mirror-enter (5.33.207) seeds them so they are at full opacity on frame 1. The fade is chrome over already-visible art — no black→art.
+- Dim button 6898 keeps BezelATDimAnim (Tuner-written, 400 ms).

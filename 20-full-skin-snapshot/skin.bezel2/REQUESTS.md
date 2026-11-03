@@ -271,3 +271,8 @@ Rob: "Take out" the black box above the merged song list. Gated the View D cover
 
 ## 5.33.391 SHARED ART SWAY CLOCK (Rob t2742 "DO IT")
 - DONE: poster sway (bz_pswayon/bz_ppulse) now anchored to the album sway grid (t0+7.4+k*24.5 s) via bz_flip `_art_sw_anchor`; free-running epoch when no music; Home `bz_art_t0`. XML anims untouched (look, glares, casts, leaf-flip unchanged). FULL restart (.py). Not zipped.
+
+## 5.33.394 A2PFADE (Rob t2778 "Ok give tuner for a2p")
+- DONE: Tuner slider ALBUM / POSTER > Poster ↔ album fade (`bz_at_a2pfade` 1–7 = 200/250/300/**400**/500/600/800 ms) drives 6401, 6402 and handoff pre-warm fades in Custom_1122. Reset album -> 400. ReloadSkin. Not zipped.
+- 5.33.396 (Rob t2785u) SETHOLD: no UADVRAND random step while the MM strip is on the SETTINGS row; held art fixed through auto-hide/wake. bz_flip.py under_adv.
+- 5.33.397 (Rob t2789-t2793) MMAUDIO: big album on every MM row while audio plays (bz_mmaudio in bz_railvis / bz_artposter).

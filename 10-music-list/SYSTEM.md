@@ -2,4 +2,4 @@
 
 Music section list / album strip
 
-Files copied from skin.bezel2 5.33.393.
+Files copied from skin.bezel2 5.33.397.

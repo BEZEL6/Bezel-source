@@ -23,10 +23,10 @@ GO = {
  'playlists': ['RunScript(special://skin/scripts/bz_cmd.py,tomusic,special://musicplaylists/)'],
  'search': ['ClearProperty(bz_nav,home)', 'ActivateWindow(1107)'],
  'pictures': ['ClearProperty(bz_nav,home)', 'ActivateWindow(pictures)'],
- 'files': ['ClearProperty(bz_nav,home)', 'ActivateWindow(filemanager)'],
+ 'files': ['SetProperty(bz_setopen,1,home)', 'ClearProperty(bz_nav,home)', 'ActivateWindow(filemanager)'],
  'addons': ['SetProperty(bz_setopen,1,home)', 'ClearProperty(bz_nav,home)', 'ActivateWindow(1131)'],  # 5.33.220 Warm strip Add-ons dialog over the section (was ActivateWindow(addonbrowser))
  'settings': ['SetProperty(bz_setopen,1,home)', 'ClearProperty(bz_nav,home)', 'ActivateWindow(1130)'],  # 5.33.215 MM-style Settings dialog over the section (was ActivateWindow(Settings))
- 'kodi': ['ClearProperty(bz_nav,home)', 'ActivateWindow(systeminfo)'],
+ 'kodi': ['SetProperty(bz_setopen,1,home)', 'ClearProperty(bz_nav,home)', 'ActivateWindow(systeminfo)'],
 }
 # 4.2.0 O59 (D3): music / movies / tv open the primed sub (home bz_mmsub_<sec>, 1-based; empty = default Artists / Titles / Shows)
 SUBS = {
