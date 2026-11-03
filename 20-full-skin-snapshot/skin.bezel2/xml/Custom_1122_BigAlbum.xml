@@ -9,14 +9,14 @@
      leaving its resting spot goes alpha 0 only when the slide ends (fade time 0, delay = slide time). Reversing restores its alpha at once. No fade, no gap. -->
 <window type="dialog" id="1122">
 	<zorder>0</zorder>
-	<!-- 5.33.412 ARTUNDERSPLASH (Rob t2926): no splash_done gate; opens under the splash so art loads behind it. Group 6400 holds alpha 0 while bz_warm_gate, then fades in 3000 ms with the splash fade. -->
+	<!-- 5.33.412 ARTUNDERSPLASH (Rob t2926): no splash_done gate; opens under the splash so art loads behind it. Group 6400 holds alpha 0 while bz_warm_gate, then fades in 3000 ms with the splash fade. 5.33.417: hold anim is 100->0 (time 0) so it releases to 100 when the gate clears. -->
 	<visible>!Window.IsActive(fullscreenvideo) + !Window.IsActive(slideshow) + !Window.IsActive(screensaver) + !Window.IsActive(1113)</visible>
 	<animation effect="fade" start="0" end="100" time="600" tween="sine" easing="inout">WindowOpen</animation><animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 	<controls>
 		<!-- 5.33.366 Rob t2616 GLOBAL ARTWORK GROUP 6400: album layer (cover + leaf-flip/sway + cast) + Compact NP (rides 6397/FS rails) + poster layer, one shared frame.
 		     Both layers are ALWAYS drawn (never Visible=false) so textures stay warm and the sway clocks never restart; Music<->Movies/TV is an opacity crossfade only.
 		     Colour strip and MM Warm underlay are NOT in this group. bz_rail=hide is the only hard hide. -->
-		<control type="group" id="6400"><visible>!String.IsEqual(Window(Home).Property(bz_rail),hide)</visible><animation effect="fade" start="0" end="0" time="0" condition="!String.IsEmpty(Window(Home).Property(bz_warm_gate))">Conditional</animation><animation effect="fade" start="0" end="100" time="3000" tween="sine" easing="inout" condition="String.IsEmpty(Window(Home).Property(bz_warm_gate))">Conditional</animation>
+		<control type="group" id="6400"><visible>!String.IsEqual(Window(Home).Property(bz_rail),hide)</visible><!-- 5.33.417 ARTGATEFIX: hold is start=100 end=0 so its reversed rest state is 100 (start=0 rested at alpha 0 forever = art never shown) --><animation effect="fade" start="100" end="0" time="0" condition="!String.IsEmpty(Window(Home).Property(bz_warm_gate))">Conditional</animation><animation effect="fade" start="0" end="100" time="3000" tween="sine" easing="inout" condition="String.IsEmpty(Window(Home).Property(bz_warm_gate))">Conditional</animation>
 		<!-- POSTER LAYER 6401 (under the album), 5.33.367 Rob t2622: the ONE Movies/TV poster. Full BezelVPLPoster (sway, cast, glares, LOOK, badges, frame) lives here;
 		     the per-screen mounts are gone (only BezelVPLPosterTap stays on the screens). All list-60 data comes from the bz_flip Home mirror (bz_v60_*), since 1122 can't see list 60.
 		     Opacity: 100 while the poster screen is up (bz_vpl_on = old mount gates) or a Music<->Videos handoff runs; 0 otherwise. Always drawn, never Visible=false, so texture + sway stay warm.

@@ -123,4 +123,4 @@ New art state = add a branch/prop to ART_TREE + draw it in 1122; never a per-win
 - Known residual: on the first Movies visit of a session there is no `bz_v60_mov` hold yet, so the last poster on screen (which can be a TV poster) can show for about 0.4 s before the correct poster.
 
 ## Startup (5.33.412)
-1122 opens under the splash (no `bz_splash_done` gate). Group 6400 alpha 0 while `bz_warm_gate`, then 3000 ms fade-in with the splash fade. See home-splash.md.
+1122 opens under the splash (no `bz_splash_done` gate). Group 6400 alpha 0 while `bz_warm_gate`, then 3000 ms fade-in with the splash fade. **5.33.417 ARTGATEFIX:** the hold fade is `start=100 end=0 time=0` — a reversed Kodi Conditional rests at its *start* value, so the old `start=0 end=0` hold rested at alpha 0 forever and the art never showed after the splash. See home-splash.md.

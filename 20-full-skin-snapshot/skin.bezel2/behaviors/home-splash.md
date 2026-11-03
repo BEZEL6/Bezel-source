@@ -2,7 +2,7 @@
 
 **Object:** `Startup.xml` onload · `Home.xml` onload · `scripts/bz_warmgate.py` (warm gate) · `scripts/bz_cmd.py start` · overlay `BezelWarmGateOverlay` (Includes_Bezel ~3617)  
 **Where:** Cold start of Kodi on BEZEL, and every Home load  
-**Last updated:** 2026-11-03 · 5.33.412
+**Last updated:** 2026-11-03 · 5.33.417
 **Status:** live. The splash is the warm gate of WARM 2.0, which is **LOCKED** (mm-warm.md). Any change needs Rob's approval. This file only describes the startup chain around it.  
 **Skin:** skin.bezel2
 
@@ -14,7 +14,7 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 **Simple.** At start, a splash covers the screen while BEZEL builds its windows and warms artwork. It stays at least 5 s and at most 15 s, then fades over 3 s straight onto the Main Menu. Nothing pops and nothing flashes blank.
 
-**How it works.** The full spec is in **mm-warm.md → Warm gate**. In short: the gate prop is set before the startup window, the underlay section lands, a random start row is focused (RANDSTART), art for all three sections is warmed, and then the overlay is dismissed. A watchdog forces the dismiss at CAP even if warming is not done. `bz_splash_done=1` is set only after the 3 s fade, and dust and the start menu wait on it.
+**How it works.** The full spec is in **mm-warm.md → Warm gate**. In short: the gate prop is set before the startup window, the underlay section lands, a random start row is focused (RANDSTART), art for all three sections is warmed, and then the overlay is dismissed. A watchdog forces the dismiss at CAP even if warming is not done. `bz_splash_done=1` is set only after the 3 s fade, and dust and the start menu wait on it. The artwork dialog 1122 (group 6400) is already open under the splash at alpha 0 and fades in 3 s with the splash fade (hold anim 100→0 so it releases — 5.33.417).
 
 **Wiring.**
 - `Startup.xml` onload: `bz_at_warmsplash≠Off` → `SetProperty(bz_warm_gate,1,home)` · `ClearProperty(bz_splash_done)` · `RunScript(bz_warmgate.py)` · `ReplaceWindow($INFO[System.StartupWindow])`.

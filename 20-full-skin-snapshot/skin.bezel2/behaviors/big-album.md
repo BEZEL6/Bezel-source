@@ -1,7 +1,7 @@
 # Big album (dialog 1122)
 
 **Object:** `xml/Custom_1122_BigAlbum.xml` (dialog 1122, zorder 0) · includes `BezelAlbumCast` + 2× `BezelMusicPlayingArt` · expressions `bz_railvis` / `bz_railc` (Includes_Bezel) · Home prop `bz_rail`
-**Last updated:** 2026-11-03 · 5.33.412
+**Last updated:** 2026-11-03 · 5.33.417
 **Status:** built (P1), awaiting device smoke
 
 ## Simple
@@ -42,4 +42,4 @@ The big playing album is one global layer that stays open across sections, like 
 
 **Simple.** Big album and poster (dialog 1122, group 6400) load **behind** the splash and dissolve in **with** the 3 s splash fade — no art pop after the splash closes. Dust (1114) still waits for `bz_splash_done`.
 
-**Wiring.** 1122 `<visible>` has no `bz_splash_done` term (opens at startup, zorder 0, modeless). Group 6400 carries two Conditional fades: alpha 0 (time 0) while `bz_warm_gate` is set, and 0→100 over 3000 ms sine when `bz_warm_gate` clears (same moment `bz_warmgate.py dismiss()` starts the overlay's 3 s Hidden fade). Splash Off → gate never set → art shows at once. List-60 section art (Music/Videos windows) already rendered under the overlay.
+**Wiring.** 1122 `<visible>` has no `bz_splash_done` term (opens at startup, zorder 0, modeless). Group 6400 carries two Conditional fades: alpha 0 (time 0) while `bz_warm_gate` is set, and 0→100 over 3000 ms sine when `bz_warm_gate` clears (same moment `bz_warmgate.py dismiss()` starts the overlay's 3 s Hidden fade). Splash Off → gate never set → art shows at once. **5.33.417 ARTGATEFIX:** the hold fade is `start=100 end=0 time=0` — a reversed Kodi Conditional rests at its *start* value, so the old `start=0 end=0` hold rested at alpha 0 forever and the art never showed after the splash. List-60 section art (Music/Videos windows) already rendered under the overlay.
