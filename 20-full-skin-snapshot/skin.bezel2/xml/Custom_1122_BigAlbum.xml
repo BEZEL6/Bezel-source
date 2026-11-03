@@ -50,6 +50,13 @@
 				<control type="group"><left>-480</left><animation effect="fade" start="0" end="100" time="0" delay="600" condition="!$EXP[bz_railc]">WindowOpen</animation><animation type="Conditional" condition="!$EXP[bz_railc] + String.IsEqual(Skin.String(bz_at_fsslide),1)"><effect type="slide" start="0,0" end="480,0" time="480" tween="sine" easing="inout"/><effect type="fade" start="100" end="0" time="480" tween="sine" easing="inout"/></animation><animation type="Conditional" condition="!$EXP[bz_railc] + String.IsEqual(Skin.String(bz_at_fsslide),2)"><effect type="slide" start="0,0" end="480,0" time="380" tween="sine" easing="inout"/><effect type="fade" start="100" end="0" time="380" tween="sine" easing="inout"/></animation><animation type="Conditional" condition="!$EXP[bz_railc] + [String.IsEmpty(Skin.String(bz_at_fsslide)) | String.IsEqual(Skin.String(bz_at_fsslide),3)]"><effect type="slide" start="0,0" end="480,0" time="280" tween="sine" easing="inout"/><effect type="fade" start="100" end="0" time="280" tween="sine" easing="inout"/></animation><animation type="Conditional" condition="!$EXP[bz_railc] + String.IsEqual(Skin.String(bz_at_fsslide),4)"><effect type="slide" start="0,0" end="480,0" time="180" tween="sine" easing="inout"/><effect type="fade" start="100" end="0" time="180" tween="sine" easing="inout"/></animation><include>BezelMusicPlayingArt</include></control><!-- centre copy (camera 960): parked at home under alpha 0; reverse = shows at once and slides with the home copy -->
 			</control>
 		</control>
+			<!-- 5.33.450 VIZNPBAR (Rob: "ADD NP BAR TO KODI FULLSCREEN VIZ WHEN BIG ALBUM IS CENTER"; it showed on the FS fanart dialog only): the compact NP bar
+			     (artist / title / progress / time, same include as Play Next + Fanart FS 1121) under the centred big album in Kodi FS viz. Drawn here, in 1122, because 1122
+			     renders above the viz window and covered the viz window's own copy (now hidden in viz). Gate = viz chrome shown (bz_fsnp) + album at centre. -->
+			<control type="group"><left>-480</left><visible>Window.IsActive(visualisation) + String.IsEqual(Window(Home).Property(bz_fsnp),true) + $EXP[bz_railc] + Player.HasAudio</visible>
+				<animation effect="fade" start="0" end="100" time="600" delay="480" tween="sine" easing="inout">Visible</animation><animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout">Hidden</animation>
+				<include>BezelNPCompactBar</include>
+			</control>
 		</control><!-- /6400 -->
 	</controls>
 </window>

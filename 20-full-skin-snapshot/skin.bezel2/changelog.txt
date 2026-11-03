@@ -1,3 +1,6 @@
+5.33.450 (2026-11-03)
+- VIZNPBAR (Rob: "ADD NP BAR TO KODI FULLSCREEN VIZ WHEN BIG ALBUM IS CENTER" - it only showed on the FS fanart dialog): the compact NP bar (artist / title / progress / time) under the centred big album now shows in Kodi FS viz. The viz window's own copy sat under dialog 1122 (which draws the big album above the viz window) and was covered; in viz the bar is now drawn inside 1122, the viz window copy is off there. Fanart FS dialog 1121 and Play Next 1120 unchanged.
+
 5.33.449 (2026-11-03)
 - XBTPACK (optimization #2): media/Textures.xbt added: the 1128 small skin textures (<= 512x512) pre-decoded and LZO-packed (5.6 MB), so Kodi loads them without PNG decoding. Large images (410 files, > 512x512: backdrops, maps, dust sheets, info art) stay loose so background="true" still loads them off the render thread. Loose PNGs are all kept (Kodi uses the bundle first; full-path references still find the files). Build rule: repack after any media change (tools/xbt_pack.py).
 

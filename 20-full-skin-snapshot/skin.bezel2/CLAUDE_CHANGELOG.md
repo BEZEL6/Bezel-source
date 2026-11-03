@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.449
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.450
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 450 | "ADD NP BAR TO KODI FULLSCREEN VIZ WHEN BIG ALBUM IS CENTER" ("only the FS fanart dialogue fullscreen") | **VIZNPBAR**: compact NP bar under the centred album in Kodi FS viz, drawn in 1122 |
 | 449 | "2 AND 5" (optimizations: texture packing, list conditions) | **XBTPACK**: media/Textures.xbt with the 1128 small textures |
 | 448 | "BIG ALBUM SWAY ANIM LOOKS LIKE ITS WRONG SEQUENCE AGAIN WITH GLARE AND DUST" | **IDLESEQ**: idle glare + lit dust follow the playing album sequence |
 | 447 | "VERY LONG PAUSES WHEN ENTERING SECTIONS" (from MM, 5+ s) on 446; "ISSUE WAS CAUSED BY YOUR CHANGE" | **TICKCACHE reverted**: bz_flip.py = 445 |
@@ -210,6 +211,24 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.450 — VIZNPBAR (compact NP bar in Kodi FS viz)
+- **Rob:** the NP bar under the centred big album showed on the FS fanart dialog (1121) but not in Kodi's fullscreen visualisation.
+- **Cause (from structure, not device-verified):**
+  - Both screens mount `BezelNPCompactBar` through `BezelFSPlayNext` (−480 → x660–1260, y892–1004).
+  - In viz, though, that copy belongs to the **window** `visualisation`, and dialog **1122** (always open; draws the big album at centre via `bz_railc`) renders *above* windows, so its layers sat over the bar.
+  - 1121 is a dialog opened after 1122, so its copy draws on top. That's why the bar was only seen on the fanart dialog.
+- **Change:**
+  - `Includes_Bezel.xml` `BezelFSPlayNext`: the NP bar group gate `!Window.IsActive(music)` becomes `!Window.IsActive(music) + !Window.IsActive(visualisation)`.
+  - `Custom_1122_BigAlbum.xml`: a new group at the end of 6400 (above the album/cast layers, inside the `bz_rail != hide` gate) with `left −480` holding `BezelNPCompactBar`.
+    - Visible on `Window.IsActive(visualisation) + bz_fsnp + $EXP[bz_railc] + Player.HasAudio`.
+    - Fades: Visible 600 ms delay 480 (after the slide to centre), Hidden 300.
+  - 1120 / 1121 are unchanged (gate false there).
+- **Check:**
+  - Kodi FS viz → album/Play Next mode (album at centre): artist, title, progress and time under the album. Back to fanart mode: the bar fades out.
+  - 1121 and 1120 look as before.
+  - No double or brighter text in viz.
+- **Revert:** drop the 1122 group and the `+ !Window.IsActive(visualisation)` term.
 
 ## 5.33.449 — XBTPACK (optimization #2, texture bundle)
 - **What:** `media/Textures.xbt` (XBTF v2, Kodi 21 format) holds every `.png` under `media/` that is ≤ 512×512: 1,128 files, 1,011 unique. It's 5.6 MB, against 5.2 MB of PNG and 220.8 MB decoded.
