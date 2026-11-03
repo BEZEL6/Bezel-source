@@ -2,7 +2,7 @@
 
 **Object:** `MyVideoNav.xml` · list `60` (tvshows / seasons / episodes) · grouplist (Includes_Bezel ~L2638) · ALL `6098` · A–Z `6500` · clearlogo `BzTVClear`
 **Where:** Main menu TV → video window
-**Last updated:** 2026-10-31
+**Last updated:** 2026-11-03 · 5.33.422
 **Status:** Live in 5.33.207. Shares the Movies list nav (edge-to-ALL, no wrap, Left/Back → MM). Seasons never rest on `..`. Clearlogo/title sits on the colour strip with Year/Genre underneath. Known open issue: the Movies→TV highlight can jump back to Movies. Draft: not Rob-approved.
 **Skin:** skin.bezel2
 
@@ -163,3 +163,88 @@ None specified.
 
 ## Related
 mm-list.md · mm-warm.md · movies-list.md · section-transitions.md
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/tv-list.md) · [state](../state/tv-list.md) · [motion](../motion/tv-list.md) · [art](../art/tv-list.md) · [input](../input/tv-list.md) · [theme](../theme/tokens.md) · [screens](../port-refs/tv-list/) · [PORT_INDEX](../PORT_INDEX.md)
+
+## L1 titles strip style (5.33.283, current)
+On the L1 titles path (`$EXP[bz_vstrip]`: videodb://movies/titles/ or videodb://tvshows/titles/, list view, not grid/actors) list 60 group + ALL row 6098 ride into the colour strip 570..960 (zoom 86.67% @120,120 + slide 510 — same as Music `bz_mstrip`). Strip info pairs / plot / TV clearlogo + fanart title are faded off. Meta lives **inside the fanart stage only** at 150,196: small line (Movies: director · TV: studio), big uppercase title 150,226 (bz_mm34), outlined pills y296 (year, MPAA, runtime[movies], genre), plot textbox 150,346 400×620. Hidden under MM / Info / `..`. Poster group (BezelVPLPoster) scaled 66.67% and moved into the big-album slot 1140,220 600×600 (2:3 kept → 400×600 centred). Nav/focus/MM warm unchanged.
+
+## L1 strip clearart (5.33.285, Rob approved)
+On L1 titles strip (`bz_vstrip`): when the item has clearlogo (preferred) or clearart, it replaces the big title in the fanart meta block — image at 150,211, 430×90, left/centre, aspect keep (`BzVStripLogo`). No logo/clearart → bold uppercase text title. Director (Movies) / Studio (TV), pills and plot unchanged. Colour-strip clearart stays off on L1. Hides with the meta group (Info up / MM open / `..`). Poster size unchanged.
+
+**Current (5.33.422 CLEARCENTER):** TV + Movies clearlogo/clearart box is **150,120 410×176** (fanart stage top → pills at 296), `aspectratio` center/center keep. No-logo title uses the same box. Separate Movies/TV controls; TV uses `BzTVClear` (L1–L3).
+
+## L1 meta (5.33.291)
+Studio is a Bezel pill in the meta pill row (YEAR → STUDIO → MPAA → GENRE), TV only; no separate studio text line. Clearart/clearlogo at **150,120 410×176** centered between fanart top and pills (title label when no art), pills at 296. Title + clearart carry L1→L3.
+
+---
+
+## Strip-list levels L1–L3 (5.33.292, Rob approved build t2226)
+
+### Simple
+TV Shows (L1), Seasons (L2) and Episodes (L3) under `videodb://tvshows/titles/` all use the strip-list look: plain list in the colour strip (no thumbnails in rows), meta + description in the fanart stage, big poster on the right unchanged.
+
+### How it works
+- `bz_vstrip` covers tvshows **and** seasons/episodes when the path starts `videodb://tvshows/titles/`.
+- Clearart (**150,120 410×176**, center) uses `BzTVClear` (item clearlogo → tvshow.clearlogo → clearart → tvshow.clearart), so the show's logo carries L1→L3. No logo / `bz_tvclear_off` → show title (`BzTVShowName`) in the same centered box.
+- Pills row 150,296: S×E (episodes) · Year · Studio (all TV levels) · MPAA · Runtime (movies + episodes) · Genre.
+- L2/L3: season/episode name at 150,342; plot slides down 40.
+- 5.33.293: TV RECENT (`videodb://recentlyaddedepisodes/`, episodes) also on strip-list (same meta/clearart/SxE+studio pills/plot, poster slot).
+- Other TV pills (WATCHING, YEARS, ACTORS, GENRES) keep the old strip layout.
+
+## Strip-list coverage (5.33.294)
+bz_vstrip (L1 strip-list) now covers every pill path once the list holds titles: Movies TITLES, RECENTLY ADDED, YEARS, ACTORS, SETS, GENRES; TV SHOWS (+L2 seasons/L3 episodes), WATCHING, YEARS, ACTORS, RECENT, GENRES. Gated on Container.Content(movies / tvshows|seasons|episodes), so category folder lists (year/actor/genre/set names) keep the old layout.
+
+## Folder-name levels (5.33.295)
+Year/actor/genre/set/tag name rows (Content years/actors/genres/sets/tags under videodb://movies/ or tvshows/) use strip-list via `bz_vfold` ⊂ `bz_vstrip`; folder name shows as title, no clearart/pills unless present.
+
+## Strip-only list (5.33.298)
+List 60 is always the colour-strip list — the old full-size off-strip list is parked at `/workspace/b401/parked_old_list/` (RESTORE.md). Every list view (Music L1–L3, Movies/TV, Music root, sources, files, non-library) draws in the strip: outer list group laid out 450×1038 at x120/y120, always shrunk 86.67% (center 120,120) + slid 517 → strip x570–960. **True clip** (Music inner grouplist; Movies/TV outer grouplist) + list 60 are **450×984** so after zoom the visual bottom is **y973** (5px above dtap y978) — **5.33.422 LISTCLIP5**. ALL 6097/6098 rides the same shrink/slide outside the Music clip. Left still goes to FULLSCREEN 6886 first on Music (5.33.297); Up/Down wrap to 6097/6098 unchanged; A–Z bars 6100/6500 stay at x78.
+
+## 5.33.334 — list flush in strip (t2443)
+- Measured on 333: strip x 570–959, top 120; video list highlight x 563–951 (7 px left of the strip). Video list group + ALLROW 6098 slide 510 → 517 (same as Music 5.33.304). Shots `audit_settings_levels/tv/L2.png` (before) / `334_L2.png` (after).
+- L3 (seasons): the `..` parent row draws above the strip at y≈45 (outside strip top 120). Flagged, not fixed (clip/parent-row logic, see AUDIT.md).
+- No leftover old meta found in the colour strip at L1–L3 (left panel: clearlogo, pills, plot, season label only).
+
+## 5.33.337 (t2458): seasons `..` above the strip (STILL OPEN)
+- Added `!ListItem.IsParentFolder | !$EXP[bz_allpull120]` visibility guards to the BezelVPLRows label and to the non-music labels in the main list itemlayouts. The `..` is still drawn at top (shot `tv/337_L3_up.png`). The source is not yet identified; it may be a different control from the row labels.
+
+## 5.33.338 (t2458): seasons `..` above the strip, FIXED
+- Cause: in L3 seasons the list is slid up 120 px (bz_allpull120) to hide the stock *All row. That also pulled the `..` row to about y45, above the strip, which starts at 120.
+- Fix: a group-level item guard in every list-60 item/focused layout, next to the artist-albums one: `<visible>!ListItem.IsParentFolder | !Container.Content(seasons)</visible>`. Same pattern as L2 artist albums. Label-level guards and `$EXP[bz_allpull120]` inside the layout did not apply.
+- Bezel already skips past the parent row: Up from SEASON 1 goes to ALL SEASONS (6098). L2 TV shows still shows `..` as the first row inside the strip (unchanged).
+- Shots: tv/338_L2.png, tv/338_L3.png, tv/338_L3_up.png
+- Note: until 338, the 337 smokes used ReloadSkin without copying to the deployed addon (/tmp/bz2home/.kodi/addons/skin.bezel2). After an XML edit, copy xml/ there before ReloadSkin, or use r_live.sh.
+- 5.33.342: The seasons `..` hide (338) now also requires System.GetBool(videolibrary.showallitems). With Kodi's All row the list pulls up and `..` stays hidden. Without it (setting off), `..` shows in the top slot instead of leaving a blank row. Container(60).ListItemAbsolute refs do not resolve inside itemlayouts, which caused a regression (`..` drawn above the strip). Gap: flatten=never + single season would still hide `..` (no such show in library).
+- 5.33.343: TV episodes (L3 + recent episodes), strip-list mode. The old 3.5.6 info pairs, divider, Description label and plot no longer draw over the list (!$EXP[bz_vstrip]); meta and plot stay on the fanart stage, and the drum thumbs are unchanged.
+- 2026-11-02 · 5.33.345 · VSTRIP meta pills row (TV/Movies L1, 150,296): width 400→780 (stage 150..930) so S×E/Year/Studio/MPAA/Runtime/Genre no longer clip (t2490).
+
+## List bottom (5.33.347, t2491)
+Double-tap hint (BezelDtapHint) is fixed at y978 h30 in the colour strip. List 60 clip grouplist + list are **layout height 984** from bz_top 120, then zoomed 86.67% (center 120,120): visual bottom = 120 + 984×0.8667 ≈ **y973** — 5px above the hint (**5.33.422 LISTCLIP5**). Music was 858 (forgot scale → ~y864 short); Movies/TV were 1038 (→ ~y1020 through the label). Outer strip zoom group can stay 1038. Any new section strip list must use layout 984 so visual end is y973.
+
+## 5.33.350 (t2490) — VSTRIP meta pills: two rows (shared TV + Movies group, Includes_Bezel VSTRIP META)
+- Row 1 (y296, width 410 = text column 150..560, strip starts ~570): SxE, YEAR, STUDIO (TV, max 200 then truncates), MPAA, RUNTIME.
+- Row 2 (y336, width 410): GENRE pill on its own line, max 410, truncates (e.g. "SCI-FI & FANTASY / ACTION & ADVENT…"). Row hidden when no genre.
+- Season/episode name 342→382, plot 346→386 (h 620→580). Replaces 345's 780 widen.
+
+## 5.33.367 — poster stage
+The swaying Movies/TV poster (BezelVPLPoster) now draws only in dialog 1122 layer 6401, fed by the bz_flip list-60 Home mirror (bz_v60_*, bz_vpl_on). Screens keep only the tap target. See `artwork-group.md`.
+
+## Dual poster holds (5.33.385 DUALHOLD)
+- `bz_v60_mov` = last Movies poster, `bz_v60_tv` = last TV poster. Written by `v60_mirror` (`_v60_dualrec`) right after list-60 art is staged, only when the Videos list type (movies/sets vs tvshows/seasons/episodes) equals the target and the container is not updating.
+- Target (`_v60_target`): MM open on strip 6996 → highlighted row `sec` (movies/tv; music/other = no target, nothing changes). MM closed → current Videos list type.
+- `_v60_dualpick`: if the list is not the target type yet (on Music, on the other Videos type, or loading), list-60 staging is skipped and `bz_v60_art` is set straight to the matching hold (already decoded on its earlier visit). 6401 / BezelVPLPoster still reads only `bz_v60_art` → opacity-only layer swap, never Music art.
+- No hold yet for that type (first visit this session) → keeps whatever `bz_v60_art` held; list 60 preload fills it (~0.6 s) as before.
+- Both props cleared on Bezel leave with the other `bz_v60_*` props.
+
+
+## 5.33.442 ALLTOGGLE
+ALL SEASONS (6098) follows BEZEL settings View All Seasons (`bz_allseasons`) (`$EXP[bz_allrow]` + Skin bool). Kodi showallitems stays synced to the same toggle by `bz_cmd showall`; its stock *All row is still always hidden (ALLHIDE). Season `..` hide unchanged (342).
+
+
+## 5.33.443 ALLROW2 (Rob: no 14 cap / always bottom / grouped / list only / hide single / count)
+- `bz_allrow`: no NumItems cap; needs `bz_all2` (2+ real rows, `..` and *All not counted). Short lists (≤14) = 6097/6098 under the last row as before. Long lists = bottom pill **6089** at 576,972 378×46 (dtap hint hidden while `bz_alllongshow`), shown (alpha) when the last row or the pill is focused, always focusable; list onup/ondown + bz_flip wrap/return route to it.
+- Label `BzAllRowLabel` + `bz_allcnt` (bz_flip `allcnt` thread: VideoLibrary.GetEpisodes tvshowid / AudioLibrary.GetSongs artistid|albumid, limits.total).
+- ALL SEASONS opens the plain episode list (unchanged).

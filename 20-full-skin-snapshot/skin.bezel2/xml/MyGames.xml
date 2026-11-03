@@ -19,7 +19,7 @@
 				<include>BezelWindowFade</include><!-- 4.2: was OpenClose_Left -->
 				<visible>Control.IsVisible(55)</visible>
 				<include>Visible_Left</include>
-				<include>ListThumbInfoPanel</include>
+				<!-- 5.33.424: undefined include ListThumbInfoPanel removed (logged a skin error on every open) -->
 			</control>
 			<control type="group">
 				<depth>DepthContentPanel</depth>

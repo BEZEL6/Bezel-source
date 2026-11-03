@@ -1,0 +1,19 @@
+# BEZEL logo / Back button — bezel-logo-back
+
+**Object:** `bezel-logo-back` · **Layer:** motion (timing) · **Last updated:** 2026-11-01 · 5.33.267 · **Status:** current-state, extracted from live XML/Python
+**Blueprint siblings:** [behavior](../behaviors/bezel-logo-back.md) · [layout](../layout/bezel-logo-back.md) · [state](../state/bezel-logo-back.md) · [motion](../motion/bezel-logo-back.md) · [art](../art/bezel-logo-back.md) · [input](../input/bezel-logo-back.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+## Simple
+The BEZEL logo sits top-left and takes the skin tint. About every 30 seconds it does one spin.
+
+**This layer in one line:** how long each move takes and what easing curve it uses; copy these numbers exactly to keep the feel.
+
+## Deep (rebuild detail)
+> **Verification (phase 2 hand-check):** auto-extracted rows are kept only where the control id is named in [behavior](../behaviors/bezel-logo-back.md); others were stripped as stray. Kept rows are *unverified at runtime* unless a section says hand-verified.
+Durations/easing pulled from the controls in [layout](../layout/bezel-logo-back.md) plus any ms/sec values named in the behavior. Shared tokens: [tokens](tokens.md).
+
+| source | animation |
+|---|---|
+| 6001 `xml/Includes_Bezel.xml` | `<animation effect="fade" start="100" end="0" time="150" condition="$EXP[bz_infoup]">Conditional</animation>` |
+
+**Timings named in behavior:** 1100 ms

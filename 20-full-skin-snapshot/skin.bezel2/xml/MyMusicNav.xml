@@ -10,12 +10,8 @@
 	<views>60</views>
 	<!-- 2.0a3.1: no stale flip state from an earlier visit, so the first tap always flips -->
 	<onload>RunScript(special://skin/scripts/bz_cmd.py,keymap)</onload><!-- np3: Tab keymap install / reload, no restart needed -->
-	<onload>ClearProperty(bz_back,home)</onload>
-	<onload>ClearProperty(bz_backanim,home)</onload>
-	<onload>ClearProperty(bz_back_fade,home)</onload>
-	<onload>ClearProperty(bz_back_close,home)</onload>
 	<onload condition="!String.IsEqual(Window(Home).Property(bz_flip_running),true)">RunScript(special://skin/scripts/bz_flip.py)</onload>
-	<onload>SetProperty(bz_sway_restart,true,home)</onload>
+	<!-- 5.33.314 Rob t2383: no bz_sway_restart: sway must stay unbroken (MM Music focus remounts MyMusicNav; 1122 owns the sway) -->
 	<onunload>SetProperty(bz_from_music,true,home)</onunload>
 	<onunload>SetProperty(bz_np_was,$INFO[Window(Home).Property(bz_np)],home)</onunload><!-- 2.0a3.4: Tab toggle -->
 	<onunload condition="!Window.Next(visualisation)">ClearProperty(bz_np,home)</onunload><!-- 3.5.2: kept while Kodi's fullscreen window bounces back (Tab), so Tab can close the panel -->

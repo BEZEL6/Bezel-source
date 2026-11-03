@@ -2,6 +2,21 @@
 # RunScript(special://skin/scripts/bz_cmd.py,<action>,<dbtype>,<dbid>[,<tvshowid>,<season>])
 # actions: play, resume, refresh, art, watched
 import sys, os, json, xbmc, xbmcgui
+
+# 5.33.432 CONFIRMFOCUS (Rob: "CONFIRM SKIN CHANGE POPUP HAS NO FOCUS ON THE LIST" - DialogConfirm is shared: keep-skin, remove, reset, sources...).
+# Kodi sends SetFocus to the topmost MODAL dialog and UNFOCUSES its current control before looking up the id (GUIWindow GUI_MSG_SETFOCUS),
+# so any SetFocus(60/6996/...) from a script while the Yes/No (or OK) is up left that dialog with no focus. Drop those while it is visible.
+def _bz_fg_install(_x):
+    if getattr(_x, '_bz_fg', False): return
+    _eb = _x.executebuiltin
+    def _safe(cmd, *a, **k):
+        c = (cmd or '').lstrip().lower()
+        if (c.startswith('setfocus(') or c.startswith('control.setfocus(')) and _x.getCondVisibility('Window.IsVisible(yesnodialog) | Window.IsVisible(okdialog)'):
+            return None
+        return _eb(cmd, *a, **k)
+    try: _x.executebuiltin = _safe; _x._bz_fg = True
+    except Exception: pass
+_bz_fg_install(xbmc)
 def rpc(method, params):
     try:
         r = json.loads(xbmc.executeJSONRPC(json.dumps({'jsonrpc': '2.0', 'id': 1, 'method': method, 'params': params})))
@@ -118,6 +133,7 @@ if action == 'tab':
         if xbmc.getCondVisibility('Window.IsActive(1112)'):
             home.clearProperty('bz_np'); xbmc.executebuiltin('Dialog.Close(1112)'); sys.exit(0)
         if home.getProperty('bz_audio_latch') == 'true' and home.getProperty('bz_np') != 'true' and xbmc.getCondVisibility('Player.HasAudio + !Player.HasVideo + Window.IsActive(music) + !Window.IsActive(visualisation) + Control.IsVisible(60) + ![Skin.HasSetting(bz_grid_music) + [Container(60).Content(albums) | Container(60).Content(artists)]] + !System.HasModalDialog'):
+            if home.getProperty('bz_nav') == 'true': home.setProperty('bz_fsmm', '1')   # 5.33.378: FS from MM -> exit back to MM
             home.clearProperty('bz_nav'); home.clearProperty('bz_navtune'); home.clearProperty('bz_navbez'); home.clearProperty('bz_np_was')
             if not xbmc.getCondVisibility('Control.HasFocus(60)'): xbmc.executebuiltin('SetFocus(60)')
             home.setProperty('bz_npdlg', 'true'); home.setProperty('bz_np', 'true')
@@ -281,6 +297,7 @@ if action in ('np', 'nptoggle'):
     # np1 test: music playing + already in the music library list view (view 60, not the grid): Now Playing opens as a dialog over the
     # music window (Custom_1112_NowPlaying.xml), so the album sway underneath never resets. Every other route keeps the in-place panel below.
     if action == 'np' and home.getProperty('bz_np') != 'true' and xbmc.getCondVisibility('Window.IsActive(music) + !Window.IsActive(visualisation) + Control.IsVisible(60) + ![Skin.HasSetting(bz_grid_music) + [Container(60).Content(albums) | Container(60).Content(artists)]] + !Window.IsActive(1112)'):
+        if home.getProperty('bz_nav') == 'true': home.setProperty('bz_fsmm', '1')   # 5.33.378
         home.clearProperty('bz_nav'); home.clearProperty('bz_navtune'); home.clearProperty('bz_navbez'); home.clearProperty('bz_np_was')
         # np2: hand the music window's focus back to the list first (the slide-menu card / A-Z bar / art are hidden once the dialog is up),
         # so after the dialog closes the keys move the list and Left opens the slide menu again
@@ -397,6 +414,38 @@ if action == 'npalbum':   # BETA 2.2 item 3: slide menu mini player art: open th
     if not aid:
         home.clearProperty('bz_nav'); home.clearProperty('bz_navtune'); home.clearProperty('bz_navbez'); xbmc.executebuiltin('RunScript(special://skin/scripts/bz_cmd.py,np)'); sys.exit(0)
     action = 'tomusic'; args[1] = 'musicdb://albums/%d/' % aid
+def _vw_land():
+    import time
+    # 5.33.426 VWARM: bz_flip vwarm publishes Home bz_vland = "<sec>|<dbid>" for the art shown on a virtual MM row. Once the section list is in
+    # (still hidden by bz_secload), move list 60 onto that item WITHOUT taking focus (Control.Move = relative). Only for the root list the art came from.
+    v = home.getProperty('bz_vpick'); home.clearProperty('bz_vpick')   # 5.33.429: snapshot taken by bz_mm.py at Select (bz_vland can be gone by now)
+    if not v or '|' not in v: return
+    parts = v.split('|'); sec, dbid = parts[0], parts[1]
+    try: hint = int(parts[2]) if len(parts) > 2 and parts[2] != '' else None
+    except ValueError: hint = None
+    root = {'movies': 'videodb://movies/titles', 'tv': 'videodb://tvshows/titles', 'music': 'musicdb://artists'}.get(sec)
+    if not root or not dbid or xbmc.getInfoLabel('Container.FolderPath').split('?')[0].rstrip('/') != root: return
+    L = xbmc.getInfoLabel
+    try: n = int(L('Container(60).NumItems') or 0)
+    except ValueError: n = 0
+    par = L('Container(60).ListItemAbsolute(0).Label') == '..'
+    hit = None; t0 = time.time(); tot = n + (1 if par else 0); off = 1 if par else 0
+    def order():   # 5.33.429: start at the library-order index (JSON label sort ~ list sort), spiral outwards, then the rest
+        seen = set()
+        if hint is not None:
+            c = hint + off
+            for d in range(0, 400):
+                for i in (c - d, c + d):
+                    if 0 <= i < tot and i not in seen: seen.add(i); yield i
+        for i in range(tot):
+            if i not in seen: yield i
+    for i in order():
+        if L('Container(60).ListItemAbsolute(%d).DBID' % i) == dbid: hit = i; break
+        if time.time() - t0 > 2.0: break   # huge library and not near the hint: keep the random row
+    if hit is None: return
+    try: cur = int(L('Container(60).CurrentItem') or 0) - (0 if par else 1)
+    except ValueError: return
+    if cur >= 0 and cur != hit: xbmc.executebuiltin('Control.Move(60,%d)' % (hit - cur)); xbmc.Monitor().waitForAbort(0.1)
 def _bz_load_then_close(win, path):
     # 3.2.1 item 5: open the new section behind the menu, wait until its list is loaded, then close the menu
     mon = xbmc.Monitor(); old = xbmc.getInfoLabel('Container.FolderPath')
@@ -424,6 +473,7 @@ def _bz_load_then_close(win, path):
         for i in range(40):
             mon.waitForAbort(0.05)
             if xbmc.getInfoLabel('Container.FolderPath').rstrip('/') == path.rstrip('/') and not xbmc.getCondVisibility('Container.IsUpdating'): break
+    _vw_land()   # 5.33.426 VWARM: land on the item whose art the MM showed (art over the same art when the menu closes)
     for i in range(30):   # art of the focused item known (poster / thumb / fanart) -> give the texture loader a moment
         if xbmc.getInfoLabel('Container(60).ListItem.Art(poster)') or xbmc.getInfoLabel('Container(60).ListItem.Art(thumb)') or xbmc.getInfoLabel('Container(60).ListItem.Icon'): break
         mon.waitForAbort(0.05)
@@ -437,6 +487,10 @@ if action == 'tomusic':
     # 3.5.1: video -> music with music playing: the mini player and the poster fade out together (1.25 s, bz_tomusic), a short gap,
     # then the music window opens and its album art fades in (1.5 s, bz_from_video); no flip, the art is already cached.
     path = args[1] or ''
+    # 5.33.444 VPICKLOAD (Rob: quick nav + Select on a row that is not warm opened the warm section first): a Main-menu pick of a virtual row
+    # (VWARM - its window is not behind the menu) loads behind the still-open menu like a warmed row did; the menu closes on the loaded list.
+    if home.getProperty('bz_nav') == 'true' and not xbmc.getCondVisibility('Window.IsActive(music)'):
+        _bz_load_then_close('Music', path); sys.exit(0)
     if xbmc.getCondVisibility('Window.IsActive(videos)') and home.getProperty('bz_audio_latch') == 'true' and not xbmc.getCondVisibility('Player.HasVideo'):
         home.clearProperty('bz_nav'); home.clearProperty('bz_navtune'); home.clearProperty('bz_navbez')
         home.setProperty('bz_tomusic', 'true')
@@ -446,7 +500,11 @@ if action == 'tomusic':
         if path:
             xbmc.Monitor().waitForAbort(0.3); cur = xbmc.getInfoLabel('Container.FolderPath')
             if cur != path and cur.startswith(path.split('?')[0]): xbmc.executebuiltin('Container.Update(%s,replace)' % path)
-        xbmc.Monitor().waitForAbort(2.0)
+        for _i in range(40):   # 5.33.444 M2VLAND: video -> music with music playing lands on the MM item as well
+            if xbmc.getCondVisibility('Window.IsActive(music) + !Container.IsUpdating') and xbmc.getInfoLabel('Container(60).NumItems') not in ('', '0'): break
+            xbmc.Monitor().waitForAbort(0.05)
+        _vw_land()
+        xbmc.Monitor().waitForAbort(1.6)
         home.clearProperty('bz_tomusic'); home.clearProperty('bz_from_video')
     else:
         _bz_load_then_close('Music', path)
@@ -457,6 +515,8 @@ if action == 'go':
     # 2.0a3.4: side menu -> video sections (dbtype slot = path). From BEZEL MUSIC LIST with music playing: the art turns, shrinks into the
     # mini player spot (2.3 s), then the video view opens (poster slides in). Without music the art fades out first. No 'return'.
     path = args[1]
+    if home.getProperty('bz_nav') == 'true' and not xbmc.getCondVisibility('Window.IsActive(videos)'):   # 5.33.444 VPICKLOAD (see tomusic)
+        _bz_load_then_close('Videos', path); sys.exit(0)
     if xbmc.getCondVisibility('Window.IsActive(music) + !Window.IsActive(visualisation)'):
         if home.getProperty('bz_audio_latch') == 'true' and not xbmc.getCondVisibility('Player.HasVideo'):
             home.clearProperty('bz_nav'); home.clearProperty('bz_navtune'); home.clearProperty('bz_navbez')
@@ -471,7 +531,12 @@ if action == 'go':
             home.setProperty('bz_m2v_flat', 'true'); mon.waitForAbort(0.45)
             home.setProperty('bz_from_music', 'true'); home.setProperty('bz_casc_force', 'true')
             xbmc.executebuiltin('ActivateWindow(Videos,%s)' % path)
-            mon.waitForAbort(1.0)
+            _t1 = time.time() + 1.0
+            for _i in range(60):   # 5.33.444 M2VLAND (Rob: "ENTER TV SECTION MUSIC PLAYING DIDNT ENTER TO WARM ITEM IN LIST"): land on the MM item here too
+                if xbmc.getCondVisibility('Window.IsActive(videos) + !Container.IsUpdating') and xbmc.getInfoLabel('Container(60).NumItems') not in ('', '0'): break
+                mon.waitForAbort(0.05)
+            _vw_land()
+            mon.waitForAbort(max(0.0, _t1 - time.time()))
             for k in ('bz_m2v', 'bz_m2v_flat'): home.clearProperty(k)
             sys.exit(0)
         else:
@@ -561,6 +626,14 @@ if action == 'allrow':   # ALLROW (Rob t3729/t3730): bottom "All" row opens the 
     xbmcgui.Window(10000).setProperty('bz_allret', fp)  # 5.33.95: Back from All lands on the ALL row, not the parked Disc 2
     if not base.endswith('/'): base += '/'
     xbmc.executebuiltin('Container.Update(%s-1/%s,return)' % (base, ('?' + q) if q else ''))
+    # 5.33.443 ALLROW2 (Rob: ALL ALBUMS "GROUPED"): artist ALL song list sorted by album (Kodi SortByAlbum = 12: album, then track) so the
+    # 75px album-header rows ($EXP[bz_allgrp] / bz_discbar) group each album's songs. Kodi saves the sort per path, so this runs once per artist.
+    if base.startswith('musicdb://artists/') and xbmc.getCondVisibility('Window.IsActive(music)'):
+        _m = xbmc.Monitor()
+        for _i in range(40):
+            if _m.waitForAbort(0.1): break
+            if '/-1/' in xbmc.getInfoLabel('Container.FolderPath') and xbmc.getCondVisibility('Container.Content(songs) + !Container.IsUpdating') and xbmc.getInfoLabel('Container(60).NumItems') not in ('', '0'):
+                xbmc.executebuiltin('Container.SetSortMethod(12)'); break
     sys.exit(0)
 def _bz_showall_sync(only=None):
     import json as _json
@@ -623,6 +696,7 @@ if action == 'start':
 
     for _k in ('music', 'movies', 'tv'):   # t4075: restore MM pill last-used after ReloadSkin / cold start
         _v = xbmc.getInfoLabel('Skin.String(bz_last_mmsub_%s)' % _k)
+        if _k == 'movies' and _v.isdigit() and int(_v) > 3: _v = ''   # 5.33.393 Movies pills 1-3 only
         if _v and not home.getProperty('bz_mmsub_' + _k): home.setProperty('bz_mmsub_' + _k, _v)
     if not xbmc.getInfoLabel('Skin.String(bz_attn_outline)'):   # attnqueue #9: global outline bar default once (Tuner LOOK > bar shape still changes it)
         xbmc.executebuiltin('Skin.SetString(bz_at_hishape,5)'); xbmc.executebuiltin('Skin.SetString(bz_attn_outline,1)')

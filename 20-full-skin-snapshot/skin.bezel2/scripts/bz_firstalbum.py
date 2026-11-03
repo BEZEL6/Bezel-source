@@ -2,6 +2,21 @@
 # Waits until the folder has finished loading, skips '..' and 'All albums' whether present or not,
 # retries until the focus really sits on an album, and runs once per folder so a remembered position is kept on return.
 import xbmc, xbmcgui
+
+# 5.33.432 CONFIRMFOCUS (Rob: "CONFIRM SKIN CHANGE POPUP HAS NO FOCUS ON THE LIST" - DialogConfirm is shared: keep-skin, remove, reset, sources...).
+# Kodi sends SetFocus to the topmost MODAL dialog and UNFOCUSES its current control before looking up the id (GUIWindow GUI_MSG_SETFOCUS),
+# so any SetFocus(60/6996/...) from a script while the Yes/No (or OK) is up left that dialog with no focus. Drop those while it is visible.
+def _bz_fg_install(_x):
+    if getattr(_x, '_bz_fg', False): return
+    _eb = _x.executebuiltin
+    def _safe(cmd, *a, **k):
+        c = (cmd or '').lstrip().lower()
+        if (c.startswith('setfocus(') or c.startswith('control.setfocus(')) and _x.getCondVisibility('Window.IsVisible(yesnodialog) | Window.IsVisible(okdialog)'):
+            return None
+        return _eb(cmd, *a, **k)
+    try: _x.executebuiltin = _safe; _x._bz_fg = True
+    except Exception: pass
+_bz_fg_install(xbmc)
 home = xbmcgui.Window(10000)
 ALL = xbmc.getLocalizedString(15102)
 def lab(i): return xbmc.getInfoLabel('Container(62).ListItemAbsolute(%d).Label' % i)

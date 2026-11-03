@@ -1,6 +1,21 @@
 # BEZEL 3.0: per-section presets preset,<sec>,<name>; 2.10/2.9: Animation Tuner actions. RunScript(special://skin/scripts/bz_tune.py,preset|reset|export[,arg])
 # Settings live in Skin.String(bz_at_<id>) (step index, empty = default); the step tables are in bz_tune.json (written by gen_tuner.py).
 import sys, json, os, time, xbmc, xbmcgui, xbmcvfs
+
+# 5.33.432 CONFIRMFOCUS (Rob: "CONFIRM SKIN CHANGE POPUP HAS NO FOCUS ON THE LIST" - DialogConfirm is shared: keep-skin, remove, reset, sources...).
+# Kodi sends SetFocus to the topmost MODAL dialog and UNFOCUSES its current control before looking up the id (GUIWindow GUI_MSG_SETFOCUS),
+# so any SetFocus(60/6996/...) from a script while the Yes/No (or OK) is up left that dialog with no focus. Drop those while it is visible.
+def _bz_fg_install(_x):
+    if getattr(_x, '_bz_fg', False): return
+    _eb = _x.executebuiltin
+    def _safe(cmd, *a, **k):
+        c = (cmd or '').lstrip().lower()
+        if (c.startswith('setfocus(') or c.startswith('control.setfocus(')) and _x.getCondVisibility('Window.IsVisible(yesnodialog) | Window.IsVisible(okdialog)'):
+            return None
+        return _eb(cmd, *a, **k)
+    try: _x.executebuiltin = _safe; _x._bz_fg = True
+    except Exception: pass
+_bz_fg_install(xbmc)
 here = os.path.dirname(os.path.abspath(__file__))
 _J = json.load(open(os.path.join(here, 'bz_tune.json'))); P = _J['P']; TOG = _J.get('TOG', [])
 LOOK = set(['hishape'] + [p[0] for p in P if p[1] == 'look'])
@@ -50,7 +65,7 @@ elif a[0] == 'reset':
     if a[1] == 'everything' or a[1] == 'menu': xbmc.executebuiltin('Skin.Reset(bz_dtap_off)'); xbmc.executebuiltin('Skin.Reset(bz_at_mmdim)'); xbmc.executebuiltin('Skin.Reset(bz_at_mmwarm)'); xbmc.executebuiltin('Skin.Reset(bz_at_mmdef)')
     if a[1] == 'everything' or a[1] == 'dust':
         for b in ('bz_dust_off', 'bz_adust_off', 'bz_spin_off', 'bz_spin_ccw', 'bz_lspin_off', 'bz_lspin_cw', 'bz_sdust_off', 'bz_fib_off', 'bz_flk_off', 'bz_d3l0_off', 'bz_d3l1_off', 'bz_d3l2_off', 'bz_amb_off', 'bz_alit20', 'bz_plit20', 'bz_mmdust_off'): xbmc.executebuiltin('Skin.Reset(%s)' % b)
-    if a[1] in ('everything', 'art'): xbmc.executebuiltin('Skin.Reset(bz_bigalb_off)')
+    if a[1] in ('everything', 'art'): xbmc.executebuiltin('Skin.Reset(bz_bigalb_off)'); xbmc.executebuiltin('Skin.Reset(bz_at_a2pfade)'); xbmc.executebuiltin('Skin.Reset(bz_at_midlefade)')  # 5.33.403 A2PFADE -> 800 ms (empty|7)
     if a[1] in ('everything', 'ashadow'): xbmc.executebuiltin('Skin.Reset(bz_acast_static)')
     if a[1] in ('everything', 'pshadow'): xbmc.executebuiltin('Skin.Reset(bz_pcast_static)')   # 4.1.0 O39
     for sec in PRESETS:
@@ -72,7 +87,7 @@ elif a[0] == 'resetui':  # t5022: in-Tuner Yes/No mode (list visibility needs Re
     xbmc.sleep(800)
     home.setProperty('bz_navtune', 'true')
     xbmc.sleep(200)
-    xbmc.executebuiltin('SetFocus(6970)')
+    xbmc.executebuiltin('SetFocus(6970)' if mode == 'open' else 'SetFocus(7001)')   # 5.33.439 TUNERRAIL: Reset System rows live in 6970; cancel returns to the section rail
 elif a[0] == 'seed':   # t4691: first start on a new defaults version -> write Rob's picks once, bake timings, reload if a file changed
     if DEF and xbmc.getInfoLabel('Skin.String(bz_defseed)') != DEF.get('ver'):
         apply_defs('everything'); xbmc.executebuiltin('Skin.SetString(bz_defseed,%s)' % DEF.get('ver')); xbmc.sleep(300)

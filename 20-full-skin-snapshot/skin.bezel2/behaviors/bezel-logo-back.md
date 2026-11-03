@@ -2,7 +2,7 @@
 
 **Object:** `BezelLogo` include (Includes_Bezel ~559) · `BezelLogoButton` include (line 585) with button `6001` · logo spin in `scripts/bz_flip.py` (~917)  
 **Where:** Top-left of every BEZEL window, at 28,26 (64×64). Hidden in FullscreenVideo / VideoOSD.  
-**Last updated:** 2026-10-31 · 5.33.207  
+**Last updated:** 2026-11-02 · 5.33.309
 **Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
 **Skin:** skin.bezel2
 
@@ -50,3 +50,39 @@ The close flags are latches that the owning layer watches, so the layer runs its
 
 ## Related
 mm-list.md · dialogue-fs.md · fanart-fs.md · keymaps.md
+
+
+## Wiring table (live XML, 5.33.267)
+**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
+
+**Source:** `xml/Includes_Bezel.xml` include `BezelLogo`
+
+_No id’d controls in this file (layout comes from includes)._
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `Action(Back)`
+
+**Source:** `xml/Includes_Bezel.xml` include `BezelLogoButton`
+
+| id | type | x,y | w×h | nav L/R/U/D | visible |
+|---|---|---|---|---|---|
+| 6001 | button | 0,0 | 120×116 | `SetProperty(bz_nav,true,home)/60/6001/60` | `!$EXP[bz_navmenu]` |
+| 6002 | button | 0,110 | 30×970 | `60/60/60/60` | `!$EXP[bz_navmenu]` |
+
+Actions (`onclick`/`onload`/`onback`) found:
+- `60`
+- `Action(Back)`
+- `ClearProperty(bz_np,home)`
+- `SetFocus(60)`
+- `SetFocus(9000)`
+- `SetProperty(bz_back_close,true,home)`
+- `SetProperty(bz_nav,true,home)`
+- `SetProperty(bz_vback_close,true,home)`
+
+<!-- PORTLINKS -->
+---
+**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/bezel-logo-back.md) · [state](../state/bezel-logo-back.md) · [motion](../motion/bezel-logo-back.md) · [art](../art/bezel-logo-back.md) · [input](../input/bezel-logo-back.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+
+
+## 5.33.309
+The logo tap no longer closes a track-list flip (deleted). Order now: end Now Playing → close video back → focus 60 / 9000 → Back.

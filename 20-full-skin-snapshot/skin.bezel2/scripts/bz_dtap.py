@@ -4,6 +4,21 @@
 # fullscreen video) as NotifyAll(bz,bz_sel). One tap -> Action(Select) once the window (tuner bz_at_dtapwin, 200-500 ms, default 300) has passed;
 # a second tap inside the window -> Action(Info) = BEZEL Options+Info (t4004: old ContextMenu path removed). The keymap is removed when the setting is off or Kodi exits, so Select can never go dead.
 import xbmc, xbmcgui, xbmcvfs, time, threading, sys, os
+
+# 5.33.432 CONFIRMFOCUS (Rob: "CONFIRM SKIN CHANGE POPUP HAS NO FOCUS ON THE LIST" - DialogConfirm is shared: keep-skin, remove, reset, sources...).
+# Kodi sends SetFocus to the topmost MODAL dialog and UNFOCUSES its current control before looking up the id (GUIWindow GUI_MSG_SETFOCUS),
+# so any SetFocus(60/6996/...) from a script while the Yes/No (or OK) is up left that dialog with no focus. Drop those while it is visible.
+def _bz_fg_install(_x):
+    if getattr(_x, '_bz_fg', False): return
+    _eb = _x.executebuiltin
+    def _safe(cmd, *a, **k):
+        c = (cmd or '').lstrip().lower()
+        if (c.startswith('setfocus(') or c.startswith('control.setfocus(')) and _x.getCondVisibility('Window.IsVisible(yesnodialog) | Window.IsVisible(okdialog)'):
+            return None
+        return _eb(cmd, *a, **k)
+    try: _x.executebuiltin = _safe; _x._bz_fg = True
+    except Exception: pass
+_bz_fg_install(xbmc)
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bz_km   # 5.33.194 keymap quarantine
 home = xbmcgui.Window(10000)

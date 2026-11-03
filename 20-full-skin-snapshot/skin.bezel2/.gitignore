@@ -1,8 +1,0 @@
-__pycache__/
-*.pyc
-*.bztmp
-*.bak*
-.DS_Store
-Thumbs.db
-# Design mockups — never ship in skin zips
-mockups/

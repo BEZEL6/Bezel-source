@@ -7,6 +7,21 @@
 # 5.33.201: splash display MIN 5.0 s, CAP/max 15.0 s; dismiss fade-out 3.0 s (overlay Hidden anim).
 # Doc: behaviors/mm-warm.md
 import json, time, threading, random, xbmc, xbmcgui
+
+# 5.33.432 CONFIRMFOCUS (Rob: "CONFIRM SKIN CHANGE POPUP HAS NO FOCUS ON THE LIST" - DialogConfirm is shared: keep-skin, remove, reset, sources...).
+# Kodi sends SetFocus to the topmost MODAL dialog and UNFOCUSES its current control before looking up the id (GUIWindow GUI_MSG_SETFOCUS),
+# so any SetFocus(60/6996/...) from a script while the Yes/No (or OK) is up left that dialog with no focus. Drop those while it is visible.
+def _bz_fg_install(_x):
+    if getattr(_x, '_bz_fg', False): return
+    _eb = _x.executebuiltin
+    def _safe(cmd, *a, **k):
+        c = (cmd or '').lstrip().lower()
+        if (c.startswith('setfocus(') or c.startswith('control.setfocus(')) and _x.getCondVisibility('Window.IsVisible(yesnodialog) | Window.IsVisible(okdialog)'):
+            return None
+        return _eb(cmd, *a, **k)
+    try: _x.executebuiltin = _safe; _x._bz_fg = True
+    except Exception: pass
+_bz_fg_install(xbmc)
 home = xbmcgui.Window(10000); mon = xbmc.Monitor()
 MIN = 5.0    # never fade before this
 CAP = 15.0   # force dismiss by this even if work incomplete
@@ -49,15 +64,19 @@ def randstart():
     try:
         n = int(xbmc.getInfoLabel('Container(60).NumItems') or 0)
         if n <= 0: return
-        lo = 1 if xbmc.getInfoLabel('Container(60).ListItemAbsolute(0).Label') == '..' else 0
+        par = xbmc.getInfoLabel('Container(60).ListItemAbsolute(0).Label') == '..'
+        lo = 1 if par else 0
         hi = n - 1 + lo
         if '/-1/' in xbmc.getInfoLabel('Container(60).ListItemAbsolute(%d).FolderPath' % lo): lo += 1
         if hi < lo: return
         r = random.randint(lo, hi)
         strip = xbmc.getCondVisibility('Control.HasFocus(6996)')
-        xbmc.executebuiltin('SetFocus(60,%d,absolute)' % r)
-        if strip and not (home.getProperty('bz_navtune') or home.getProperty('bz_navbez')):
-            xbmc.executebuiltin('SetFocus(6996)')   # MM never-break: same-frame bounce back to strip
+        if strip:   # 5.33.424 MMBARFLASH: strip focused -> move list 60 without taking focus (SetFocus bounce blinked the MM row bar)
+            try: c = int(xbmc.getInfoLabel('Container(60).CurrentItem') or 0) - (0 if par else 1)
+            except ValueError: c = -1
+            if c >= 0 and c != r: xbmc.executebuiltin('Control.Move(60,%d)' % (r - c))
+        else:
+            xbmc.executebuiltin('SetFocus(60,%d,absolute)' % r)
     except Exception:
         pass
 
@@ -129,6 +148,8 @@ def main():
             if xbmc.getCondVisibility(land):
                 randstart()   # 5.33.204 RANDSTART: first section opens on a random row, not top
                 break
+            if home.getProperty('bz_vsec') == first:   # 5.33.426 VWARM safety: first row shown virtually (no underlay window) -> nothing to land
+                break
             mon.waitForAbort(0.05)
 
         # Phase 3: art warm
@@ -155,4 +176,21 @@ def main():
             if all(home.getProperty('bz_warm_ready_' + s) for s in PATHS):
                 break
             mon.waitForAbort(0.1)
+        rescue_startup()
+
+def rescue_startup():
+    # 5.33.312: if Kodi's startup add-on auto-install/update dialog swallowed
+    # Startup.xml's ReplaceWindow(StartupWindow), we stay stuck on the blank
+    # Startup window. Once modal/progress dialogs are gone, re-issue it ONCE.
+    end = time.time() + 120
+    while time.time() < end and not mon.abortRequested():
+        if not xbmc.getCondVisibility('Window.IsActive(startup)'):
+            return
+        if not xbmc.getCondVisibility('System.HasActiveModalDialog | Window.IsActive(extendedprogressdialog) | Window.IsActive(progressdialog) | Window.IsActive(busydialog) | Window.IsActive(busydialognocancel)'):
+            mon.waitForAbort(0.5)
+            if xbmc.getCondVisibility('Window.IsActive(startup) + !System.HasActiveModalDialog'):
+                xbmc.executebuiltin('ReplaceWindow(%s)' % (xbmc.getInfoLabel('System.StartupWindow') or 'home'))
+            return
+        mon.waitForAbort(0.25)
+
 main()

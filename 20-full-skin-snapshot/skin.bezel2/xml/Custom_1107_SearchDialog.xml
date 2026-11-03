@@ -1,70 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 5.33.37 t286 Rob NEXT: Search dialog on fanart stage + colour strip template (FileBrowser/Browse locks).
-     Stage 120..960 (840x900) one fanart; strip 570 390 overlays. Block = search options list 9000 (same items/onclicks as before).
-     Strip = SEARCH header + focused option + description. -->
+<!-- 5.33.348 Rob t2492: MM SEARCH in the Warm strip (same chrome/rows as Add-ons 1131 / Settings 1130). Items + onclicks unchanged from 5.33.37 stage version (bak_5.33.347_pre348). -->
 <window type="dialog" id="1107">
 	<defaultcontrol always="true">9000</defaultcontrol>
 	<include>BezelSecFadeInDialog</include>
-	<depth>DepthDialog+</depth>
 	<controls>
-		<include>BzDlgDim</include>
-		<include content="BzDlgFrame"><param name="sub" value="" /><param name="hints" value="" /><param name="head" value="" /><param name="stitle" value="" /><param name="sdesc" value="" /></include>
-		<include content="BezelFanartLayer"><param name="left" value="120"/><param name="top" value="120"/><param name="width" value="840"/><param name="height" value="900"/></include><control type="image"><left>570</left><top>120</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
-		<control type="group">
-			<control type="image"><left>117</left><top>117</top><width>846</width><height>3</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
-			<control type="image"><left>117</left><top>1020</top><width>846</width><height>3</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
-			<control type="image"><left>117</left><top>117</top><width>3</width><height>906</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
-			<control type="image"><left>960</left><top>117</top><width>3</width><height>906</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
-		</control>
-		<control type="group"><left>120</left><top>120</top>
-		<!-- stage block -->
-		<control type="image"><left>20</left><top>20</top><width>410</width><height>860</height><texture border="10" colordiffuse="A0000000">bezel/mm_round_a60.png</texture></control>
-		<control type="label"><left>44</left><top>40</top><width>380</width><height>30</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><label>SEARCH</label></control>
-		<control type="list" id="9000"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
-			<onup>9000</onup><ondown>9000</ondown><onleft>9000</onleft><onright>9000</onright>
-			<left>40</left><top>80</top><width>370</width><height>740</height><scrolltime>200</scrolltime>
-			<itemlayout width="370" height="66">
-				<control type="image"><left>0</left><top>0</top><width>370</width><height>58</height><texture border="10" colordiffuse="26FFFFFF">bezel/mm_round_a60.png</texture></control>
-				<control type="label"><left>20</left><top>0</top><width>330</width><height>58</height><font>bz_mm22</font><aligny>center</aligny><textcolor>E6FFFFFF</textcolor><label>$INFO[ListItem.Label]</label></control>
-			</itemlayout>
-			<focusedlayout width="370" height="66">
-				<control type="image"><left>0</left><top>0</top><width>370</width><height>58</height><texture border="10" colordiffuse="26FFFFFF">bezel/mm_round_a60.png</texture></control>
-				<control type="image"><left>0</left><top>0</top><width>370</width><height>58</height><visible>Control.HasFocus(9000)</visible><texture border="10" colordiffuse="FFFFFFFF">bezel/mm_round_a60.png</texture></control>
-				<control type="label"><left>20</left><top>0</top><width>330</width><height>58</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FF000000</textcolor><label>$INFO[ListItem.Label]</label><visible>Control.HasFocus(9000)</visible></control>
-				<control type="label"><left>20</left><top>0</top><width>330</width><height>58</height><font>bz_mm22</font><aligny>center</aligny><textcolor>E6FFFFFF</textcolor><label>$INFO[ListItem.Label]</label><visible>!Control.HasFocus(9000)</visible></control>
-			</focusedlayout>
-			<content>
-				<item>
-					<label>$LOCALIZE[31113]</label>
-					<label2>Search movies, shows, music and more across the whole library.</label2>
+		<control type="group"><left>570</left><top>120</top>
+			<control type="image"><left>-570</left><top>-120</top><width>1920</width><height>1080</height><texture colordiffuse="8C000000">bezel/white.png</texture></control>
+			<include content="BezelMMStripChrome"><param name="box" value="true"/></include>
+			<control type="label"><left>34</left><top>34</top><width>340</width><height>44</height><aligny>center</aligny><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><label>SEARCH</label></control>
+			<control type="label"><left>36</left><top>78</top><width>340</width><height>24</height><aligny>center</aligny><font>bz_b12</font><textcolor>AAFFFFFF</textcolor><label>KODI · SEARCH</label></control>
+			<control type="list" id="9000"><left>0</left><top>112</top><width>390</width><height>480</height><orientation>vertical</orientation><scrolltime tween="cubic" easing="out">150</scrolltime><onup>9000</onup><ondown>9000</ondown><onleft>9000</onleft><onright>9000</onright><onback>Dialog.Close(1107)</onback><onback>SetProperty(bz_nav,true,home)</onback><itemlayout height="48" width="390"><control type="label"><left>34</left><top>0</top><width>240</width><height>48</height><aligny>center</aligny><font>bz_mm22</font><textcolor>FFFFFFFF</textcolor><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(lvl),top)</visible></control>
+<control type="label"><left>52</left><top>0</top><width>220</width><height>48</height><aligny>center</aligny><font>bz_mm17</font><textcolor>99FFFFFF</textcolor><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(lvl),sub)</visible></control>
+<control type="image"><left>340</left><top>15</top><width>18</width><height>18</height><texture>bezel/set_chev_dn.png</texture><visible>String.IsEqual(ListItem.Property(kind),x) + !String.IsEqual(ListItem.Property(grp),Window(Home).Property(bz_adx))</visible></control>
+<control type="image"><left>340</left><top>15</top><width>18</width><height>18</height><texture>bezel/set_chev_up.png</texture><visible>String.IsEqual(ListItem.Property(kind),x) + String.IsEqual(ListItem.Property(grp),Window(Home).Property(bz_adx))</visible></control>
+<control type="label"><left>300</left><top>0</top><width>60</width><height>48</height><align>right</align><aligny>center</aligny><font>bz_mm22</font><textcolor>FFFFFFFF</textcolor><label>»</label><animation effect="fade" start="100" end="70" time="0" condition="String.IsEqual(ListItem.Property(lvl),sub)">Conditional</animation><visible>String.IsEqual(ListItem.Property(kind),m)</visible></control>
+<control type="label"><left>150</left><top>0</top><width>170</width><height>48</height><align>right</align><aligny>center</aligny><font>bz_mm17</font><textcolor>AAFFFFFF</textcolor><label>$INFO[ListItem.Label2]</label><visible>String.IsEqual(ListItem.Property(kind),m)</visible></control>
+<control type="group"><visible>String.IsEqual(ListItem.Property(kind),p)</visible><animation effect="fade" start="100" end="70" time="0" condition="String.IsEqual(ListItem.Property(lvl),sub)">Conditional</animation><control type="label"><left>226</left><top>0</top><width>20</width><height>48</height><align>center</align><aligny>center</aligny><font>bz_mm22</font><textcolor>FFFFFFFF</textcolor><label>‹</label></control><control type="image"><left>248</left><top>12</top><width>92</width><height>24</height><texture border="12" colordiffuse="33FFFFFF">bezel/np_pill32.png</texture></control><control type="label"><left>248</left><top>12</top><width>92</width><height>24</height><align>center</align><aligny>center</aligny><font>bz_b12</font><textcolor>FFFFFFFF</textcolor><label>$INFO[ListItem.Label2]</label></control><control type="label"><left>342</left><top>0</top><width>20</width><height>48</height><align>center</align><aligny>center</aligny><font>bz_mm22</font><textcolor>FFFFFFFF</textcolor><label>›</label></control></control></itemlayout><focusedlayout height="48" width="390"><control type="image"><left>0</left><top>0</top><width>390</width><height>48</height><texture colordiffuse="$VAR[BzATHiCol]">$VAR[BzATHiTex]</texture><visible>Control.HasFocus(9140)</visible></control>
+<control type="label"><left>34</left><top>0</top><width>240</width><height>48</height><aligny>center</aligny><font>bz_mm22</font><textcolor>$VAR[BzATHiText]</textcolor><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(lvl),top)</visible></control>
+<control type="label"><left>52</left><top>0</top><width>220</width><height>48</height><aligny>center</aligny><font>bz_mm17</font><textcolor>$VAR[BzATHiText]</textcolor><label>$INFO[ListItem.Label]</label><visible>String.IsEqual(ListItem.Property(lvl),sub)</visible></control>
+<control type="image"><left>340</left><top>15</top><width>18</width><height>18</height><texture>bezel/set_chev_dn.png</texture><visible>String.IsEqual(ListItem.Property(kind),x) + !String.IsEqual(ListItem.Property(grp),Window(Home).Property(bz_adx))</visible></control>
+<control type="image"><left>340</left><top>15</top><width>18</width><height>18</height><texture>bezel/set_chev_up.png</texture><visible>String.IsEqual(ListItem.Property(kind),x) + String.IsEqual(ListItem.Property(grp),Window(Home).Property(bz_adx))</visible></control>
+<control type="label"><left>300</left><top>0</top><width>60</width><height>48</height><align>right</align><aligny>center</aligny><font>bz_mm22</font><textcolor>FFFFFFFF</textcolor><label>»</label><animation effect="fade" start="100" end="70" time="0" condition="String.IsEqual(ListItem.Property(lvl),sub)">Conditional</animation><visible>String.IsEqual(ListItem.Property(kind),m)</visible></control>
+<control type="label"><left>150</left><top>0</top><width>170</width><height>48</height><align>right</align><aligny>center</aligny><font>bz_mm17</font><textcolor>AAFFFFFF</textcolor><label>$INFO[ListItem.Label2]</label><visible>String.IsEqual(ListItem.Property(kind),m)</visible></control>
+<control type="group"><visible>String.IsEqual(ListItem.Property(kind),p)</visible><animation effect="fade" start="100" end="70" time="0" condition="String.IsEqual(ListItem.Property(lvl),sub)">Conditional</animation><control type="label"><left>226</left><top>0</top><width>20</width><height>48</height><align>center</align><aligny>center</aligny><font>bz_mm22</font><textcolor>FFFFFFFF</textcolor><label>‹</label></control><control type="image"><left>248</left><top>12</top><width>92</width><height>24</height><texture border="12" colordiffuse="33FFFFFF">bezel/np_pill32.png</texture></control><control type="label"><left>248</left><top>12</top><width>92</width><height>24</height><align>center</align><aligny>center</aligny><font>bz_b12</font><textcolor>FFFFFFFF</textcolor><label>$INFO[ListItem.Label2]</label></control><control type="label"><left>342</left><top>0</top><width>20</width><height>48</height><align>center</align><aligny>center</aligny><font>bz_mm22</font><textcolor>FFFFFFFF</textcolor><label>›</label></control></control></focusedlayout><content>
+<item><property name="kind">m</property><property name="lvl">top</property>
+					<label>[UPPERCASE]$LOCALIZE[31113][/UPPERCASE]</label>
+					<property name="desc">Search movies, shows, music and more across the whole library.</property>
 					<onclick>Dialog.Close(all)</onclick>
 					<onclick condition="System.AddonIsEnabled(script.globalsearch)">RunScript(script.globalsearch)</onclick>
 					<onclick condition="System.HasAddon(script.globalsearch) + !System.AddonIsEnabled(script.globalsearch)">EnableAddon(script.globalsearch)</onclick>
 					<onclick condition="!System.HasAddon(script.globalsearch)">InstallAddon(script.globalsearch)</onclick>
 				</item>
-				<item>
-					<label>$LOCALIZE[31145]</label>
-					<label2>Find add-ons in your installed repositories.</label2>
+<item><property name="kind">m</property><property name="lvl">top</property>
+					<label>[UPPERCASE]$LOCALIZE[31145][/UPPERCASE]</label>
+					<property name="desc">Find add-ons in your installed repositories.</property>
 					<onclick>Dialog.Close(all)</onclick>
 					<onclick>ActivateWindow(addonbrowser,addons://search/,return)</onclick>
 				</item>
-				<item>
-					<label>$LOCALIZE[31114]</label>
-					<label2>Search YouTube (installs or enables the add-on if needed).</label2>
+<item><property name="kind">m</property><property name="lvl">top</property>
+					<label>[UPPERCASE]$LOCALIZE[31114][/UPPERCASE]</label>
+					<property name="desc">Search YouTube (installs or enables the add-on if needed).</property>
 					<onclick>Dialog.Close(all)</onclick>
 					<onclick condition="System.AddonIsEnabled(plugin.video.youtube)">ActivateWindow(videos,"plugin://plugin.video.youtube/kodion/search/list/",return)</onclick>
 					<onclick condition="System.HasAddon(plugin.video.youtube) + !System.AddonIsEnabled(plugin.video.youtube)">EnableAddon(plugin.video.youtube)</onclick>
 					<onclick condition="!System.HasAddon(plugin.video.youtube)">InstallAddon(plugin.video.youtube)</onclick>
 				</item>
-			</content>
+</content></control>
+			<control type="image"><left>20</left><top>612</top><width>350</width><height>1</height><texture colordiffuse="40FFFFFF">bezel/white.png</texture></control>
+			<control type="textbox"><left>34</left><top>630</top><width>330</width><height>200</height><font>bz_b12</font><textcolor>AAFFFFFF</textcolor><label>$INFO[Container(9000).ListItem.Property(desc)]</label></control>
+			<control type="label"><left>48</left><top>852</top><width>300</width><height>30</height><aligny>center</aligny><font>bz_b12</font><textcolor>AAFFFFFF</textcolor><label>»  opens search</label></control>
 		</control>
-		<control type="label"><left>44</left><top>836</top><width>380</width><height>30</height><font>bz_mm17</font><textcolor>8CFFFFFF</textcolor><label>OK select   BACK close</label></control>
-		<!-- strip -->
-		<control type="label"><left>480</left><top>20</top><width>350</width><height>50</height><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><aligny>center</aligny><label>$LOCALIZE[137]</label></control>
-		<control type="label"><left>494</left><top>72</top><width>330</width><height>26</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><label>SELECTED</label></control>
-		<control type="textbox"><left>494</left><top>110</top><width>330</width><height>90</height><font>bz_mm20</font><textcolor>E6FFFFFF</textcolor><label>$INFO[Container(9000).ListItem.Label]</label></control>
-		<control type="image"><left>480</left><top>220</top><width>340</width><height>2</height><texture colordiffuse="40FFFFFF">bezel/white.png</texture></control>
-		<control type="textbox"><left>494</left><top>240</top><width>330</width><height>600</height><font>bz_mm20</font><textcolor>C8FFFFFF</textcolor><label>$INFO[Container(9000).ListItem.Label2]</label></control>
-		</control>
+		<include content="BezelLogoButton"><param name="col" value="FFFFFFFF"/></include>
 	</controls>
 </window>

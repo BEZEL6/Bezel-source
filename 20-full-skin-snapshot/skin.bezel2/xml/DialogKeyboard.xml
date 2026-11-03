@@ -3,11 +3,16 @@
 <window>
 	<defaultcontrol always="true">300</defaultcontrol>
 	
-	<include>Animation_DialogPopupOpenClose</include>
+	<!-- 5.33.229: Add Source (mediasource) uses BzStripKeyboard; focus lands on the A–Z bar -->
+	<!-- 5.33.239: strip keyboard everywhere except Music Refresh and File Manager (Rob pt1854u) -->
+	<onload condition="!Window.IsVisible(musicinformation) + !Window.IsVisible(filemanager)">SetFocus(9601)</onload>
+	<onunload>ClearProperty(bz_kbcaps,home)</onunload>
+	<include condition="Window.IsVisible(filemanager)">Animation_DialogPopupOpenClose</include>
 	<depth>DepthDialog+</depth>
 	<controls>
 		<!-- 5.0.2 Refresh-in-strip: when opened over Music info (Refresh flow) use the strip format -->
 		<include condition="Window.IsVisible(musicinformation)">BzRefreshKeyboard</include>
-		<include condition="![Window.IsVisible(musicinformation)]">BzStdKeyboard</include>
+		<include condition="!Window.IsVisible(musicinformation) + !Window.IsVisible(filemanager)">BzStripKeyboard</include>
+		<include condition="!Window.IsVisible(musicinformation) + Window.IsVisible(filemanager)">BzStdKeyboard</include>
 	</controls>
 </window>
