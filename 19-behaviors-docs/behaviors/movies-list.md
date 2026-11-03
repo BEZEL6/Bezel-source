@@ -3,7 +3,7 @@
 **Object:** `MyVideoNav.xml` · list `60` (movies nodes) · grouplist (Includes_Bezel ~L2638) · ALL `6098` · A–Z `6500`
 **Where:** Main menu MOVIES → video window
 **Last updated:** 2026-10-31
-**Status:** Live in 5.33.385. List 60 has edge-to-ALL without wrap. Left opens the MM when the A–Z bar is hidden, and Back at the armed root opens the MM. The A–Z bar has no black background. Movies poster hold applies. Draft: not Rob-approved.
+**Status:** Live in 5.33.393. List 60 has edge-to-ALL without wrap. Left opens the MM when the A–Z bar is hidden, and Back at the armed root opens the MM. The A–Z bar has no black background. Movies poster hold applies. Draft: not Rob-approved.
 **Skin:** skin.bezel2
 
 Each section has three layers: **Simple**, **How it works**, **Wiring** (live tree).
@@ -24,13 +24,13 @@ MOVIES on the main menu (or one of its pills) opens the movie library behind the
 
 Pill subs come from `bz_mm.py SUBS`. See mm-warm.md → Section enter / exit, and section-transitions.md.
 
-Pills: TITLES → RECENTLY ADDED → YEARS → ACTORS → SETS → GENRES.
+Pills: TITLES → RECENTLY ADDED → YEARS → wrap (5.33.393: ACTORS / SETS / GENRES removed from the MM pill; stored pill 4–6 falls back to TITLES).
 
 ### Wiring
 | Item | Value |
 |---|---|
 | GO | `SetProperty(bz_navroot,videodb://movies/titles/,home)` · `RunScript(bz_cmd.py,go,videodb://movies/titles/)` |
-| SUBS | `videodb://movies/titles/`, `recentlyaddedmovies/`, `movies/years/`, `movies/actors/`, `movies/sets/`, `movies/genres/` |
+| SUBS | `videodb://movies/titles/`, `recentlyaddedmovies/`, `movies/years/` |
 
 ---
 

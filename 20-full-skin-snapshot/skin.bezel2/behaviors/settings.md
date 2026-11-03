@@ -209,3 +209,7 @@ Every remaining Kodi setting from the stock category behind each page's MORE (KO
 - INPUT: **MORE kept** — Peripherals and Configure attached controllers are Kodi's own device dialogs with no builtin/RPC entry.
 
 Disabled-by-parent settings (e.g. proxy fields while proxy is off, AirPlay password while not required) show their value but Kodi ignores writes until the parent is on.
+
+- 5.33.370: opening Settings from MM sets `bz_setopen` latch so the 6401 poster cannot flash during the nav-clear → 1130 gap (see artwork-group.md).
+
+- 5.33.389 Settings tree: every Settings underlay is a kid of the SETTINGS node (`bz_setkids` = hub | kodi | tools). Global artwork is owned by that node only — see artwork-group.md "Settings tree".

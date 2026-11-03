@@ -385,14 +385,13 @@ def mssrc(act):
         if typ != 'pictures': xbmc.executebuiltin('UpdateLibrary(%s,%s)' % (typ, path))
         home.clearProperty('bz_srcdd'); xbmc.sleep(80); xbmc.executebuiltin('SetFocus(9150)'); return
     if act == 'open':
-        home.clearProperty('bz_srcdd'); home.setProperty('bz_msret', '1')
-        xbmc.executebuiltin('Dialog.Close(1132,true)'); xbmc.sleep(50)
+        home.clearProperty('bz_srcdd'); home.clearProperty('bz_msdd'); home.setProperty('bz_msret', '1')   # 5.33.388: dropdown is on 1117, no dialog to close
         xbmc.executebuiltin('ActivateWindow(%s,%s,return)' % (win, path)); return
     new = ''
     if act == 'rename':
         new = xbmcgui.Dialog().input('RENAME SOURCE', name)
         if not new or new == name: return
-    # REMOVE / RENAME: Kodi's own source context entry, run on the 1132 row (no window switch)
+    # REMOVE / RENAME: Kodi's own source context entry, run on the 1117 source-list row 9150 (no window switch)
     home.clearProperty('bz_srcdd'); xbmc.sleep(80); xbmc.executebuiltin('SetFocus(9150)'); xbmc.sleep(80)
     xbmc.executebuiltin('Action(ContextMenu)')
     if act == 'remove':
@@ -408,7 +407,7 @@ def mssrc(act):
         xbmc.executeJSONRPC(json.dumps({'jsonrpc': '2.0', 'id': 1, 'method': 'Input.SendText', 'params': {'text': new, 'done': True}}))
         xbmc.sleep(400); xbmc.executebuiltin('SetFocus(18)'); xbmc.sleep(100); xbmc.executebuiltin('Action(select)')
         _waitmodal(mon)
-    msload()
+    msload(); home.setProperty('bz_msdd', '1'); xbmc.executebuiltin('SetFocus(9150)')
 if a and a[0] == 'mssrc': mssrc(a[1] if len(a) > 1 else 'open')
 # 5.33.364: Back in the per-source dropdown — Kodi closes 1132 on Back; reopen it on the list
 if a and a[0] == 'ddback':

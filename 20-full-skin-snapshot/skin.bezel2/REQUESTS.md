@@ -265,3 +265,9 @@ Rob: "Take out" the black box above the merged song list. Gated the View D cover
 - DONE: 6996 Select/Back/Left/Right gated on `bz_mmtap`; 400 ms latch (bz_flip `mm_tap`). Wake 0.5 s park on 6897 kept. FULL restart. Not zipped.
 
 ## 5.33.387 IDLEPARK (Rob t2714 "MM loses focus and doesn't hide on auto hide"): mm_idle hide step fixed in place. It did SetFocus(6897) then checked focus after only 50 ms; on Shield the park often wasn't focused yet, so bz_mmidle never set (no hide) and the late SetFocus then stranded focus on the invisible 6897 park (strip unfocused) with no retry. Now polls up to 1 s for the park; held -> hide (+clears any stray bz_mmtap); never held -> hand focus back to 6996 (_bzstrip). Also: if focus is found on 6897 with no hide armed (late SetFocus), the hide completes instead of stranding. 386 MMTAP latch unchanged. bz_flip.py only. FULL restart. Not zipped.
+
+## 5.33.389 SETTINGS TREE (Rob t2725 "structure so one list can carry seamless? A tree")
+- DONE: bz_setkids is now the root of a tree (bz_set_hub / bz_set_kodi / bz_set_tools); bz_flip `SETTINGS_TREE` mirrors it and builds `_SETKIDS`; `scripts/bz_tree_check.py` verifies sync. Same 15 windows, behavior unchanged. Tuner not added (pending Rob). FULL restart (.py). Not zipped.
+
+## 5.33.391 SHARED ART SWAY CLOCK (Rob t2742 "DO IT")
+- DONE: poster sway (bz_pswayon/bz_ppulse) now anchored to the album sway grid (t0+7.4+k*24.5 s) via bz_flip `_art_sw_anchor`; free-running epoch when no music; Home `bz_art_t0`. XML anims untouched (look, glares, casts, leaf-flip unchanged). FULL restart (.py). Not zipped.

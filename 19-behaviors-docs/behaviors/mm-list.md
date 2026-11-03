@@ -65,7 +65,7 @@ Every non-library GO entry first runs `ClearProperty(bz_nav)`. `bz_mm.py` drops 
 | Section | Order |
 |---------|--------|
 | MUSIC | ARTISTS → ALBUMS → GENRES → RECENT SONGS → RECENT ALBUMS |
-| MOVIES | TITLES → RECENTLY ADDED → YEARS → ACTORS → SETS → GENRES |
+| MOVIES | TITLES → RECENTLY ADDED → YEARS (5.33.393: Actors/Sets/Genres deleted) |
 | TV | SHOWS → WATCHING → YEARS → ACTORS → RECENT → GENRES |
 
 The last choice is remembered across sessions. On a cold start the pills reset to index 1 (Artists / Titles / Shows, t5012).
@@ -74,7 +74,7 @@ The last choice is remembered across sessions. On a cold start the pills reset t
 
 **Wiring.**
 - `onleft`/`onright` gated on `ListItem.Property(sec)` = music/movies/tv, using `$VAR[BzMMPrev_*]` / `$VAR[BzMMNext_*]` (Includes_Bezel ~465–470). Empty or 1: Prev → 5 (music) / 6 (movies, tv). Next → 2.
-- `SUBS` paths: music `artists, albums, genres, recentlyaddedsongs, recentlyaddedalbums` · movies `titles, recentlyaddedmovies, years, actors, sets, genres` · tv `titles, inprogresstvshows, years, actors, recentlyaddedepisodes, genres`.
+- `SUBS` paths: music `artists, albums, genres, recentlyaddedsongs, recentlyaddedalbums` · movies `titles, recentlyaddedmovies, years` (stored pill >3 clamps to Titles) · tv `titles, inprogresstvshows, years, actors, recentlyaddedepisodes, genres`.
 
 ## Pill UI and strip chrome
 

@@ -252,6 +252,25 @@ if home.getProperty('bz_flip_running') != 'true':
     # 5.33.367 Rob t2622: list-60 -> Home mirror for the 1122 poster stage (layer 6401). Dialog 1122 can't read Container(60)
     # (t4097), so every list-60 value BezelVPLPoster needs is copied here each poll. Frozen with the rest of poster_clock while a
     # modal / busy / info dialog is up (Container(60) reads empty from a script then), so the stage never blanks.
+    # 5.33.389 Rob t2725 SETTINGS TREE: mirror of Includes_Bezel bz_set_hub/kodi/tools -> bz_setkids (verify: scripts/bz_tree_check.py)
+    SETTINGS_TREE = (
+        ('hub',   ('1130', '1131', '1117', 'addonbrowser')),
+        ('kodi',  ('settings', 'systemsettings', 'servicesettings', 'playersettings', 'mediasettings', 'interfacesettings', 'profiles', 'skinsettings')),
+        ('tools', ('systeminfo', 'eventlog', 'filemanager')),
+    )
+    # 5.33.390 Rob t2728 ART TREE: global artwork home (1122 / 6400) branched by STATE. Single registry of every Home prop each
+    # state owns. Leave-clear reads it (no hand list to drift); scripts/bz_tree_check.py asserts every prop is real. Doc: behaviors/artwork-group.md
+    ART_TREE = (
+        ('poster.live',  ('bz_v60_next', 'bz_v60_art', 'bz_vpl_on')),          # 6401 poster layer: preload slot -> promoted shown poster, gate
+        ('poster.hold',  ('bz_v60_mov', 'bz_v60_tv')),                          # held Movies / held TV (385 DUALHOLD)
+        ('poster.meta',  ('bz_v60_lbl', 'bz_v60_parent', 'bz_v60_scroll', 'bz_v60_watched', 'bz_v60_resume', 'bz_v60_episodes', 'bz_m60_art')),
+        ('album.idle',   ('bz_m_idle_a', 'bz_m_idle_b', 'bz_m_idle_side', 'bz_m_idle_art', 'bz_m_idle_lock')),   # 6402 idle random A/B + MMHOLD lock
+        ('album.np',     ('bz_m_np_art',)),                                     # 6402 Now Playing (over idle while Player.HasAudio)
+        ('gate.setkids', ('bz_setopen',)),
+        ('gate.a2p',     ('bz_a2p_hold',)),                                     # 5.33.392 album->poster dissolve: album holds until poster gate rises                                      # SETTINGS latch -> poster opacity 0 over held art
+    )
+    _ART_CLEAR = tuple(k for b, ks in ART_TREE if b.startswith('poster.') for k in ks)   # poster.* cleared on Bezel leave (album.* holds, as before)
+    _SETKIDS = '[' + ' | '.join('Window.IsActive(%s)' % w for _b, ws in SETTINGS_TREE for w in ws) + ']'   # = $EXP[bz_setkids]
     _V60_INFOWIN = '[Window.IsActive(music) | Window.IsActive(musicplaylist) | Window.IsActive(favourites) | Window.IsActive(favouritesbrowser) | Window.IsActive(programs) | Window.IsActive(games)]'
     _V60_GRIDV = 'Window.IsActive(videos) + Skin.HasSetting(bz_grid_video) + [Container(60).Content(movies) | Container(60).Content(tvshows) | Container(60).Content(seasons)]'
     def _v60_set(k, v):
@@ -303,6 +322,13 @@ if home.getProperty('bz_flip_running') != 'true':
                 if not _setopen_t[0]: _setopen_t[0] = _t.time()
                 _v60_set('bz_vpl_on', ''); return
         else: _setopen_t[0] = 0
+        if cv(_SETKIDS):   # 5.33.388 Rob: every MM SETTINGS kid shows the global artwork group (poster 6401 from the held MM lane; album via bz_railvis)
+            if home.getProperty('bz_pos_on') and not cv('Player.HasAudio + !Player.HasVideo'):
+                pa = home.getProperty('bz_pos_b' if home.getProperty('bz_pos_side') == 'b' else 'bz_pos_a')
+                if pa: _v60_art_stage(pa)
+                _v60_set('bz_vpl_on', '1' if home.getProperty('bz_v60_art') or pa else '')
+            else: _v60_set('bz_vpl_on', '')
+            return
         if cv('Window.IsVisible(movieinformation) | Window.IsVisible(musicinformation) | Window.IsVisible(songinformation)'): return   # 5.33.379 Rob t2697: Info/Options on top -> list 60 unreadable from dialog; HOLD poster/art + bz_vpl_on (was cleared -> blank art)
         _dmis = _v60_dualpick()   # 5.33.385 DUALHOLD
         if not (vid or oth) or not cv('Control.IsVisible(60)'):
@@ -339,6 +365,18 @@ if home.getProperty('bz_flip_running') != 'true':
         _v60_set('bz_v60_resume', '1' if cv('Container(60).ListItem.IsResumable') else '')
         _v60_set('bz_v60_episodes', '1' if cv('Container.Content(episodes)') else '')
         _v60_set('bz_vpl_on', '1' if on else '')
+    # 5.33.392 A2P (Rob t2746 GO): album->poster = ONE dissolve. 1122 drives both layers off $EXP[bz_artposter] (bz_vpl_on | handoff).
+    # Gap fix: Music window leaves before list 60 / bz_vpl_on is ready -> bz_a2p_hold keeps the album up (railvis bypass) until the
+    # poster gate rises (same frame -> album down + poster up together, 400 ms sine) or 1.5 s failsafe / non-Videos target.
+    _a2p = [0.0, 0.0]   # [last time a Music window was active, hold start]
+    def _a2p_tick():
+        cv = xbmc.getCondVisibility; now = _t.time()
+        if cv('Window.IsActive(music) | Window.IsActive(musicplaylist)'): _a2p[0] = now; _a2p[1] = 0.0; _v60_set('bz_a2p_hold', ''); return
+        tov = cv('Window.IsActive(videos)') or home.getProperty('bz_tovideo') or home.getProperty('bz_m2v_flat')
+        if tov and not home.getProperty('bz_vpl_on') and not home.getProperty('bz_setopen') and (_a2p[1] or now - _a2p[0] < 1.5):
+            if not _a2p[1]: _a2p[1] = now
+            if now - _a2p[1] < 1.5: _v60_set('bz_a2p_hold', '1'); return
+        _a2p[0] = 0.0 if not tov else _a2p[0]; _a2p[1] = 0.0; _v60_set('bz_a2p_hold', '')
     # 5.33.384 IDLEAB (Rob parked 👍): idle Music album = two always-loaded 1122 slots bz_m_idle_a / bz_m_idle_b, bz_m_idle_side = shown slot.
     # New cover -> written into the HIDDEN slot only (preload), promoted after 0.6 s (= _v60_art_stage), then side flips -> 400 ms sine opacity A->B.
     # A slot is never rewritten while it is visible or still fading out (0.45 s guard) = no mid-fade texture swap. bz_m_idle_art = cover on screen (lock/hold logic).
@@ -372,6 +410,24 @@ if home.getProperty('bz_flip_running') != 'true':
             if a: _m_idle_stage(a)
         if not home.getProperty('bz_m_idle_art') and home.getProperty('bz_cov_last'): _m_idle_stage(home.getProperty('bz_cov_last'))   # = bz_cov_last fallback
         _m_idle_stage(None)   # 5.33.384 IDLEAB: tick the pending promote
+    ART_CYCLE = 24.5   # 5.33.391: Kodi pulse cycle of the album/poster sway (12250 ms anim, reversed) = 24.5 s
+    def _art_epoch():
+        # 5.33.391 Rob t2742 SHARED ART CLOCK: one sway clock for group 6400. Master = album t0 (music latch);
+        # with no music a free-running epoch (set once) stands in. Published as Home bz_art_t0.
+        t = sway['t0']
+        if t is None:
+            if sway.get('art0') is None: sway['art0'] = time.time()
+            t = sway['art0']
+        return t
+    def _art_sw_anchor(now_):
+        # Poster flags: pswayon at sw+4, ppulse at sw+9. Album: go at t0+2.4, pulse at t0+7.4.
+        # Pick the earliest ppulse onset >= now+9 that sits on the album pulse grid (t0+7.4 + k*24.5).
+        t0 = _art_epoch(); base = t0 + 7.4; want = now_ + 9.0
+        k = max(0, int(math.ceil((want - base) / ART_CYCLE)))
+        on = base + k * ART_CYCLE
+        if on - want > ART_CYCLE: on -= ART_CYCLE
+        home.setProperty('bz_art_t0', '%.3f' % t0)
+        return on - 9.0
     def poster_clock():
         key = None; since = time.time(); was = False; closed_at = None; opened = 0; got = False; sw = [0]; pend = [None, 0.0]; sw_prev = [0]; sw_path = ['']; sw_top = [False]; sw_tchg = [0.0]
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
@@ -388,7 +444,7 @@ if home.getProperty('bz_flip_running') != 'true':
                 continue
             try: m_mirror()
             except Exception: pass
-            try: v60_mirror()   # 5.33.367: after the modal freeze, so a dialog never blanks the 1122 stage
+            try: v60_mirror(); _a2p_tick()   # 5.33.367: after the modal freeze, so a dialog never blanks the 1122 stage
             except Exception: pass
             # ALLBOTTOM2: hidden top *All never keeps focus (direction-aware), and Down-wrap off the last row goes to the bottom All row
             if xbmc.getCondVisibility('Control.HasFocus(60)'):
@@ -475,7 +531,7 @@ if home.getProperty('bz_flip_running') != 'true':
                     if kk is not None and now_ - since >= 0.25 and not scrolling:
                         home.setProperty('bz_pready', 'true')
                         if not sw[0]:
-                            sw[0] = now_
+                            sw[0] = _art_sw_anchor(now_)   # 5.33.391 Rob t2742: poster phase locked to the shared art clock
                 if sw[0]:
                     e = now_ - sw[0]
                     for q, t_ in (('bz_pswayon', 4), ('bz_ppulse', 9), ('bz_ppulse2', 14)):   # 3.5.1: 0.5 s delay + 1.5 s fade + 2 s still hold
@@ -1740,4 +1796,4 @@ if home.getProperty('bz_flip_running') != 'true':
         home.clearProperty('bz_flipping')
         home.clearProperty('bz_sway_hold')
         home.clearProperty('bz_sway_pulse'); home.clearProperty('bz_sway_go'); home.clearProperty('bz_big_go'); home.clearProperty('bz_big_pulse')
-        for k in ('bz_albumid', 'bz_pswayon', 'bz_ppulse', 'bz_ppulse2', 'bz_pready', 'bz_vreq', 'bz_sway_pulse2', 'bz_castL', 'bz_castR', 'bz_vpl_on', 'bz_v60_art', 'bz_v60_next', 'bz_v60_mov', 'bz_v60_tv', 'bz_m60_art', 'bz_v60_lbl', 'bz_v60_parent', 'bz_v60_scroll', 'bz_v60_watched', 'bz_v60_resume', 'bz_v60_episodes'): home.clearProperty(k)
+        for k in ('bz_albumid', 'bz_art_t0', 'bz_pswayon', 'bz_ppulse', 'bz_ppulse2', 'bz_pready', 'bz_vreq', 'bz_sway_pulse2', 'bz_castL', 'bz_castR') + _ART_CLEAR: home.clearProperty(k)   # 5.33.390 ART_TREE

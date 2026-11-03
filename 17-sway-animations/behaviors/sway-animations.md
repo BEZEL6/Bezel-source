@@ -2,7 +2,7 @@
 
 **Object:** Shared sway clock + album / poster rotatey + stub cast opacity  
 **Where:** Music big album (Dialogue FS / Play Next / viz) · Movies/TV poster (`BezelVPLPoster`) · stub side casts (`pn_cast.png`)  
-**Last updated:** 2026-11-02 · 5.33.381
+**Last updated:** 2026-11-02 · 5.33.391
 **Status:** Live. One Python clock drives the album and poster sway flags. The album cast sits outside the sway group (5.33.205) and, since 5.33.299, outside the album slide rails too (include `BezelAlbumCast`). Draft: not Rob-approved, not re-smoked.  
 **Skin:** skin.bezel2 (Estuary fork)
 
@@ -32,7 +32,7 @@ While the skin script is running it wakes every twentieth of a second. It rememb
 - `bz_sway_pulse` → looping swing between the two tipped extremes  
 - `bz_sway_pulse2` → later gate (kept for a cross-wobble that album no longer uses)
 
-Movies/TV use a **separate poster clock** (`poster_clock`) with the same idea: `bz_pswayon` then `bz_ppulse` / `bz_ppulse2`. Title changes do **not** restart the poster sway.
+**Shared art clock (5.33.391).** Poster and album sway on ONE clock. `poster_clock` still raises `bz_pswayon` (+4 s) → `bz_ppulse` (+9 s) → `bz_ppulse2` (+14 s), but its anchor is no longer "now": `_art_sw_anchor()` places the poster's pulse onset on the album pulse grid (`t0 + 7.4 + k·24.5 s`, 24.5 s = Kodi pulse cycle of the 12250 ms anim). Master epoch = album `t0` while the music latch is on; with no music a free-running epoch (`sway['art0']`, set once) stands in. Published as Home `bz_art_t0`. So across a Music↔Videos crossfade in group 6400 both layers are at the same point of the swing. Title changes do **not** restart the poster sway. Limits: the anchor is taken when the poster arms (entering Videos); if the album clock restarts while the poster is already swinging, the poster keeps its old phase until Videos is left and re-entered. Tuner hold `D` changes the album period only (poster XML stays 12250 ms) — at default D=2.0 they match. Mirror direction is unchanged (album −13→+13, poster +13→−13, same timing).
 
 **Hold and restart.**  
 When art must remount cleanly (window reload, etc.), the script sets `bz_sway_hold`, briefly freezes the swing, clears the hold, resets `t0`, and lets the Conditional animations start again from flat. While hold is set, phase flags stay off so XML does not keep swinging on a stale timeline. `bz_sway_restart` is the explicit “start over from flat” path.

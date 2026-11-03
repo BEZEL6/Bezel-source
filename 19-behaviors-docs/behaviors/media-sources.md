@@ -2,7 +2,7 @@
 
 **Object:** `Custom_1117_MediaSources.xml` window `1117` · grouplist `9000` (125,128, 440 wide) with 11 rows `7101–7121` · grouplist `9001` (584,136) with `9101` / `9102` · bounce `6299`  
 **Where:** Main Menu row MEDIA SOURCES  
-**Last updated:** 2026-11-02 · 5.33.365
+**Last updated:** 2026-11-02 · 5.33.388
 **Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
 **Skin:** skin.bezel2
 
@@ -134,3 +134,9 @@ DialogMediaSource = MS Warm strip at 570,120: BezelMMStripChrome (bar opacity/sh
 - Videos Add Source → OK → **Set content** is `DialogContentSettings.xml` (Bezel Warm): BzMSUnderlay + MM strip chrome at 570,120; settings rows (Kodi tpl ids 7/8/9/12/13, group 5) in the colour strip with BzATHiTex hi bar; OK/CANCEL/extra (28/29/30) as np pills; title id 2 uppercase in the strip. No stock/Estuary fallback.
 - Open: DialogMediaSource and DialogContentSettings have **no window-level fade** — underlay (black base, StdFrame, held fanart/poster) draws at full on frame 1; only the strip group fades in (400ms sine). Underlay art loads sync (`background="false"`) so first open has no late art.
 - Poster: StdFrame underline is off in BzMSUnderlay (`showline=false`); no black cover bar under the poster.
+
+
+## SOURCES dropdown on 1117 + global artwork (5.33.388, current — supersedes the 1132 sections above)
+**Simple.** Select on **SOURCES »** (Videos/Music/Pictures) stays on Media Sources. The colour strip swaps its rows for a source list: title SOURCES, sub "MEDIA SOURCES · <TYPE>", one row per source with ». Select a source → the per-source dropdown in the same strip (source name title, "<TYPE> SOURCE · OPTIONS", OPEN » / RENAME / REMOVE / REFRESH; no REFRESH for Pictures). Back from options → source list; Back from the list → the SOURCES row it came from. Dialog 1132 is no longer opened (XML parked, unreachable).
+**Wiring.** 7101/7111/7121 onclick: msret/msfocus/bz_srcpath/bz_srcwin/bz_srclab as before, then `ClearProperty(bz_srcdd)`, `SetProperty(bz_msdd,1,home)`, `SetFocus(9150)`. 1117 hides title/sub/grouplist 9000 while `bz_msdd` is set. List 9150 (`<content>$INFO[bz_srcpath]</content>`) onclick → bz_srcsel/bz_srcname, `bz_srcdd=1`, SetFocus(9161); onback → clear bz_msdd, SetFocus(bz_msfocus). Grouplist 9160 rows 9161–9164 run `bz_set.py mssrc,<open|rename|remove|refresh>`; onback → clear bz_srcdd, SetFocus(9150). OPEN clears bz_msdd/bz_srcdd, sets bz_msret, ActivateWindow(<win>,path,return) (no dialog to close). RENAME/REMOVE run Kodi's context entry on row 9150, then msload and back to the list. bz_msdd/bz_srcdd cleared on 1117 load/unload. List + dropdown hide while mediasource / yesnodialog is up.
+**Global artwork.** 1117 no longer draws its own right-art copy. Like every MM SETTINGS kid (`$EXP[bz_setkids]` = 1130, 1131, 1117, addonbrowser, Kodi settings windows, profiles, skinsettings, systeminfo, eventlog, filemanager; mirrored as `_SETKIDS` in bz_flip.py), the global artwork group (1122 layer 6400) draws it: poster layer 6401 staged from the held MM lane (`bz_pos_a/b` by `bz_pos_side`) with `bz_vpl_on=1`; while audio-only plays the poster is off and the big album shows (bz_railvis uses bz_setkids). Opacity crossfade only; colour strip and the MM fan underlay stay outside the group. New Settings kids inherit it by joining a branch of the Settings tree (artwork-group.md "Settings tree"; 5.33.389). FULL restart (.py).

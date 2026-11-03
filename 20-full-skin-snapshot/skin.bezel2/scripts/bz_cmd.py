@@ -625,6 +625,7 @@ if action == 'start':
 
     for _k in ('music', 'movies', 'tv'):   # t4075: restore MM pill last-used after ReloadSkin / cold start
         _v = xbmc.getInfoLabel('Skin.String(bz_last_mmsub_%s)' % _k)
+        if _k == 'movies' and _v.isdigit() and int(_v) > 3: _v = ''   # 5.33.393 Movies pills 1-3 only
         if _v and not home.getProperty('bz_mmsub_' + _k): home.setProperty('bz_mmsub_' + _k, _v)
     if not xbmc.getInfoLabel('Skin.String(bz_attn_outline)'):   # attnqueue #9: global outline bar default once (Tuner LOOK > bar shape still changes it)
         xbmc.executebuiltin('Skin.SetString(bz_at_hishape,5)'); xbmc.executebuiltin('Skin.SetString(bz_attn_outline,1)')

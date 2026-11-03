@@ -24,14 +24,14 @@ GO = {
  'search': ['ClearProperty(bz_nav,home)', 'ActivateWindow(1107)'],
  'pictures': ['ClearProperty(bz_nav,home)', 'ActivateWindow(pictures)'],
  'files': ['ClearProperty(bz_nav,home)', 'ActivateWindow(filemanager)'],
- 'addons': ['ClearProperty(bz_nav,home)', 'ActivateWindow(1131)'],  # 5.33.220 Warm strip Add-ons dialog over the section (was ActivateWindow(addonbrowser))
- 'settings': ['ClearProperty(bz_nav,home)', 'ActivateWindow(1130)'],  # 5.33.215 MM-style Settings dialog over the section (was ActivateWindow(Settings))
+ 'addons': ['SetProperty(bz_setopen,1,home)', 'ClearProperty(bz_nav,home)', 'ActivateWindow(1131)'],  # 5.33.220 Warm strip Add-ons dialog over the section (was ActivateWindow(addonbrowser))
+ 'settings': ['SetProperty(bz_setopen,1,home)', 'ClearProperty(bz_nav,home)', 'ActivateWindow(1130)'],  # 5.33.215 MM-style Settings dialog over the section (was ActivateWindow(Settings))
  'kodi': ['ClearProperty(bz_nav,home)', 'ActivateWindow(systeminfo)'],
 }
 # 4.2.0 O59 (D3): music / movies / tv open the primed sub (home bz_mmsub_<sec>, 1-based; empty = default Artists / Titles / Shows)
 SUBS = {
  'music': ('tomusic', ['musicdb://artists/', 'musicdb://albums/', 'musicdb://genres/', 'musicdb://recentlyaddedsongs/', 'musicdb://recentlyaddedalbums/'], 1),
- 'movies': ('go', ['videodb://movies/titles/', 'videodb://recentlyaddedmovies/', 'videodb://movies/years/', 'videodb://movies/actors/', 'videodb://movies/sets/', 'videodb://movies/genres/'], 1),
+ 'movies': ('go', ['videodb://movies/titles/', 'videodb://recentlyaddedmovies/', 'videodb://movies/years/'], 1),  # 5.33.393 Rob: Movies pill Titles/Recent/Years (Actors/Sets/Genres deleted)
  'tv': ('go', ['videodb://tvshows/titles/', 'videodb://inprogresstvshows/', 'videodb://tvshows/years/', 'videodb://tvshows/actors/', 'videodb://recentlyaddedepisodes/', 'videodb://tvshows/genres/'], 1),
 }
 def subgo(key):
@@ -49,6 +49,7 @@ def subgo(key):
 def restore():   # t4075: Home props die on ReloadSkin; restore pill from Skin.String
     for k in SUBS:
         v = xbmc.getInfoLabel('Skin.String(bz_last_mmsub_%s)' % k)
+        if v and v.isdigit() and int(v) > len(SUBS[k][1]): v = ''   # 5.33.393 clamp removed pills
         if v and not home.getProperty('bz_mmsub_' + k): home.setProperty('bz_mmsub_' + k, v)
 MMLOCK_S = 0.30   # 5.32: Select ignore window (seconds)
 if __name__ == '__main__':
