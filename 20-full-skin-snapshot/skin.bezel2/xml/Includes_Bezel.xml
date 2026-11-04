@@ -1119,7 +1119,7 @@
 					<!-- v0.1.20: title (1-2 lines, auto height) and a smaller artist line stacked tight under its last line -->
 					<!-- 2.0a3: artist name, album name under it, then the year (pairs below) -->
 					<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="grouplist">
-						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip]">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
+						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip] | Control.IsVisible(60)">Conditional</animation><!-- 5.33.466 GENREMETA (Rob screenshot: Genres showed GENRE / ARTIST ALBUMS / ARTIST SONGS behind the list): the old strip info card (pairs, bio, album text, 9 parts) was hidden only for artists / albums / songs lists (bz_mstrip, 278 STRIPLIST); the list is drawn in the strip for every music folder, so the card now also hides whenever list 60 is up (genres, years, roles, sources, playlists) --><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
 						<animation effect="fade" start="100" end="0" time="1000" tween="sine" easing="inout" condition="String.IsEqual(Window(Home).Property(bz_np),true)">Conditional</animation><!-- 4.6.2 nav2: also in-place NP over root/non-library lists (vis from Music root bled through) --><!-- BETA 1.3: NP dialog (no background) open: list rows, small album and info fade out; fanart + colour block stay -->
 						<left>30</left><top>172</top><width>330</width><height>84</height>
 						<orientation>vertical</orientation><itemgap>0</itemgap><usecontrolcoords>false</usecontrolcoords>
@@ -1137,7 +1137,7 @@
 						</control>
 					</control></control>
 					<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="grouplist">
-						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip]">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
+						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip] | Control.IsVisible(60)">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
 						<animation effect="fade" start="100" end="0" time="1000" tween="sine" easing="inout" condition="String.IsEqual(Window(Home).Property(bz_np),true)">Conditional</animation><!-- 4.6.2 nav2: also in-place NP over root/non-library lists (vis from Music root bled through) --><!-- BETA 1.3: NP dialog (no background) open: list rows, small album and info fade out; fanart + colour block stay -->
 						<left>30</left><top>172</top><width>330</width><height>396</height><!-- 2.0a3.5: 6 whole pairs (was 420: the 7th, Rating, ran into the Biography header) -->
 						<itemgap>0</itemgap><orientation>vertical</orientation>
@@ -1150,7 +1150,7 @@
 					<include>BezelArtistMeta3B</include><!-- 5.33.224 Rob t1770: 3B artist meta panel in colour strip -->
 					<!-- v0.1.29: artist's album list: info left-aligned and clipped to the cover's top/bottom (y 95-505) -->
 					<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="grouplist">
-						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip]">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
+						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip] | Control.IsVisible(60)">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
 						<animation effect="fade" start="100" end="0" time="1000" tween="sine" easing="inout" condition="String.IsEqual(Window(Home).Property(bz_np),true)">Conditional</animation><!-- 4.6.2 nav2: also in-place NP over root/non-library lists (vis from Music root bled through) --><!-- BETA 1.3: NP dialog (no background) open: list rows, small album and info fade out; fanart + colour block stay -->
 						<left>30</left><top>172</top><width>330</width><height>410</height>
 						<itemgap>0</itemgap><orientation>vertical</orientation>
@@ -1158,7 +1158,7 @@
 						<visible>$EXP[bz_artistalbums]</visible>
 					</control></control>
 					<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="label">
-						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip]">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
+						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip] | Control.IsVisible(60)">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
 						<animation effect="fade" start="100" end="0" time="1000" tween="sine" easing="inout" condition="String.IsEqual(Window(Home).Property(bz_np),true)">Conditional</animation><!-- 4.6.2 nav2: also in-place NP over root/non-library lists (vis from Music root bled through) --><!-- BETA 1.3: NP dialog (no background) open: list rows, small album and info fade out; fanart + colour block stay -->
 						<left>30</left><top>584</top><width>318</width><height>30</height>
 						<animation effect="slide" end="0,-33" time="0" condition="$EXP[bz_artistalbums]">Conditional</animation>
@@ -1167,7 +1167,7 @@
 						<visible>!Container.Content(songs)</visible>
 					</control></control>
 					<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="textbox">
-						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip]">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
+						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip] | Control.IsVisible(60)">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
 						<animation effect="fade" start="100" end="0" time="1000" tween="sine" easing="inout" condition="String.IsEqual(Window(Home).Property(bz_np),true)">Conditional</animation><!-- 4.6.2 nav2: also in-place NP over root/non-library lists (vis from Music root bled through) --><!-- BETA 1.3: NP dialog (no background) open: list rows, small album and info fade out; fanart + colour block stay -->
 						<left>42</left><top>622</top><width>306</width><height>344</height><!-- t405 5.33.61: ends 966, clears dtap hint y978 --><!-- 2.0a3.4: top lines up with the list's first row (y 600, under the cover); 42 px side padding, ends 28 px above the block bottom -->
 						<font>bz_bio</font><textcolor>bz_dimtext</textcolor>
@@ -1177,7 +1177,7 @@
 					</control></control>
 					<!-- v0.1.29: artist's album list: bigger biography, y 551-995 (header at 515, under the info that ends at the cover bottom 505), full 330 px inner bar width -->
 					<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="textbox">
-						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip]">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
+						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip] | Control.IsVisible(60)">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
 						<animation effect="fade" start="100" end="0" time="1000" tween="sine" easing="inout" condition="String.IsEqual(Window(Home).Property(bz_np),true)">Conditional</animation><!-- 4.6.2 nav2: also in-place NP over root/non-library lists (vis from Music root bled through) --><!-- BETA 1.3: NP dialog (no background) open: list rows, small album and info fade out; fanart + colour block stay -->
 						<left>42</left><top>622</top><width>306</width><height>344</height><!-- t405 5.33.61: ends 966, clears dtap hint y978 -->
 						<font>bz_bio</font><textcolor>bz_dimtext</textcolor>
@@ -1186,7 +1186,7 @@
 						<visible>$EXP[bz_artistalbums]</visible>
 					</control></control>
 					<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="grouplist">
-						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip]">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
+						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip] | Control.IsVisible(60)">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
 						<animation effect="fade" start="100" end="0" time="1000" tween="sine" easing="inout" condition="String.IsEqual(Window(Home).Property(bz_np),true)">Conditional</animation><!-- 4.6.2 nav2: also in-place NP over root/non-library lists (vis from Music root bled through) --><!-- BETA 1.3: NP dialog (no background) open: list rows, small album and info fade out; fanart + colour block stay -->
 						<left>30</left><top>240</top><width>330</width><height>310</height>
 						<!-- t4921 K44: orphan HasAudio slide removed (pill 6891 gone) --><!-- BETA 2.4 item 13: follows the artist line down -->
@@ -1201,7 +1201,7 @@
 						<visible>Container.Content(songs)</visible>
 					</control></control>
 					<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="label">
-						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip]">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
+						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip] | Control.IsVisible(60)">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
 						<animation effect="fade" start="100" end="0" time="1000" tween="sine" easing="inout" condition="String.IsEqual(Window(Home).Property(bz_np),true)">Conditional</animation><!-- 4.6.2 nav2: also in-place NP over root/non-library lists (vis from Music root bled through) --><!-- BETA 1.3: NP dialog (no background) open: list rows, small album and info fade out; fanart + colour block stay -->
 						<left>30</left><top>584</top><width>318</width><height>30</height>
 						<font>bz_small</font><align>right</align><textcolor>bz_dimtext</textcolor><label>$VAR[BezelAlbumTextHeader]</label>
@@ -1209,7 +1209,7 @@
 						<visible>Container.Content(songs)</visible>
 					</control></control>
 					<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="textbox" id="6077">
-						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip]">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
+						<visible>!$EXP[bz_infoup] + !$EXP[bz_ameta]</visible><animation effect="fade" start="0" end="0" time="0" condition="$EXP[bz_mstrip] | Control.IsVisible(60)">Conditional</animation><!-- 5.33.278: strip text off, list owns strip --><animation effect="fade" start="100" end="0" time="150">Hidden</animation><!-- t4142: music strip content hides under Info (2nd conditional fade overrode) -->
 						<animation effect="fade" start="100" end="0" time="1000" tween="sine" easing="inout" condition="String.IsEqual(Window(Home).Property(bz_np),true)">Conditional</animation><!-- 4.6.2 nav2: also in-place NP over root/non-library lists (vis from Music root bled through) --><!-- BETA 1.3: NP dialog (no background) open: list rows, small album and info fade out; fanart + colour block stay -->
 						<left>42</left><top>622</top><width>306</width><height>344</height><!-- t405 5.33.61: ends 966, clears dtap hint y978 -->
 						<font>bz_bio</font><textcolor>bz_dimtext</textcolor>
