@@ -74,9 +74,9 @@
 					<param name="header_label" value="$LOCALIZE[35221]" />
 					<param name="header_id" value="3" />
 				</include>
-				<control type="group" id="2000">
+				<control type="group" id="2000"><left>bz_strip_x</left>
 					<top>80</top>
-					<control type="list" id="1103">
+					<control type="list" id="1103"><left>bz_strip_nx</left>
 						<defaultcontrol always="true">2101</defaultcontrol>
 						<height>560</height>
 						<orientation>vertical</orientation>

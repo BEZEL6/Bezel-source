@@ -10,10 +10,11 @@ sys.path.insert(0, __file__.rsplit('/', 1)[0])
 import xedit
 
 G = json.load(open(sys.argv[1])); XD = sys.argv[2]; APPLY = '--apply' in sys.argv
+BASE = float(sys.argv[sys.argv.index('--base') + 1]) if '--base' in sys.argv else 570.0
 by = {r['id_']: r for r in G}
 kids = collections.defaultdict(list)
 for r in G: kids[r['pid']].append(r)
-D = -90
+D = BASE - 660
 
 def x1(r): return r['x1'] if r['x1'] is not None else r['x0']
 def strip(r): return 659.5 <= r['x0'] < 1050.5 and x1(r) <= 1050.5 and x1(r) > r['x0']
@@ -21,16 +22,31 @@ def desc(r):
     for k in kids[r['id_']]:
         yield k; yield from desc(k)
 
+def attached(r):
+    a, b = r['x0'], x1(r)
+    return (599.5 <= a and b <= 1110.5) or round(a, 2) in (0.0, 120.0)
+def transp(r):
+    return r['type'] == 'group' and not (r['lo'] or r['lpo'] or r['ro'] or r['wo']) and not r['cents'] and not r['layout']
 # candidate containers
 cand = {}
 for r in G:
-    if r['type'] != 'group' or round(r['x0'], 2) != 570 or r['layout'] or r['wo']: continue
-    if r['lval'] != '570' or not r['lo'] or round(r['px'], 2) != 0: continue
-    if not any(strip(d) or 'BezelMMStripChrome@' in d['via'] for d in desc(r)): continue
+    if r['type'] != 'group' or round(r['x0'], 2) != BASE or r['layout'] or r['wo'] or r['ro']: continue
+    if BASE == 570:
+        if r['lval'] != '570' or not r['lo'] or round(r['px'], 2) != 0: continue
+        if not any(strip(d) or 'BezelMMStripChrome@' in d['via'] for d in desc(r)): continue
+    else:
+        if r['pid'] == -1 or r['lpo']: continue                          # root controls: window can't move
+        if r['lval'] not in (None, '0', '120', 'bz_stage_x'): continue
+        if round(r['px'], 2) != 0: continue                                # bz_strip_x must be absolute
+        if r['cents']: continue
+        ok = True; nstrip = 0
+        for k in kids[r['id_']]:
+            if transp(k): ok = ok and all(attached(d) or transp(d) for d in kids[k['id_']]); continue
+            if strip(k): nstrip += 1
+            ok = ok and attached(k)
+        if not ok or not nstrip: continue
     cand[r['id_']] = r
 
-def transp(r):
-    return r['type'] == 'group' and not (r['lo'] or r['lpo'] or r['ro'] or r['wo']) and not r['cents'] and not r['layout']
 def shifted(C):
     T = set(C)
     for r in G:   # document order: parents come first
@@ -42,11 +58,13 @@ def needs(C):
     T = shifted(C)
     for r in G:
         conv = r['pid'] in T
-        if transp(r) and r['id_'] not in C: 
+        if transp(r) and r['id_'] not in C and r['id_'] in T: 
             for co, cen, eff, kind in r['cents']: pass
             continue
         lk = r['lpo'] or r['lo']
-        if lk:
+        if r['id_'] in C and not lk:
+            req[('INS', r['o'])].add('S'); why[('INS', r['o'])].append(r['id_'])
+        elif lk:
             req[('L', lk)].add('S' if r['id_'] in C else (D if conv else 0)); why[('L', lk)].append(r['id_'])
         else:
             # no left element at all
@@ -72,7 +90,8 @@ for it in range(50):
             if p in C: drop.add(p)
         # container's own left shared with a non-container occurrence
     for cid, c in C.items():
-        if len(req[('L', c['lo'])]) > 1: drop.add(cid)
+        k = ('L', c['lpo'] or c['lo']) if (c['lpo'] or c['lo']) else ('INS', c['o'])
+        if len(req[k]) > 1: drop.add(cid)
     # params: a child left given by a non-numeric value cannot be shifted
     for cid in C:
         pass
@@ -84,6 +103,11 @@ for it in range(50):
                 p = r['pid']
                 while p not in C: p = by[p]['pid']
                 drop.add(p)
+    for cid in C:
+        p = by[cid]['pid']
+        while p != -1:
+            if p in C: drop.add(cid); break
+            p = by[p]['pid']
     if not drop: break
     for d in drop: C.pop(d, None)
 
@@ -115,7 +139,7 @@ for k, v in req.items():
         edits[fn].append(('c', int(n), cop))
     elif kind == 'INS':
         fn, tag, n = key.split('#')
-        edits[fn].append(('INS', int(n), None))
+        edits[fn].append(('INS', int(n), '<left>%s</left>' % ('bz_strip_x' if val == 'S' else xedit.fmt(D))))
 n = sum(len(v) for v in edits.values())
 print('edits', n, {f: len(v) for f, v in edits.items()})
 
@@ -125,7 +149,7 @@ def apply(path, E):
     reps = []
     for kind, k, op in E:
         if kind == 'INS':
-            m = by_['control'][k]; reps.append((m.end(), m.end(), '<left>-90</left>'))
+            m = by_['control'][k]; reps.append((m.end(), m.end(), op))
         elif kind == 'c':
             m = cen[k]; a = re.search(r'(\scenter\s*=\s*")([^"]*)(")', m.group(0))
             s0 = m.start() + a.start(2); s1 = m.start() + a.end(2); reps.append((s0, s1, op(text[s0:s1])))

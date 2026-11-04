@@ -113,12 +113,12 @@
 			<font>bz_mm22</font><textcolor>C8FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><texturefocus border="23" colordiffuse="FFFFFFFF">bezel/mm_pill_ol.png</texturefocus><texturenofocus border="23" colordiffuse="33FFFFFF">bezel/mm_pill_ol.png</texturenofocus><!-- attnqueue #11 L&F outline rows -->
 			<include content="DefaultSettingButton"><param name="height">56</param><param name="textoffsetx">22</param></include><onback>3</onback>
 		</control>
-		<control type="group">
+		<control type="group"><left>bz_strip_x</left>
 			<depth>DepthContentPanel</depth>
 			<include>BezelOpenCloseSet</include>
 			<control type="grouplist" id="3">
 				<description>button area</description>
-				<left>676</left>
+				<left>16</left>
 				<top>136</top>
 				<width>358</width>
 				<height>410</height>
@@ -131,7 +131,7 @@
 			</control>
 			<control type="button" id="10">
 				<description>Default Category Button</description>
-				<left>0</left>
+				<left>bz_strip_nx</left>
 				<height>52</height>
 				<width>358</width>
 				<textoffsetx>0</textoffsetx><align>center</align>
@@ -164,12 +164,12 @@
 			</control>
 		</control>
 		<include>BezelFooter</include>
-		<control type="group">
+		<control type="group"><left>bz_strip_x</left>
 			<depth>DepthContentPanel</depth>
 			<include>BezelOpenCloseSet</include>
 			<control type="radiobutton" id="20">
 				<width>358</width>
-				<left>676</left>
+				<left>16</left>
 				<top>952</top>
 				<height>56</height><font>bz_mm22</font><textcolor>C8FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><!-- F6 fixb3: dark text was invisible on outline focus -->
 				<aligny>center</aligny>
@@ -192,11 +192,11 @@
 				<textureradiooffnofocus>icons/settings.png</textureradiooffnofocus>
 			</control>
 		</control>
-		<control type="group">
+		<control type="group"><left>bz_strip_x</left>
 			<include>BezelOpenCloseSet</include>
 			<control type="textbox" id="6">
 				<description>description area</description>
-				<left>700</left>
+				<left>40</left>
 				<top>652</top>
 				<width>310</width>
 				<height>264</height>
