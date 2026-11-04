@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.469
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.470
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 470 | "NP BAR SHOWN WHEN BIG ALBUM IS CENTER IN BOTH FULLSCREEN, BIG ALBUM NP BAR HIDE WHEN SWITCH BACK TO FANART STAGE" (+ remove the Up Next fanart bar); new dust defaults; "BEZEL FEELS SLOW WHEN NEW LISTS ARE LOADED" (all four: wait, cascade, big lists, folder open) | **CENTREBAR**, revert 463 **UPNNPBAR**, **DUSTDEF**, **ENTRYHOLD** (0.6 → 0.35 s), **LISTTIME** (`BEZEL list` log) |
 | 469 | "EXIT FROM TUNER THEN ATTEMPT TO RE ENTER TUNER DOES NOT WORK"; "DISABLE THE MM MENU SLIDE"; "AUTO UNFOCUS PILLS, AFTER 5 SECONDS OF INACTIVITY FOCUS RETURNS TO LAST POSITION" (all pills + A-Z bar, back to where focus came from) | **TUNERREOPEN** (no Tuner-flag clears after a modal opens), **MMNOSLIDE**, **PILLIDLE** (mm_autohide, 4 Hz) |
 | 468 | "CAST SHADOW ONLY VISIBLE WHEN MUSIC IS PLAYING, IT SHOULD BE ACTIVE ALL TIMES"; "DONT NEED THE FIXED, JUST THE DEFAULT GROW AND FADE"; "CAN WE ADD ANOTHER LAYER TO THE LIT DUST?" → second spin, album + poster, "same texture as mm dust", "all in 468" | **CASTIDLE** (no bz_audio_latch gate on the cast fades / stub casts), **CASTFIXEDDEL** (static cast copies + Tuner row removed), **LITSPIN2** (mirrored counter-rotating spin disc) |
 | 467 | "THE COLOR STRIP IS NOT DRAWN WHEN EXIT FROM TUNER MENU"; P2.6 ("I WILL GIVE YOU A LOG"); "INCLUDE ALL TOGETHER" | **TUNERPWR** (1118 clears bz_navtune on load) + revert 465 **TUNERHIDE**; rewrite **P2.6a OWNSHADOW** (`_v60_set` skips the read of an unchanged value it wrote) |
@@ -230,6 +231,23 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.470 — CENTREBAR + revert UPNNPBAR + DUSTDEF + ENTRYHOLD + LISTTIME
+Branch `claude/5.33.470` (469 + one commit per item). Rob: "go for all".
+- **CENTREBAR** (Rob: "up next fanart is the cycle pill for the up next list in the fanart stage, big album upnext is when big album is center, i want np bar shown when big album is center in both fullscreen, big album np bar hide when switch back to fanart stage"):
+  - 450 VIZNPBAR (1122, `BezelNPCompactBar` shifted −480 under the centred album) gate `Window.IsActive(visualisation)` → `[Window.IsActive(visualisation) | Window.IsVisible(1121)]`; `bz_fsnp` (set by 1121 onload too), `bz_railc` (true in 1121 with `bz_pnoff` empty) and `Player.HasAudio` unchanged. Back to the fanart stage (`bz_pnoff` = 1) → `bz_railc` false → its 300 ms fade out; fade in 600 ms after 480 ms as before.
+- **Revert 463 UPNNPBAR** (Rob picked "remove"): the bar under the home album with the Up Next fanart list (1122 + 1121 copies) is gone; `git revert` of the 463 commit.
+- **DUSTDEF** (Rob: "ambient dust on, distant dust on density med size 90 opacity 60 fade mid slide fast. amb spin on density med size 90 spin 180s"):
+  - `bz_tune.json` DEF (Rob's picks; seeded once per DEF ver, applied by every Tuner Reset): `bz_amb_off`, `bz_d3l0_off`, `bz_spin_off` moved from "on" (= set = off) to "off"; `bz_at_d20ssize` 2 → 1 (90%). Already matching: distant Med / 90% / 60% / Mid / Fast, spin Med, spin speed 180 s.
+  - DEF ver not bumped (that would re-seed every Tuner setting on existing installs). Rob's box: Tuner > Dust > Reset. Only these 4 values changed (JSON diff checked; compact format kept).
+- **ENTRYHOLD** (Rob: "bezel feels slow when new lists are loaded" → all four: wait before rows show, rows animate in slowly, big lists lag, opening a folder):
+  - `nav_menu`: the section-entry row hold (`casc_pend`, rows hidden while the old window fades out and the new one fades in; 0.6 s since beta2.2) is `_ENTRYHOLD` = 0.35 s. Folder opens inside a section had no hold and still don't. If rows flash during a section switch, raise it again.
+- **LISTTIME:** one `BEZEL list <entry|open> <path> rows after <s> n=<items>` kodi.log line per folder change, once its rows may show (includes up to one 0.1 s poll). Kodi's own library query time is in kodi.log only with debug logging on (Settings > System > Logging), as the music / video database "query took" / "Time to retrieve" lines.
+- **Cascade (not changed):** Tuner > List > Cascade speed (1x) / stagger (60 ms → 15th row lands at ~1.2 s) can be tried live; Rob's picks become the defaults.
+- **Big lists / folder open (not changed yet):** per-row layouts carry ~30 conditional cascade animations each; trimming them is an XML job, decided after the LISTTIME / debug log shows whether the time is Kodi's query or the skin.
+- **Mock:** folder open → `rows after 0.00s`; section entry → ~0.45–0.5 s (0.35 s hold + poll).
+- **Check:** big album centred in fanart FS → NP bar under it; back to fanart → it fades; Up Next fanart list → no bar under the home album; entering Music / Movies / TV → rows a bit sooner, no row flash; Tuner > Dust > Reset → ambient + distant dust and the spin layer on.
+- **Static checks + mock.** Not device-tested.
 
 ## 5.33.469 — TUNERREOPEN + MMNOSLIDE + PILLIDLE
 Branch `claude/5.33.469` (468 + one commit per item). Rob's 468 kodi.log: poster_clock getProperty 284/s (465) → ~186/s, so 467 OWNSHADOW saves ~100 Kodi calls/s (mock said 86); no skin errors. Rob: controls / info "minimized Kodi issue", A-Z stage shift "disregard".

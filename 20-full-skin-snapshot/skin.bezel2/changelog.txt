@@ -1,5 +1,7 @@
-5.33.469 (2026-11-04)
-- TUNERREOPEN: leaving the Tuner and opening it again (power menu TUNER row or the Music Controls Tuner button) works again.
-- MMNOSLIDE: the MM rows no longer slide in / out when the MM opens or closes.
-- PILLIDLE: 5 seconds with no input on a BEZEL pill (FULLSCREEN, cycle, big album, MM FULL) or the A-Z bar puts focus back where it came from.
+5.33.470 (2026-11-04)
+- CENTREBAR: the NP bar shows under the centred big album in both fullscreens (Kodi FS and fanart FS) and fades out when you switch back to the fanart stage.
+- The 463 NP bar under the home album during the Up Next fanart list is removed.
+- DUSTDEF: new Tuner defaults: ambient dust, distant dust and ambient spin on, spin size 90% (Tuner > Dust > Reset applies them).
+- ENTRYHOLD: entering a section, rows show after 0.35 s instead of 0.6 s.
+- LISTTIME: kodi.log gets one "BEZEL list" line per folder change, for tracking slow lists.
 
