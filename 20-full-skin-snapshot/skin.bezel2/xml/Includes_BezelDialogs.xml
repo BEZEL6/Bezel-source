@@ -525,11 +525,11 @@
 		<!-- 5.33.364 Rob t2577 "Go for all": Warm underlay on EVERY Yes/No (was bz_msflow only). B3 dim kept only over fullscreen video/visualisation so playback stays visible -->
 		<control type="image"><visible>Window.IsActive(fullscreenvideo) | Window.IsActive(visualisation)</visible><left>0</left><top>0</top><width>1920</width><height>1080</height><texture colordiffuse="B3000000">bezel/white.png</texture></control>
 		<control type="group"><visible>!Window.IsActive(fullscreenvideo) + !Window.IsActive(visualisation)</visible><include>BzMSUnderlay</include></control>
-		<control type="group"><left>570</left><top>120</top><!-- colour strip + rows -->
+		<control type="group"><left>bz_strip_x</left><top>120</top><!-- colour strip + rows -->
 			<!-- 5.33.364 Rob: Warm strip chrome on EVERY Yes/No / OK / progress (was flat strip outside Media Sources) -->
 			<control type="group"><visible>!Window.IsActive(1117)</visible><include content="BezelMMStripChrome"><param name="box" value="true"/></include></control>
-			<control type="label"><left>126</left><top>40</top><width>340</width><height>50</height><aligny>center</aligny><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><label>CONFIRM</label></control>
-			<control type="grouplist" id="9000"><left>90</left><top>100</top><width>bz_strip_w</width><height>754</height><orientation>vertical</orientation><itemgap>0</itemgap>
+			<control type="label"><left>36</left><top>40</top><width>340</width><height>50</height><aligny>center</aligny><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><label>CONFIRM</label></control>
+			<control type="grouplist" id="9000"><left>0</left><top>100</top><width>bz_strip_w</width><height>754</height><orientation>vertical</orientation><itemgap>0</itemgap>
 				<control type="button" id="10"><width>bz_strip_w</width><height>58</height><font>bz_mm28</font><textoffsetx>44</textoffsetx><aligny>center</aligny><align>left</align><textcolor>C8FFFFFF</textcolor><focusedcolor>$VAR[BzMMFocTxt]</focusedcolor>
 					<texturefocus border="0" colordiffuse="$VAR[BzMMBarCol]">$VAR[BzATHiTex]</texturefocus><texturenofocus/></control>
 				<control type="button" id="11"><width>bz_strip_w</width><height>58</height><font>bz_mm28</font><textoffsetx>44</textoffsetx><aligny>center</aligny><align>left</align><textcolor>C8FFFFFF</textcolor><focusedcolor>$VAR[BzMMFocTxt]</focusedcolor>
