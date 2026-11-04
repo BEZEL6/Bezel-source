@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.467
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.468
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 468 | "CAST SHADOW ONLY VISIBLE WHEN MUSIC IS PLAYING, IT SHOULD BE ACTIVE ALL TIMES"; "DONT NEED THE FIXED, JUST THE DEFAULT GROW AND FADE"; "CAN WE ADD ANOTHER LAYER TO THE LIT DUST?" → second spin, album + poster, "same texture as mm dust", "all in 468" | **CASTIDLE** (no bz_audio_latch gate on the cast fades / stub casts), **CASTFIXEDDEL** (static cast copies + Tuner row removed), **LITSPIN2** (mirrored counter-rotating spin disc) |
 | 467 | "THE COLOR STRIP IS NOT DRAWN WHEN EXIT FROM TUNER MENU"; P2.6 ("I WILL GIVE YOU A LOG"); "INCLUDE ALL TOGETHER" | **TUNERPWR** (1118 clears bz_navtune on load) + revert 465 **TUNERHIDE**; rewrite **P2.6a OWNSHADOW** (`_v60_set` skips the read of an unchanged value it wrote) |
 | 466 | "MUSIC ALBUM SECTION USES AN OLD LIST AND NOT THE NEWER ALBUM LIST", "AS WELL AS RECENT PLAYED"; "MUSIC GENRES HAS UNWANTED META DATA DRAWN BEHIND THE LIST" (screenshot) | **ALBUMCOVER** (covercol for every music albums list, no bz_albumlist), **ALBUMPILL**, **GENREMETA** (old strip info card hidden whenever list 60 is up) |
 | 465 | "TUNER MENU EXITS BUT IS STILL DRAWN"; "OLD FULLSCREEN FANART VIZ IS LEFT IN THE CODE" (fanart overlay + cycle pill at the old upper-right spot, back from the big album) → "REMOVE ANYTHING OLD"; "ANY REWRITE OPTIMIZATION" | **TUNERHIDE**, **DEL1104**, **OLDPILL**, **OLDNP** (old Now Playing dialog 1112 + routes → 1121 / Kodi FS), rewrite **P3.4–P3.6** (parked controls, grid 6600 conditions, grid script actions) |
@@ -228,6 +229,23 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.468 — CASTIDLE + CASTFIXEDDEL + LITSPIN2
+Branch `claude/5.33.468` (467 + one commit per fix). Rob: all three in one build.
+- **CASTIDLE** (Rob: "cast shadow only visible when music is playing, it should be active all times"):
+  - `BezelAlbumCast` (1122): the 4 cast copies each had a 200 ms fade to 0 unless `bz_audio_latch` + no `bz_sway_hold` + `bz_sway_go` (/ `bz_sway_pulse`). 453 ONESWAY left the latch term so the cast stayed at 0 with no music, while the one sway rig runs idle too. The latch term is removed; the hold / go terms stay, so the cast still waits for the sway lead-in and hides during a sway restart.
+  - `_bz_cast` (bz_flip sway_clock, stub cast L/R opacity) no longer needs the latch either: with no music `t0` is the idle clock `bt0`, and the 441/445 stub anchor (`_sway_anchor`) already tracks the album pulse without music since ONESWAY.
+  - Unchanged: the cast hides under the Tuner and under 1120 / 1121 / Kodi FS as before.
+- **CASTFIXEDDEL** (Rob: "dont need the fixed, just the default grow and fade"):
+  - The 2 static cast copies (`bz_acast_static`, "Animated OFF", classic + right swing) removed from `BezelAlbumCast`; the 2 moving copies no longer test `!bz_acast_static`, so an old ON value can't hide the cast.
+  - Tuner: the "Cast shadow animated" row (ALBUM SHADOW), its Left / Right actions and `BzATVal_acanim` removed; `bz_tune.json` TOG entry removed (export / import). The `bz_tune.py` reset of the bool and the DEF map entry stay (they only reset an unused bool).
+  - Poster cast (`bz_pcast_static`) not touched.
+- **LITSPIN2** (Rob: "can we add another layer to the lit dust?" → "Second spin", album + poster, "same texture as mm dust?" → yes):
+  - `BezelLitDust` / `BezelLitDustP` (Includes_Dust3): a second image in the spin group: the same `$VAR[BzD3LSpin]` / `$VAR[BzD3PLSpin]` (default = MM Dust 2.0 spin, `litmm_*_spin`), `flipx` + `flipy`, the 60 speed / direction rotate conditions copied with the direction swapped and the period ×1.3 (default 30 s → 39 s). Same disc mask, colour (`BzD3L_mid` / `BzD3PL_mid`), position, and spin On/Off (`bz_lspin_off` / `bz_plspin_off`).
+  - The two discs together are brighter than one; if it's too much, the second disc can take its own lower colour.
+- **Checks:** XML parses, bz_flip compiles, audit clean; geometry vs 467: 4 static cast images gone, 8 new spin discs on the existing disc boxes, every other control identical; mock run of bz_flip starts and runs.
+- **Check on device:** no music: the big album cast grows and fades with the sway; play / stop: the cast keeps going; Tuner Album / Poster: no "Cast shadow animated" row; album + poster glare: two spin layers turning opposite ways.
+- **Not device-tested.**
 
 ## 5.33.467 — TUNERPWR + revert TUNERHIDE + rewrite P2.6a OWNSHADOW
 Branch `claude/5.33.467` (466 + 3 commits). Rob: "include all together".
