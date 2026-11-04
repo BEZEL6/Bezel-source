@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.456
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.457
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 457 | "P1 THEN IF USAGE PERMITS DO P2" (rewrite, layout first) | rewrite **P1B** (strip content relative to `bz_strip_x`), **P1C** (stage fill / stage / art constants); zero visual change |
 | 456 | "SMALL BLACK PULSE ON BIG ALBUM ON MUSIC START"; "TRANSPORT BAR LABELS … CENTERED"; "MM FADES BLACK THEN BACK"; "TUNER … REMOVE NAV LEGEND"; "GLOW TEXTURES"; "TITLE ON THE FANART STAGE … HIDDEN" | **IDLEHOLD**, **TRANSCENTRE**, **MMCLEANFADE**, **TUNERCLEAN**, **GLOWSHIFT**, **FSTITLE**, rewrite **P1A** |
 | 455 | "EXTEND THE FANART STAGE RIGHT … KEEP LIST AND COLOR STRIP SAME SIZE"; "MM MUST MOVE"; "DELETE THE GRID VIEWS" | **STAGEWIDE** (stage 120–1050, strip 660–1050, gap 90), **GRIDDEL** |
 | 454 | "ADD RECOMMENDED SPEEDS TO BUILD"; "CAN THE LIST FEEL MORE FLOATY"; "I PREFER FADE INS FOR ALL TRANSITIONS"; "KEEP SLIDES FOR BIG ALBUM" | **SPEEDS** (317 ms list, 300 ms idle cover), **FADEINS** |
@@ -217,6 +218,15 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.457 — rewrite P1B + P1C (layout from constants, no visual change)
+Branch `claude/rewrite-p1b` (one commit per step), built as `claude/5.33.457`. Plan and tools: `REWRITE_PLAN.md` section 5.
+- **P1B part 1** (98 containers): the warm-strip dialogs, main menu, Tuner and MusicControls wrapped their strip in a group still at the pre-455 strip x **570** with children +90. Those groups now sit at `bz_strip_x`; every direct child is compensated (left −90, include-param origins, own animation centres; position-less wrapper groups pass it down). Full-screen dims and the stage panel inside the strip use two new companion constants, `bz_strip_nx` −660 and `bz_strip_tostage` −540.
+- **P1B part 2** (29 groups): groups at x 0 holding only strip content (or full-screen / stage anchors) now sit at `bz_strip_x`, children −660. Outermost group only.
+- **P1B part 3** (165 elements, 640 uses): strip elements placed with absolute lefts (690, 819, 984, 1002 …) are wrapped in `<control type="group"><left>bz_strip_x</left><!-- P1B -->` with their left −660. Skipped on purpose: BigAlbum casts (strip in 1122, art elsewhere), grouplist children, legacy PVR windows.
+- **P1C:** new `bz_fill_w` 540 on the 18 stage fills (120–660); 60 screen-level lefts 120 → `bz_stage_x`; 31 screen-level 1140 → `bz_art_x`. The old unused `bz_block_x`/`bz_block_w` (390) are the strip in the old naming, left for P3.
+- **Moving the strip now:** change `bz_strip_x` and, with it, `bz_strip_nx` (= −bz_strip_x), `bz_strip_tostage` (= bz_stage_x − bz_strip_x) and `bz_fill_w` (= bz_strip_x − bz_stage_x), all on Includes_Bezel ~2570 (Kodi constants can't do arithmetic). Strip+1 simulation: 4,829 of 4,885 strip controls follow.
+- **Checks (static):** all 18,603 drawn controls and absolute animation centres unchanged against 456 (geom resolver; wrapper groups filtered); no rotation without a centre exists (Kodi uses the parent origin there); zoom without a centre uses the control's own rect; Kodi focus/default-control lookup is recursive (GUIControlGroup.cpp), so id-less wrappers change nothing. XML parses; every position value is a number or a defined constant. **Not device-tested.** Device check: every strip window (MM, sections, settings, sources, context, info, select, keyboard, Tuner, MusicControls) looks and animates exactly as 456.
 
 ## 5.33.456 — fixes on 455 + rewrite P1A
 One commit per fix, so each can be reverted on its own with `git revert` (branches `claude/5.33.456-wip`, then `claude/rewrite-p1`, built as `claude/5.33.456`):

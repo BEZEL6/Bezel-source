@@ -1,3 +1,7 @@
+5.33.457 (2026-11-04)
+- P1B (rewrite step 2): everything inside the colour strip is now placed relative to the strip's position, so the strip can be moved later by changing one line of layout constants. No visible change (every control checked: same position, same animation centres).
+- P1C (rewrite step 3): the stage fill, stage and artwork positions read shared layout constants too. No visible change.
+
 5.33.456 (2026-11-04)
 - IDLEHOLD (Rob: "SMALL BLACK PULSE ON BIG ALBUM ON MUSIC START"): on play start / stop the idle album stays fully drawn under the playing art while it fades in / out over it, so no dark dip.
 - TRANSCENTRE (Rob: "TRANSPORT BAR LABELS NEED TO BE CENTERED FOR THE NEW STAGE"): fullscreen music transport bar centred on the wider stage again (prev / next pills stay at the stage edges).
