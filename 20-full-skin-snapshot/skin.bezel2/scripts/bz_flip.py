@@ -76,6 +76,13 @@ def _flip_s():
         return 1.3
 
 home = xbmcgui.Window(10000)
+# 5.33.454 SPEEDS (Rob: "ADD RECOMMENDED SPEEDS TO BUILD"; "CAN THE LIST FEEL MORE FLOATY"): one-time Tuner values - list row scroll 0.6x (317 ms, cubic out),
+# idle album cover fade 300 ms (was 400). (Tuner 'A/B fade' bz_at_abfade has no consumer - the MM A/B lanes use fixed 1500 ms - so it is not touched.) Shipped XML already carries 317 ms, so no repatch / reload. Tuner can change them after.
+try:
+    if xbmc.getInfoLabel('Skin.String(bz_spd454)') != '1':
+        for _k, _v in (('bz_at_rowscroll', '3'), ('bz_at_midlefade', '3')): xbmc.executebuiltin('Skin.SetString(%s,%s)' % (_k, _v))
+        xbmc.executebuiltin('Skin.SetString(bz_spd454,1)')
+except Exception: pass
 # BEZEL 3.1: Jumbo (900 px) album art is the default; set it once per profile, after that the tap / OK toggle and the tuner own it
 xbmc.executebuiltin("Skin.Reset(bz_jumbo)"); xbmc.executebuiltin("Skin.Reset(bz_jumbo31)")   # 4.0.1 O36 (Rob): Jumbo / tap-to-enlarge removed; old saved strings cleared
 import time as _t

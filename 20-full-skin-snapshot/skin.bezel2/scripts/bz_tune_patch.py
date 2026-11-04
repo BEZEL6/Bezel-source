@@ -38,7 +38,8 @@ def _bezel(s, g):
         k = int(m.group(2)); sp = 400.0 / cs
         d = int(round((k - 1) * cg / sp)); t = int(round(cs * (1 + 0.35 * (k - 1) / 14.0)))
         return '%s%d" delay="%d" tween="quadratic" easing="out"/><effect type="fade" start="0" end="100" time="%d" delay="%d"' % (m.group(1), t, d, int(round(t * 0.9)), d)
-    s = re.sub(r'(Integer\.IsEqual\(ListItem\.CurrentItem,(\d+)\)"[^>]*><effect type="slide" start="0,-40" end="0,0" time=")\d+" delay="\d+" tween="\w+" easing="out"/><effect type="fade" start="0" end="100" time="\d+" delay="\d+"', casc, s)
+    # 5.33.454 FADEINS (Rob: "I PREFER FADE INS FOR ALL TRANSITIONS"): cascade rows no longer drop in (slide start 0,0 = fade only); anchor accepts both
+    s = re.sub(r'(Integer\.IsEqual\(ListItem\.CurrentItem,(\d+)\)"[^>]*><effect type="slide" start="0,(?:-40|0)" end="0,0" time=")\d+" delay="\d+" tween="\w+" easing="out"/><effect type="fade" start="0" end="100" time="\d+" delay="\d+"', casc, s)
     fl = val('flip', g)
     def flip(m):
         x = re.sub(r'time="\d+"', 'time="%d"' % fl, m.group(0))

@@ -61,7 +61,7 @@
 			<control type="image"><left>28</left><top>28</top><width>64</width><height>64</height><aspectratio>keep</aspectratio><texture colordiffuse="FFFFFFFF">bezel/logo.png</texture>
 				<animation effect="rotate" end="-360" center="60,60" delay="1400" time="1000" tween="cubic" easing="inout" reversible="false" condition="true">Conditional</animation></control>
 			<control type="group"><left>108</left><top>38</top><width>340</width><height>44</height>
-				<animation type="WindowOpen"><effect type="slide" start="-30,0" end="0,0" time="300" tween="cubic" easing="out"/><effect type="fade" start="100" end="0" delay="1500" time="400"/></animation>
+				<animation type="WindowOpen"><effect type="fade" start="0" end="100" time="300" tween="sine" easing="out"/><effect type="fade" start="100" end="0" delay="1500" time="400"/></animation>
 				<!-- t4233: rectangular pill = white.png outline (2px), t4235 no fill; text centered -->
 				<control type="image"><left>0</left><top>0</top><width>272</width><height>2</height><texture colordiffuse="FFFFFFFF">bezel/white.png</texture></control>
 				<control type="image"><left>0</left><top>42</top><width>272</width><height>2</height><texture colordiffuse="FFFFFFFF">bezel/white.png</texture></control>
