@@ -30,7 +30,7 @@
 			<animation effect="fade" start="0" end="100" time="400" tween="sine" easing="out" condition="!String.IsEmpty(Window(Home).Property(bz_secfade))" reversible="false">Conditional</animation>
 			<include>BezelFanartCycler</include>
 			<include>View_60_BezelVideoPosterList</include><include>BezelDtapHint</include>
-			<include>BezelGridVideo</include>
+			<!-- 5.33.455 GRIDDEL -->
 		</control>
 		<!-- BEZEL: Estuary side menu moved here so it draws ABOVE the Bezel views -->
 		<control type="group">

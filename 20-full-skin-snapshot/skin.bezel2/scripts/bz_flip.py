@@ -761,7 +761,7 @@ if home.getProperty('bz_flip_running') != 'true':
             if mon.waitForAbort(0.1 if d_on else 0.25): return
     _bzstart(km_leave_watch)
     # 5.33.274 t2094: old music view types removed from options; clear leftover A/grid bools once so the 3-level list is the only view
-    for _b in ('bz_albview_a','bz_grid_music'):
+    for _b in ('bz_albview_a','bz_grid_music','bz_grid_video'):  # 5.33.455 GRIDDEL: video grid deleted too
         if xbmc.getCondVisibility('Skin.HasSetting(%s)' % _b): xbmc.executebuiltin('Skin.Reset(%s)' % _b)
     _bzstart(albview_a)
     _bzstart(poster_clock)

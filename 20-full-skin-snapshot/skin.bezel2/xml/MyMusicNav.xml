@@ -30,7 +30,7 @@
 			<include>BezelFanartCycler</include>
 			<include>BezelArtistHelpers</include>
 			<include>View_60_BezelInfoList</include><!-- 5.33.122 t863: BezelDtapHint moved into BezelFSLeftStage -->
-			<include>BezelGridMusic</include>
+			<!-- 5.33.455 GRIDDEL -->
 		</control>
 		<control type="group"><visible>false + $EXP[bz_covercol]</visible><!-- t4380 mock --><!-- t4148b: UNDIMMED opaque black 990-1080 first; the dimmed mask alone was only ~60% opaque so row text bled through -->
 			<control type="image"><left>bz_list_x</left><top>990</top><width>450</width><height>90</height><texture colordiffuse="FF000000">bezel/white.png</texture></control>
