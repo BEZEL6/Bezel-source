@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.463
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.464
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 464 | "CAN CLOCK AND EVENT BE TRIED NEXT?" → "CLOCK" | rewrite **P2.4 SWAYEPOCH**: poster sway epoch = album idle clock bt0 (was its own art0). Event-driven playback (P2.5) dropped: ~25 mostly compound checks, ~2–3% saving, timing risk |
 | 463 | "MUSIC CONTROLS GET STUCK IN VIS SETTINGS"; "QUICK BACK FROM TUNER MENU DROPS IN RANDOM WINDOW"; "ADD A NP BAR WHEN UP NEXT IS TRIGGER IN KODI FULLSCREEN" | **VIZSETRESET** (bz_vizset by window id + cleared on load), **TUNERBACKQ** (power menu before Tuner hides), **UPNNPBAR** (compact NP bar under the home album with Up Next, viz + 1121) |
 | 462 | "TUNER ROWS HAVE DAYS AND MONTHS"; "HIDE"; "BACK ON LEVEL 2 → LEVEL 1"; "BACK ON LEVEL 1 → POWER MENU"; "SAME LOOK AS MM DUST IN THE ALBUM AND POSTER LIT DUST" | **TUNERRAILNUM** (rail counts were localized ids; hidden), **TUNERBACK** (6970 → 7001; 7001 → power menu), **LITMM** (lit dust default = textures cut from MM Dust 2.0) |
 | 461 | "NEXT" (rewrite P3, dead code) | rewrite **P3.1–P3.3**: 32 unused includes, 14 expressions, 317 variables removed; audit clean; zero geometry change |
@@ -224,6 +225,23 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.464 — rewrite P2.4 SWAYEPOCH (one sway epoch)
+Branch `claude/5.33.464` (463 + one commit). A/B against 463.
+- **Rob:** "can clock and event be tried next?", then "clock".
+- **P2.5 event-driven playback: not built.** bz_flip.py has ~25 playback checks in total, most compound with window / focus terms (`Player.HasAudio + Window.IsActive(music) + Control.HasFocus(6996)` …), so the Kodi call stays.
+  - Replacing the pure ones saves ~50–100 of ~3,000 calls/s (2–3%).
+  - Kodi's play / stop events don't reproduce the brief `Player.HasMedia` drop on Next / Prev that 435 MPKEEP relies on.
+- **P2.4 finding:** the sway clocks were already merged in 391 SHARED ART CLOCK / 406 ALWAYSSWAY / 415 SWAYCONT. The poster flags (`bz_pswayon` / `bz_ppulse` / `bz_ppulse2`) are scheduled onto the album pulse grid (t0 + 7.4 + k·24.5 s) by `_art_sw_anchor` from `_art_epoch()`.
+  - poster_clock's ~520 Kodi calls/s are its list-60 nav guards (ALL / hidden `..` / TV seasons bounces), poster key tracking, movie holds and `m_mirror` / `v60_mirror` / `_a2p_tick`, not the sway. So no call saving from a clock merge.
+- **SWAYEPOCH (the one gap):** with no music, `_art_epoch()` fell back to its own `sway['art0']`, while sway_clock used `sway['bt0']`, each set at start-up by a different thread.
+  - The poster grid sat off the album grid by that gap, and kept it after music started (the 415 latch continues bt0).
+  - `_art_epoch()` now falls back to `bt0`, created there if poster_clock asks first; `art0` is gone.
+  - Mock run: `bz_art_t0` == `sway['bt0']` at start-up.
+  - Not covered: after a real sway restart (`bz_sway_restart`, viz / playlist onload) the album re-zeroes, while the poster pulse keeps its original phase (it is never re-armed, by design since 406).
+- **Check:** album and poster sway as before; MM crossfades between an album row and a poster row stay in step.
+- **Static checks + mock run.** Not device-tested.
+- **Next for performance:** per-tick checks in nav_menu (~1,110 calls/s) and poster_clock's nav guards (~520). Needs a kodi.log (`BEZEL perf` lines) from Rob's device.
 
 ## 5.33.463 — VIZSETRESET + TUNERBACKQ + UPNNPBAR
 Branch `claude/5.33.463` (on 462, one commit per fix).

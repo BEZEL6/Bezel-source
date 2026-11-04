@@ -1,5 +1,3 @@
-5.33.463 (2026-11-04)
-- VIZSETRESET (Rob: "MUSIC CONTROLS GET STUCK IN VIS SETTINGS AND DOES NOT RESET TO LEVEL 1 AFTER CLOSE"): Music Controls always open on level 1; the viz settings page no longer stays open after a close.
-- TUNERBACKQ (Rob: "QUICK BACK FROM TUNER MENU DROPS IN RANDOM WINDOW"): Back on the Tuner rail opens the power menu before the Tuner hides, so a fast second Back can no longer reach the window underneath.
-- UPNNPBAR (Rob: "ADD A NP BAR WHEN UP NEXT IS TRIGGER IN KODI FULLSCREEN"; picked compact bar, under the big album, fades in with Up Next, out on back to fanart, Kodi FS + fanart FS): the compact now-playing bar (artist, title, progress, time) shows under the big album while Up Next is up.
+5.33.464 (2026-11-04)
+- SWAYEPOCH (rewrite P2.4, Rob: "CLOCK"): the poster sway now counts from exactly the same start time as the big album sway, also with no music playing, so album and poster swing in step. No other change.
 
