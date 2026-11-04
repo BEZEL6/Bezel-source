@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.457
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.459
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,8 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 459 | "P2.2 NEXT" "THEN BUILD" | rewrite **P2.2**: one `slow_watch` thread for km_leave_watch / fpop_clock / allcnt / album_id / cw_clock (A/B against 458) |
+| 458 | "THE 1.5 DELAY MAKES IT LOOK BROKE"; "JUST HAVE IT FADE IN QUICK. NO FADE OUT OF SECTION"; "START P2" | **MMNODIM** (no section dim under the MM), rewrite **P2.1** (grid_sync removed), **P2.3** (bz_big_* no longer set) |
 | 457 | "P1 THEN IF USAGE PERMITS DO P2" (rewrite, layout first) | rewrite **P1B** (strip content relative to `bz_strip_x`), **P1C** (stage fill / stage / art constants); zero visual change |
 | 456 | "SMALL BLACK PULSE ON BIG ALBUM ON MUSIC START"; "TRANSPORT BAR LABELS … CENTERED"; "MM FADES BLACK THEN BACK"; "TUNER … REMOVE NAV LEGEND"; "GLOW TEXTURES"; "TITLE ON THE FANART STAGE … HIDDEN" | **IDLEHOLD**, **TRANSCENTRE**, **MMCLEANFADE**, **TUNERCLEAN**, **GLOWSHIFT**, **FSTITLE**, rewrite **P1A** |
 | 455 | "EXTEND THE FANART STAGE RIGHT … KEEP LIST AND COLOR STRIP SAME SIZE"; "MM MUST MOVE"; "DELETE THE GRID VIEWS" | **STAGEWIDE** (stage 120–1050, strip 660–1050, gap 90), **GRIDDEL** |
@@ -218,6 +220,30 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.459 — rewrite P2.2 (A/B against 458)
+Branch `claude/5.33.459` (458 + one commit).
+- **P2.2:** `km_leave_watch` (1 s), `fpop_clock` (1 s), `allcnt` (0.4 s), `album_id` (0.5 s) and `cw_clock` (1 s) were five threads. Each is now a generator that yields its own wait instead of `mon.waitForAbort`, so its body and poll interval are unchanged. One `slow_watch` thread schedules them.
+  - A watcher that raises is logged (`BEZEL bz_flip watcher <name> crashed`) and restarted, max 5, like `_bzstart`.
+  - `cw_clock`'s Continue-watching library queries run in a short-lived `cw_build` thread, so they never delay the others. Its 2 s wait after a video stop is a scheduled yield.
+  - Known difference: a slow file check in `fpop_clock` (only with fanart_pop on, on a folder change, e.g. a sleeping NFS share) or a slow JSON-RPC in `allcnt` / `album_id` now delays the other two by that long. Before, they were independent.
+  - bz_flip helper threads: 18 → 13 (plus the short-lived `cw_build`).
+- **Mock run** (stub xbmc, 8 s): album_id every 0.5 s, fpop every 1.0 s, allcnt every 0.4 s (first after its wait), cw every 1.0 s; the start-up Continue-watching build ran, and a second build ran 2.0 s after a simulated video stop while the other watchers kept running.
+- **Check (A/B with 458):** ALL row count label (N SONGS / N EPISODES) appears as fast as before; the playing album's content path works (album id); TV Continue watching updates after stopping an episode; switching to another skin still removes BEZEL keymaps; no stalls entering sections. The `BEZEL perf` lines in kodi.log now show `slow_watch` instead of the five names.
+- **Static checks only + mock run.** Not device-tested.
+
+## 5.33.458 — MMNODIM + rewrite P2.1, P2.3
+Branch `claude/5.33.458` (one commit each, on 457).
+- **MMNODIM** (Rob on 457: the 456 MMCLEANFADE 1.5 s dim delay "makes it look broke"; "just have it fade in quick. no fade out of section"):
+  - The 22 `bz_at_mmdim` Background-dim Conditional fades (11 steps each in `BezelSecDim` and `BezelSecDimArt`, gated on `$EXP[bz_navmenu]`) are removed. The section stays at full opacity under the MM, and the MM fades in over it.
+  - Unchanged: Global dim (`bz_at_gdim`, outside the MM), the Dust3 MM-dim lit levels, the 1117 MediaSources static dims, and the MM art lane fade (1500 ms; it belongs to the locked mm-warm system).
+  - Side effects: the Tuner "Background dim" row has no MM effect now; on MM rows with no art the section shows undimmed.
+- **P2.1** (rewrite): `grid_sync` thread deleted (140 lines). Control 6600 doesn't exist since 455 GRIDDEL, so the thread only ran its idle branch (0.3 s poll, clears `bz_gslot` / `bz_gpend`).
+  - `bz_gpend` is set only with `bz_grid_video` (reset at start) and is still cleared by the MyVideoNav onload AlarmClock (2 s).
+  - Left for P3: bz_cmd `gridenter`/`gridclick`/`gridfocus` (only run when called), the 41 always-false XML `6600` conditions. Left for P2.6: nav_menu `bz_grid_*` checks.
+- **P2.3** (rewrite): `sway_clock` no longer sets `bz_big_go` / `bz_big_pulse` (no XML has read them since 453 ONESWAY). Saves ~40 Home calls/s. The exit cleanup still clears them.
+- **Check:** open the MM from Music / Movies / TV and close it again: the MM fades in over the section with no dim, delay or dark dip. Video sections still appear after loading. The album sway is unchanged.
+- **Static checks only:** XML parses, bz_flip.py compiles. Not device-tested.
 
 ## 5.33.457 — rewrite P1B + P1C (layout from constants, no visual change)
 Branch `claude/rewrite-p1b` (one commit per step), built as `claude/5.33.457`. Plan and tools: `REWRITE_PLAN.md` section 5.
