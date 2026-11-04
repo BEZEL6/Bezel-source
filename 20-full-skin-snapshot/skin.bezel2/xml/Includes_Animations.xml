@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <includes>
-	<include name="Animation_FocusTextureFade">
-		<animation effect="fade" start="0" end="100" time="200" tween="sine">Focus</animation>
-		<animation effect="fade" start="100" end="0" time="0">UnFocus</animation>
-	</include>
 	<include name="Animation_DialogPopupOpenClose">
 		<animation type="WindowOpen" reversible="false">
 			<effect type="fade" delay="160" end="100" time="240" />
@@ -99,19 +95,7 @@
 		<include condition="Skin.HasSetting(no_slide_animations)">OpenClose_Fade</include>
 		<include condition="!Skin.HasSetting(no_slide_animations)">OpenClose_FadeSlide_Left</include>
 	</include>
-	<include name="OpenClose_Left">
-		<include condition="Skin.HasSetting(no_slide_animations)">OpenClose_Fade</include>
-		<include condition="!Skin.HasSetting(no_slide_animations)">OpenClose_FadeSlide_Left</include>
-	</include>
 	<include name="OpenClose_FadeSlide_Left">
-		<animation type="WindowOpen">
-			<effect type="fade" start="0" end="100" time="300" tween="sine" easing="out" />
-		</animation>
-		<animation type="WindowClose">
-			<effect type="fade" start="100" end="0" time="300" tween="sine" easing="out" />
-		</animation>
-	</include>
-	<include name="OpenClose_FadeSlide_Right">
 		<animation type="WindowOpen">
 			<effect type="fade" start="0" end="100" time="300" tween="sine" easing="out" />
 		</animation>

@@ -1,0 +1,2150 @@
+{
+ "include": {
+  "Animation_FocusTextureFade": [
+   [
+    "Includes_Animations.xml",
+    3
+   ]
+  ],
+  "BezelArrowsV": [
+   [
+    "Includes_Bezel.xml",
+    852
+   ]
+  ],
+  "BezelNavLogoGlow": [
+   [
+    "Includes_Bezel.xml",
+    498
+   ]
+  ],
+  "BezelRainbowRow": [
+   [
+    "Includes_Bezel.xml",
+    2510
+   ]
+  ],
+  "BezelStdButton": [
+   [
+    "Includes_Bezel.xml",
+    3429
+   ]
+  ],
+  "BezelStdButtonClick": [
+   [
+    "Includes_Bezel.xml",
+    3421
+   ]
+  ],
+  "BezelSwingPoster": [
+   [
+    "Includes_Bezel.xml",
+    890
+   ]
+  ],
+  "BezelXInfo": [
+   [
+    "Includes_Bezel.xml",
+    3310
+   ]
+  ],
+  "BusyListSpinner": [
+   [
+    "Includes_Home.xml",
+    171
+   ]
+  ],
+  "ButtonMenuList": [
+   [
+    "Includes_Buttons.xml",
+    216
+   ]
+  ],
+  "BzCIStripUnder": [
+   [
+    "Includes_BezelInfo.xml",
+    7
+   ]
+  ],
+  "BzFSEmbHiSl": [
+   [
+    "Includes_Bezel.xml",
+    3300
+   ]
+  ],
+  "BzFSEmbLoSl": [
+   [
+    "Includes_Bezel.xml",
+    3301
+   ]
+  ],
+  "BzFSGlowSl": [
+   [
+    "Includes_Bezel.xml",
+    3304
+   ]
+  ],
+  "BzFSLpHiSl": [
+   [
+    "Includes_Bezel.xml",
+    3302
+   ]
+  ],
+  "BzFSLpLoSl": [
+   [
+    "Includes_Bezel.xml",
+    3303
+   ]
+  ],
+  "CategoryLabel": [
+   [
+    "Includes_Home.xml",
+    3
+   ]
+  ],
+  "InfoDialogButton": [
+   [
+    "Includes_Buttons.xml",
+    152
+   ]
+  ],
+  "InfoDialogToggleButton": [
+   [
+    "Includes_Buttons.xml",
+    186
+   ]
+  ],
+  "LeftRightArrows": [
+   [
+    "Includes.xml",
+    678
+   ]
+  ],
+  "MovieSubmenuItems": [
+   [
+    "Includes_Home.xml",
+    90
+   ]
+  ],
+  "OpenClose_FadeSlide_Right": [
+   [
+    "Includes_Animations.xml",
+    114
+   ]
+  ],
+  "OpenClose_Left": [
+   [
+    "Includes_Animations.xml",
+    102
+   ]
+  ],
+  "PlaylistWindowButton": [
+   [
+    "Includes_Buttons.xml",
+    82
+   ]
+  ],
+  "RatingCircle": [
+   [
+    "Includes.xml",
+    102
+   ]
+  ],
+  "TVShowSubmenuItems": [
+   [
+    "Includes_Home.xml",
+    106
+   ]
+  ],
+  "UpDownArrows": [
+   [
+    "Includes.xml",
+    640
+   ]
+  ],
+  "WeatherDailyItem": [
+   [
+    "Includes_Home.xml",
+    130
+   ]
+  ],
+  "WeatherDayItem": [
+   [
+    "Includes_Home.xml",
+    145
+   ]
+  ],
+  "WeatherHourlyItem": [
+   [
+    "Includes_Home.xml",
+    116
+   ]
+  ],
+  "WidgetListCommon": [
+   [
+    "Includes_Home.xml",
+    160
+   ]
+  ]
+ },
+ "expression": {
+  "bz_artmeta_ok": [
+   [
+    "Includes_Bezel.xml",
+    397
+   ]
+  ],
+  "bz_audio": [
+   [
+    "Includes_Bezel.xml",
+    131
+   ]
+  ],
+  "bz_ccover": [
+   [
+    "Includes_Bezel.xml",
+    120
+   ]
+  ],
+  "bz_gridlistlit": [
+   [
+    "Includes_Bezel.xml",
+    371
+   ]
+  ],
+  "bz_gsm_all": [
+   [
+    "Includes_Bezel.xml",
+    358
+   ]
+  ],
+  "bz_gsm_foc": [
+   [
+    "Includes_Bezel.xml",
+    359
+   ]
+  ],
+  "bz_gsm_pos": [
+   [
+    "Includes_Bezel.xml",
+    360
+   ]
+  ],
+  "bz_gsv_all": [
+   [
+    "Includes_Bezel.xml",
+    361
+   ]
+  ],
+  "bz_gsv_foc": [
+   [
+    "Includes_Bezel.xml",
+    362
+   ]
+  ],
+  "bz_gsv_pos": [
+   [
+    "Includes_Bezel.xml",
+    363
+   ]
+  ],
+  "bz_lsthide": [
+   [
+    "Includes_Bezel.xml",
+    379
+   ]
+  ],
+  "bz_msflow": [
+   [
+    "Includes_BezelDialogs.xml",
+    522
+   ]
+  ],
+  "bz_nofanart": [
+   [
+    "Includes_Bezel.xml",
+    381
+   ]
+  ],
+  "bz_vlib": [
+   [
+    "Includes_Bezel.xml",
+    443
+   ]
+  ]
+ },
+ "variable": {
+  "AddonLifecycleType": [
+   [
+    "Variables.xml",
+    244
+   ]
+  ],
+  "AddonNewsVar": [
+   [
+    "Variables.xml",
+    640
+   ]
+  ],
+  "AddonsLabel2Var": [
+   [
+    "Variables.xml",
+    179
+   ]
+  ],
+  "AddonsListIconVar": [
+   [
+    "Variables.xml",
+    248
+   ]
+  ],
+  "AddonsOriginVar": [
+   [
+    "Variables.xml",
+    259
+   ]
+  ],
+  "AlbumOnClickActionVar": [
+   [
+    "Variables.xml",
+    202
+   ]
+  ],
+  "BannerArtVar": [
+   [
+    "Variables.xml",
+    128
+   ]
+  ],
+  "BannerVar": [
+   [
+    "Variables.xml",
+    275
+   ]
+  ],
+  "BezelAlbumName": [
+   [
+    "Includes_Bezel.xml",
+    222
+   ]
+  ],
+  "BezelC2Shadow": [
+   [
+    "Includes_Bezel.xml",
+    179
+   ]
+  ],
+  "BezelC2Text": [
+   [
+    "Includes_Bezel.xml",
+    178
+   ]
+  ],
+  "BezelCard2Vis": [
+   [
+    "Includes_Bezel.xml",
+    458
+   ]
+  ],
+  "BezelEpBanner": [
+   [
+    "Includes_Bezel.xml",
+    3306
+   ]
+  ],
+  "BezelFBType": [
+   [
+    "Variables.xml",
+    790
+   ]
+  ],
+  "BezelFSAlbumArt": [
+   [
+    "Includes_Bezel.xml",
+    302
+   ]
+  ],
+  "BezelFSAlbumText": [
+   [
+    "Includes_Bezel.xml",
+    306
+   ]
+  ],
+  "BezelFSAlbumTextHeader": [
+   [
+    "Includes_Bezel.xml",
+    307
+   ]
+  ],
+  "BezelFSFanart": [
+   [
+    "Includes_Bezel.xml",
+    127
+   ]
+  ],
+  "BezelFocusDiffuse62": [
+   [
+    "Includes_Bezel.xml",
+    80
+   ]
+  ],
+  "BezelForYouDiffuse": [
+   [
+    "Includes_Bezel.xml",
+    96
+   ]
+  ],
+  "BezelForYouFanart": [
+   [
+    "Includes_Bezel.xml",
+    90
+   ]
+  ],
+  "BezelHomeLandscape": [
+   [
+    "Includes_Bezel.xml",
+    322
+   ]
+  ],
+  "BezelIPDiffuse": [
+   [
+    "Includes_Bezel.xml",
+    157
+   ]
+  ],
+  "BezelIPFanart": [
+   [
+    "Includes_Bezel.xml",
+    152
+   ]
+  ],
+  "BezelIPItemArt": [
+   [
+    "Includes_Bezel.xml",
+    151
+   ]
+  ],
+  "BezelInProgressLine": [
+   [
+    "Includes_Bezel.xml",
+    260
+   ]
+  ],
+  "BezelKSet_interface": [
+   [
+    "Includes_Bezel.xml",
+    463
+   ]
+  ],
+  "BezelKSet_library": [
+   [
+    "Includes_Bezel.xml",
+    462
+   ]
+  ],
+  "BezelKSet_media": [
+   [
+    "Includes_Bezel.xml",
+    461
+   ]
+  ],
+  "BezelKSet_player": [
+   [
+    "Includes_Bezel.xml",
+    460
+   ]
+  ],
+  "BezelKSet_system": [
+   [
+    "Includes_Bezel.xml",
+    464
+   ]
+  ],
+  "BezelMIBr": [
+   [
+    "Includes_Bezel.xml",
+    3282
+   ]
+  ],
+  "BezelMICh": [
+   [
+    "Includes_Bezel.xml",
+    3284
+   ]
+  ],
+  "BezelMISr": [
+   [
+    "Includes_Bezel.xml",
+    3283
+   ]
+  ],
+  "BezelMiniArt": [
+   [
+    "Includes_Bezel.xml",
+    444
+   ]
+  ],
+  "BezelMiniDiffuse6950": [
+   [
+    "Includes_Bezel.xml",
+    537
+   ]
+  ],
+  "BezelMiniDiffuse6951": [
+   [
+    "Includes_Bezel.xml",
+    538
+   ]
+  ],
+  "BezelMiniDiffuse6952": [
+   [
+    "Includes_Bezel.xml",
+    539
+   ]
+  ],
+  "BezelNPCFull": [
+   [
+    "Includes_Bezel.xml",
+    3028
+   ]
+  ],
+  "BezelNPCPlay": [
+   [
+    "Includes_Bezel.xml",
+    3027
+   ]
+  ],
+  "BezelNPCRepeat": [
+   [
+    "Includes_Bezel.xml",
+    3030
+   ]
+  ],
+  "BezelNPCShuffle": [
+   [
+    "Includes_Bezel.xml",
+    3029
+   ]
+  ],
+  "BezelNPDot1": [
+   [
+    "Includes_Bezel.xml",
+    3038
+   ]
+  ],
+  "BezelNPDot2": [
+   [
+    "Includes_Bezel.xml",
+    3039
+   ]
+  ],
+  "BezelNPDot3": [
+   [
+    "Includes_Bezel.xml",
+    3040
+   ]
+  ],
+  "BezelNPDot4": [
+   [
+    "Includes_Bezel.xml",
+    3041
+   ]
+  ],
+  "BezelNPFavIcon": [
+   [
+    "Includes_Bezel.xml",
+    89
+   ]
+  ],
+  "BezelNPFlipA": [
+   [
+    "Includes_Bezel.xml",
+    138
+   ]
+  ],
+  "BezelNPFlipB": [
+   [
+    "Includes_Bezel.xml",
+    139
+   ]
+  ],
+  "BezelNPLine2": [
+   [
+    "Includes_Bezel.xml",
+    231
+   ]
+  ],
+  "BezelNPLine3": [
+   [
+    "Includes_Bezel.xml",
+    236
+   ]
+  ],
+  "BezelNPModeShort": [
+   [
+    "Includes_Bezel.xml",
+    3036
+   ]
+  ],
+  "BezelNPPlayIcon": [
+   [
+    "Includes_Bezel.xml",
+    158
+   ]
+  ],
+  "BezelNPPoster": [
+   [
+    "Includes_Bezel.xml",
+    241
+   ]
+  ],
+  "BezelNPRepeatColor": [
+   [
+    "Includes_Bezel.xml",
+    250
+   ]
+  ],
+  "BezelNPRepeatIcon": [
+   [
+    "Includes_Bezel.xml",
+    88
+   ]
+  ],
+  "BezelNPShuffleColor": [
+   [
+    "Includes_Bezel.xml",
+    246
+   ]
+  ],
+  "BezelNPTitle": [
+   [
+    "Includes_Bezel.xml",
+    226
+   ]
+  ],
+  "BezelNPToggleText": [
+   [
+    "Includes_Bezel.xml",
+    3037
+   ]
+  ],
+  "BezelNavCell_6912": [
+   [
+    "Includes_Bezel.xml",
+    469
+   ]
+  ],
+  "BezelNavCell_6913": [
+   [
+    "Includes_Bezel.xml",
+    470
+   ]
+  ],
+  "BezelNavCell_6914": [
+   [
+    "Includes_Bezel.xml",
+    471
+   ]
+  ],
+  "BezelNavCell_6915": [
+   [
+    "Includes_Bezel.xml",
+    472
+   ]
+  ],
+  "BezelNavChevCol_6901": [
+   [
+    "Includes_Bezel.xml",
+    475
+   ]
+  ],
+  "BezelNavChevCol_6902": [
+   [
+    "Includes_Bezel.xml",
+    476
+   ]
+  ],
+  "BezelNavChevCol_6903": [
+   [
+    "Includes_Bezel.xml",
+    477
+   ]
+  ],
+  "BezelNavChevCol_6910": [
+   [
+    "Includes_Bezel.xml",
+    473
+   ]
+  ],
+  "BezelNavContent": [
+   [
+    "Includes_Bezel.xml",
+    467
+   ]
+  ],
+  "BezelNavHeading": [
+   [
+    "Includes_Bezel.xml",
+    466
+   ]
+  ],
+  "BezelNavNPCol": [
+   [
+    "Includes_Bezel.xml",
+    474
+   ]
+  ],
+  "BezelOSDIconCol_6171": [
+   [
+    "Includes_Bezel.xml",
+    3014
+   ]
+  ],
+  "BezelOSDIconCol_6172": [
+   [
+    "Includes_Bezel.xml",
+    3016
+   ]
+  ],
+  "BezelOSDIconCol_6173": [
+   [
+    "Includes_Bezel.xml",
+    3017
+   ]
+  ],
+  "BezelOSDIconCol_6174": [
+   [
+    "Includes_Bezel.xml",
+    3021
+   ]
+  ],
+  "BezelOSDIconCol_6176": [
+   [
+    "Includes_Bezel.xml",
+    3026
+   ]
+  ],
+  "BezelOSDIconCol_6177": [
+   [
+    "Includes_Bezel.xml",
+    3023
+   ]
+  ],
+  "BezelOSDIconCol_6179": [
+   [
+    "Includes_Bezel.xml",
+    3024
+   ]
+  ],
+  "BezelOSDIconCol_6191": [
+   [
+    "Includes_Bezel.xml",
+    3013
+   ]
+  ],
+  "BezelOSDIconCol_6192": [
+   [
+    "Includes_Bezel.xml",
+    3015
+   ]
+  ],
+  "BezelOSDIconCol_6193": [
+   [
+    "Includes_Bezel.xml",
+    3018
+   ]
+  ],
+  "BezelOSDIconCol_6195": [
+   [
+    "Includes_Bezel.xml",
+    3025
+   ]
+  ],
+  "BezelOSDIconCol_6196": [
+   [
+    "Includes_Bezel.xml",
+    3019
+   ]
+  ],
+  "BezelOSDIconCol_6197": [
+   [
+    "Includes_Bezel.xml",
+    3020
+   ]
+  ],
+  "BezelOSDIconCol_6198": [
+   [
+    "Includes_Bezel.xml",
+    3022
+   ]
+  ],
+  "BezelPicture": [
+   [
+    "Includes_Bezel.xml",
+    331
+   ]
+  ],
+  "BezelSpotDiffuse": [
+   [
+    "Includes_Bezel.xml",
+    150
+   ]
+  ],
+  "BezelSpotFanart": [
+   [
+    "Includes_Bezel.xml",
+    146
+   ]
+  ],
+  "BezelSpotItemArt": [
+   [
+    "Includes_Bezel.xml",
+    145
+   ]
+  ],
+  "BezelStripArtist": [
+   [
+    "Includes_Bezel.xml",
+    75
+   ]
+  ],
+  "BezelTVPoster": [
+   [
+    "Includes_Bezel.xml",
+    254
+   ]
+  ],
+  "BezelVBackArgs": [
+   [
+    "Includes_Bezel.xml",
+    452
+   ]
+  ],
+  "BezelVBackLine": [
+   [
+    "Includes_Bezel.xml",
+    445
+   ]
+  ],
+  "BezelVBackTitle": [
+   [
+    "Includes_Bezel.xml",
+    448
+   ]
+  ],
+  "BreadcrumbsVideoVar": [
+   [
+    "Variables.xml",
+    506
+   ]
+  ],
+  "BzATBar_d3amb": [
+   [
+    "Includes_Tuner.xml",
+    469
+   ]
+  ],
+  "BzATBar_d3asize": [
+   [
+    "Includes_Tuner.xml",
+    468
+   ]
+  ],
+  "BzATBar_d3dens": [
+   [
+    "Includes_Tuner.xml",
+    465
+   ]
+  ],
+  "BzATBar_d3glow": [
+   [
+    "Includes_Tuner.xml",
+    472
+   ]
+  ],
+  "BzATBar_d3goff": [
+   [
+    "Includes_Tuner.xml",
+    474
+   ]
+  ],
+  "BzATBar_d3speed": [
+   [
+    "Includes_Tuner.xml",
+    473
+   ]
+  ],
+  "BzATBar_fsemb": [
+   [
+    "Includes_Tuner.xml",
+    54
+   ]
+  ],
+  "BzATBar_fsglow": [
+   [
+    "Includes_Tuner.xml",
+    51
+   ]
+  ],
+  "BzATBar_fslp": [
+   [
+    "Includes_Tuner.xml",
+    57
+   ]
+  ],
+  "BzATBar_sdbright": [
+   [
+    "Includes_Tuner.xml",
+    389
+   ]
+  ],
+  "BzATBar_sdsize": [
+   [
+    "Includes_Tuner.xml",
+    386
+   ]
+  ],
+  "BzATBar_shadowop": [
+   [
+    "Includes_Tuner.xml",
+    477
+   ]
+  ],
+  "BzATBar_shadowtex": [
+   [
+    "Includes_Tuner.xml",
+    476
+   ]
+  ],
+  "BzATBar_zoomsize": [
+   [
+    "Includes_Tuner.xml",
+    456
+   ]
+  ],
+  "BzATBar_zoomtime": [
+   [
+    "Includes_Tuner.xml",
+    455
+   ]
+  ],
+  "BzATN_ashop": [
+   [
+    "Includes_Tuner.xml",
+    77
+   ]
+  ],
+  "BzATN_mmbar": [
+   [
+    "Includes_Tuner.xml",
+    85
+   ]
+  ],
+  "BzATPillOff": [
+   [
+    "Includes_Tuner.xml",
+    2421
+   ]
+  ],
+  "BzATPillOn": [
+   [
+    "Includes_Tuner.xml",
+    2422
+   ]
+  ],
+  "BzATPill_fsemb": [
+   [
+    "Includes_Tuner.xml",
+    34
+   ]
+  ],
+  "BzATPill_fsglow": [
+   [
+    "Includes_Tuner.xml",
+    33
+   ]
+  ],
+  "BzATPill_fslp": [
+   [
+    "Includes_Tuner.xml",
+    35
+   ]
+  ],
+  "BzATStep_a2pfade": [
+   [
+    "Includes_Tuner.xml",
+    121
+   ]
+  ],
+  "BzATStep_aclen": [
+   [
+    "Includes_Tuner.xml",
+    141
+   ]
+  ],
+  "BzATStep_acop": [
+   [
+    "Includes_Tuner.xml",
+    147
+   ]
+  ],
+  "BzATStep_acsoft": [
+   [
+    "Includes_Tuner.xml",
+    144
+   ]
+  ],
+  "BzATStep_acstyle": [
+   [
+    "Includes_Tuner.xml",
+    138
+   ]
+  ],
+  "BzATStep_acy": [
+   [
+    "Includes_Tuner.xml",
+    150
+   ]
+  ],
+  "BzATStep_ashop": [
+   [
+    "Includes_Tuner.xml",
+    75
+   ]
+  ],
+  "BzATStep_ashshape": [
+   [
+    "Includes_Tuner.xml",
+    79
+   ]
+  ],
+  "BzATStep_ashsize": [
+   [
+    "Includes_Tuner.xml",
+    71
+   ]
+  ],
+  "BzATStep_ashstyle": [
+   [
+    "Includes_Tuner.xml",
+    67
+   ]
+  ],
+  "BzATStep_autonp": [
+   [
+    "Includes_Tuner.xml",
+    367
+   ]
+  ],
+  "BzATStep_blockcol": [
+   [
+    "Includes_Tuner.xml",
+    310
+   ]
+  ],
+  "BzATStep_blockop": [
+   [
+    "Includes_Tuner.xml",
+    312
+   ]
+  ],
+  "BzATStep_cascspeed": [
+   [
+    "Includes_Tuner.xml",
+    326
+   ]
+  ],
+  "BzATStep_cascstag": [
+   [
+    "Includes_Tuner.xml",
+    328
+   ]
+  ],
+  "BzATStep_d20fbri": [
+   [
+    "Includes_Tuner.xml",
+    135
+   ]
+  ],
+  "BzATStep_d20fdens": [
+   [
+    "Includes_Tuner.xml",
+    132
+   ]
+  ],
+  "BzATStep_d20ffade": [
+   [
+    "Includes_Tuner.xml",
+    212
+   ]
+  ],
+  "BzATStep_d20fsize": [
+   [
+    "Includes_Tuner.xml",
+    129
+   ]
+  ],
+  "BzATStep_d20fslide": [
+   [
+    "Includes_Tuner.xml",
+    215
+   ]
+  ],
+  "BzATStep_d20mbri": [
+   [
+    "Includes_Tuner.xml",
+    224
+   ]
+  ],
+  "BzATStep_d20mdens": [
+   [
+    "Includes_Tuner.xml",
+    221
+   ]
+  ],
+  "BzATStep_d20mfade": [
+   [
+    "Includes_Tuner.xml",
+    227
+   ]
+  ],
+  "BzATStep_d20msize": [
+   [
+    "Includes_Tuner.xml",
+    218
+   ]
+  ],
+  "BzATStep_d20mslide": [
+   [
+    "Includes_Tuner.xml",
+    230
+   ]
+  ],
+  "BzATStep_d20sbri": [
+   [
+    "Includes_Tuner.xml",
+    239
+   ]
+  ],
+  "BzATStep_d20sdens": [
+   [
+    "Includes_Tuner.xml",
+    236
+   ]
+  ],
+  "BzATStep_d20sfade": [
+   [
+    "Includes_Tuner.xml",
+    242
+   ]
+  ],
+  "BzATStep_d20ssize": [
+   [
+    "Includes_Tuner.xml",
+    233
+   ]
+  ],
+  "BzATStep_d3amb": [
+   [
+    "Includes_Tuner.xml",
+    349
+   ]
+  ],
+  "BzATStep_d3asize": [
+   [
+    "Includes_Tuner.xml",
+    347
+   ]
+  ],
+  "BzATStep_d3dens": [
+   [
+    "Includes_Tuner.xml",
+    341
+   ]
+  ],
+  "BzATStep_d3glow": [
+   [
+    "Includes_Tuner.xml",
+    355
+   ]
+  ],
+  "BzATStep_d3goff": [
+   [
+    "Includes_Tuner.xml",
+    359
+   ]
+  ],
+  "BzATStep_d3lit": [
+   [
+    "Includes_Tuner.xml",
+    353
+   ]
+  ],
+  "BzATStep_d3lsize": [
+   [
+    "Includes_Tuner.xml",
+    344
+   ]
+  ],
+  "BzATStep_d3speed": [
+   [
+    "Includes_Tuner.xml",
+    357
+   ]
+  ],
+  "BzATStep_dtapwin": [
+   [
+    "Includes_Tuner.xml",
+    337
+   ]
+  ],
+  "BzATStep_fanart": [
+   [
+    "Includes_Tuner.xml",
+    324
+   ]
+  ],
+  "BzATStep_fanop": [
+   [
+    "Includes_Tuner.xml",
+    200
+   ]
+  ],
+  "BzATStep_fibamt": [
+   [
+    "Includes_Tuner.xml",
+    392
+   ]
+  ],
+  "BzATStep_flip": [
+   [
+    "Includes_Tuner.xml",
+    308
+   ]
+  ],
+  "BzATStep_flkamt": [
+   [
+    "Includes_Tuner.xml",
+    398
+   ]
+  ],
+  "BzATStep_fsshdist": [
+   [
+    "Includes_Tuner.xml",
+    24
+   ]
+  ],
+  "BzATStep_fsshop": [
+   [
+    "Includes_Tuner.xml",
+    21
+   ]
+  ],
+  "BzATStep_fsttlsize": [
+   [
+    "Includes_Tuner.xml",
+    18
+   ]
+  ],
+  "BzATStep_gdim": [
+   [
+    "Includes_Tuner.xml",
+    203
+   ]
+  ],
+  "BzATStep_hishape": [
+   [
+    "Includes_Tuner.xml",
+    330
+   ]
+  ],
+  "BzATStep_logocol": [
+   [
+    "Includes_Tuner.xml",
+    155
+   ]
+  ],
+  "BzATStep_logoop": [
+   [
+    "Includes_Tuner.xml",
+    158
+   ]
+  ],
+  "BzATStep_lspinspd": [
+   [
+    "Includes_Tuner.xml",
+    439
+   ]
+  ],
+  "BzATStep_mctrl": [
+   [
+    "Includes_Tuner.xml",
+    339
+   ]
+  ],
+  "BzATStep_menuclose": [
+   [
+    "Includes_Tuner.xml",
+    335
+   ]
+  ],
+  "BzATStep_menuopen": [
+   [
+    "Includes_Tuner.xml",
+    333
+   ]
+  ],
+  "BzATStep_mmbar": [
+   [
+    "Includes_Tuner.xml",
+    83
+   ]
+  ],
+  "BzATStep_mmdim": [
+   [
+    "Includes_Tuner.xml",
+    206
+   ]
+  ],
+  "BzATStep_mmdsize": [
+   [
+    "Includes_Tuner.xml",
+    15
+   ]
+  ],
+  "BzATStep_mmwarm": [
+   [
+    "Includes_Tuner.xml",
+    194
+   ]
+  ],
+  "BzATStep_pclen": [
+   [
+    "Includes_Tuner.xml",
+    170
+   ]
+  ],
+  "BzATStep_pcop": [
+   [
+    "Includes_Tuner.xml",
+    176
+   ]
+  ],
+  "BzATStep_pcsoft": [
+   [
+    "Includes_Tuner.xml",
+    173
+   ]
+  ],
+  "BzATStep_pcstyle": [
+   [
+    "Includes_Tuner.xml",
+    167
+   ]
+  ],
+  "BzATStep_pcx": [
+   [
+    "Includes_Tuner.xml",
+    182
+   ]
+  ],
+  "BzATStep_pcy": [
+   [
+    "Includes_Tuner.xml",
+    179
+   ]
+  ],
+  "BzATStep_pd3lit": [
+   [
+    "Includes_Tuner.xml",
+    354
+   ]
+  ],
+  "BzATStep_pd3lsize": [
+   [
+    "Includes_Tuner.xml",
+    345
+   ]
+  ],
+  "BzATStep_pfibamt": [
+   [
+    "Includes_Tuner.xml",
+    393
+   ]
+  ],
+  "BzATStep_pflkamt": [
+   [
+    "Includes_Tuner.xml",
+    399
+   ]
+  ],
+  "BzATStep_phold": [
+   [
+    "Includes_Tuner.xml",
+    361
+   ]
+  ],
+  "BzATStep_pingspeed": [
+   [
+    "Includes_Tuner.xml",
+    314
+   ]
+  ],
+  "BzATStep_plspinspd": [
+   [
+    "Includes_Tuner.xml",
+    440
+   ]
+  ],
+  "BzATStep_rowscroll": [
+   [
+    "Includes_Tuner.xml",
+    316
+   ]
+  ],
+  "BzATStep_rowsoft": [
+   [
+    "Includes_Tuner.xml",
+    318
+   ]
+  ],
+  "BzATStep_sdbright": [
+   [
+    "Includes_Tuner.xml",
+    388
+   ]
+  ],
+  "BzATStep_sdsize": [
+   [
+    "Includes_Tuner.xml",
+    385
+   ]
+  ],
+  "BzATStep_shadowop": [
+   [
+    "Includes_Tuner.xml",
+    365
+   ]
+  ],
+  "BzATStep_shadowtex": [
+   [
+    "Includes_Tuner.xml",
+    363
+   ]
+  ],
+  "BzATStep_spinspd": [
+   [
+    "Includes_Tuner.xml",
+    381
+   ]
+  ],
+  "BzATStep_swaypause": [
+   [
+    "Includes_Tuner.xml",
+    306
+   ]
+  ],
+  "BzATStep_zoomsize": [
+   [
+    "Includes_Tuner.xml",
+    322
+   ]
+  ],
+  "BzATStep_zoomtime": [
+   [
+    "Includes_Tuner.xml",
+    320
+   ]
+  ],
+  "BzATVal_breathe": [
+   [
+    "Includes_Tuner.xml",
+    428
+   ]
+  ],
+  "BzATVal_d3amb": [
+   [
+    "Includes_Tuner.xml",
+    348
+   ]
+  ],
+  "BzATVal_d3asize": [
+   [
+    "Includes_Tuner.xml",
+    346
+   ]
+  ],
+  "BzATVal_d3dens": [
+   [
+    "Includes_Tuner.xml",
+    340
+   ]
+  ],
+  "BzATVal_d3glow": [
+   [
+    "Includes_Tuner.xml",
+    352
+   ]
+  ],
+  "BzATVal_d3goff": [
+   [
+    "Includes_Tuner.xml",
+    358
+   ]
+  ],
+  "BzATVal_d3l2": [
+   [
+    "Includes_Tuner.xml",
+    409
+   ]
+  ],
+  "BzATVal_d3speed": [
+   [
+    "Includes_Tuner.xml",
+    356
+   ]
+  ],
+  "BzATVal_fsauto": [
+   [
+    "Includes_Tuner.xml",
+    371
+   ]
+  ],
+  "BzATVal_fschromefan": [
+   [
+    "Includes_Tuner.xml",
+    284
+   ]
+  ],
+  "BzATVal_fsemb": [
+   [
+    "Includes_Tuner.xml",
+    53
+   ]
+  ],
+  "BzATVal_fsglow": [
+   [
+    "Includes_Tuner.xml",
+    50
+   ]
+  ],
+  "BzATVal_fslp": [
+   [
+    "Includes_Tuner.xml",
+    56
+   ]
+  ],
+  "BzATVal_glow0": [
+   [
+    "Includes_Tuner.xml",
+    429
+   ]
+  ],
+  "BzATVal_glow1": [
+   [
+    "Includes_Tuner.xml",
+    430
+   ]
+  ],
+  "BzATVal_glow2": [
+   [
+    "Includes_Tuner.xml",
+    431
+   ]
+  ],
+  "BzATVal_glow3": [
+   [
+    "Includes_Tuner.xml",
+    432
+   ]
+  ],
+  "BzATVal_glow4": [
+   [
+    "Includes_Tuner.xml",
+    433
+   ]
+  ],
+  "BzATVal_idlerock": [
+   [
+    "Includes_Tuner.xml",
+    421
+   ]
+  ],
+  "BzATVal_sdbright": [
+   [
+    "Includes_Tuner.xml",
+    387
+   ]
+  ],
+  "BzATVal_sdsize": [
+   [
+    "Includes_Tuner.xml",
+    384
+   ]
+  ],
+  "BzATVal_sdust": [
+   [
+    "Includes_Tuner.xml",
+    402
+   ]
+  ],
+  "BzATVal_shadowop": [
+   [
+    "Includes_Tuner.xml",
+    364
+   ]
+  ],
+  "BzATVal_shadowtex": [
+   [
+    "Includes_Tuner.xml",
+    362
+   ]
+  ],
+  "BzATVal_zoomsize": [
+   [
+    "Includes_Tuner.xml",
+    321
+   ]
+  ],
+  "BzATVal_zoomtime": [
+   [
+    "Includes_Tuner.xml",
+    319
+   ]
+  ],
+  "BzAddonInfoFan": [
+   [
+    "Includes_BezelInfo.xml",
+    12
+   ]
+  ],
+  "BzAlbViewLbl": [
+   [
+    "Includes_Bezel.xml",
+    132
+   ]
+  ],
+  "BzCIVArt": [
+   [
+    "Includes_BezelInfo.xml",
+    22
+   ]
+  ],
+  "BzCtxHiTex": [
+   [
+    "Includes_Bezel.xml",
+    3502
+   ]
+  ],
+  "BzD3A_bokeh": [
+   [
+    "Includes_Dust3.xml",
+    18
+   ]
+  ],
+  "BzD3A_far": [
+   [
+    "Includes_Dust3.xml",
+    6
+   ]
+  ],
+  "BzD3A_mid": [
+   [
+    "Includes_Dust3.xml",
+    10
+   ]
+  ],
+  "BzD3A_near": [
+   [
+    "Includes_Dust3.xml",
+    14
+   ]
+  ],
+  "BzD3A_spin": [
+   [
+    "Includes_Dust3.xml",
+    34
+   ]
+  ],
+  "BzD3L_bokeh": [
+   [
+    "Includes_Dust3.xml",
+    19
+   ]
+  ],
+  "BzD3L_far": [
+   [
+    "Includes_Dust3.xml",
+    7
+   ]
+  ],
+  "BzD3Tex_bokeh": [
+   [
+    "Includes_Dust3.xml",
+    16
+   ]
+  ],
+  "BzD3Tex_bokeh_lit": [
+   [
+    "Includes_Dust3.xml",
+    17
+   ]
+  ],
+  "BzD3Tex_far": [
+   [
+    "Includes_Dust3.xml",
+    4
+   ]
+  ],
+  "BzD3Tex_far_lit": [
+   [
+    "Includes_Dust3.xml",
+    5
+   ]
+  ],
+  "BzD3Tex_mid": [
+   [
+    "Includes_Dust3.xml",
+    8
+   ]
+  ],
+  "BzD3Tex_mid_lit": [
+   [
+    "Includes_Dust3.xml",
+    9
+   ]
+  ],
+  "BzD3Tex_near": [
+   [
+    "Includes_Dust3.xml",
+    12
+   ]
+  ],
+  "BzD3Tex_near_lit": [
+   [
+    "Includes_Dust3.xml",
+    13
+   ]
+  ],
+  "BzFSEmbHi": [
+   [
+    "Includes_Tuner.xml",
+    37
+   ]
+  ],
+  "BzFSEmbLo": [
+   [
+    "Includes_Tuner.xml",
+    38
+   ]
+  ],
+  "BzFSFxInfo_fsemb": [
+   [
+    "Includes_Tuner.xml",
+    55
+   ]
+  ],
+  "BzFSFxInfo_fsglow": [
+   [
+    "Includes_Tuner.xml",
+    52
+   ]
+  ],
+  "BzFSFxInfo_fslp": [
+   [
+    "Includes_Tuner.xml",
+    58
+   ]
+  ],
+  "BzFSGlowCol": [
+   [
+    "Includes_Tuner.xml",
+    36
+   ]
+  ],
+  "BzFSLpHi": [
+   [
+    "Includes_Tuner.xml",
+    39
+   ]
+  ],
+  "BzFSLpLo": [
+   [
+    "Includes_Tuner.xml",
+    40
+   ]
+  ],
+  "BzFSNextTitle": [
+   [
+    "Includes_Bezel.xml",
+    42
+   ]
+  ],
+  "BzFSPrevTitle": [
+   [
+    "Includes_Bezel.xml",
+    41
+   ]
+  ],
+  "BzFSShCol": [
+   [
+    "Includes_Tuner.xml",
+    31
+   ]
+  ],
+  "BzFSShX": [
+   [
+    "Includes_Tuner.xml",
+    29
+   ]
+  ],
+  "BzFSShY": [
+   [
+    "Includes_Tuner.xml",
+    30
+   ]
+  ],
+  "BzInfoD_plspin": [
+   [
+    "Includes_Tuner.xml",
+    412
+   ]
+  ],
+  "BzKbCapsLbl": [
+   [
+    "Includes_BezelDialogs.xml",
+    549
+   ]
+  ],
+  "BzMMIdleClear": [
+   [
+    "Includes_Bezel.xml",
+    289
+   ]
+  ],
+  "BzMMIdleTitle": [
+   [
+    "Includes_Bezel.xml",
+    289
+   ]
+  ],
+  "BzMMSubDots": [
+   [
+    "Includes_Bezel.xml",
+    491
+   ]
+  ],
+  "BzMSBody": [
+   [
+    "Includes_Bezel.xml",
+    3383
+   ]
+  ],
+  "BzMSHead": [
+   [
+    "Includes_Bezel.xml",
+    3382
+   ]
+  ],
+  "BzPN107Foc": [
+   [
+    "Includes_Bezel.xml",
+    962
+   ]
+  ],
+  "BzPN107Nof": [
+   [
+    "Includes_Bezel.xml",
+    961
+   ]
+  ],
+  "BzPicKind": [
+   [
+    "Includes_Bezel.xml",
+    2563
+   ]
+  ],
+  "BzSecCtxDesc": [
+   [
+    "Includes_BezelDialogs.xml",
+    9
+   ]
+  ],
+  "BzTSec_albumglare": [
+   [
+    "Includes_Tuner.xml",
+    95
+   ]
+  ],
+  "BzTSec_albumshadow": [
+   [
+    "Includes_Tuner.xml",
+    111
+   ]
+  ],
+  "BzTSec_all": [
+   [
+    "Includes_Tuner.xml",
+    291
+   ]
+  ],
+  "BzTSec_warmsys": [
+   [
+    "Includes_Tuner.xml",
+    114
+   ]
+  ],
+  "BzVITitle": [
+   [
+    "Includes_BezelDialogs.xml",
+    98
+   ]
+  ],
+  "BzWarmMusicArt": [
+   [
+    "Includes_Bezel.xml",
+    130
+   ]
+  ],
+  "ContainerResolutionFlagVar": [
+   [
+    "Variables.xml",
+    271
+   ]
+  ],
+  "FanartImageVar": [
+   [
+    "Variables.xml",
+    134
+   ]
+  ],
+  "FirstAiredLabel": [
+   [
+    "Variables.xml",
+    603
+   ]
+  ],
+  "HomeFanartVar": [
+   [
+    "Variables.xml",
+    441
+   ]
+  ],
+  "IconWallThumbVar": [
+   [
+    "Variables.xml",
+    76
+   ]
+  ],
+  "InfoDialogPosterVar": [
+   [
+    "Variables.xml",
+    288
+   ]
+  ],
+  "InfoWallThumbVar": [
+   [
+    "Variables.xml",
+    64
+   ]
+  ],
+  "ItemStatusIconVar": [
+   [
+    "Variables.xml",
+    478
+   ]
+  ],
+  "ItemTypeIconVar": [
+   [
+    "Variables.xml",
+    489
+   ]
+  ],
+  "ListBoxInfoVar": [
+   [
+    "Variables.xml",
+    138
+   ]
+  ],
+  "ListLabelVar": [
+   [
+    "Variables.xml",
+    83
+   ]
+  ],
+  "ListSubLabelVar": [
+   [
+    "Variables.xml",
+    374
+   ]
+  ],
+  "MasterModeLabel": [
+   [
+    "Variables.xml",
+    663
+   ]
+  ],
+  "MovieSetOnClickActionVar": [
+   [
+    "Variables.xml",
+    235
+   ]
+  ],
+  "MusicInfoTextboxVar": [
+   [
+    "Variables.xml",
+    26
+   ]
+  ],
+  "MusicInfoThumbVar": [
+   [
+    "Variables.xml",
+    59
+   ]
+  ],
+  "NowPlayingInfoVar": [
+   [
+    "Variables.xml",
+    151
+   ]
+  ],
+  "NowPlayingPosterVar": [
+   [
+    "Variables.xml",
+    42
+   ]
+  ],
+  "OSDHelpTextVar": [
+   [
+    "Variables.xml",
+    334
+   ]
+  ],
+  "OSDNextLabelVar": [
+   [
+    "Variables.xml",
+    424
+   ]
+  ],
+  "PictureInfoMainLabelVar": [
+   [
+    "Variables.xml",
+    398
+   ]
+  ],
+  "PictureInfoSubLabelVar": [
+   [
+    "Variables.xml",
+    402
+   ]
+  ],
+  "PlayerLabel1": [
+   [
+    "Variables.xml",
+    570
+   ]
+  ],
+  "PlayerLabel2": [
+   [
+    "Variables.xml",
+    574
+   ]
+  ],
+  "PlayerLabel3": [
+   [
+    "Variables.xml",
+    580
+   ]
+  ],
+  "PlotTextBoxVar": [
+   [
+    "Variables.xml",
+    100
+   ]
+  ],
+  "PosterThumbVar": [
+   [
+    "Variables.xml",
+    71
+   ]
+  ],
+  "PremieredLabel": [
+   [
+    "Variables.xml",
+    607
+   ]
+  ],
+  "RepeatButtonColordiffuseVar": [
+   [
+    "Variables.xml",
+    546
+   ]
+  ],
+  "ShiftLeftTextBoxVar": [
+   [
+    "Variables.xml",
+    104
+   ]
+  ],
+  "ShiftRightTextBoxVar": [
+   [
+    "Variables.xml",
+    112
+   ]
+  ],
+  "ShiftThumbVar": [
+   [
+    "Variables.xml",
+    48
+   ]
+  ],
+  "TVShowOnClickActionVar": [
+   [
+    "Variables.xml",
+    218
+   ]
+  ],
+  "VideoInfoBottomLabelVar": [
+   [
+    "Variables.xml",
+    394
+   ]
+  ],
+  "VideoInfoMainLabelVar": [
+   [
+    "Variables.xml",
+    378
+   ]
+  ],
+  "VideoInfoSubLabelVar": [
+   [
+    "Variables.xml",
+    388
+   ]
+  ],
+  "WeatherFanartVar": [
+   [
+    "Variables.xml",
+    462
+   ]
+  ],
+  "WidgetGenreIconVar": [
+   [
+    "Variables.xml",
+    165
+   ]
+  ],
+  "WidgetPlaylistIconVar": [
+   [
+    "Variables.xml",
+    175
+   ]
+  ],
+  "WidgetStudioIconVar": [
+   [
+    "Variables.xml",
+    170
+   ]
+  ]
+ }
+}
