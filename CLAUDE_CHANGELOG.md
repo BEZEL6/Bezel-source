@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.461
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.462
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 462 | "TUNER ROWS HAVE DAYS AND MONTHS"; "HIDE"; "BACK ON LEVEL 2 → LEVEL 1"; "BACK ON LEVEL 1 → POWER MENU"; "SAME LOOK AS MM DUST IN THE ALBUM AND POSTER LIT DUST" | **TUNERRAILNUM** (rail counts were localized ids; hidden), **TUNERBACK** (6970 → 7001; 7001 → power menu), **LITMM** (lit dust default = textures cut from MM Dust 2.0) |
 | 461 | "NEXT" (rewrite P3, dead code) | rewrite **P3.1–P3.3**: 32 unused includes, 14 expressions, 317 variables removed; audit clean; zero geometry change |
 | 460 | "457 VERY SMOOTH AND RESPONSIVE"; 458 MM bg "ROW SWITCH / OPEN-CLOSE LOOKS BAD"; picked "QUICK DIM, NO WAIT" | **MMDIMQUICK**: 458 MMNODIM reverted, mmdim fades without the 456 delay (= 455); keeps P2.1 + P2.3; no P2.2 |
 | 459 | "P2.2 NEXT" "THEN BUILD" → "459 VERY BAD", "458 GOOD" | **REJECTED, reverted** rewrite **P2.2**: one `slow_watch` thread for km_leave_watch / fpop_clock / allcnt / album_id / cw_clock (A/B against 458) |
@@ -222,6 +223,32 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.462 — TUNERRAILNUM + TUNERBACK + LITMM
+Branch `claude/5.33.462` (on 461, one commit per fix).
+- **TUNERRAILNUM** (Rob: "tuner menu rows have days and months?? and random labels??", also on 460; then "hide"):
+  - The 13 rail items (7001, since 439 TUNERRAIL) held their settings count as `<label2>29</label2>`. Kodi reads a bare number in a static item label as a localized string id (11–17 weekdays, 21–32 months, small ids e.g. "Music").
+  - The count now lives in `<property name="n">` (properties are never localized). Per Rob, the 3 rail count labels are then removed, so no count shows.
+- **TUNERBACK** (Rob: "back from tuner level 2 takes you back to level 1" → should; "back on level 1 back to power menu"):
+  - Rows list 6970: its 11 onback actions (a copy of the rail's) are replaced by `<onback>SetFocus(7001)</onback>`.
+  - Rail 7001: the power-menu branch (ClearProperty bz_navtune + `ActivateWindow(1118)`) now runs for every `bz_tunesrc` except `fsctrl`. The FS controls source still returns to 1121 / visualisation + 1115. The BEZEL Settings (6968) / MM (6996) focus targets are dropped.
+  - No script intercepts Back here (the bz_dtap Back keymap covers only Kodi settings windows).
+- **LITMM** (Rob: "does lit dust have other textures or layers available? i dont like the look. i want the same look as mm dust in the album and poster lit dust"; picked "Make it the default"):
+  - 8 new textures cut from the MM Dust 2.0 sheets at their MM on-screen scale. Mid / far sheets draw stretched 1.1× horizontally in the MM; spin draws 1:1.
+    - `d20_mid_med` → slots 1–2, `d20_far_med` → slot 3, `d20_spin_med` → spin.
+    - `litmm_a_1..3` 600×600 + `litmm_a_spin` 660 (album slots).
+    - `litmm_p_1..3` 588×888 + `litmm_p_spin` 920 (poster).
+    - All > 512 px, so loose files; `Textures.xbt` is unchanged.
+  - `BzD3LS_*` / `BzD3LSpin` / `BzD3PLS_*` / `BzD3PLSpin` (Includes_Dust3) default to them. `Skin.String(bz_at_alitset / bz_at_plitset)`: empty = MM, 1 = V1.0 specks (+ size rows), 2 = V2.0 bake.
+  - Lit layers, drift / spin animations, glare masks and brightness are unchanged.
+  - Tuner rows "Album / Poster lit dust Version": MM / V1.0 / V2.0, cycled by OK / Left / Right. Kodi evaluates all action conditions before running any (GUIAction.cpp), so the cycle doesn't chain. The old `bz_alit20` / `bz_plit20` bools are no longer read; "Reset dust" also clears the two strings (bz_tune.py).
+  - The new look is much finer / sparser than V1 (same as the MM). The low / high MM sheets can be cut instead if it's too subtle.
+- **Check:**
+  - Tuner rail shows section names only.
+  - Back on a settings row → rail; Back on the rail → power menu.
+  - Album and poster glare: lit dust looks like the MM dust.
+  - Tuner lit dust rows cycle MM → V1.0 → V2.0.
+- **Static checks only:** XML parses, bz_tune.py compiles, geometry unchanged apart from the 69 removed count labels (3 × 23 windows). Not device-tested.
 
 ## 5.33.461 — rewrite P3.1–P3.3 (dead definitions)
 Branch `claude/5.33.461` (on 460, one commit per pass).
