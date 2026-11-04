@@ -1421,7 +1421,7 @@ if home.getProperty('bz_flip_running') != 'true':
                 if time.time() - tabq[0] > 20: home.clearProperty('bz_tabq'); tabq[0] = 0
                 elif not xbmc.getCondVisibility('Window.IsActive(busydialog) | Window.IsActive(busydialognocancel)'):
                     home.clearProperty('bz_tabq'); tabq[0] = 0
-                    if xbmc.getCondVisibility('Window.IsActive(music) + !Window.IsActive(1112) + Player.HasAudio'): xbmc.executebuiltin('ActivateWindow(1112)')
+                    if xbmc.getCondVisibility('Window.IsActive(music) + !Window.IsVisible(1121) + Player.HasAudio'): xbmc.executebuiltin('ActivateWindow(1121)')   # 5.33.465 OLDNP: the current fullscreen, as the Tab keymap (old Now Playing dialog 1112 removed)
             # BETA 1.1: music list full player controls (bz_lctl, opened from the compact bar): hide once the focus leaves them or after 10 s idle
             if home.getProperty('bz_lctl') == 'go':
                 xbmc.sleep(40); xbmc.executebuiltin('SetFocus(6192)'); home.setProperty('bz_lctl', 'true')

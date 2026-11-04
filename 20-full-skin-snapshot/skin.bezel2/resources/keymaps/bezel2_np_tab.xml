@@ -26,10 +26,7 @@
 		<remote><display>Dialog.Close(1121)</display><red>ActivateWindow(1115)</red><back>SetFocus(6422)</back></remote>
 		<joystick profile="game.controller.default"><b>SetFocus(6422)</b></joystick><joystick profile="game.controller.shield"><b>SetFocus(6422)</b></joystick>
 	</window1121>
-	<window1112>
-		<keyboard><m>ActivateWindow(1115)</m><tab>Dialog.Close(1112)</tab><escape>Back</escape></keyboard><!-- Esc (PreviousMenu) would close the dialog under the slide menu; as Back the menu closes first -->
-		<remote><display>Dialog.Close(1112)</display><red>ActivateWindow(1115)</red></remote><keyboard><red>ActivateWindow(1115)</red></keyboard>
-	</window1112>
+	<!-- 5.33.465 OLDNP: <window1112> removed with the old Now Playing dialog -->
 	<!-- BETA 2.6 item 5: hold Select = context menu skin-wide. The Shield remote / game pad centre (DPAD_CENTER) arrives in Kodi as the keyboard key "return"
 	     (some remotes send "enter"); CEC remotes as <remote><select>. Long-press needs Kodi's default long-press delay. -->
 	<window1115><keyboard><m>Dialog.Close(1115)</m><red>Dialog.Close(1115)</red></keyboard><remote><red>Dialog.Close(1115)</red></remote></window1115><!-- BEZEL 3.2.0: M opens / closes the music controls -->

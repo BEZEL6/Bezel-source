@@ -125,20 +125,6 @@ if action == 'bdopacity':
     nxt = steps[(steps.index(cur) + 1) % len(steps)] if cur in steps else '15'
     xbmc.executebuiltin('Skin.SetString(bz_bdop,%s)' % nxt)
     sys.exit(0)
-if action == 'tab':
-    # np2 test: Tab / remote Display (FullScreen) from the BEZEL keymap (resources/keymaps/bezel2_np_tab.xml). Music playing in the music list
-    # view: open / close the Now Playing dialog, so the music window is never replaced by Kodi's fullscreen window (that reload reset the sway).
-    # Anything else (or another skin active): Kodi's own FullScreen, exactly as before.
-    if xbmc.getSkinDir() == 'skin.bezel2':
-        if xbmc.getCondVisibility('Window.IsActive(1112)'):
-            home.clearProperty('bz_np'); xbmc.executebuiltin('Dialog.Close(1112)'); sys.exit(0)
-        if home.getProperty('bz_audio_latch') == 'true' and home.getProperty('bz_np') != 'true' and xbmc.getCondVisibility('Player.HasAudio + !Player.HasVideo + Window.IsActive(music) + !Window.IsActive(visualisation) + Control.IsVisible(60) + ![Skin.HasSetting(bz_grid_music) + [Container(60).Content(albums) | Container(60).Content(artists)]] + !System.HasModalDialog'):
-            if home.getProperty('bz_nav') == 'true': home.setProperty('bz_fsmm', '1')   # 5.33.378: FS from MM -> exit back to MM
-            home.clearProperty('bz_nav'); home.clearProperty('bz_navtune'); home.clearProperty('bz_navbez'); home.clearProperty('bz_np_was')
-            if not xbmc.getCondVisibility('Control.HasFocus(60)'): xbmc.executebuiltin('SetFocus(60)')
-            home.setProperty('bz_npdlg', 'true'); home.setProperty('bz_np', 'true')
-            xbmc.executebuiltin('ActivateWindow(1112)'); sys.exit(0)
-    xbmc.executebuiltin('Action(FullScreen)'); sys.exit(0)
 if action in ('xinfo', 'xclose'):
     # 3.5.6: in-place extended info (ext_info_inplace): I / long-press on a poster. The list + colour block region crossfades to the info
     # (bz_xinfo, 550 ms sine), focus starts on PLAY; Back closes; no input for 15 s closes it with the same fade.
@@ -265,71 +251,18 @@ if action == 'blockcolor':
     if hx: xbmc.executebuiltin('Skin.SetString(bz_blockcol,%s)' % hx); xbmc.executebuiltin('Skin.SetString(bz_blockcol_name,%s)' % name)
     else: xbmc.executebuiltin('Skin.Reset(bz_blockcol)'); xbmc.executebuiltin('Skin.Reset(bz_blockcol_name)')
     sys.exit(0)
-if action == 'vistoggle':
-    # 3.5.2: from Kodi's fullscreen music window (Tab / FullScreen). MusicVisualisation.xml has already gone back to the music screen.
-    import time
-    now = time.time()
-    try: last = float(home.getProperty('bz_vistoggle_t') or 0)
-    except Exception: last = 0
-    if now - last < 1.0: sys.exit(0)   # same key press, second onload
-    home.setProperty('bz_vistoggle_t', str(now))
-    if home.getProperty('bz_audio_latch') != 'true' or xbmc.getCondVisibility('Player.HasVideo'): sys.exit(0)
-    for i in range(40):
-        if xbmc.getCondVisibility('Window.IsActive(music) + !Window.IsActive(visualisation)'): break
-        xbmc.Monitor().waitForAbort(0.05)
-    if home.getProperty('bz_np') == 'true':
-        home.clearProperty('bz_np'); xbmc.executebuiltin('SetFocus(60)')
-    else:
-        home.setProperty('bz_np', 'true')
-        for i in range(20):
-            if xbmc.getCondVisibility('Control.IsVisible(6390)'): break
-            xbmc.Monitor().waitForAbort(0.05)
-        xbmc.Monitor().waitForAbort(1.2)   # 4.2 item 12: the list bar fades out with the list instead of popping off
-        xbmc.executebuiltin('SetFocus(6390)')
-    sys.exit(0)
-if action in ('np', 'nptoggle'):
-    # 2.0a3.1: in-place Now Playing (music only). From anywhere (mini player, menu, Kodi's fullscreen music window): back to BEZEL MUSIC LIST with bz_np set
-    # 2.0a3.4: 'nptoggle' (Tab / FullScreen, via MusicVisualisation.xml): a second press leaves Now Playing again. bz_np is changed only once the
-    # music window is back, so its slide-in / slide-back animations play.
-    if home.getProperty('bz_audio_latch') != 'true' or xbmc.getCondVisibility('Player.HasVideo'): sys.exit(0)
-    # 3.5.1: Tab / FullScreen opens Kodi's visualisation window, now an empty dialog over the music window: close it (the music window
-    # was never unloaded, so the sway carries on) and toggle the panel. From another window: open the music window first.
-    # np1 test: music playing + already in the music library list view (view 60, not the grid): Now Playing opens as a dialog over the
-    # music window (Custom_1112_NowPlaying.xml), so the album sway underneath never resets. Every other route keeps the in-place panel below.
-    if action == 'np' and home.getProperty('bz_np') != 'true' and xbmc.getCondVisibility('Window.IsActive(music) + !Window.IsActive(visualisation) + Control.IsVisible(60) + ![Skin.HasSetting(bz_grid_music) + [Container(60).Content(albums) | Container(60).Content(artists)]] + !Window.IsActive(1112)'):
-        if home.getProperty('bz_nav') == 'true': home.setProperty('bz_fsmm', '1')   # 5.33.378
-        home.clearProperty('bz_nav'); home.clearProperty('bz_navtune'); home.clearProperty('bz_navbez'); home.clearProperty('bz_np_was')
-        # np2: hand the music window's focus back to the list first (the slide-menu card / A-Z bar / art are hidden once the dialog is up),
-        # so after the dialog closes the keys move the list and Left opens the slide menu again
-        if not xbmc.getCondVisibility('Control.HasFocus(60)'): xbmc.executebuiltin('SetFocus(60)')
-        home.setProperty('bz_npdlg', 'true'); home.setProperty('bz_np', 'true')
-        xbmc.executebuiltin('ActivateWindow(1112)')
+if action in ('tab', 'np', 'nptoggle', 'vistoggle'):
+    # 5.33.465 OLDNP (Rob: "remove the old code so I won't see the wrong screen"): the old Now Playing (in-place panel in the music list,
+    # dialog 1112) is gone. Every route that opened it (auto NP after idle, tap on the playing song, Info with no album, Tab while busy)
+    # opens the current fullscreen instead, the same as the MM FULL pill: Music Fanart FS 1121 from the music window, else Kodi FS.
+    if xbmc.getCondVisibility('Player.HasAudio + !Player.HasVideo') and (action == 'tab' or home.getProperty('bz_audio_latch') == 'true'):
+        home.clearProperty('bz_nav'); home.clearProperty('bz_navtune'); home.clearProperty('bz_navbez')
+        if xbmc.getCondVisibility('!Skin.HasSetting(bz_m1121_off) + Window.IsActive(music) + !Window.IsActive(visualisation)'):
+            xbmc.executebuiltin('ActivateWindow(1121)')
+        elif not xbmc.getCondVisibility('Window.IsActive(visualisation)'):
+            xbmc.executebuiltin('ActivateWindow(visualisation)')
         sys.exit(0)
-    vis = xbmc.getCondVisibility('Window.IsActive(visualisation)')
-    if vis:
-        xbmc.executebuiltin('Dialog.Close(visualisation,true)')
-        for i in range(20):
-            if not xbmc.getCondVisibility('Window.IsActive(visualisation)'): break
-            xbmc.Monitor().waitForAbort(0.05)
-    leaving = action == 'nptoggle' and home.getProperty('bz_np') == 'true' and xbmc.getCondVisibility('Window.IsActive(music)')
-    home.clearProperty('bz_np_was')
-    home.clearProperty('bz_nav'); home.clearProperty('bz_navtune'); home.clearProperty('bz_navbez')
-    if not xbmc.getCondVisibility('Window.IsActive(music)') or xbmc.getCondVisibility('Window.IsActive(visualisation)'):
-        # 4.2 item 12: open the music window straight into Now Playing (no list frame first, no pop)
-        if not leaving: home.setProperty('bz_np', 'true')
-        xbmc.executebuiltin('ActivateWindow(Music)')
-        for i in range(60):
-            if xbmc.getCondVisibility('Window.IsActive(music) + !Window.IsActive(visualisation)'): break
-            xbmc.Monitor().waitForAbort(0.05)
-        xbmc.Monitor().waitForAbort(0.15)
-    if leaving:
-        home.clearProperty('bz_np'); xbmc.executebuiltin('SetFocus(60)'); sys.exit(0)
-    home.setProperty('bz_np', 'true')
-    for i in range(20):
-        if xbmc.getCondVisibility('Control.IsVisible(6390)'): break
-        xbmc.Monitor().waitForAbort(0.05)
-    xbmc.Monitor().waitForAbort(1.2)   # 4.2 item 12
-    xbmc.executebuiltin('SetFocus(6390)')
+    if action == 'tab': xbmc.executebuiltin('Action(FullScreen)')
     sys.exit(0)
 # BETA 2 item 20: card 2 values wider than 260 px are abbreviated (VISUALIZATION -> VISUAL.): every word longer than 7 letters is cut to
 # 6 letters + '.', longest first, until it fits; short values are unchanged. Widths = Ubuntu Regular advances (34 px uppercase bz_list / 21 px bz_r21).
