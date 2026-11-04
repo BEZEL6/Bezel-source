@@ -1,5 +1,5 @@
-5.33.462 (2026-11-04)
-- TUNERRAILNUM (Rob: "TUNER MENU ROWS HAVE DAYS AND MONTHS?? AND RANDOM LABELS??"; "HIDE"): the Tuner section rail no longer shows day / month names or stray words (they were the section setting counts, which Kodi read as text ids); the counts are hidden.
-- TUNERBACK (Rob: "BACK FROM TUNER LEVEL 2 TAKES YOU BACK TO LEVEL 1"; "BACK ON LEVEL 1 BACK TO POWER MENU"): Back on the Tuner settings rows returns to the section rail; Back on the rail returns to the power menu (from the fullscreen music controls it still goes back to fullscreen music).
-- LITMM (Rob: "I WANT THE SAME LOOK AS MM DUST IN THE ALBUM AND POSTER LIT DUST"; picked "MAKE IT THE DEFAULT"): album and poster lit dust use new textures cut from the main menu dust, same size and density. The Tuner "lit dust Version" rows now offer MM (default), V1.0 and V2.0.
+5.33.463 (2026-11-04)
+- VIZSETRESET (Rob: "MUSIC CONTROLS GET STUCK IN VIS SETTINGS AND DOES NOT RESET TO LEVEL 1 AFTER CLOSE"): Music Controls always open on level 1; the viz settings page no longer stays open after a close.
+- TUNERBACKQ (Rob: "QUICK BACK FROM TUNER MENU DROPS IN RANDOM WINDOW"): Back on the Tuner rail opens the power menu before the Tuner hides, so a fast second Back can no longer reach the window underneath.
+- UPNNPBAR (Rob: "ADD A NP BAR WHEN UP NEXT IS TRIGGER IN KODI FULLSCREEN"; picked compact bar, under the big album, fades in with Up Next, out on back to fanart, Kodi FS + fanart FS): the compact now-playing bar (artist, title, progress, time) shows under the big album while Up Next is up.
 

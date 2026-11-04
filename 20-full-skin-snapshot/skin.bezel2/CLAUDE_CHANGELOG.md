@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.462
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.463
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 463 | "MUSIC CONTROLS GET STUCK IN VIS SETTINGS"; "QUICK BACK FROM TUNER MENU DROPS IN RANDOM WINDOW"; "ADD A NP BAR WHEN UP NEXT IS TRIGGER IN KODI FULLSCREEN" | **VIZSETRESET** (bz_vizset by window id + cleared on load), **TUNERBACKQ** (power menu before Tuner hides), **UPNNPBAR** (compact NP bar under the home album with Up Next, viz + 1121) |
 | 462 | "TUNER ROWS HAVE DAYS AND MONTHS"; "HIDE"; "BACK ON LEVEL 2 → LEVEL 1"; "BACK ON LEVEL 1 → POWER MENU"; "SAME LOOK AS MM DUST IN THE ALBUM AND POSTER LIT DUST" | **TUNERRAILNUM** (rail counts were localized ids; hidden), **TUNERBACK** (6970 → 7001; 7001 → power menu), **LITMM** (lit dust default = textures cut from MM Dust 2.0) |
 | 461 | "NEXT" (rewrite P3, dead code) | rewrite **P3.1–P3.3**: 32 unused includes, 14 expressions, 317 variables removed; audit clean; zero geometry change |
 | 460 | "457 VERY SMOOTH AND RESPONSIVE"; 458 MM bg "ROW SWITCH / OPEN-CLOSE LOOKS BAD"; picked "QUICK DIM, NO WAIT" | **MMDIMQUICK**: 458 MMNODIM reverted, mmdim fades without the 456 delay (= 455); keeps P2.1 + P2.3; no P2.2 |
@@ -223,6 +224,26 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.463 — VIZSETRESET + TUNERBACKQ + UPNNPBAR
+Branch `claude/5.33.463` (on 462, one commit per fix).
+- **VIZSETRESET** (Rob: "music controls get stuck in vis settings and does not reset to level 1 after close"):
+  - The viz settings page in 1115 is shown by the window property `bz_vizset`. It was set and cleared with `SetProperty` / `ClearProperty` without a window id, which act on the focused window.
+  - The `onunload` clear runs while 1115 closes, when the focused window can be the one underneath. So `bz_vizset` could stay set, and the next open showed the viz page with focus on the level-1 control (`defaultcontrol` 6401).
+  - Now every set / clear names window 1115 (13 actions), the page condition reads `Window(1115).Property(bz_vizset)`, and 1115 also clears it on load.
+- **TUNERBACKQ** (Rob: "quick back from tuner menu drops in random window??"; follows 462 TUNERBACK):
+  - Back on the rail ran `ClearProperty(bz_navtune)` (hides the Tuner and its focused control) before `ActivateWindow(1118)`. In between, focus sat on the window underneath, and a fast second Back ran that window's Back.
+  - The two actions are swapped: the power menu takes focus first. Kodi evaluates all action conditions up front, so only the order changes.
+- **UPNNPBAR** (Rob: "add a np bar when up next is trigger in kodi fullscreen"; picked compact NP bar, under the big album, "fades in with upnext. back to fanart fades it out", Kodi FS + 1121):
+  - Up Next keeps the big album at home (`bz_pnoff` = 1, `bz_railc` off), so `BezelNPCompactBar` is drawn unshifted: album 1140–1740, y 892–1004. 450 VIZNPBAR stays the copy for the centred album.
+  - **Kodi FS:** a new group in 1122 after VIZNPBAR (1122 renders above the viz window), gate `Window.IsActive(visualisation) + bz_fsnp + bz_np + bz_npm_upn + !1121 + !bz_railc + Player.HasAudio`.
+  - **1121:** a new group right after its `BezelFSUpNext`, with the same gate as that list (`bz_npm_upn + bz_pnoff = 1`) + `Player.HasAudio`.
+  - Fades 300 / 300, the same as the Up Next list. No overlap with BezelFSPlayNext's bar (that one needs `bz_pnoff` ≠ 1).
+- **Check:**
+  - Music Controls: open viz settings, close, reopen → level 1.
+  - Tuner: Back, Back, Back fast → power menu → MM.
+  - Kodi FS and fanart FS: cycle to Up Next → the bar fades in under the album; back to fanart → it fades out.
+- **Static checks only:** XML parses; resolved positions checked for the new bars. Not device-tested.
 
 ## 5.33.462 — TUNERRAILNUM + TUNERBACK + LITMM
 Branch `claude/5.33.462` (on 461, one commit per fix).
