@@ -26,16 +26,7 @@
 			<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="label"><left>40</left><top>572</top><width>310</width><height>34</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>DETAIL</label></control></control>
 			<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="textbox"><left>36</left><top>604</top><width>318</width><height>46</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>[B][UPPERCASE]$INFO[System.CurrentControl][/UPPERCASE][/B]</label><autoscroll delay="2500" time="2000" repeat="5000">true</autoscroll><visible>!Control.HasFocus(20)</visible></control></control><control type="group"><left>bz_strip_x</left><!-- P1B --><control type="label"><left>40</left><top>604</top><width>310</width><height>46</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>[B]SETTINGS LEVEL[/B]</label><visible>Control.HasFocus(20)</visible></control></control><!-- F6 fixb3: wrap instead of clip -->
 		</control>
-		<control type="multiimage">
-			<depth>DepthBackground</depth>
-			<include>FullScreenDimensions</include>
-			<aspectratio>scale</aspectratio>
-			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
-			<animation effect="fade" start="0" end="100" time="400" tween="sine" easing="out">WindowOpen</animation>
-			<animation effect="fade" time="400">VisibleChange</animation>
-			<imagepath colordiffuse="35FFFFFF">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</imagepath>
-			<visible>false</visible>
-		</control>
+		
 		<control type="group">
 			<include>BezelOpenCloseSet</include>
 			<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="grouplist" id="5">
@@ -53,20 +44,8 @@
 				<ondown>5</ondown>
 				<animation effect="fade" start="100" end="0" time="0" condition="!ControlGroup(5).HasFocus()">Conditional</animation><!-- stays focusable; hidden by fade -->
 			</control></control>
-			<control type="image">
-				<left>470</left>
-				<top>130</top>
-				<right>0</right>
-				<height>2</height><visible>false</visible>
-				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
-			</control>
-			<control type="image">
-				<left>470</left>
-				<bottom>135</bottom>
-				<right>0</right>
-				<height>2</height><visible>false</visible>
-				<texture colordiffuse="button_focus" border="2">dialogs/separator-grey.png</texture>
-			</control>
+			
+			
 		</control>
 		<control type="button" id="7">
 			<description>Default Button</description>

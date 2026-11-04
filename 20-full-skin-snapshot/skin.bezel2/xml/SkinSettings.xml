@@ -17,18 +17,7 @@
 			<control type="label"><left>1100</left><top>184</top><width>670</width><height>56</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><scroll>true</scroll><label>[UPPERCASE]$INFO[Container(9000).ListItem.Label][/UPPERCASE]</label></control>
 			<control type="image"><left>1100</left><top>248</top><width>130</width><height>3</height><texture colordiffuse="$VAR[BzMMBarCol]">bezel/white.png</texture></control>
 		</control>
-		<control type="multiimage">
-			<depth>DepthBackground</depth>
-			<include>FullScreenDimensions</include>
-			<aspectratio>scale</aspectratio>
-			<fadetime>600</fadetime>
-			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
-			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-			<animation effect="fade" time="400">VisibleChange</animation>
-			<imagepath background="true" colordiffuse="bg_overlay">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</imagepath>
-			<visible>false</visible>
-		</control>
+		
 		<control type="group" id="10000">
 			<left>1080</left><width>710</width>
 			<include>BezelSecFadeIn</include>

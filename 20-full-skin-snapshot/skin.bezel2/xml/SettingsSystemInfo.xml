@@ -14,18 +14,7 @@
 			<control type="image"><left>0</left><top>0</top><width>bz_strip_w</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture><animation effect="fade" start="100" end="10" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),1)">Conditional</animation><animation effect="fade" start="100" end="20" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),2)">Conditional</animation><animation effect="fade" start="100" end="30" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),3)">Conditional</animation><animation effect="fade" start="100" end="40" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),4)">Conditional</animation><animation effect="fade" start="100" end="50" time="0" condition="String.IsEmpty(Skin.String(bz_at_mmbar)) | String.IsEqual(Skin.String(bz_at_mmbar),5)">Conditional</animation><animation effect="fade" start="100" end="60" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),6)">Conditional</animation><animation effect="fade" start="100" end="70" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),7)">Conditional</animation><animation effect="fade" start="100" end="80" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),8)">Conditional</animation><animation effect="fade" start="100" end="90" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),9)">Conditional</animation></control>
 		</control>
 		<control type="group"><left>683</left><top>140</top><include>BezelSecFadeIn</include><control type="group"><left>bz_strip_x</left><!-- P1B --><control type="label"><left>-660</left><width>350</width><height>62</height><font>bz_mm48b</font><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[130]</label></control></control><control type="group"><left>bz_strip_x</left><!-- P1B --><control type="label"><left>-658</left><top>62</top><width>350</width><height>26</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><label>$INFO[System.FriendlyName]</label></control></control></control><!-- (title moved into strip, 5.33.13) -->
-		<control type="multiimage">
-			<depth>DepthBackground</depth>
-			<include>FullScreenDimensions</include>
-			<aspectratio>scale</aspectratio>
-			<fadetime>600</fadetime>
-			<animation effect="zoom" center="auto" end="102,102" time="0" condition="Integer.IsGreater(System.StereoscopicMode,0)">conditional</animation>
-			<animation effect="fade" start="0" end="100" time="400">WindowOpen</animation>
-			<animation effect="fade" start="100" end="0" time="300">WindowClose</animation>
-			<animation effect="fade" time="400">VisibleChange</animation>
-			<imagepath background="true" colordiffuse="bg_overlay">$INFO[Skin.String(HomeFanart.path)]settings$INFO[Skin.String(HomeFanart.ext)]</imagepath>
-			<visible>false</visible>
-		</control>
+		
 		<control type="group">
 			<left>-270</left>
 			<top>110</top>
