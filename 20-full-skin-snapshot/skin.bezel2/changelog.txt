@@ -1,3 +1,4 @@
-5.33.459 (2026-11-04)
-- P2.2 (rewrite): five slow background helpers (keymap guard, fanart_pop check, ALL row count, playing album id, TV Continue watching) now share one helper thread, each on its own unchanged timing. No visible change. Compare with 458: if anything feels slower or stalls, 458 is the fallback.
+5.33.460 (2026-11-04)
+- MMDIMQUICK (Rob: 457 "VERY SMOOTH AND RESPONSIVE"; 458 main menu backgrounds "ROW SWITCH LOOKS BAD, OPEN / CLOSE LOOKS BAD"; picked "QUICK DIM, NO WAIT"): the section behind the main menu dims again, starting at once (0.6 s, as in 455). The 458 no-dim change and the 456 1.5 s wait are both gone.
+- Keeps the 458 rewrite clean-ups P2.1 and P2.3 (no visible change). 459's P2.2 is not included.
 

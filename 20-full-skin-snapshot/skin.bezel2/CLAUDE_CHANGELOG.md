@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.459
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.460
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 460 | "457 VERY SMOOTH AND RESPONSIVE"; 458 MM bg "ROW SWITCH / OPEN-CLOSE LOOKS BAD"; picked "QUICK DIM, NO WAIT" | **MMDIMQUICK**: 458 MMNODIM reverted, mmdim fades without the 456 delay (= 455); keeps P2.1 + P2.3; no P2.2 |
 | 459 | "P2.2 NEXT" "THEN BUILD" → "459 VERY BAD", "458 GOOD" | **REJECTED, reverted** rewrite **P2.2**: one `slow_watch` thread for km_leave_watch / fpop_clock / allcnt / album_id / cw_clock (A/B against 458) |
 | 458 | "THE 1.5 DELAY MAKES IT LOOK BROKE"; "JUST HAVE IT FADE IN QUICK. NO FADE OUT OF SECTION"; "START P2" | **MMNODIM** (no section dim under the MM), rewrite **P2.1** (grid_sync removed), **P2.3** (bz_big_* no longer set) |
 | 457 | "P1 THEN IF USAGE PERMITS DO P2" (rewrite, layout first) | rewrite **P1B** (strip content relative to `bz_strip_x`), **P1C** (stage fill / stage / art constants); zero visual change |
@@ -220,6 +221,16 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.460 — MMDIMQUICK (on 458 without P2.2)
+Branch `claude/5.33.460` (from `claude/5.33.459` with P2.2 reverted, so bz_flip.py = 458).
+- **MMDIMQUICK** (Rob: 457 "very smooth and responsive"; 458 MM backgrounds "row switch looks bad, open / close looks bad"; picked "Quick dim, no wait"):
+  - 458 MMNODIM is reverted (its own commit), and the 456 MMCLEANFADE `delay="1500"` is removed from the 22 `bz_at_mmdim` fades.
+  - The 22 fades are now identical to 455 (600 ms sine in-out, no delay; checked against `claude/5.33.455`). Only comments differ.
+  - To watch: this is the 455 timing, which caused Rob's original "fades black then back" report. If the dip shows, the next option is the dim running over the same 1.5 s as the MM art lane, starting at once.
+- Keeps **P2.1** (`grid_sync` removed) and **P2.3** (`bz_big_*` no longer set) from 458. **P2.2 is not included** (459 rejected).
+- **Check:** open / close the MM and switch MM rows from Music / Movies / TV. It should feel like 457, with no 1.5 s wait.
+- **Static checks only:** XML parses. Not device-tested.
 
 ## 5.33.459 — rewrite P2.2 (A/B against 458)
 **RESULT: REJECTED on device.** Rob: "457 great", "458 good", "459 very bad" (backgrounds perform poorly). P2.2 is reverted on `claude/5.33.459`; use 458. Not retried without a 459 kodi.log.
