@@ -1,0 +1,480 @@
+[
+ {
+  "thread": "f",
+  "note": "not found"
+ },
+ {
+  "thread": "km_leave_watch",
+  "line": 726,
+  "lines": 6,
+  "waits": [
+   "1.0"
+  ],
+  "n_waits": 1,
+  "home_props": [
+   "bz_flip_running"
+  ],
+  "n_props": 1,
+  "cond_calls": 0,
+  "label_calls": 0,
+  "builtins": 0
+ },
+ {
+  "thread": "albview_a",
+  "line": 732,
+  "lines": 30,
+  "waits": [
+   "0.1 if d_on else 0.25"
+  ],
+  "n_waits": 1,
+  "home_props": [
+   "bz_albva",
+   "bz_albvd",
+   "bz_flip_running"
+  ],
+  "n_props": 3,
+  "cond_calls": 3,
+  "label_calls": 4,
+  "builtins": 1
+ },
+ {
+  "thread": "poster_clock",
+  "line": 552,
+  "lines": 156,
+  "waits": [
+   "0.1",
+   "0.1",
+   "0.15",
+   "0.15",
+   "0.15",
+   "0.15"
+  ],
+  "n_waits": 9,
+  "home_props": [
+   "bz_actpath",
+   "bz_actthumb",
+   "bz_allret",
+   "bz_allup",
+   "bz_flip_running",
+   "bz_mmwarm",
+   "bz_movfanart_hold",
+   "bz_movposter_hold",
+   "bz_nav",
+   "bz_pfanart",
+   "bz_pfkey",
+   "bz_pready",
+   "bz_vback",
+   "bz_vback_close",
+   "bz_vback_fade",
+   "bz_vback_key",
+   "bz_vbackanim"
+  ],
+  "n_props": 17,
+  "cond_calls": 32,
+  "label_calls": 16,
+  "builtins": 12
+ },
+ {
+  "thread": "fpop_clock",
+  "line": 770,
+  "lines": 16,
+  "waits": [
+   "1.0"
+  ],
+  "n_waits": 1,
+  "home_props": [
+   "bz_flip_running",
+   "bz_fpop"
+  ],
+  "n_props": 2,
+  "cond_calls": 1,
+  "label_calls": 1,
+  "builtins": 0
+ },
+ {
+  "thread": "under_adv",
+  "line": 791,
+  "lines": 37,
+  "waits": [
+   "0.25"
+  ],
+  "n_waits": 1,
+  "home_props": [
+   "bz_flip_running",
+   "bz_kset",
+   "bz_m_idle_art",
+   "bz_m_idle_lock",
+   "bz_mmstart",
+   "bz_mmwarm",
+   "bz_nav",
+   "bz_navset",
+   "bz_navsub",
+   "bz_navtune",
+   "bz_uadv_n",
+   "bz_vsec"
+  ],
+  "n_props": 12,
+  "cond_calls": 4,
+  "label_calls": 5,
+  "builtins": 1
+ },
+ {
+  "thread": "vwarm",
+  "line": 874,
+  "lines": 58,
+  "waits": [
+   "0.1"
+  ],
+  "n_waits": 1,
+  "home_props": [
+   "bz_flip_running",
+   "bz_kset",
+   "bz_mmpick",
+   "bz_mmstart",
+   "bz_nav",
+   "bz_navset",
+   "bz_navsub",
+   "bz_navtune",
+   "bz_pready",
+   "bz_vart_clear",
+   "bz_vart_fanart",
+   "bz_vart_logo",
+   "bz_vart_poster",
+   "bz_vart_thumb",
+   "bz_vart_title",
+   "bz_vland",
+   "bz_vsec"
+  ],
+  "n_props": 17,
+  "cond_calls": 1,
+  "label_calls": 3,
+  "builtins": 0
+ },
+ {
+  "thread": "mm_autohide",
+  "line": 946,
+  "lines": 30,
+  "waits": [
+   "0.05"
+  ],
+  "n_waits": 1,
+  "home_props": [
+   "bz_flip_running",
+   "bz_kset",
+   "bz_mmhide",
+   "bz_mmpick",
+   "bz_mmstart",
+   "bz_mmwake",
+   "bz_mpkeep",
+   "bz_nav",
+   "bz_navbez",
+   "bz_navset",
+   "bz_navsub",
+   "bz_navtune",
+   "bz_secload",
+   "bz_splash_done"
+  ],
+  "n_props": 14,
+  "cond_calls": 3,
+  "label_calls": 3,
+  "builtins": 2
+ },
+ {
+  "thread": "allcnt",
+  "line": 978,
+  "lines": 27,
+  "waits": [
+   "0.4"
+  ],
+  "n_waits": 1,
+  "home_props": [
+   "bz_allcnt",
+   "bz_flip_running"
+  ],
+  "n_props": 2,
+  "cond_calls": 1,
+  "label_calls": 2,
+  "builtins": 0
+ },
+ {
+  "thread": "mm_warm",
+  "line": 1006,
+  "lines": 248,
+  "waits": [
+   "0.01",
+   "0.03",
+   "0.05",
+   "15.0",
+   "1.7",
+   "0.02"
+  ],
+  "n_waits": 12,
+  "home_props": [
+   "bz_arthold",
+   "bz_backdrop",
+   "bz_flip_running",
+   "bz_hold_fanart",
+   "bz_hold_poster",
+   "bz_lastmusic",
+   "bz_mmhide",
+   "bz_mmlive",
+   "bz_mmpick",
+   "bz_mmpos",
+   "bz_mmstart",
+   "bz_mmwake",
+   "bz_mmwarm",
+   "bz_music_underlay",
+   "bz_nav",
+   "bz_navroot",
+   "bz_navset",
+   "bz_navsub",
+   "bz_navtune",
+   "bz_pos_on",
+   "bz_randpend",
+   "bz_secload",
+   "bz_splash_done",
+   "bz_vsec",
+   "bz_vsec_t",
+   "bz_warmrow",
+   "bz_xalb",
+   "bz_xalb_on",
+   "bz_xfade",
+   "bz_xfin"
+  ],
+  "n_props": 30,
+  "cond_calls": 32,
+  "label_calls": 36,
+  "builtins": 7
+ },
+ {
+  "thread": "drum_dir",
+  "line": 1737,
+  "lines": 26,
+  "waits": [
+   "0.05",
+   "0.3",
+   "0.5"
+  ],
+  "n_waits": 3,
+  "home_props": [
+   "bz_dr%s_0t",
+   "bz_drumdir",
+   "bz_drumk",
+   "bz_flip_running"
+  ],
+  "n_props": 4,
+  "cond_calls": 1,
+  "label_calls": 2,
+  "builtins": 0
+ },
+ {
+  "thread": "grid_sync",
+  "line": 1590,
+  "lines": 139,
+  "waits": [
+   "0.05",
+   "0.04",
+   "0.1",
+   "0.25",
+   "0.02",
+   "0.3"
+  ],
+  "n_waits": 7,
+  "home_props": [
+   "bz_flip_running",
+   "bz_gb",
+   "bz_gn",
+   "bz_gpend",
+   "bz_grest",
+   "bz_grid_target",
+   "bz_gscroll",
+   "bz_gslot",
+   "bz_gtitle",
+   "bz_warmrow"
+  ],
+  "n_props": 10,
+  "cond_calls": 11,
+  "label_calls": 20,
+  "builtins": 3
+ },
+ {
+  "thread": "nav_menu",
+  "line": 1260,
+  "lines": 330,
+  "waits": [
+   "0.05 if (nv or nav_was[1]"
+  ],
+  "n_waits": 1,
+  "home_props": [
+   "bz_atnavroot",
+   "bz_audio_latch",
+   "bz_biglogo_spin",
+   "bz_casc",
+   "bz_casc_force",
+   "bz_casc_fp",
+   "bz_flip_running",
+   "bz_fsmm",
+   "bz_kset",
+   "bz_lctl",
+   "bz_logospin",
+   "bz_minibig",
+   "bz_mmlive",
+   "bz_mmpick",
+   "bz_mmpos",
+   "bz_mmstart",
+   "bz_mmstartrow",
+   "bz_mmstartsec",
+   "bz_mmwarm",
+   "bz_msretrow",
+   "bz_nav",
+   "bz_navbez",
+   "bz_navcard2",
+   "bz_navdir",
+   "bz_navgrace",
+   "bz_navlock",
+   "bz_navnp",
+   "bz_navroot",
+   "bz_navset",
+   "bz_navset2",
+   "bz_navstrip",
+   "bz_navsub",
+   "bz_navtune",
+   "bz_np",
+   "bz_npctl",
+   "bz_rootarm",
+   "bz_setret",
+   "bz_tabq"
+  ],
+  "n_props": 38,
+  "cond_calls": 59,
+  "label_calls": 21,
+  "builtins": 22
+ },
+ {
+  "thread": "sway_clock",
+  "line": 279,
+  "lines": 37,
+  "waits": [
+   "0.25",
+   "0.3",
+   "0.05"
+  ],
+  "n_waits": 3,
+  "home_props": [
+   "bz_flip_running",
+   "bz_flipping",
+   "bz_sway_go",
+   "bz_sway_hold",
+   "bz_sway_pulse",
+   "bz_sway_pulse2",
+   "bz_sway_restart",
+   "bz_sway_t0"
+  ],
+  "n_props": 8,
+  "cond_calls": 0,
+  "label_calls": 0,
+  "builtins": 0
+ },
+ {
+  "thread": "album_id",
+  "line": 321,
+  "lines": 13,
+  "waits": [
+   "0.5"
+  ],
+  "n_waits": 1,
+  "home_props": [
+   "bz_albumid",
+   "bz_flip_running"
+  ],
+  "n_props": 2,
+  "cond_calls": 1,
+  "label_calls": 1,
+  "builtins": 0
+ },
+ {
+  "thread": "cw_clock",
+  "line": 1771,
+  "lines": 38,
+  "waits": [
+   "2",
+   "1"
+  ],
+  "n_waits": 2,
+  "home_props": [
+   "bz_cwfile",
+   "bz_flip_running"
+  ],
+  "n_props": 2,
+  "cond_calls": 1,
+  "label_calls": 0,
+  "builtins": 0
+ },
+ {
+  "thread": "ab_clock",
+  "line": 1915,
+  "lines": 34,
+  "waits": [
+   "0.05"
+  ],
+  "n_waits": 1,
+  "home_props": [
+   "bz_ab_live",
+   "bz_flip_running",
+   "bz_mart_empty",
+   "bz_mmwarm",
+   "bz_nav",
+   "bz_pos_on",
+   "bz_vsec"
+  ],
+  "n_props": 7,
+  "cond_calls": 8,
+  "label_calls": 1,
+  "builtins": 0
+ },
+ {
+  "thread": "mm_tap",
+  "line": 1952,
+  "lines": 10,
+  "waits": [
+   "0.05"
+  ],
+  "n_waits": 1,
+  "home_props": [
+   "bz_flip_running",
+   "bz_mmtap"
+  ],
+  "n_props": 2,
+  "cond_calls": 0,
+  "label_calls": 0,
+  "builtins": 0
+ },
+ {
+  "thread": "idle_hinge",
+  "line": 1964,
+  "lines": 79,
+  "waits": [
+   "0.1",
+   "0.05",
+   "0.05"
+  ],
+  "n_waits": 3,
+  "home_props": [
+   "bz_flip_running",
+   "bz_hf_a",
+   "bz_hf_b",
+   "bz_hf_g",
+   "bz_hf_ph",
+   "bz_m_idle_art",
+   "bz_mmwarm",
+   "bz_nav",
+   "bz_navbez",
+   "bz_navtune",
+   "bz_randpend"
+  ],
+  "n_props": 11,
+  "cond_calls": 3,
+  "label_calls": 8,
+  "builtins": 0
+ }
+]

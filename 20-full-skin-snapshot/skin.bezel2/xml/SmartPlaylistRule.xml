@@ -7,8 +7,8 @@
 	<controls>
 		<include>BzDlgDim</include>
 		<include content="BzDlgFrame"><param name="bgc" value="01000000" /><param name="darkc" value="01000000" /><param name="sub" value="Smart playlist rule" /><param name="hints" value="OK select   BACK close" /><param name="head" value="Rule" /><param name="stitle" value="$INFO[Control.GetLabel(15)] $INFO[Control.GetLabel(16)]" /><param name="sdesc" value="Pick a field and an operator, then type a value or browse values in your library." /></include>
-		<include content="BezelFanartLayer"><param name="left" value="120"/><param name="top" value="120"/><param name="width" value="930"/><param name="height" value="900"/></include>
-		<control type="image"><left>660</left><top>120</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
+		<include content="BezelFanartLayer"><param name="left" value="bz_stage_x"/><param name="top" value="120"/><param name="width" value="bz_stage_w"/><param name="height" value="900"/></include>
+		<control type="image"><left>bz_strip_x</left><top>120</top><width>bz_strip_w</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
 		<control type="group">
 			<control type="image"><left>117</left><top>117</top><width>936</width><height>3</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>
 			<control type="image"><left>117</left><top>1020</top><width>936</width><height>3</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture></control>

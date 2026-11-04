@@ -17,7 +17,7 @@
 			<!-- t4939 / K48: no open/close transition - instant swap from MM -->
 			<animation effect="slide" start="0,0" end="0,120" time="0" condition="Player.HasMedia">Conditional</animation>
 			<!-- 5.33.150 BUG-005: TUNER is a 4th list row (same focusedlayout BzATHiTex outline); not a separate button -->
-			<control type="list" id="7800"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop --><left>0</left><top>40</top><width>390</width><height>224</height><orientation>vertical</orientation><scrolltime>150</scrolltime>
+			<control type="list" id="7800"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop --><left>0</left><top>40</top><width>bz_strip_w</width><height>224</height><orientation>vertical</orientation><scrolltime>150</scrolltime>
 				<onleft>noop</onleft><onright>noop</onright>
 				<itemlayout height="56" width="390"><control type="label"><left>36</left><top>0</top><width>340</width><height>56</height><aligny>center</aligny><font>bz_mm28</font><textcolor>C8FFFFFF</textcolor><label>$INFO[ListItem.Label]</label></control></itemlayout>
 				<focusedlayout height="56" width="390"><control type="image"><left>18</left><top>4</top><width>354</width><height>48</height><texture colordiffuse="$VAR[BzMMBarCol]">$VAR[BzATHiTex]</texture><visible>Control.HasFocus(7800)</visible></control><control type="label"><left>40</left><top>0</top><width>310</width><height>56</height><aligny>center</aligny><font>bz_mm28</font><textcolor>$VAR[BzMMFocTxt]</textcolor><label>$INFO[ListItem.Label]</label></control></focusedlayout>

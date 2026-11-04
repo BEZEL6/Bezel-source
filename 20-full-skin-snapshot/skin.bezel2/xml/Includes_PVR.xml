@@ -2,13 +2,13 @@
 <includes>
 	<!-- 5.33.12: universal fanart stage + colour strip for PVR windows (lock 3). stagew 840 = standard, 1680 = Guide widened exception -->
 	<include name="BezelPVRStage">
-		<param name="stagew" default="930"/>
+		<param name="stagew" default="bz_stage_w"/>
 		<definition>
 			<include>BezelBlack</include>
-			<include content="BezelFanartLayer"><param name="left" value="120"/><param name="top" value="120"/><param name="width" value="$PARAM[stagew]"/><param name="height" value="900"/></include>
+			<include content="BezelFanartLayer"><param name="left" value="bz_stage_x"/><param name="top" value="120"/><param name="width" value="$PARAM[stagew]"/><param name="height" value="900"/></include>
 			<control type="image"><!-- 5.33.14 Rob t160: TV fanart on stage (EPG art) when no fanart -->
 				<visible>String.IsEmpty(ListItem.Art(fanart)) + String.IsEmpty(ListItem.Art(tvshow.fanart)) + !String.IsEmpty(ListItem.EPGEventIcon)</visible>
-				<left>120</left><top>120</top><width>$PARAM[stagew]</width><height>900</height>
+				<left>bz_stage_x</left><top>120</top><width>$PARAM[stagew]</width><height>900</height>
 				<aspectratio>scale</aspectratio><fadetime>200</fadetime>
 				<texture background="true">$INFO[ListItem.EPGEventIcon]</texture>
 				<animation effect="fade" start="100" end="50" time="0" condition="true">Conditional</animation>

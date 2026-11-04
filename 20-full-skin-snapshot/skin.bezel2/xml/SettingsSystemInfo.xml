@@ -11,7 +11,7 @@
 		<control type="group"><left>570</left><top>120</top><include>BezelSecFadeIn</include>
 			<control type="image"><left>-570</left><top>-120</top><width>1920</width><height>1080</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/mm_glow_behind.png</texture></control>
 			<control type="image"><left>-570</left><top>-120</top><width>1920</width><height>1080</height><texture colordiffuse="26FFFFFF">bezel/mm_glow_behind.png</texture></control>
-			<control type="image"><left>90</left><top>0</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture><animation effect="fade" start="100" end="10" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),1)">Conditional</animation><animation effect="fade" start="100" end="20" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),2)">Conditional</animation><animation effect="fade" start="100" end="30" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),3)">Conditional</animation><animation effect="fade" start="100" end="40" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),4)">Conditional</animation><animation effect="fade" start="100" end="50" time="0" condition="String.IsEmpty(Skin.String(bz_at_mmbar)) | String.IsEqual(Skin.String(bz_at_mmbar),5)">Conditional</animation><animation effect="fade" start="100" end="60" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),6)">Conditional</animation><animation effect="fade" start="100" end="70" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),7)">Conditional</animation><animation effect="fade" start="100" end="80" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),8)">Conditional</animation><animation effect="fade" start="100" end="90" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),9)">Conditional</animation></control>
+			<control type="image"><left>90</left><top>0</top><width>bz_strip_w</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture><animation effect="fade" start="100" end="10" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),1)">Conditional</animation><animation effect="fade" start="100" end="20" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),2)">Conditional</animation><animation effect="fade" start="100" end="30" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),3)">Conditional</animation><animation effect="fade" start="100" end="40" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),4)">Conditional</animation><animation effect="fade" start="100" end="50" time="0" condition="String.IsEmpty(Skin.String(bz_at_mmbar)) | String.IsEqual(Skin.String(bz_at_mmbar),5)">Conditional</animation><animation effect="fade" start="100" end="60" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),6)">Conditional</animation><animation effect="fade" start="100" end="70" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),7)">Conditional</animation><animation effect="fade" start="100" end="80" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),8)">Conditional</animation><animation effect="fade" start="100" end="90" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),9)">Conditional</animation></control>
 		</control>
 		<control type="group"><left>683</left><top>140</top><include>BezelSecFadeIn</include><control type="label"><width>350</width><height>62</height><font>bz_mm48b</font><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[130]</label></control><control type="label"><left>2</left><top>62</top><width>350</width><height>26</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><label>$INFO[System.FriendlyName]</label></control></control><!-- (title moved into strip, 5.33.13) -->
 		<control type="multiimage">
@@ -159,58 +159,58 @@
 			<depth>DepthContentPanel</depth>
 			<include>BezelSecFadeIn</include>
 			<control type="grouplist" id="9000">
-				<left>660</left>
+				<left>bz_strip_x</left>
 				<top>240</top>
-				<width>390</width>
+				<width>bz_strip_w</width>
 				<height>900</height><itemgap>0</itemgap>
 				<onup>9000</onup>
 				<ondown>9000</ondown>
 				<onright>60</onright>
 				<control type="button" id="95"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
 					<description>Button Summary Values</description>
-					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<width>bz_strip_w</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
 					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
 					<label>$LOCALIZE[20037]</label>
 				</control>
 				<control type="button" id="94"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
 					<description>Button Storage</description>
-					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<width>bz_strip_w</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
 					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
 					<label>$LOCALIZE[13277]</label>
 				</control>
 				<control type="button" id="96"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
 					<description>Button Network</description>
-					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<width>bz_strip_w</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
 					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
 					<label>$LOCALIZE[13279]</label>
 				</control>
 				<control type="button" id="97"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
 					<description>Button Video</description>
-					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<width>bz_strip_w</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
 					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
 					<label>$LOCALIZE[13280]</label>
 				</control>
 				<control type="button" id="98"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
 					<description>Button Hardware</description>
-					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<width>bz_strip_w</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
 					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
 					<label>$LOCALIZE[13281]</label>
 				</control>
 				<control type="button" id="99"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
 					<description>Button PVR</description>
-					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<width>bz_strip_w</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
 					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
 					<label>$LOCALIZE[19191]</label>
 				</control>
 				<control type="button" id="100"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
 					<description>Button Privacy policy</description>
-					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<width>bz_strip_w</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
 					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
 					<label>$LOCALIZE[12389]</label>
 				</control>
 				<control type="button" id="101"><onback>SetProperty(bz_nav,true,home)</onback><!-- 5.33.179 BUG-024 (BUG-013 pattern): Back opens MM same frame as close, no underlay stop -->
 					<description>Button "Thank you!"</description>
-					<width>390</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
+					<width>bz_strip_w</width><height>60</height><font>bz_mm22</font><textoffsetx>23</textoffsetx><aligny>center</aligny>
 					<textcolor>C8FFFFFF</textcolor><focusedcolor>FF000000</focusedcolor><texturefocus border="23" colordiffuse="$VAR[BzMMBarCol]">bezel/mm_pill.png</texturefocus><texturenofocus/>
 					<label>$LOCALIZE[12396]</label>
 				</control>
