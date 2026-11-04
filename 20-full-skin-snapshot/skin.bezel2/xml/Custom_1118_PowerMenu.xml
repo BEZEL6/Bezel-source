@@ -5,7 +5,7 @@
 	<zorder>2</zorder><!-- 5.33.84 t534: above 1112 (zorder 1, hosts BezelNavMenu/Tuner) so Back-from-Tuner Power list draws on top -->
 	<!-- 5.33.203: drop always=true (BUG-002 pattern) + absolute SetFocus so first Down is not eaten by 6996→7800 handoff -->
 	<defaultcontrol>7800</defaultcontrol>
-	<onload>ClearProperty(bz_tunesrc,home)</onload><onload>SetProperty(bz_pwrswap,1,home)</onload><!-- t4943 K52: skip 6996 slides on POWER swap -->
+	<onload>ClearProperty(bz_tunesrc,home)</onload><onload>ClearProperty(bz_navtune,home)</onload><!-- 5.33.467 TUNERPWR (Rob: "the color strip is not drawn when exit from tuner menu"): Back on the Tuner rail opens 1118 first (463 TUNERBACKQ); 1118 is modal, so the rail's own ClearProperty(bz_navtune) waits until 1118 closes. Cleared here instead, before 1118's first frame: the screen is the normal power menu (MM strip chrome, dust), the Tuner is gone, and 1118 already holds the keys --><onload>SetProperty(bz_pwrswap,1,home)</onload><!-- t4943 K52: skip 6996 slides on POWER swap -->
 	<onload>CancelAlarm(bzpwrf,true)</onload><!-- 5.33.322 Rob t2409: kill a pending close-alarm SetFocus(6996) so it cannot steal focus after reopen -->
 	<onload>SetFocus(7800,0,absolute)</onload>
 	<onload>AlarmClock(bzpwrfoc,SetFocus(7800,0,absolute),00:00,silent,false)</onload><!-- 5.33.322 Rob t2409: re-assert absolute focus one tick later, after the 6996 -> 7800 hand-off settles, so the first Down moves SHUTDOWN -> QUIT -->
