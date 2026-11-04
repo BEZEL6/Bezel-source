@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.455
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.456
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 456 | "SMALL BLACK PULSE ON BIG ALBUM ON MUSIC START"; "TRANSPORT BAR LABELS … CENTERED"; "MM FADES BLACK THEN BACK"; "TUNER … REMOVE NAV LEGEND"; "GLOW TEXTURES"; "TITLE ON THE FANART STAGE … HIDDEN" | **IDLEHOLD**, **TRANSCENTRE**, **MMCLEANFADE**, **TUNERCLEAN**, **GLOWSHIFT**, **FSTITLE**, rewrite **P1A** |
 | 455 | "EXTEND THE FANART STAGE RIGHT … KEEP LIST AND COLOR STRIP SAME SIZE"; "MM MUST MOVE"; "DELETE THE GRID VIEWS" | **STAGEWIDE** (stage 120–1050, strip 660–1050, gap 90), **GRIDDEL** |
 | 454 | "ADD RECOMMENDED SPEEDS TO BUILD"; "CAN THE LIST FEEL MORE FLOATY"; "I PREFER FADE INS FOR ALL TRANSITIONS"; "KEEP SLIDES FOR BIG ALBUM" | **SPEEDS** (317 ms list, 300 ms idle cover), **FADEINS** |
 | 453 | "USE ONLY 1 CONTINUOUS UNBROKEN SWAY ANIM"; "THE PLAYING STYLE AND TEXTURES SHOULD BE FOR BOTH"; "NO RESET ON PLAY" | **ONESWAY**: one big album sway rig + one glare/dust/shadow set for idle and playing |
@@ -216,6 +217,42 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.456 — fixes on 455 + rewrite P1A
+One commit per fix, so each can be reverted on its own with `git revert` (branches `claude/5.33.456-wip`, then `claude/rewrite-p1`, built as `claude/5.33.456`):
+- **IDLEHOLD** (Rob: "small black pulse on big album on music start"):
+  - The idle A/B slots (`BezelMusicPlayingArt` idle stack) faded out on `Player.HasAudio` with `bz_at_midlefade` (300 ms since 454). That ran under the NP layer's 400 ms fade-in, so the crossfade dipped and the dark backing showed.
+  - The 14 slot conditions are now side-flip only (`bz_m_idle_side`). The NP layer fades over the opaque slots, and the idle group still hides at 1200 ms under the opaque playing cover.
+- **TRANSCENTRE** (Rob: "transport bar labels need to be centered for the new stage"):
+  - The `BezelNPInPlace` transport bar: STAGEWIDE had moved only its right half (+90).
+  - The left label and icon and the centre control moved +45, the right label and icon −45, so they are symmetric about x 585. The prev/next pills stay at 128 and 816–1042. 6 copies each, including the live shadows.
+- **MMCLEANFADE** (Rob: "transition in out from mm fades black then back can we just do a clean fade"):
+  - The section Background dim (`bz_at_mmdim`, 600 ms) ran while the MM art lane was still fading in (1500 ms), so the screen went dark and came back.
+  - The 22 mmdim fades (`BezelSecDim` + `MMHIDE` variants) now have `delay="1500"`. The exit reverse is immediate (Kodi reverses don't wait for the delay), and the lane fades out over the undimmed section.
+- **TUNERCLEAN** (Rob: "tuner menu remove nav legend and section labels that show in the art window on right"):
+  - 5 labels hidden in `Includes_Tuner` (`<visible>false</visible>`): both UP/DOWN legends, the rail section name (7001 Label) and its "N settings" line.
+- **GLOWSHIFT** (Rob: "glow textures need to be redone for new larger stage position"):
+  - The 17 `media/bezel/glow/mm_glow_*.png` textures are 960×540, drawn 1920×1080 at screen x 0. Each carries a soft strip-shaped panel baked at the old strip.
+  - They are shifted 45 px (90 on screen), with the left column replicated.
+  - Removing the panel was tried and dropped: the light effects (starburst, streaks, prism, rings) are painted through it. Rob: "skip glow".
+  - They aren't bundled (>512), so no xbt repack.
+- **FSTITLE** (Rob: "title displayed on the fanart stage in kodi music fullscreen … hidden all the time, only cycle pill on fanart should hide it"):
+  - In `MusicVisualisation.xml`, `BezelFSMeta` was included before `BezelNPInPlace`, whose block (`bg=true`: black + artist fanart, 120–1050) is opaque. The meta was always covered. The panel's own title is off in viz by design.
+  - The meta is now included after the panel. Its FANART-pill hide (`bz_npm_fan`, Tuner override `bz_fschrome_fan`) is unchanged.
+- **P1A** (rewrite step 1):
+  - New constants `bz_stage_x` 120, `bz_stage_w` 930, `bz_strip_x` 660 and `bz_strip_w` 390. The unused `bz_block_x` is now 660.
+  - 395 exact-value literals and include params use them.
+  - `tools/geom455`: 18,603 resolved controls, 0 boxes changed, and no constant appears outside position tags.
+- **Not changed:** the Up Next "playing item drawn multiple times" report and the glow remake (Rob: skip).
+- **Plan for the rewrite:** `REWRITE_PLAN.md` (repo root on `claude/5.33.456`, project `claude/REWRITE_PLAN.md`, Downloads).
+- **Check:**
+  - Start and stop a song (no dark blink).
+  - Fullscreen music transport centred.
+  - MM in and out is a plain fade.
+  - Tuner art window has no legend or section name.
+  - MM glow sits behind the strip.
+  - Kodi fullscreen music shows the title and progress on the fanart stage, hidden only with the cycle pill on FANART.
+- **Static checks only:** XML parses, reference audit clean, geometry diffed. Not device-tested.
 
 ## 5.33.455 — STAGEWIDE + GRIDDEL
 - **STAGEWIDE** (Rob: "extend the fanart stage right to lessen the gap to the artwork, keep list and color strip same size give extra space to fanart"; picked "Strip moves right", "Gap 90 (+90)"; "mm must move to new fanart stage position"):
