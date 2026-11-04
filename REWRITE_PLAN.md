@@ -155,5 +155,14 @@ Kodi facts checked in source: zoom without centre uses the control's own rect (s
 (none exist in BEZEL); constants resolve in `end`/`start`/`center` attributes but whole-value only.
 - [x] part 1 (d35f4d1 / bc5ab22): 98 containers at old strip x 570 -> bz_strip_x. Strip test 859 -> 2,662.
 - [x] part 2 (4eb21f5): 29 groups at x 0 holding only strip content -> bz_strip_x. Strip test 3,085.
-- [ ] remaining ~1,800 strip controls: library list (zoom group 86.67 + slide 620.84, needs P1C), Includes_Bezel 513
-      main-menu group (inherits 120), root-level window controls (ChooseArt, Refresh: need a wrapping group), info dialogs.
+- [x] part 3 (c77e443): 165 absolute strip elements (640 uses) wrapped in `<control type="group"><left>bz_strip_x</left><!-- P1B -->`,
+      lefts/param origins/own centres -660 (`p1b_wrap.py`; compare with `unwrap_cmp.py`, which drops the marked wrappers).
+      Strip test: **4,829 of 4,885** strip controls follow. Left on purpose: BigAlbum casts (strip in 1122, art elsewhere),
+      grouplist children, legacy PVR windows.
+- [x] P1C (87b143a): `bz_fill_w` 540 (= bz_strip_x - bz_stage_x) on the 18 stage fills; 60 screen-level 120 -> bz_stage_x;
+      31 screen-level 1140 -> bz_art_x (`p1c.py`). Old `bz_block_x`/`bz_block_w` (390) = the strip in old naming, unused (P3).
+- **Moving the strip now:** change `bz_strip_x`, and with it `bz_strip_nx` (= -bz_strip_x), `bz_strip_tostage`
+  (= bz_stage_x - bz_strip_x) and `bz_fill_w` (= bz_strip_x - bz_stage_x). All four sit together in Includes_Bezel ~2570.
+  Not covered: the library list slide 620.84 inside the zoom 86.67 group, and animation centres written as "x,y".
+- [ ] P1D (fold inline strip copies into shared includes): not started. Judgment-heavy, one window per commit.
+- [ ] Build 457 = P1B + P1C, waiting for Rob's go. Device check: every strip window looks and moves exactly as 456.
