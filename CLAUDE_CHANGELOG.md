@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.468
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.469
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 469 | "EXIT FROM TUNER THEN ATTEMPT TO RE ENTER TUNER DOES NOT WORK"; "DISABLE THE MM MENU SLIDE"; "AUTO UNFOCUS PILLS, AFTER 5 SECONDS OF INACTIVITY FOCUS RETURNS TO LAST POSITION" (all pills + A-Z bar, back to where focus came from) | **TUNERREOPEN** (no Tuner-flag clears after a modal opens), **MMNOSLIDE**, **PILLIDLE** (mm_autohide, 4 Hz) |
 | 468 | "CAST SHADOW ONLY VISIBLE WHEN MUSIC IS PLAYING, IT SHOULD BE ACTIVE ALL TIMES"; "DONT NEED THE FIXED, JUST THE DEFAULT GROW AND FADE"; "CAN WE ADD ANOTHER LAYER TO THE LIT DUST?" → second spin, album + poster, "same texture as mm dust", "all in 468" | **CASTIDLE** (no bz_audio_latch gate on the cast fades / stub casts), **CASTFIXEDDEL** (static cast copies + Tuner row removed), **LITSPIN2** (mirrored counter-rotating spin disc) |
 | 467 | "THE COLOR STRIP IS NOT DRAWN WHEN EXIT FROM TUNER MENU"; P2.6 ("I WILL GIVE YOU A LOG"); "INCLUDE ALL TOGETHER" | **TUNERPWR** (1118 clears bz_navtune on load) + revert 465 **TUNERHIDE**; rewrite **P2.6a OWNSHADOW** (`_v60_set` skips the read of an unchanged value it wrote) |
 | 466 | "MUSIC ALBUM SECTION USES AN OLD LIST AND NOT THE NEWER ALBUM LIST", "AS WELL AS RECENT PLAYED"; "MUSIC GENRES HAS UNWANTED META DATA DRAWN BEHIND THE LIST" (screenshot) | **ALBUMCOVER** (covercol for every music albums list, no bz_albumlist), **ALBUMPILL**, **GENREMETA** (old strip info card hidden whenever list 60 is up) |
@@ -229,6 +230,21 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.469 — TUNERREOPEN + MMNOSLIDE + PILLIDLE
+Branch `claude/5.33.469` (468 + one commit per item). Rob's 468 kodi.log: poster_clock getProperty 284/s (465) → ~186/s, so 467 OWNSHADOW saves ~100 Kodi calls/s (mock said 86); no skin errors. Rob: controls / info "minimized Kodi issue", A-Z stage shift "disregard".
+- **TUNERREOPEN** (Rob: "exit from tuner then attempt to re enter tuner does not work"; since 463 TUNERBACKQ):
+  - Kodi runs a modal dialog's render loop inside `ActivateWindow`, so the rail Back actions after `ActivateWindow(1118)` (and the FS path's `ActivateWindow(1121)` / `ActivateWindow(1115)`) only run once those close. The old trailing `ClearProperty(bz_navtune)` / `ClearProperty(bz_tunesrc)` then ran after the power menu TUNER row (or the 1115 Tuner button 6413) had just reopened the Tuner, and switched it off.
+  - Power path: only `ActivateWindow(1118)`; 1118's onload clears both flags (467 TUNERPWR). FS controls path: `ClearProperty(bz_nav / bz_navtune / bz_tunesrc)` first, then 1121 / viz + 1115. The trailing clears are gone.
+- **MMNOSLIDE** (Rob: "disable the mm menu slide"; confirmed "keep"): list 6996's Visible slide (−390 → 0, 210 ms) and Hidden slide (0 → +390, 180 ms) removed. The mini-player 120 px shift (`bz_mpup`) and every fade stay.
+- **PILLIDLE** (Rob: "auto unfocus pills, after 5 seconds of in activity focus returns to last position"; all pills + the A-Z bar; "where focus came from"):
+  - `mm_autohide` (already reads `getGlobalIdleTime` at 20 Hz) calls `_pill_idle` every 5th tick (4 Hz): `System.CurrentControlId` + current window / dialog id.
+  - Pills: list FULLSCREEN 6886, cycle 6391 (Kodi FS) / 6421 (fanart FS), big album 6401, MM header 6958–6961 / 6910 (only while the MM is up and no submenu, since a submenu row reuses 6961), A-Z letters 6101–6127. Not pills: dialog buttons (OK / Cancel, keyboard, Settings tabs), the ALL rows.
+  - Off a pill, the focused control and window are remembered. On a pill with idle ≥ 5 s: `SetFocus` the remembered control if it was in the same window, else the pill's home (60, 6390 / 6420 / 6400, 6996). One shot per idle period (re-armed on input or focus change). List 60 / 6996 keep their row.
+  - Cost: ~8 Kodi calls/s.
+  - Mock: focus 60 → 6886, idle 6 s → one `SetFocus(60)`.
+- **Static checks + mock.** Not device-tested.
+- **Check:** Tuner → Back → power menu → TUNER → the Tuner opens; Music Controls → Tuner → Back → Tuner button → opens. MM opens / closes without the row slide. Leave focus on FULLSCREEN, a cycle pill, the big album pill, an MM header pill or an A-Z letter for 5 s → focus back where it was.
 
 ## 5.33.468 — CASTIDLE + CASTFIXEDDEL + LITSPIN2
 Branch `claude/5.33.468` (467 + one commit per fix). Rob: all three in one build.
