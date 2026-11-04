@@ -1,4 +1,4 @@
-5.33.466 (2026-11-04)
-- ALBUMCOVER: Music Albums, Recently played / added and albums under Genres / Years use the album cover list (cover on top, rows under it), like an artist's albums.
-- GENREMETA: Genres (and other music folders) no longer show the old GENRE / ARTIST ALBUMS / ARTIST SONGS info card behind the list.
+5.33.467 (2026-11-04)
+- TUNERPWR: Back from the Tuner to the power menu shows the normal power menu again, colour strip included (465 hid the strip with the Tuner).
+- OWNSHADOW (rewrite P2.6, step 1): the poster / album art helper stops re-reading values it wrote itself, about 85 fewer Kodi calls per second. Nothing changes on screen; A/B against 466.
 

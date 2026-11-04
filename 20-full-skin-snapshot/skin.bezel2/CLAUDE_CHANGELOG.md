@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.466
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.467
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 467 | "THE COLOR STRIP IS NOT DRAWN WHEN EXIT FROM TUNER MENU"; P2.6 ("I WILL GIVE YOU A LOG"); "INCLUDE ALL TOGETHER" | **TUNERPWR** (1118 clears bz_navtune on load) + revert 465 **TUNERHIDE**; rewrite **P2.6a OWNSHADOW** (`_v60_set` skips the read of an unchanged value it wrote) |
 | 466 | "MUSIC ALBUM SECTION USES AN OLD LIST AND NOT THE NEWER ALBUM LIST", "AS WELL AS RECENT PLAYED"; "MUSIC GENRES HAS UNWANTED META DATA DRAWN BEHIND THE LIST" (screenshot) | **ALBUMCOVER** (covercol for every music albums list, no bz_albumlist), **ALBUMPILL**, **GENREMETA** (old strip info card hidden whenever list 60 is up) |
 | 465 | "TUNER MENU EXITS BUT IS STILL DRAWN"; "OLD FULLSCREEN FANART VIZ IS LEFT IN THE CODE" (fanart overlay + cycle pill at the old upper-right spot, back from the big album) → "REMOVE ANYTHING OLD"; "ANY REWRITE OPTIMIZATION" | **TUNERHIDE**, **DEL1104**, **OLDPILL**, **OLDNP** (old Now Playing dialog 1112 + routes → 1121 / Kodi FS), rewrite **P3.4–P3.6** (parked controls, grid 6600 conditions, grid script actions) |
 | 464 | "CAN CLOCK AND EVENT BE TRIED NEXT?" → "CLOCK" | rewrite **P2.4 SWAYEPOCH**: poster sway epoch = album idle clock bt0 (was its own art0). Event-driven playback (P2.5) dropped: ~25 mostly compound checks, ~2–3% saving, timing risk |
@@ -227,6 +228,21 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.467 — TUNERPWR + revert TUNERHIDE + rewrite P2.6a OWNSHADOW
+Branch `claude/5.33.467` (466 + 3 commits). Rob: "include all together".
+- **TUNERPWR** (Rob: "the color strip is not drawn when exit from tuner menu"; caused by 465 TUNERHIDE):
+  - The MM strip chrome (BezelNavMenu) is alpha 0 while `bz_navtune` is set; the Tuner card draws its own copy. 465 hid the whole card while 1118 was up, and `bz_navtune` stayed set (the rail's ClearProperty waits for modal 1118 to close), so no strip was drawn.
+  - 1118 now runs `ClearProperty(bz_navtune,home)` in its onload, before its first frame (GUIDialog `Open_Internal`: WINDOW_INIT, then the render loop). The screen is exactly the normal power menu from the MM (strip chrome, dust); the Tuner is gone; 1118 already holds the keys, so 463 quick Back stays safe. 1118 is never opened with the Tuner meant to stay.
+  - 465 TUNERHIDE (`!Window.IsVisible(1118)` on group 6975) reverted as its own commit; no longer needed.
+- **P2.6a OWNSHADOW** (Rob's 465 kodi.log, 10 min, 15 perf lines: ~2,930 Kodi calls/s idle; poster_clock 780, ab_clock 575, nav_menu 565, sway_clock 443, mm_warm 270, mm_autohide 96; getProperty the largest share):
+  - `_v60_set(k, v)` (get-compare-set for the 1122 poster / album mirror: `bz_v60_*`, `bz_vpl_on`, `bz_m60_art`, `bz_m_idle_*`, `bz_m_np_art`, `bz_a2p_hold`, `bz_vmus`, `bz_mmh_logo/title`, `bz_v60_mov/tv`) keeps a dict of the last value it wrote. Same value again → no Kodi read, no write. First use in a run or a changed value → reads Kodi first, as before.
+  - Safe because every one of these keys is written only through `_v60_set`: no XML Set/ClearProperty, no other script. The one direct write (`bz_vmus` clear in `m_mirror`) now goes through `_v60_set`; the exit cleanup runs after the threads stop. A skin reload drops `bz_flip_running`, so a new bz_flip (fresh dict) takes over.
+  - Not 446 TICKCACHE: that cached reads of state other code changes; this only remembers the script's own writes. No timing or poll interval changed.
+  - Mock A/B (6 s, Movies list focused): poster_clock getProperty 285/s → 199/s (the real log shows 284/s); the same keys written the same number of times.
+  - Left for later P2.6 steps: sway_clock's own flags, nav_menu. ab_clock / mm_warm (locked mm-warm system) not touched.
+- **Check:** Tuner: Back on the rail → power menu with the colour strip, no Tuner; Back → MM. Posters / album art / MM art behave as 466. Next kodi.log: poster_clock gp ≈ 200/s.
+- **Static checks + mock A/B.** Not device-tested.
 
 ## 5.33.466 — ALBUMCOVER + ALBUMPILL + GENREMETA
 Branch `claude/5.33.466` (465 + one commit per fix). P2.6 waits for Rob's 465 kodi.log.
