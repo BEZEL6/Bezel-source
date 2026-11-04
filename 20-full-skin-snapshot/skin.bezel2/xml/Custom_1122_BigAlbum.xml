@@ -57,13 +57,6 @@
 				<animation effect="fade" start="0" end="100" time="600" delay="480" tween="sine" easing="inout">Visible</animation><animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout">Hidden</animation>
 				<include>BezelNPCompactBar</include>
 			</control>
-			<!-- 5.33.463 UPNNPBAR (Rob: "add a np bar when up next is trigger in kodi fullscreen"; picked compact NP bar, under the big album, fades in with Up Next,
-			     back to fanart fades it out, Kodi FS + 1121): the same compact bar as VIZNPBAR, at the album's home position (Up Next keeps the album home: bz_railc off).
-			     Gate = the viz Up Next gate (bz_np + bz_npm_upn + !1121) + viz chrome (bz_fsnp). 1121 draws its own copy. -->
-			<control type="group"><visible>Window.IsActive(visualisation) + String.IsEqual(Window(Home).Property(bz_fsnp),true) + $EXP[bz_np] + $EXP[bz_npm_upn] + !Window.IsVisible(1121) + !$EXP[bz_railc] + Player.HasAudio</visible>
-				<animation effect="fade" start="0" end="100" time="300" tween="sine" easing="inout">Visible</animation><animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout">Hidden</animation>
-				<include>BezelNPCompactBar</include>
-			</control>
 		</control><!-- /6400 -->
 	</controls>
 </window>
