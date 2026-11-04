@@ -1,3 +1,6 @@
+5.33.452 (2026-11-03)
+- GLARECONT (Rob: "SONG START RESTARTS GLARE AND DUST ON BIG ALBUM? IT SHOULD BE UNBROKEN ANIMATION"): the playing big album's glares (and the lit dust inside them) still ran their old start-up lead-in on a song start (4.7 s dark, then a 2.7 s fade in) although the album sway runs on without a restart since 5.33.415. The lead-in now only plays while the sway itself is leading in (as the colour-strip cast already did), so on a song start the glare + dust follow the running sway from the first frame.
+
 5.33.451 (2026-11-03)
 - ALLCOUNT (Rob: "SOME ARTIST DONT SHOW THE ALL ALBUM FOLDER EVEN WITH MULTI ALBUMS"): Kodi's Container.NumItems never counts the parent '..' row; the 443 ALL rule assumed it did, so artists with exactly 2 albums (with '..' in the list) got no ALL ALBUMS row. Rule now: real rows = NumItems minus Kodi's hidden *All row; ALL shows at 2+.
 - L2PULL (Rob screenshot: music level 2 list not on the small album's bottom edge, ALL ALBUMS over the last album): artist album lists with no '..' and Kodi's hidden *All in the first slot were pulled up only half a row. Now a full row, so the first album sits on the small album's bottom edge and ALL ALBUMS lands under the last album.

@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.451
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.452
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 452 | "SONG START RESTARTS GLARE AND DUST ON BIG ALBUM? IT SHOULD BE UNBROKEN ANIMATION" | **GLARECONT**: playing-album glare lead-in only while the sway leads in |
 | 451 | "SOME ARTIST DONT SHOW THE ALL ALBUM FOLDER EVEN WITH MULTI ALBUMS, SCROLL TO END OF LIST NAVS TO HOME"; L2 screenshot (gap under small album, ALL over last album) | **ALLCOUNT**, **L2PULL**, **NOWRAPGUARD** |
 | 450 | "ADD NP BAR TO KODI FULLSCREEN VIZ WHEN BIG ALBUM IS CENTER" ("only the FS fanart dialogue fullscreen") | **VIZNPBAR**: compact NP bar under the centred album in Kodi FS viz, drawn in 1122 |
 | 449 | "2 AND 5" (optimizations: texture packing, list conditions) | **XBTPACK**: media/Textures.xbt with the 1128 small textures |
@@ -212,6 +213,17 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.452 — GLARECONT (playing big album glare + lit dust unbroken on song start)
+- **Cause:** in BezelMusicPlayingArt, the 4 long-sway glare groups (glare A + glare B, cover layers A and B, lit dust inside) carry a lead-in `Conditional fade 0→100 time 2700 delay 4700` on `String.IsEmpty(bz_sway_hold)` only.
+  - It was built for the pre-415 sway, which restarted from flat on every play (glare dark through the 2.4 s hold + 5 s lead-in).
+  - Since 415 SWAYCONT, `bz_sway_go` / `bz_sway_pulse` stay on, so at a song start the album resumes or starts its pulse at once. The glare lead-in, however, ran (first draw / 1122 reopen) and multiplied the pulse by 0 for 4.7 s, then faded it in: glare and dust "restarted" while the album kept swinging.
+  - The colour-strip cast lead-in already had `+ String.IsEmpty(bz_sway_pulse)`.
+- **Change:** the 4 lead-ins get `+ String.IsEmpty(Window(Home).Property(bz_sway_pulse))`.
+  - While the pulse runs, they don't play. reversible=false, so when the pulse arrives at 7.4 s the lead-in (already at 100) just drops.
+  - A real sway restart (`bz_sway_restart`: viz / playlist onload, hold → clock re-zeroed → pulse cleared) still plays the lead-in as before.
+  - The pulse anims, shapes and the short sway are unchanged.
+- **Check:** start a song from stopped, from the list, MM and FS. Glare A and the left dust are lit at the −13 hold and follow the swing with no dark gap. Next / Prev and album change: no glare dip. Stop, then play again: same.
 
 ## 5.33.451 — ALLCOUNT + L2PULL + NOWRAPGUARD
 - **ALLCOUNT:** Kodi 21 `GUIBaseContainer::GetLabel(CONTAINER_NUM_ITEMS)` returns `size − 1` when item 0 is the parent folder. So `Container(60).NumItems` never counts `..`, but `ListItemAbsolute(n)` does index it.
