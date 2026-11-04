@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.470
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.471
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 471 | "I WANT THE OVERALL SECTION SWITCHES FADES AND ARTWORK LOADING TO BE FASTER AND SMOOTHER"; "CAN YOU JUST MAKE CHANGES TO MAKE IT FASTER" | **FASTPACK** (7 faster timing picks, one-time seed on existing installs), rewrite **P2.6b SWAYSHADOW** |
 | 470 | "NP BAR SHOWN WHEN BIG ALBUM IS CENTER IN BOTH FULLSCREEN, BIG ALBUM NP BAR HIDE WHEN SWITCH BACK TO FANART STAGE" (+ remove the Up Next fanart bar); new dust defaults; "BEZEL FEELS SLOW WHEN NEW LISTS ARE LOADED" (all four: wait, cascade, big lists, folder open) | **CENTREBAR**, revert 463 **UPNNPBAR**, **DUSTDEF**, **ENTRYHOLD** (0.6 → 0.35 s), **LISTTIME** (`BEZEL list` log) |
 | 469 | "EXIT FROM TUNER THEN ATTEMPT TO RE ENTER TUNER DOES NOT WORK"; "DISABLE THE MM MENU SLIDE"; "AUTO UNFOCUS PILLS, AFTER 5 SECONDS OF INACTIVITY FOCUS RETURNS TO LAST POSITION" (all pills + A-Z bar, back to where focus came from) | **TUNERREOPEN** (no Tuner-flag clears after a modal opens), **MMNOSLIDE**, **PILLIDLE** (mm_autohide, 4 Hz) |
 | 468 | "CAST SHADOW ONLY VISIBLE WHEN MUSIC IS PLAYING, IT SHOULD BE ACTIVE ALL TIMES"; "DONT NEED THE FIXED, JUST THE DEFAULT GROW AND FADE"; "CAN WE ADD ANOTHER LAYER TO THE LIT DUST?" → second spin, album + poster, "same texture as mm dust", "all in 468" | **CASTIDLE** (no bz_audio_latch gate on the cast fades / stub casts), **CASTFIXEDDEL** (static cast copies + Tuner row removed), **LITSPIN2** (mirrored counter-rotating spin disc) |
@@ -231,6 +232,18 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.471 — FASTPACK + rewrite P2.6b SWAYSHADOW
+Branch `claude/5.33.471` (470 + 2 commits). 470 zip also at `github.com/BEZEL6/Bezel/raw/claude/downloads/` (releases are blocked for this session).
+- **FASTPACK** (Rob: "i want the overall section switches fades and artwork loading to be faster and smoother to make bezel feel fast"; "can you just make changes to make it faster"):
+  - Rob's 468 log: Movies → TV warm switch `took=1.326s` with `park=0.20 xf=1.00`.
+  - New picks (Tuner steps), in `bz_tune.json` DEF and a new `FAST` block: Section fade `mmsecfade` 7 → 5 (1.0 → 0.5 s; read live by bz_flip mm_warm as `_xf`), Menu open / close 7 → 10 (400 / 350 → 286 / 250 ms, baked by bz_tune_patch), MM-open art crossfade `mmxfade` 3 → 2 (1000 → 500 ms, `BZMMXF` fadetime), Fanart fade 5 → 4 (200 → 150 ms), Cascade speed 7 → 10 (row time 400 → 286 ms) + stagger 8 → 4 (60 → 30 ms): the 15th row lands at ~0.69 s instead of ~1.38 s.
+  - Applied once on existing installs: Home onload runs `bz_tune.py fastseed` when `bz_fastseed` ≠ 5.33.471 (only after the DEF seed); it writes just these 7 strings, sets the flag, re-bakes (`bz_tune_patch.patch`) and reloads the skin if a file changed. No other Tuner setting is touched; a fresh install gets the same values from the DEF seed.
+  - Not changed: the locked parts (leaf flip, MM warm code, the 1500 ms MM art lane), row scroll (Rob's 0.7x "floaty"), park 0.2 s (already the minimum).
+  - Mock: `fastseed` → the 7 `Skin.SetString`, `bz_fastseed`, patch, `ReloadSkin()`.
+- **P2.6b SWAYSHADOW:** `bz_sway_t0 / _hold / _go / _pulse / _pulse2` are written only by sway_clock (and the exit cleanup after the threads stop; no XML writes, no other script). sway_clock, `_sway_anchor` and `_bz_cast` (same thread) read them through `_swg` (last written value; first read from Kodi), writes through `_sws`; Kodi still sees the same writes on the same ticks. Mock A/B (6 s): sway_clock getProperty 234/s → 100/s.
+- **Check:** first start reloads the skin once; section switches, menu open / close, the MM art crossfade and the row cascade are quicker; Tuner > Main menu / List show the new values; album / poster sway and glare as before. Next kodi.log: sway_clock ≈ 300/s (was ~460).
+- **Static checks + mock.** Not device-tested.
 
 ## 5.33.470 — CENTREBAR + revert UPNNPBAR + DUSTDEF + ENTRYHOLD + LISTTIME
 Branch `claude/5.33.470` (469 + one commit per item). Rob: "go for all".

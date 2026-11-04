@@ -1,7 +1,4 @@
-5.33.470 (2026-11-04)
-- CENTREBAR: the NP bar shows under the centred big album in both fullscreens (Kodi FS and fanart FS) and fades out when you switch back to the fanart stage.
-- The 463 NP bar under the home album during the Up Next fanart list is removed.
-- DUSTDEF: new Tuner defaults: ambient dust, distant dust and ambient spin on, spin size 90% (Tuner > Dust > Reset applies them).
-- ENTRYHOLD: entering a section, rows show after 0.35 s instead of 0.6 s.
-- LISTTIME: kodi.log gets one "BEZEL list" line per folder change, for tracking slow lists.
+5.33.471 (2026-11-04)
+- FASTPACK: faster timing: section fade 0.5 s (was 1.0 s), menu open / close 1.4x, MM art crossfade 0.5 s (was 1 s), fanart fade 150 ms, row cascade 1.4x with 30 ms stagger (last row ~0.7 s, was ~1.4 s). Applied once on start; every value can be changed back in the Tuner.
+- SWAYSHADOW (rewrite P2.6b): the sway clock stops re-reading its own flags, about 135 fewer Kodi calls per second. Nothing changes on screen.
 
