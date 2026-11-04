@@ -183,3 +183,13 @@ Kodi facts checked in source: zoom without centre uses the control's own rect (s
       Suspects: `cw_build` thread start-up; fpop / album_id / allcnt sharing one thread when a call is slow; GIL scheduling.
 - Next candidates (Python, one per build, A/B): P2.4 one sway clock. Or skip ahead to P3 dead code (XML only, safer).
 - Build hygiene: `py_compile` leaves `scripts/__pycache__` in the snapshot. Delete it before zipping.
+
+## 7. Progress log (460 MMDIMQUICK, P3, branch `claude/5.33.461` on 460)
+- [x] Build 460 MMDIMQUICK: Rob on 458: MM backgrounds "row switch looks bad, open / close looks bad"; "457 very smooth and
+      responsive"; picked "Quick dim, no wait". 458 MMNODIM reverted, and the 456 1.5 s delay removed: the 22 mmdim fades = 455.
+- [x] P3.1 (75be3d9): 31 unused includes + 14 unused expressions removed. P3.2 (9d1bd7b): 313 unused variables + 1 include.
+      P3.3 (81928d9): the last 4 variables. The audit (`tools/rewrite/audit.py <skin>`) is now clean: 0 unused. Removal tool:
+      `tools/rewrite/rmdefs.py` (text-level, byte-identical elsewhere). Each pass: XML parses, no dangling ref, geometry identical.
+      Tuner patcher (`bz_tune_patch.patch`) run on a copy: still applies and parses, same files change as on 460.
+- [ ] P3.4 parked `<visible>false</visible>` controls (57, 20 files; keep TUNERCLEAN's 5), the always-false 6600 grid
+      conditions, the bz_cmd grid actions + nav_menu `bz_grid_*` checks (Python, so with P2.6). Legacy windows: leave.
