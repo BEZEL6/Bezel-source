@@ -165,4 +165,16 @@ Kodi facts checked in source: zoom without centre uses the control's own rect (s
   (= bz_stage_x - bz_strip_x) and `bz_fill_w` (= bz_strip_x - bz_stage_x). All four sit together in Includes_Bezel ~2570.
   Not covered: the library list slide 620.84 inside the zoom 86.67 group, and animation centres written as "x,y".
 - [ ] P1D (fold inline strip copies into shared includes): not started. Judgment-heavy, one window per commit.
-- [ ] Build 457 = P1B + P1C, waiting for Rob's go. Device check: every strip window looks and moves exactly as 456.
+- [x] Build 457 = P1B + P1C (built 2026-11-04). Rob on device: "looks good so far".
+
+## 6. Progress log (P2 + fixes, branch `claude/5.33.458`, based on 457)
+- [x] 458 MMNODIM (a46ce55): Rob, on 457: the 456 MMCLEANFADE 1.5 s dim delay "makes it look broke"; "just have it fade in quick.
+      no fade out of section". The 22 `bz_at_mmdim` fades are removed from BezelSecDim / BezelSecDimArt, so the section isn't dimmed
+      under the MM. The Tuner "Background dim" row no longer affects the MM. The MM art lane fade (1500, locked mm-warm system) is unchanged.
+- [x] P2.1 (3f89855): `grid_sync` deleted. 6600 doesn't exist since GRIDDEL; idle branch only. `bz_gpend` still cleared by the
+      MyVideoNav onload AlarmClock. Left for P3: bz_cmd `gridenter/gridclick/gridfocus`, the 41 XML `6600` conditions (always false),
+      `bz_gslot`/`bz_gtitle` consumers. Left for P2.6: nav_menu `bz_grid_*` checks (~1298, ~1340).
+- [x] P2.3 (feb53ab): sway_clock no longer sets `bz_big_go` / `bz_big_pulse` (unread since 453). Exit cleanup still clears them.
+- [ ] P2.2 merge the slow watchers (km_leave_watch, fpop_clock, allcnt, album_id, cw_clock) into one loop. This changes poll
+      timing, so it gets its own build and an A/B.
+- Build hygiene: `py_compile` leaves `scripts/__pycache__` in the snapshot. Delete it before zipping.
