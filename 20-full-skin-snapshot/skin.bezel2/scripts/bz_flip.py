@@ -532,8 +532,11 @@ if home.getProperty('bz_flip_running') != 'true':
         # with no music a free-running epoch (set once) stands in. Published as Home bz_art_t0.
         t = sway['t0']
         if t is None:
-            if sway.get('art0') is None: sway['art0'] = time.time()
-            t = sway['art0']
+            # 5.33.464 SWAYEPOCH (rewrite P2.4): with no music the stand-in epoch is the album's own idle clock bt0 (sway_clock, 415 SWAYCONT),
+            # created here if poster_clock asks first. It was a separate art0, set a moment apart by another thread, so the poster sway grid
+            # sat off the album grid by that start-up gap (and kept it after music started, since the latch continues bt0).
+            if sway.get('bt0') is None: sway['bt0'] = time.time()
+            t = sway['bt0']
         return t
     def _art_sw_anchor(now_):
         # Poster flags: pswayon at sw+4, ppulse at sw+9. Album: go at t0+2.4, pulse at t0+7.4.
