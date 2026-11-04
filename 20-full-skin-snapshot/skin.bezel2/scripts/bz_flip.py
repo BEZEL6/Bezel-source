@@ -325,7 +325,7 @@ if home.getProperty('bz_flip_running') != 'true':
                     if aid == '0': aid = ''
                 if aid: home.setProperty('bz_albumid', aid)
                 else: home.clearProperty('bz_albumid')
-            if mon.waitForAbort(0.5): break
+            yield 0.5   # 5.33.459 P2.2: runs in slow_watch (was its own thread, waitForAbort(0.5))
     # 2.0a1: movies / TV poster (BEZEL list 60 in the video window). bz_psway is set after 5 s on one title (the poster eases
     # 0 -> 24 deg in 5 s), bz_ppulse 5 s later (the 20 s sway + glares, same as the album art). Both clear on a new title, so the
     # poster eases back to flat. The tap flip (bz_vback) shows the info back; it closes after 15 s without input (not while a
@@ -723,7 +723,7 @@ if home.getProperty('bz_flip_running') != 'true':
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
             if not bz_km.on_bezel():
                 bz_km.leave(); home.clearProperty('bz_flip_running'); return
-            if mon.waitForAbort(1.0): return
+            yield 1.0   # 5.33.459 P2.2: runs in slow_watch
     def albview_a():   # 5.33.237 t1843 view A: hold 3B album panel at album/disc level (bz_albva); D (default) = disc headers in list rows
         last = None
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
@@ -754,7 +754,7 @@ if home.getProperty('bz_flip_running') != 'true':
             elif home.getProperty('bz_albvd'):
                 home.clearProperty('bz_albvd')
             if mon.waitForAbort(0.1 if d_on else 0.25): return
-    _bzstart(km_leave_watch)
+    # 5.33.459 P2.2: km_leave_watch now runs in slow_watch (started after cw_clock below)
     # 5.33.274 t2094: old music view types removed from options; clear leftover A/grid bools once so the 3-level list is the only view
     for _b in ('bz_albview_a','bz_grid_music','bz_grid_video'):  # 5.33.455 GRIDDEL: video grid deleted too
         if xbmc.getCondVisibility('Skin.HasSetting(%s)' % _b): xbmc.executebuiltin('Skin.Reset(%s)' % _b)
@@ -777,8 +777,7 @@ if home.getProperty('bz_flip_running') != 'true':
                     last[1] = v
                     if v: home.setProperty('bz_fpop', v)
                     else: home.clearProperty('bz_fpop')
-            if mon.waitForAbort(1.0): break
-    _bzstart(fpop_clock)
+            yield 1.0   # 5.33.459 P2.2: runs in slow_watch
 
     # UNDERADV (Rob t3741 / t3910): while the MM is open over a list (list text hidden), quietly step the underlay list 60 so the
     # fanart / poster changes. Hold N s after the MM opens, then one step every D s (wraps). Closing the MM / Select lands on the
@@ -974,7 +973,7 @@ if home.getProperty('bz_flip_running') != 'true':
         import re as _re
         key = None
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
-            if mon.waitForAbort(0.4): break
+            yield 0.4   # 5.33.459 P2.2: runs in slow_watch
             cv = xbmc.getCondVisibility
             if not cv('Control.IsVisible(6097) | Control.IsVisible(6098) | Control.IsVisible(6088) | Control.IsVisible(6089)'): continue
             fp = xbmc.getInfoLabel('Container.FolderPath')
@@ -997,7 +996,6 @@ if home.getProperty('bz_flip_running') != 'true':
             if key == xbmc.getInfoLabel('Container.FolderPath'):
                 if txt: home.setProperty('bz_allcnt', txt)
                 else: home.clearProperty('bz_allcnt')
-    _bzstart(allcnt)
     def mm_warm():
         WARM = {'music': ('Music', 'musicdb://artists/'),   # 5.33.164: MM Music underlay always Artists (art only); Select uses bz_lastmusic via bz_mm 'recent': ('Music', 'musicdb://recentlyplayedalbums/'),
                 'movies': ('Videos', 'videodb://movies/titles/'), 'tv': ('Videos', 'videodb://tvshows/titles/')}
@@ -1621,7 +1619,6 @@ if home.getProperty('bz_flip_running') != 'true':
     _bzstart(drum_dir)
     _bzstart(nav_menu)
     _bzstart(sway_clock)
-    _bzstart(album_id)
     # 4.0.1 O34 (Rob): TV Continue watching = in-progress episodes + next-up (the next unwatched episode of each show already
     # started). Kodi smart playlists cannot express next-up, so this writes a filename-matched xsp to addon_data on start and
     # after every video stop (plus every 10 min); the nav list (6913) reads it via bz_cwfile (two files alternate so the list reloads).
@@ -1655,15 +1652,44 @@ if home.getProperty('bz_flip_running') != 'true':
                 with open(os.path.join(base, fn), 'w', encoding='utf-8') as f: f.write(xml)
                 home.setProperty('bz_cwfile', fn)
             except Exception as ex: xbmc.log('BEZEL cw: %s' % ex, xbmc.LOGWARNING)
+        busy = [False]
+        def build_bg():   # 5.33.459 P2.2: the library queries run off the slow_watch loop so they never delay the other watchers
+            if busy[0]: return
+            busy[0] = True
+            def _run():
+                try: build()
+                finally: busy[0] = False
+            threading.Thread(target=_run, daemon=True, name='cw_build').start()
         last = 0; had = False
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
             v = xbmc.getCondVisibility('Player.HasVideo')
             if (had and not v) or now0() - last > 600:
-                if had and not v: mon.waitForAbort(2)
-                build(); last = now0()
+                if had and not v: yield 2   # 5.33.459 P2.2: was mon.waitForAbort(2)
+                build_bg(); last = now0()
             had = v
-            if mon.waitForAbort(1): break
-    _bzstart(cw_clock)
+            yield 1   # 5.33.459 P2.2: runs in slow_watch
+    # 5.33.459 P2.2 (rewrite plan P2.2): ONE thread for the five slow watchers (km_leave_watch 1 s, fpop_clock 1 s, allcnt 0.4 s,
+    # album_id 0.5 s, cw_clock 1 s; was five threads). Each watcher is a generator that yields its own wait, so its body and its
+    # poll interval are unchanged. A watcher that raises is logged and restarted (max 5, then dropped), like _bzstart.
+    def slow_watch():
+        tasks = [[f, None, 0.0, 0] for f in (km_leave_watch, fpop_clock, allcnt, album_id, cw_clock)]
+        for t in tasks: t[1] = t[0]()
+        while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
+            for t in tasks:
+                if t[1] is None or now0() < t[2]: continue
+                try:
+                    t[2] = now0() + float(next(t[1]))
+                except StopIteration:
+                    t[1] = None
+                except Exception:
+                    import traceback
+                    t[3] += 1
+                    xbmc.log('BEZEL bz_flip watcher %s crashed (%d):\n%s' % (t[0].__name__, t[3], traceback.format_exc()), xbmc.LOGERROR)
+                    t[1] = t[0]() if t[3] < 5 else None; t[2] = now0() + 1.0
+            live = [t[2] for t in tasks if t[1] is not None]
+            if not live: return
+            if mon.waitForAbort(min(1.0, max(0.02, min(live) - now0()))): return
+    _bzstart(slow_watch)
     # 5.33.148 WARM 2.0 MM-only A/B preload (Rob voice). Generic hold-until-ready lane, modelled on the bz_cov_a/b flip:
     # target settles SETTLE s -> staged into the hidden side (bz_<p>_a|b) -> LOAD_WAIT s -> bz_<p>_side flips -> XML
     # Visible/Hidden fades crossfade. bz_<p>_on = lane has art (MM A/B twins take over from the live twin).
