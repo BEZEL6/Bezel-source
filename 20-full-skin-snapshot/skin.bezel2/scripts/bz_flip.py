@@ -1288,6 +1288,9 @@ if home.getProperty('bz_flip_running') != 'true':
              'addons://sources/executable/', 'addons://sources/video/', 'addons://sources/audio/',
              'special://skin/playlists/bz_recent_songs.xsp')   # BETA 2 item 21: the startup / Recent Songs list is a top level: Back opens the slide menu (it fell back through Kodi's history)
     logo_t = [0.0]
+    # 5.33.470 ENTRYHOLD (Rob: "bezel feels slow when new lists are loaded" - "wait before rows show"): entering a section hid the rows
+    # 0.6 s (beta2.2: old window 300 ms fade-out + new 300 ms fade-in); now 0.35 s. If rows flash during the window switch, raise it again.
+    _ENTRYHOLD = 0.35
     def nav_menu():
         stuck = [0, 0]; tabq = [0]
         had = False; t = 0
@@ -1353,12 +1356,12 @@ if home.getProperty('bz_flip_running') != 'true':
                 entry = casc[0] is not None and (wid != casc[1] or not (fp.startswith(casc[0]) or casc[0].startswith(fp)))   # BETA 2 cascade fix: section entry (new window or unrelated path, not folder open/back) -> start 420 ms later, after the window switch + fade-in that hid the first rows
                 if casc[0] is not None and (home.getProperty('bz_nav') or home.getProperty('bz_mmwarm')) and not home.getProperty('bz_casc_force'): home.setProperty('bz_casc_fp', fp); casc_pend[0] = None   # t3463: MM warm swaps under the menu never replay the list cascade
                 elif casc[0] is not None and not home.getProperty('bz_casc_force'):
-                    if entry: casc_pend[0] = nxt; casc_pend[1] = now + 0.6; casc_pend[2] = fp   # beta2.2: 0.6 s (was 0.42): old window 300 ms fade-out + new 300 ms fade-in, measured on :77; rows stay hidden (bz_casc_fp) until then
+                    if entry: casc_pend[0] = nxt; casc_pend[1] = now + _ENTRYHOLD; casc_pend[2] = fp   # beta2.2: 0.6 s (was 0.42): old window 300 ms fade-out + new 300 ms fade-in, measured on :77; rows stay hidden (bz_casc_fp) until then
                     else: home.setProperty('bz_casc', nxt); home.setProperty('bz_casc_fp', fp)   # 4.2: switching sections (window change) also plays the row cascade
                 elif home.getProperty('bz_casc_force'): home.clearProperty('bz_casc_force'); home.setProperty('bz_casc', nxt); home.setProperty('bz_casc_fp', fp)
                 else: home.setProperty('bz_casc_fp', fp)   # beta2.2: first folder after start: show at once
                 casc[0] = fp; casc[1] = wid
-                casc_t[0] = now + (0.6 if casc_pend[0] else 0)
+                casc_t[0] = now + (_ENTRYHOLD if casc_pend[0] else 0)
                 fguard[0] = now   # 4.3 item 4: entering a list: the list owns the focus, not the player controls
                 dview[0] = fp; dview[1] = now   # 4.3 item 13: default view per content, applied once per folder
             if dview[0] and now - dview[1] < 3:
