@@ -13,7 +13,7 @@
 	<onunload>AlarmClock(bzpwrsw,ClearProperty(bz_pwrswap,home),00:01,silent,false)</onunload>
 	<include>BezelSecFadeIn</include><!-- 5.33.177 section fade-in standard (was instant) -->
 	<controls>
-		<control type="group"><left>570</left><top>120</top>
+		<control type="group"><left>660</left><top>120</top>
 			<!-- t4939 / K48: no open/close transition - instant swap from MM -->
 			<animation effect="slide" start="0,0" end="0,120" time="0" condition="Player.HasMedia">Conditional</animation>
 			<!-- 5.33.150 BUG-005: TUNER is a 4th list row (same focusedlayout BzATHiTex outline); not a separate button -->

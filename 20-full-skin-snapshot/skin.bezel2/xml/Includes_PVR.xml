@@ -2,7 +2,7 @@
 <includes>
 	<!-- 5.33.12: universal fanart stage + colour strip for PVR windows (lock 3). stagew 840 = standard, 1680 = Guide widened exception -->
 	<include name="BezelPVRStage">
-		<param name="stagew" default="840"/>
+		<param name="stagew" default="930"/>
 		<definition>
 			<include>BezelBlack</include>
 			<include content="BezelFanartLayer"><param name="left" value="120"/><param name="top" value="120"/><param name="width" value="$PARAM[stagew]"/><param name="height" value="900"/></include>

@@ -25,10 +25,10 @@
 		<!-- 5.33.242 Rob t1862u: source context menu (Media Sources / SOURCES 1132 / Pictures sources root) in the Warm strip: strip chrome at 570,120, rows in the strip, held art behind. Kodi still supplies the rows (Edit source / Remove source …). -->
 		<control type="group"><visible>$EXP[bz_ctxwarm]</visible><left>570</left><top>120</top>
 			<include content="BezelMMStripChrome"><param name="w" value="450"/><param name="w2" value="530"/></include>
-			<control type="label"><left>34</left><top>34</top><width>400</width><height>44</height><aligny>center</aligny><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><scroll>true</scroll><label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label></control>
-			<control type="label"><left>36</left><top>78</top><width>400</width><height>24</height><aligny>center</aligny><font>bz_b12</font><textcolor>AAFFFFFF</textcolor><label>SOURCE · OPTIONS</label></control>
-			<control type="image"><left>20</left><top>842</top><width>410</width><height>1</height><texture colordiffuse="40FFFFFF">bezel/white.png</texture></control>
-			<control type="label"><left>34</left><top>852</top><width>390</width><height>30</height><aligny>center</aligny><font>bz_b12</font><textcolor>AAFFFFFF</textcolor><label>SELECT  runs       ‹ BACK  closes</label></control>
+			<control type="label"><left>124</left><top>34</top><width>400</width><height>44</height><aligny>center</aligny><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><scroll>true</scroll><label>[UPPERCASE]$INFO[ListItem.Label][/UPPERCASE]</label></control>
+			<control type="label"><left>126</left><top>78</top><width>400</width><height>24</height><aligny>center</aligny><font>bz_b12</font><textcolor>AAFFFFFF</textcolor><label>SOURCE · OPTIONS</label></control>
+			<control type="image"><left>110</left><top>842</top><width>410</width><height>1</height><texture colordiffuse="40FFFFFF">bezel/white.png</texture></control>
+			<control type="label"><left>124</left><top>852</top><width>390</width><height>30</height><aligny>center</aligny><font>bz_b12</font><textcolor>AAFFFFFF</textcolor><label>SELECT  runs       ‹ BACK  closes</label></control>
 		</control>
 		<control type="image" id="999"><left>0</left><top>0</top><width>1920</width><height>4320</height><texture/></control><!-- full-screen size so Kodi positioning (focus-centred, clamped to the screen) lands at 0,0 -->
 		<control type="grouplist" id="996">

@@ -10,7 +10,7 @@
 			<control type="group">
 				<include>BezelSecFadeIn</include>
 				<control type="fixedlist" id="50">
-					<left>570</left>
+					<left>660</left>
 					<top>120</top>
 					<width>390</width>
 					<height>858</height><!-- 5.33.347 t2491: ends y978 above dtap hint -->

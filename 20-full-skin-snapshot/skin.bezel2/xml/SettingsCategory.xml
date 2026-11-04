@@ -8,23 +8,23 @@
 		     description of the highlighted setting, setting controls to the right of the bar -->
 		<include>BezelBlack</include>
 		<!-- 5.33.26 Rob t235: template fanart stage 120,120 840x900 (same as Settings home) -->
-		<control type="group"><left>120</left><top>120</top><control type="image"><left>0</left><top>0</top><width>840</width><height>900</height><aspectratio>scale</aspectratio><texture background="true">$INFO[Window(Home).Property(bz_backdrop)]</texture></control><control type="image"><left>0</left><top>0</top><width>840</width><height>900</height><texture colordiffuse="B4000000">bezel/white.png</texture></control></control>
+		<control type="group"><left>120</left><top>120</top><control type="image"><left>0</left><top>0</top><width>930</width><height>900</height><aspectratio>scale</aspectratio><texture background="true">$INFO[Window(Home).Property(bz_backdrop)]</texture></control><control type="image"><left>0</left><top>0</top><width>930</width><height>900</height><texture colordiffuse="B4000000">bezel/white.png</texture></control></control>
 		<include content="BezelLogo"><param name="col" value="FFFFFFFF"/></include><!-- t4284 -->
 		<!-- LFUI (Rob approved t3893s12053, mock mockups/lf_skin/after.png): dark settings list 120-570, colour strip 570-960 with categories + DETAIL panel, title bottom right -->
 		<control type="group"><include>BezelOpenCloseSet</include>
 			<!-- 5.33.11 Rob lock: grey card removed; menu lives in colour strip -->
-			<control type="image"><left>570</left><top>120</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture><animation effect="fade" start="100" end="10" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),1)">Conditional</animation><animation effect="fade" start="100" end="20" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),2)">Conditional</animation><animation effect="fade" start="100" end="30" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),3)">Conditional</animation><animation effect="fade" start="100" end="40" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),4)">Conditional</animation><animation effect="fade" start="100" end="50" time="0" condition="String.IsEmpty(Skin.String(bz_at_mmbar)) | String.IsEqual(Skin.String(bz_at_mmbar),5)">Conditional</animation><animation effect="fade" start="100" end="60" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),6)">Conditional</animation><animation effect="fade" start="100" end="70" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),7)">Conditional</animation><animation effect="fade" start="100" end="80" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),8)">Conditional</animation><animation effect="fade" start="100" end="90" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),9)">Conditional</animation></control>
-			<control type="label"><left>604</left><top>132</top><width>330</width><height>40</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>[B]‹  [UPPERCASE]$INFO[Control.GetLabel(2)][/UPPERCASE][/B]</label><visible>ControlGroup(5).HasFocus()</visible></control><!-- 5.33.11 sub-list header (Back/Left = parent) -->
-			<control type="label"><left>1040</left><top>40</top><width>780</width><height>60</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[5] / $INFO[Control.GetLabel(2)]</label></control>
-			<control type="grouplist"><left>1040</left><top>900</top><width>780</width><height>70</height><orientation>horizontal</orientation><itemgap>24</itemgap>
+			<control type="image"><left>660</left><top>120</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture><animation effect="fade" start="100" end="10" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),1)">Conditional</animation><animation effect="fade" start="100" end="20" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),2)">Conditional</animation><animation effect="fade" start="100" end="30" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),3)">Conditional</animation><animation effect="fade" start="100" end="40" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),4)">Conditional</animation><animation effect="fade" start="100" end="50" time="0" condition="String.IsEmpty(Skin.String(bz_at_mmbar)) | String.IsEqual(Skin.String(bz_at_mmbar),5)">Conditional</animation><animation effect="fade" start="100" end="60" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),6)">Conditional</animation><animation effect="fade" start="100" end="70" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),7)">Conditional</animation><animation effect="fade" start="100" end="80" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),8)">Conditional</animation><animation effect="fade" start="100" end="90" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),9)">Conditional</animation></control>
+			<control type="label"><left>694</left><top>132</top><width>330</width><height>40</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>[B]‹  [UPPERCASE]$INFO[Control.GetLabel(2)][/UPPERCASE][/B]</label><visible>ControlGroup(5).HasFocus()</visible></control><!-- 5.33.11 sub-list header (Back/Left = parent) -->
+			<control type="label"><left>1130</left><top>40</top><width>690</width><height>60</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[5] / $INFO[Control.GetLabel(2)]</label></control>
+			<control type="grouplist"><left>1130</left><top>900</top><width>690</width><height>70</height><orientation>horizontal</orientation><itemgap>24</itemgap>
 				<control type="label"><width>auto</width><height>70</height><font>bz_b46</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>$INFO[Control.GetLabel(2)]</label></control>
 				<control type="label"><width>auto</width><height>70</height><font>bz_b26</font><aligny>center</aligny><textcolor>FF7FC4F0</textcolor><label>[UPPERCASE]$LOCALIZE[5][/UPPERCASE]</label></control>
 			</control>
-			<control type="image"><left>1040</left><top>998</top><width>530</width><height>3</height><texture colordiffuse="E6FFFFFF">bezel/white.png</texture></control>
+			<control type="image"><left>1130</left><top>998</top><width>440</width><height>3</height><texture colordiffuse="E6FFFFFF">bezel/white.png</texture></control>
 			<!-- DETAIL panel inside the strip -->
-			<control type="image"><left>590</left><top>560</top><width>350</width><height>370</height><texture border="10" colordiffuse="99101820">bezel/mm_round_a60.png</texture></control>
-			<control type="label"><left>610</left><top>572</top><width>310</width><height>34</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>DETAIL</label></control>
-			<control type="textbox"><left>606</left><top>604</top><width>318</width><height>46</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>[B][UPPERCASE]$INFO[System.CurrentControl][/UPPERCASE][/B]</label><autoscroll delay="2500" time="2000" repeat="5000">true</autoscroll><visible>!Control.HasFocus(20)</visible></control><control type="label"><left>610</left><top>604</top><width>310</width><height>46</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>[B]SETTINGS LEVEL[/B]</label><visible>Control.HasFocus(20)</visible></control><!-- F6 fixb3: wrap instead of clip -->
+			<control type="image"><left>680</left><top>560</top><width>350</width><height>370</height><texture border="10" colordiffuse="99101820">bezel/mm_round_a60.png</texture></control>
+			<control type="label"><left>700</left><top>572</top><width>310</width><height>34</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>DETAIL</label></control>
+			<control type="textbox"><left>696</left><top>604</top><width>318</width><height>46</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>[B][UPPERCASE]$INFO[System.CurrentControl][/UPPERCASE][/B]</label><autoscroll delay="2500" time="2000" repeat="5000">true</autoscroll><visible>!Control.HasFocus(20)</visible></control><control type="label"><left>700</left><top>604</top><width>310</width><height>46</height><font>bz_mm22</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>[B]SETTINGS LEVEL[/B]</label><visible>Control.HasFocus(20)</visible></control><!-- F6 fixb3: wrap instead of clip -->
 		</control>
 		<control type="multiimage">
 			<depth>DepthBackground</depth>
@@ -41,7 +41,7 @@
 			<control type="grouplist" id="5">
 				<description>control area — 5.33.11: lives in strip, replaces category list while focused</description>
 				<top>178</top>
-				<left>586</left>
+				<left>676</left>
 				<pagecontrol>60</pagecontrol>
 				<width>358</width>
 				<height>370</height>
@@ -118,7 +118,7 @@
 			<include>BezelOpenCloseSet</include>
 			<control type="grouplist" id="3">
 				<description>button area</description>
-				<left>586</left>
+				<left>676</left>
 				<top>136</top>
 				<width>358</width>
 				<height>410</height>
@@ -169,7 +169,7 @@
 			<include>BezelOpenCloseSet</include>
 			<control type="radiobutton" id="20">
 				<width>358</width>
-				<left>586</left>
+				<left>676</left>
 				<top>952</top>
 				<height>56</height><font>bz_mm22</font><textcolor>C8FFFFFF</textcolor><focusedcolor>FFFFFFFF</focusedcolor><!-- F6 fixb3: dark text was invisible on outline focus -->
 				<aligny>center</aligny>
@@ -196,7 +196,7 @@
 			<include>BezelOpenCloseSet</include>
 			<control type="textbox" id="6">
 				<description>description area</description>
-				<left>610</left>
+				<left>700</left>
 				<top>652</top>
 				<width>310</width>
 				<height>264</height>

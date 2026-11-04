@@ -38,8 +38,8 @@
 		<control type="group"><include>BezelSecDim</include><visible>false + $EXP[bz_covercol]</visible><!-- t4380 mock --><!-- t4148: album cover-column list bottom clip. Row TEXT inside the SECTION PARENT GROUP draws above later images in that group, so the Includes_Bezel 990-1020 half-row band and the 1020 black mask never hid row text. Copies sit just outside the section group (same BezelSecDim fade): band 990-1020 (black + fanart layer) and black below 1020. MM / menus still draw above. -->
 			<control type="grouplist"><left>0</left><top>990</top><width>570</width><height>30</height><orientation>vertical</orientation><itemgap>0</itemgap><usecontrolcoords>true</usecontrolcoords><visible>$EXP[bz_covercol]</visible><animation effect="fade" start="100" end="0" time="1000" tween="sine" easing="inout" condition="String.IsEqual(Window(Home).Property(bz_npdlg),true) + String.IsEqual(Window(Home).Property(bz_np),true)">Conditional</animation><!-- 4.7.8: was 590 wide (x 0-590), cut a 20x30 notch out of the colour strip bottom-left (x 570-590, y 990-1020) in album folders -->
 				<control type="group"><width>570</width><height>30</height><control type="group"><left>0</left><top>-990</top>
-					<control type="image"><left>120</left><top>120</top><width>840</width><height>900</height><texture colordiffuse="FF000000">bezel/white.png</texture></control>
-					<include content="BezelFanartLayer"><param name="left" value="120"/><param name="top" value="120"/><param name="width" value="840"/><param name="height" value="900"/><param name="dim" value="99000000"/></include>
+					<control type="image"><left>120</left><top>120</top><width>930</width><height>900</height><texture colordiffuse="FF000000">bezel/white.png</texture></control>
+					<include content="BezelFanartLayer"><param name="left" value="120"/><param name="top" value="120"/><param name="width" value="930"/><param name="height" value="900"/><param name="dim" value="99000000"/></include>
 				</control></control>
 			</control>
 		</control>

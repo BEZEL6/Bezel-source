@@ -10,12 +10,12 @@
 		<control type="group"><left>570</left><top>120</top><include>BezelSecFadeIn</include>
 			<control type="image"><left>-570</left><top>-120</top><width>1920</width><height>1080</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/mm_glow_behind.png</texture></control>
 			<control type="image"><left>-570</left><top>-120</top><width>1920</width><height>1080</height><texture colordiffuse="26FFFFFF">bezel/mm_glow_behind.png</texture></control>
-			<control type="image"><left>0</left><top>0</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture><animation effect="fade" start="100" end="10" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),1)">Conditional</animation><animation effect="fade" start="100" end="20" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),2)">Conditional</animation><animation effect="fade" start="100" end="30" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),3)">Conditional</animation><animation effect="fade" start="100" end="40" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),4)">Conditional</animation><animation effect="fade" start="100" end="50" time="0" condition="String.IsEmpty(Skin.String(bz_at_mmbar)) | String.IsEqual(Skin.String(bz_at_mmbar),5)">Conditional</animation><animation effect="fade" start="100" end="60" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),6)">Conditional</animation><animation effect="fade" start="100" end="70" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),7)">Conditional</animation><animation effect="fade" start="100" end="80" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),8)">Conditional</animation><animation effect="fade" start="100" end="90" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),9)">Conditional</animation></control>
+			<control type="image"><left>90</left><top>0</top><width>390</width><height>900</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/white.png</texture><animation effect="fade" start="100" end="10" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),1)">Conditional</animation><animation effect="fade" start="100" end="20" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),2)">Conditional</animation><animation effect="fade" start="100" end="30" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),3)">Conditional</animation><animation effect="fade" start="100" end="40" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),4)">Conditional</animation><animation effect="fade" start="100" end="50" time="0" condition="String.IsEmpty(Skin.String(bz_at_mmbar)) | String.IsEqual(Skin.String(bz_at_mmbar),5)">Conditional</animation><animation effect="fade" start="100" end="60" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),6)">Conditional</animation><animation effect="fade" start="100" end="70" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),7)">Conditional</animation><animation effect="fade" start="100" end="80" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),8)">Conditional</animation><animation effect="fade" start="100" end="90" time="0" condition="String.IsEqual(Skin.String(bz_at_mmbar),9)">Conditional</animation></control>
 		</control>
 		<control type="group"><include>BezelSecFadeIn</include>
-			<control type="label"><left>1010</left><top>150</top><width>760</width><height>30</height><font>bz_b12</font><aligny>center</aligny><textcolor>99FFFFFF</textcolor><label>[UPPERCASE]$LOCALIZE[20077][/UPPERCASE]</label></control>
-			<control type="label"><left>1010</left><top>184</top><width>760</width><height>56</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><scroll>true</scroll><label>[UPPERCASE]$INFO[Container(9000).ListItem.Label][/UPPERCASE]</label></control>
-			<control type="image"><left>1010</left><top>248</top><width>130</width><height>3</height><texture colordiffuse="$VAR[BzMMBarCol]">bezel/white.png</texture></control>
+			<control type="label"><left>1100</left><top>150</top><width>670</width><height>30</height><font>bz_b12</font><aligny>center</aligny><textcolor>99FFFFFF</textcolor><label>[UPPERCASE]$LOCALIZE[20077][/UPPERCASE]</label></control>
+			<control type="label"><left>1100</left><top>184</top><width>670</width><height>56</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><scroll>true</scroll><label>[UPPERCASE]$INFO[Container(9000).ListItem.Label][/UPPERCASE]</label></control>
+			<control type="image"><left>1100</left><top>248</top><width>130</width><height>3</height><texture colordiffuse="$VAR[BzMMBarCol]">bezel/white.png</texture></control>
 		</control>
 		<control type="multiimage">
 			<depth>DepthBackground</depth>
@@ -30,12 +30,12 @@
 			<visible>false</visible>
 		</control>
 		<control type="group" id="10000">
-			<left>990</left><width>800</width>
+			<left>1080</left><width>710</width>
 			<include>BezelSecFadeIn</include>
 			<control type="grouplist" id="700">
 				<top>280</top>
 				<left>0</left>
-				<width>800</width>
+				<width>710</width>
 				<bottom>180</bottom>
 				<onleft>9000</onleft>
 				<onright>60</onright>
@@ -110,7 +110,7 @@
 			<control type="grouplist" id="600">
 				<top>280</top>
 				<left>0</left>
-				<width>800</width>
+				<width>710</width>
 				<bottom>180</bottom>
 				<onleft>9000</onleft>
 				<onright>60</onright>
@@ -159,7 +159,7 @@
 			<control type="grouplist" id="610">
 				<top>280</top>
 				<left>0</left>
-				<width>800</width>
+				<width>710</width>
 				<bottom>180</bottom>
 				<onleft>9000</onleft>
 				<onright>60</onright>
@@ -295,7 +295,7 @@
 			<control type="grouplist" id="622">
 				<top>280</top>
 				<left>0</left>
-				<width>800</width>
+				<width>710</width>
 				<bottom>180</bottom>
 				<onleft>9000</onleft>
 				<onright>60</onright>
@@ -340,7 +340,7 @@
 			<include>BezelSecFadeIn</include>
 			<control type="list" id="9000">
 				<description>button area</description>
-				<left>570</left>
+				<left>660</left>
 				<top>160</top>
 				<width>390</width>
 				<height>700</height>
@@ -421,9 +421,9 @@
 		<control type="textbox" id="6">
 			<include>BezelSecFadeIn</include>
 			<description>description area</description>
-			<left>1010</left>
+			<left>1100</left>
 			<top>920</top>
-			<width>760</width>
+			<width>670</width>
 			<height>100</height>
 			<font>bz_mm17</font>
 			<align>left</align>
