@@ -112,11 +112,6 @@
 	<!-- v0.1.32: tap-flip track list: the playing album (album id from scripts/bz_flip.py), else the music playlist -->
 	<variable name="BezelFlipA"><value condition="!Player.HasVideo + !String.IsEmpty(Window(Home).Property(bz_cov_a))">$INFO[Window(Home).Property(bz_cov_a)]</value><value condition="Window.IsActive(music) + !String.IsEmpty(Container(60).ListItem.Art(thumb))">$INFO[Container(60).ListItem.Art(thumb)]</value><value condition="Window.IsActive(music)">$INFO[Container(60).ListItem.Icon]</value><value condition="Window.IsActive(videos)">$VAR[BezelPoster60]</value></variable><!-- 5.33.161 BUG-010 -->
 	<variable name="BezelFlipB"><value condition="!Player.HasVideo + !String.IsEmpty(Window(Home).Property(bz_cov_b))">$INFO[Window(Home).Property(bz_cov_b)]</value><value condition="Window.IsActive(music) + !String.IsEmpty(Container(60).ListItem.Art(thumb))">$INFO[Container(60).ListItem.Art(thumb)]</value><value condition="Window.IsActive(music)">$INFO[Container(60).ListItem.Icon]</value><value condition="Window.IsActive(videos)">$VAR[BezelPoster60]</value></variable><!-- 5.33.161 BUG-010 -->
-	<variable name="BezelNPTileArt">
-		<value condition="Player.HasVideo + !String.IsEmpty(Player.Art(poster))">$INFO[Player.Art(poster)]</value>
-		<value condition="Player.HasVideo + !String.IsEmpty(Player.Art(tvshow.poster))">$INFO[Player.Art(tvshow.poster)]</value>
-		<value>$INFO[Player.Art(thumb)]</value>
-	</variable>
 	<!-- 2.0a3: art of the BEZEL list item (list 60) regardless of which control has focus (no art swap when focus moves to the track list / back buttons) -->
 	<variable name="BezelBigArt"><!-- BETA 2.4 item 1: big album shows the playing cover while music plays -->
 		<value condition="Player.HasAudio + !Window.IsActive(visualisation) + !String.IsEmpty(Player.Art(thumb))">$INFO[Player.Art(thumb)]</value>

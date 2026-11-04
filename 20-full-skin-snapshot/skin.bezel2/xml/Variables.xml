@@ -53,17 +53,6 @@
 		<value condition="Control.IsVisible(450)">[COLOR=button_focus]$INFO[Container(450).NumItems][/COLOR] $LOCALIZE[31036] - [COLOR=button_focus]$INFO[Container(450).CurrentPage]/$INFO[Container(450).NumPages][/COLOR]</value>
 		<value>[COLOR=button_focus]$INFO[Container(451).NumItems][/COLOR] $LOCALIZE[31036] - [COLOR=button_focus]$INFO[Container(451).CurrentPage]/$INFO[Container(451).NumPages][/COLOR]</value>
 	</variable>
-	<variable name="MusicTrackInfo">
-		<value condition="String.IsEmpty(listitem.Title)">$INFO[listitem.TrackNumber]</value>
-		<value>$INFO[listitem.TrackNumber,,.]$INFO[listitem.Title, ]</value>
-	</variable>
-	<variable name="InfoDiscVar">
-		<value condition="Integer.IsGreater(ListItem.TotalDiscs,1)">$INFO[ListItem.DiscNumber]$INFO[ListItem.DiscTitle, - ]</value>
-	</variable>
-	<variable name="MultiDiscVar">
-		<value condition="MusicPlayer.IsMultiDisc + Window.IsActive(visualisation)">$INFO[MusicPlayer.DiscNumber, - [$LOCALIZE[427] ,] ]$INFO[MusicPlayer.DiscTitle]</value>
-		<value condition="MusicPlayer.IsMultiDisc">$INFO[MusicPlayer.DiscNumber]$INFO[MusicPlayer.DiscTitle, - ]</value>
-	</variable>
 	<variable name="RatingSettingLabel2Var">
 		<value condition="Skin.HasSetting(circle_rating)">$LOCALIZE[563]</value>
 		<value condition="Skin.HasSetting(circle_userrating)">$LOCALIZE[38018]</value>
