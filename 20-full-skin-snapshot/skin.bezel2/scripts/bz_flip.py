@@ -1587,145 +1587,8 @@ if home.getProperty('bz_flip_running') != 'true':
                         xbmc.executebuiltin('SetFocus(60)' if xbmc.getCondVisibility('Control.IsVisible(60)') else 'SetFocus(9000)'); stuck[0] = 0
                 else: stuck[0] = 0
             if mon.waitForAbort(0.05 if (nv or nav_was[1]) else 0.1): break   # 2.0a3.3: slower when the menu is closed
-    def grid_sync():
-        # 3.5.5: joined scroll. The list (60) leads while it has focus: when its item crosses a grid row, the unfocused grid (6600) is
-        # scrolled one row in the same instant (Control.Move steps a vertical panel by rows; the panel only scrolls when its cursor leaves
-        # the view, so the cursor is first pushed one row past the edge, then brought back onto the item). The item stays on the anchor row
-        # (row 1) except at the top / bottom. Both scroll with the same scrolltime / tween (quadratic 200). The lit slot (bz_gslot) and the
-        # number of filled slots (bz_gn) drive the fixed overlay frames. When the grid has focus it leads and the list follows (DBID map).
-        C = 4; A = 1
-        st = {'sig': None, 'map': {}, 'm60': {}, 't': 0, 'cr': 0, 'j': None, 'g': None, 'gb': 'a'}
-        def key(c, i):
-            return xbmc.getInfoLabel('Container(%d).ListItemAbsolute(%d).DBID' % (c, i)) or xbmc.getInfoLabel('Container(%d).ListItemAbsolute(%d).Label' % (c, i))
-        def cur(c):
-            try: return int(xbmc.getInfoLabel('Container(%d).CurrentItem' % c)) - 1
-            except Exception: return -1
-        def amap(c):
-            n = int(xbmc.getInfoLabel('Container(%d).NumAllItems' % c) or 0)
-            return {key(c, i): i for i in range(n)}
-        def lit(j, n, V):
-            home.setProperty('bz_gslot', '' if j is None else str((j // C - st['t']) * C + j % C))
-            home.setProperty('bz_gn', str(max(0, min(V * C, n - st['t'] * C))))
-        def gscroll():
-            st['gs'] = time.time(); home.setProperty('bz_gscroll', '1')
-        def place(j, n, V):
-            rows = (n + C - 1) // C; r = j // C
-            t1 = max(0, min(r - A, rows - V)); mv = []
-            if t1 > st['t']: mv.append(t1 + V - 1 - st['cr']); st['cr'] = t1 + V - 1
-            elif t1 < st['t']: mv.append(t1 - st['cr']); st['cr'] = t1
-            st['t'] = t1
-            if r != st['cr']: mv.append(r - st['cr']); st['cr'] = r
-            if any(mv): gscroll()   # 4.2 item 9: overlay frames off while the grid scrolls
-            for m in mv:
-                if m: xbmc.executebuiltin('Control.Move(6600,%d)' % m)
-            lit(j, n, V)
-        while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
-            try:
-                if xbmc.getCondVisibility('Control.IsVisible(6600) + !Container(6600).IsUpdating + !Container(60).IsUpdating + Integer.IsGreater(Container(6600).NumItems,0)'):
-                    V = 4 if xbmc.getCondVisibility('Window.IsActive(music)') else 3
-                    n = int(xbmc.getInfoLabel('Container(6600).NumItems') or 0)
-                    sig = (xbmc.getInfoLabel('Container(60).FolderPath'), n, xbmc.getInfoLabel('Container(60).NumAllItems'))
-                    if sig != st['sig']:
-                        # new folder: Kodi may restore an old grid selection / offset that the unfocused panel does not read back, so put the
-                        # grid on item 0 (offset 0) once, then give the focus straight back (known start for the row tracking)
-                        gf = xbmc.getCondVisibility('Control.HasFocus(6600)')
-                        same = st.get('fp') == sig[0]
-                        st['fp'] = sig[0]
-                        mp = amap(6600); j0 = None
-                        if same:
-                            # 4.2 item 23: same folder refreshed (new song / library update): hold the grid on the current list item instead of item 0
-                            j0 = mp.get(xbmc.getInfoLabel('Container(60).ListItem.DBID') or xbmc.getInfoLabel('Container(60).ListItem.Label'))
-                        if j0 is None and home.getProperty('bz_warmrow') and home.getProperty('bz_warmrow') == (sig[0] or '').rstrip('/'):
-                            # 5.33.218 RANDSTART: WARM just put list 60 on a random/saved row -> grid follows that item instead of resetting to 0
-                            home.clearProperty('bz_warmrow'); j0 = mp.get(xbmc.getInfoLabel('Container(60).ListItem.DBID') or xbmc.getInfoLabel('Container(60).ListItem.Label'))
-                        if j0 is None:
-                            # 4.6.2 nav3: the colour block reads list 60, which Kodi restores to the OLD selection: put it on item 0 with the grid
-                            if not gf: _bzfocus('SetFocus(60,0,absolute)')
-                            _bzfocus('SetFocus(6600,0,absolute)')
-                            # BEZEL 3.1 item 6: in grid view a new folder gives the grid the focus first (the list follows it)
-                            gview = xbmc.getCondVisibility('[Window.IsActive(music) + Skin.HasSetting(bz_grid_music)] | [Window.IsActive(videos) + Skin.HasSetting(bz_grid_video)]') and not same
-                            if not gf and not gview: _bzfocus('SetFocus(60)')
-                            st.update(sig=sig, map=mp, m60=amap(60), t=0, cr=0, j=None, g=None, gfoc=None); home.clearProperty('bz_gtitle')
-                        else:
-                            if not gf: _bzfocus('SetFocus(6600,%d,absolute)' % j0)
-                            if mon.waitForAbort(0.05): break
-                            try: pos = int(xbmc.getInfoLabel('Container(6600).Position'))
-                            except Exception: pos = j0 % C
-                            if not gf:
-                                for _ in range(25):
-                                    _bzfocus('SetFocus(60)')
-                                    if mon.waitForAbort(0.04) or xbmc.getCondVisibility('Control.HasFocus(60)'): break
-                            st.update(sig=sig, map=mp, m60=amap(60), t=max(0, j0 // C - pos // C), cr=j0 // C, j=j0, g=None, gfoc=None)
-                            lit(j0, n, V)
-                        if mon.waitForAbort(0.1): break
-                        home.clearProperty('bz_gpend')   # 4.6.2 nav3: list + grid agree now: show the section
-                    if not xbmc.getCondVisibility('Control.HasFocus(60)') and home.getProperty('bz_grest'): home.clearProperty('bz_grest'); st['rk'] = None
-                    if xbmc.getCondVisibility('Control.HasFocus(6600)'):
-                        g = cur(6600)
-                        if g >= 0 and g != st['g']:
-                            st['g'] = g
-                            st['gb'] = 'b' if st['gb'] == 'a' else 'a'; home.setProperty('bz_gb', st['gb'])
-                            try:
-                                pos = int(xbmc.getInfoLabel('Container(6600).Position'))
-                                t2 = max(0, g // C - pos // C)
-                                if t2 != st['t']: gscroll()
-                                st['t'] = t2
-                            except Exception: pass
-                            st['cr'] = g // C; st['j'] = g; lit(g, n, V)
-                        if g >= 0:
-                            # 4.2: grid leads: the list follows with a smooth scroll
-                            st['gfoc'] = g
-                            k = key(6600, g); j = st['m60'].get(k)
-                            p = st['m60'].get(xbmc.getInfoLabel('Container(60).ListItem.DBID') or xbmc.getInfoLabel('Container(60).ListItem.Label'))
-                            # 4.3 item 6: the list no longer follows while the grid has focus (no block / fanart flicker); it jumps once on return
-                            # BETA 1.1: ...but the colour block (title, year, fanart, details) reads the list item (media window ListItem = view 60), so the
-                            # hidden list (faded out while the grid has focus) is moved in ONE jump to the focused grid item once the grid rests 0.15 s
-                            if j is not None and p is not None and j != p:
-                                if not st.get('gm') or st['gm'][0] != g: st['gm'] = (g, now0()); st['gmn'] = 0
-                                elif now0() - st['gm'][1] >= 0.15:
-                                    # 4.6.2 nav1: a dropped / partial move used to leave the list (colour block) on another item for good: re-check and retry up to 4x
-                                    xbmc.executebuiltin('Control.Move(60,%d)' % (j - p)); st['gmn'] = st.get('gmn', 0) + 1
-                                    st['gm'] = (g, now0() + 0.25 if st['gmn'] < 4 else 1e18)
-                    elif xbmc.getCondVisibility('Control.HasFocus(60)') and st.get('gfoc') is not None:
-                        # 3.5.7: focus back on the list: one move to the grid item (the list scrolls with its own smooth scrolltime);
-                        # st['j'] is set to that grid item first, so the joined scroll does not pull the grid back to the old row
-                        g = st['gfoc']; st['gfoc'] = None; st['g'] = None
-                        g1 = cur(6600)   # BETA 1.2: the grid's real item (a quick last grid move before Left may not have been polled yet)
-                        if g1 >= 0: g = g1
-                        k = key(6600, g); j = st['m60'].get(k)
-                        p = st['m60'].get(xbmc.getInfoLabel('Container(60).ListItem.DBID') or xbmc.getInfoLabel('Container(60).ListItem.Label'))
-                        st['j'] = st['map'].get(k, g)
-                        if j is not None and p is not None and j != p: xbmc.executebuiltin('Control.Move(60,%d)' % (j - p))
-                        if mon.waitForAbort(0.25): break
-                        home.clearProperty('bz_gtitle')
-                    elif xbmc.getCondVisibility('Control.HasFocus(60)'):
-                        st['g'] = None
-                        # 4.3 item 7: the grid shrinks / sways only after the list has rested 2 s on one item
-                        k0 = xbmc.getInfoLabel('Container(60).CurrentItem')
-                        if k0 != st.get('rk'): st['rk'] = k0; st['rt'] = time.time()
-                        # beta1 item 1: no grid sway work unless a grid is visible and its style is not None
-                        gsec = 'music' if xbmc.getCondVisibility('Window.IsActive(music)') else 'video'
-                        gsw = False   # BETA 1.1: grid styles removed, static grid only (no grid sway / poster work)
-                        if not gsw:
-                            if home.getProperty('bz_grest'): home.clearProperty('bz_grest')
-                        elif time.time() - st.get('rt', 0) >= 2.0 and home.getProperty('bz_grest') != '1': home.setProperty('bz_grest', '1')
-                        k = xbmc.getInfoLabel('Container(60).ListItem.DBID') or xbmc.getInfoLabel('Container(60).ListItem.Label')
-                        j = st['map'].get(k)
-                        if j != st['j']:
-                            st['j'] = j
-                            if j is None: lit(None, n, V)
-                            else: place(j, n, V)
-                        home.setProperty('bz_grid_target', '' if j is None else str(j))
-                    if st.get('gs') and time.time() - st['gs'] > 0.3: st['gs'] = None; home.clearProperty('bz_gscroll')
-                    if mon.waitForAbort(0.02): break
-                else:
-                    if st['sig'] is not None: home.clearProperty('bz_gslot')
-                    if home.getProperty('bz_gpend') and not xbmc.getCondVisibility('Container(60).IsUpdating'): home.clearProperty('bz_gpend')   # 4.6.2 nav3: no grid -> nothing to wait for
-                    st['sig'] = None
-                    if mon.waitForAbort(0.3): break
-            except Exception as e:
-                xbmc.log('bz_flip grid_sync: %s' % e, xbmc.LOGWARNING)
-                if mon.waitForAbort(0.5): break
+    # 5.33.459 P2.1: grid_sync (the list 60 / grid 6600 joined-scroll thread) removed: the grid views were deleted in 455 GRIDDEL, so 6600
+    # never exists and the thread only polled every 0.3 s. bz_gpend is still cleared by the MyVideoNav onload alarm.
     def _drsnap(face):
         for n, o in (('m', -1), ('0', 0), ('p', 1)):
             for f, a in (('s', 'Season'), ('e', 'Episode'), ('t', 'Title')):
@@ -1761,7 +1624,6 @@ if home.getProperty('bz_flip_running') != 'true':
                 xbmc.log('bz_flip drum_dir: %s' % e, xbmc.LOGWARNING)
                 if mon.waitForAbort(0.5): break
     _bzstart(drum_dir)
-    _bzstart(grid_sync)
     _bzstart(nav_menu)
     _bzstart(sway_clock)
     _bzstart(album_id)
