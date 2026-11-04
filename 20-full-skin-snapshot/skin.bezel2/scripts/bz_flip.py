@@ -1291,6 +1291,7 @@ if home.getProperty('bz_flip_running') != 'true':
     # 5.33.470 ENTRYHOLD (Rob: "bezel feels slow when new lists are loaded" - "wait before rows show"): entering a section hid the rows
     # 0.6 s (beta2.2: old window 300 ms fade-out + new 300 ms fade-in); now 0.35 s. If rows flash during the window switch, raise it again.
     _ENTRYHOLD = 0.35
+    _lt = [None, 0.0, '']   # 5.33.470 LISTTIME: [folder, change time, entry|open]
     def nav_menu():
         stuck = [0, 0]; tabq = [0]
         had = False; t = 0
@@ -1362,6 +1363,7 @@ if home.getProperty('bz_flip_running') != 'true':
                 else: home.setProperty('bz_casc_fp', fp)   # beta2.2: first folder after start: show at once
                 casc[0] = fp; casc[1] = wid
                 casc_t[0] = now + (_ENTRYHOLD if casc_pend[0] else 0)
+                _lt[0] = fp; _lt[1] = now; _lt[2] = 'entry' if casc_pend[0] else 'open'   # 5.33.470 LISTTIME
                 fguard[0] = now   # 4.3 item 4: entering a list: the list owns the focus, not the player controls
                 dview[0] = fp; dview[1] = now   # 4.3 item 13: default view per content, applied once per folder
             if dview[0] and now - dview[1] < 3:
@@ -1409,6 +1411,8 @@ if home.getProperty('bz_flip_running') != 'true':
                     xbmc.log('BEZEL auto NP: open after %ss' % _ad, xbmc.LOGWARNING)
                     _np_open('auto')   # 4.6.0: guarded (cooldown + busy check right before the launch)
             # 5.33.411 NOIDLEFS (t2919u/t2920u): 30 s idle auto Dialogue FS REMOVED. FS opens only on explicit Select. Never re-add without Rob asking.
+            if _lt[0] and not casc_pend[0]:   # 5.33.470 LISTTIME: one 'BEZEL list' line per folder change, once its rows are allowed to show
+                xbmc.log('BEZEL list %s %s rows after %.2fs n=%s' % (_lt[2], _lt[0][:80], now - _lt[1], xbmc.getInfoLabel('Container.NumItems')), xbmc.LOGINFO); _lt[0] = None
             if casc_pend[0] and now >= casc_pend[1]: home.setProperty('bz_casc', casc_pend[0]); home.setProperty('bz_casc_fp', casc_pend[2]); casc_pend[0] = None   # beta2.2: unhide + cascade on the same tick
             if casc_t[0] and now - casc_t[0] > casc_len() and home.getProperty('bz_casc'):   # 4.0.1 O21 root cause: was a fixed 0.7 s, which cut rows 6-15 (still animating until ~1.25 s) and snapped them in at the end   # 3.5.7: rows created later (scroll / deep return) must not replay it
                 home.clearProperty('bz_casc'); casc_t[0] = 0
