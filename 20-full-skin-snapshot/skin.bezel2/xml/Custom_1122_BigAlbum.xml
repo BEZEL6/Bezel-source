@@ -53,7 +53,7 @@
 			<!-- 5.33.450 VIZNPBAR (Rob: "ADD NP BAR TO KODI FULLSCREEN VIZ WHEN BIG ALBUM IS CENTER"; it showed on the FS fanart dialog only): the compact NP bar
 			     (artist / title / progress / time, same include as Play Next + Fanart FS 1121) under the centred big album in Kodi FS viz. Drawn here, in 1122, because 1122
 			     renders above the viz window and covered the viz window's own copy (now hidden in viz). Gate = viz chrome shown (bz_fsnp) + album at centre. -->
-			<control type="group"><left>-480</left><visible>Window.IsActive(visualisation) + String.IsEqual(Window(Home).Property(bz_fsnp),true) + $EXP[bz_railc] + Player.HasAudio</visible>
+			<control type="group"><left>-480</left><visible>[Window.IsActive(visualisation) | Window.IsVisible(1121)] + String.IsEqual(Window(Home).Property(bz_fsnp),true) + $EXP[bz_railc] + Player.HasAudio</visible><!-- 5.33.470 CENTREBAR (Rob: "np bar shown when big album is center in both fullscreen, hide when switch back to fanart stage"): 450 VIZNPBAR now also under the centred album in the fanart FS (1121); bz_railc drops on the switch back -> 300 ms fade out -->
 				<animation effect="fade" start="0" end="100" time="600" delay="480" tween="sine" easing="inout">Visible</animation><animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout">Hidden</animation>
 				<include>BezelNPCompactBar</include>
 			</control>
