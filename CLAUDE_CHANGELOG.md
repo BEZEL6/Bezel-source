@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.460
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.461
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 461 | "NEXT" (rewrite P3, dead code) | rewrite **P3.1–P3.3**: 32 unused includes, 14 expressions, 317 variables removed; audit clean; zero geometry change |
 | 460 | "457 VERY SMOOTH AND RESPONSIVE"; 458 MM bg "ROW SWITCH / OPEN-CLOSE LOOKS BAD"; picked "QUICK DIM, NO WAIT" | **MMDIMQUICK**: 458 MMNODIM reverted, mmdim fades without the 456 delay (= 455); keeps P2.1 + P2.3; no P2.2 |
 | 459 | "P2.2 NEXT" "THEN BUILD" → "459 VERY BAD", "458 GOOD" | **REJECTED, reverted** rewrite **P2.2**: one `slow_watch` thread for km_leave_watch / fpop_clock / allcnt / album_id / cw_clock (A/B against 458) |
 | 458 | "THE 1.5 DELAY MAKES IT LOOK BROKE"; "JUST HAVE IT FADE IN QUICK. NO FADE OUT OF SECTION"; "START P2" | **MMNODIM** (no section dim under the MM), rewrite **P2.1** (grid_sync removed), **P2.3** (bz_big_* no longer set) |
@@ -221,6 +222,16 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.461 — rewrite P3.1–P3.3 (dead definitions)
+Branch `claude/5.33.461` (on 460, one commit per pass).
+- **P3.1:** 31 unused includes + 14 unused expressions. Among them: the `bz_gsm_*` / `bz_gsv_*` / `bz_gridlistlit` grid leftovers, Estuary Weather / submenu / button includes, `BezelXInfo`, `BezelSwingPoster`, `BezelRainbowRow`, `BezelNavLogoGlow`, `BzCIStripUnder`.
+- **P3.2:** 313 unused variables + 1 include (`UserRatingContent`, freed by P3.1). Mostly Estuary `Variables.xml`, the pre-TUNERRAIL Tuner sets (`BzATStep_` / `BzATVal_` / `BzATBar_` / `BzTSec_`, each appearing only at its own definition), old Dust3 and NP-card vars.
+- **P3.3:** the last 4 variables freed by P3.2. The audit is now clean: 0 unused includes, expressions or variables.
+- **How:** `tools/rewrite/audit.py` counts uses in all XML (`<include>NAME</include>`, `content=`, `$EXP[…]`, `$VAR[…]` incl. `$VAR[NAME,prefix,suffix]`), all `scripts/*.py` / `*.json`, and include param values. No name is built from `$PARAM` or a Python format string. `tools/rewrite/rmdefs.py` removes the definitions at text level; everything else stays byte-identical.
+- **Checks (static):** XML parses; no dangling reference; all 19,243 resolved controls identical; `bz_tune_patch.patch` run on a copy still applies to the same files and parses, as on 460. ~220 KB less XML.
+- **Check on device:** Kodi starts and the skin loads without errors (kodi.log: no "Skin has invalid include" / "unknown variable"); Tuner rows still change values; MM, sections, info / settings dialogs, FS music look as 460.
+- **Static checks only.** Not device-tested.
 
 ## 5.33.460 — MMDIMQUICK (on 458 without P2.2)
 Branch `claude/5.33.460` (from `claude/5.33.459` with P2.2 reverted, so bz_flip.py = 458).

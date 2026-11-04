@@ -1,4 +1,3 @@
-5.33.460 (2026-11-04)
-- MMDIMQUICK (Rob: 457 "VERY SMOOTH AND RESPONSIVE"; 458 main menu backgrounds "ROW SWITCH LOOKS BAD, OPEN / CLOSE LOOKS BAD"; picked "QUICK DIM, NO WAIT"): the section behind the main menu dims again, starting at once (0.6 s, as in 455). The 458 no-dim change and the 456 1.5 s wait are both gone.
-- Keeps the 458 rewrite clean-ups P2.1 and P2.3 (no visible change). 459's P2.2 is not included.
+5.33.461 (2026-11-04)
+- P3 (rewrite, dead code): 32 unused includes, 14 unused expressions and 317 unused variables removed (about 220 KB less XML to load). No visible change (every control checked: same position).
 
