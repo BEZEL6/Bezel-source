@@ -297,12 +297,7 @@ if home.getProperty('bz_flip_running') != 'true':
             on = t0 is not None and not home.getProperty('bz_sway_hold') and time.time() - t0 >= 7.4
             if on and not home.getProperty('bz_sway_pulse'): home.setProperty('bz_sway_pulse', 'true')
             elif not on and home.getProperty('bz_sway_pulse'): home.clearProperty('bz_sway_pulse')
-            bt0 = sway.get('bt0')   # 5.33.415 SWAYCONT: idle clock no longer cleared on latch (was the reset)   # big album one-shot (5 s) then pulse
-            for k, d in (('bz_big_go', 2.5), ('bz_big_pulse', 7.5)):
-                v = bt0 is not None and time.time() - bt0 >= d
-                # 5.33.408 NOROCK/SWAYSTART: bz_big_go/bz_big_pulse now drive the idle album SWAY (rotatey), not rock; armed from bt0 at Home startup
-                if v and not home.getProperty(k): home.setProperty(k, 'true')
-                elif not v and home.getProperty(k): home.clearProperty(k)
+            # 5.33.459 P2.3: bz_big_go / bz_big_pulse no longer set (no XML has read them since 453 ONESWAY; cleared on exit below)
             on2 = on and time.time() - t0 >= 12.4   # 2.0a3.4: cross wobble, a quarter cycle after the swing, so the art keeps moving through the turns
             if on2 and not home.getProperty('bz_sway_pulse2'): home.setProperty('bz_sway_pulse2', 'true')
             elif not on2 and home.getProperty('bz_sway_pulse2'): home.clearProperty('bz_sway_pulse2')
