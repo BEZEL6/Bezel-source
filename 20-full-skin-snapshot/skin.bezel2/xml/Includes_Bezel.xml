@@ -326,7 +326,7 @@
 	<!-- beta1 item 6 / 1: back card values -->
 	<variable name="BezelCard2Sort"><value condition="String.IsEqual(Container.SortMethod,Production code)">Produc. code</value><value condition="String.IsEqual(Container.SortMethod,Video resolution)">Video resolu.</value><value condition="String.IsEqual(Container.SortMethod,Audio channels)">Audio channe.</value><value>$INFO[Container.SortMethod]</value></variable><!-- BETA 2 item 20: card 2 sort values wider than 260 px, abbreviated -->
 <!-- BETA 2 item 20: abbreviated by bz_cmd.py abbr -->
-	<variable name="BezelViewName"><value condition="$EXP[bz_gridset]">GRID</value><value condition="Window.IsActive(music) + Skin.HasSetting(bz_albumlist)">ALBUM LIST</value><value>LIST</value></variable>
+	<variable name="BezelViewName"><value condition="$EXP[bz_gridset]">GRID</value><value condition="Window.IsActive(music) + Container.Content(albums)">ALBUM LIST</value><!-- 5.33.466 ALBUMPILL: follows the list on screen (ALBUMCOVER) --><value>LIST</value></variable>
 	<!-- 3.5.3: side menu option row (label left, current value right) -->
 	<!-- 4.1: side menu helpers -->
 	<!-- BETA 2 item 7: the standard BEZEL toggle (radiobutton, Kodi's radio-button-on / -off switch like every Skin settings toggle), sized for the 44 px card 2 rows -->
@@ -3103,7 +3103,7 @@
 		</control>
 	</include>
 	<variable name="BezelViewPillIcon"><value condition="[Window.IsActive(music) + Skin.HasSetting(bz_grid_music)] | [Window.IsActive(videos) + Skin.HasSetting(bz_grid_video)]">bezel/view_ic_grid.png</value><value>bezel/view_ic_list.png</value></variable>
-	<variable name="BezelViewPillText"><value condition="[Window.IsActive(music) + Skin.HasSetting(bz_grid_music)] | [Window.IsActive(videos) + Skin.HasSetting(bz_grid_video)]">GRID</value><value condition="Window.IsActive(music) + Skin.HasSetting(bz_albumlist)">ALBUMS</value><value>LIST</value></variable>
+	<variable name="BezelViewPillText"><value condition="[Window.IsActive(music) + Skin.HasSetting(bz_grid_music)] | [Window.IsActive(videos) + Skin.HasSetting(bz_grid_video)]">GRID</value><value condition="Window.IsActive(music) + Container.Content(albums)">ALBUMS</value><!-- 5.33.466 ALBUMPILL: follows the list on screen (ALBUMCOVER) --><value>LIST</value></variable>
 	<include name="BezelMiniPlayer">
 		<!-- 3.5.5 (miniplayer_text_ur, version A): text only, upper right. Title (bold) over artist · album over the time, right-aligned to x 1596;
 		     60 px prev / play-pause / next / stop at x 1620-1890, y 30-90; progress line at y 114 (x 1178-1890); no art. Same visibility and fades as 3.5.3:
