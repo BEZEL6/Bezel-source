@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.457
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.458
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 458 | "THE 1.5 DELAY MAKES IT LOOK BROKE"; "JUST HAVE IT FADE IN QUICK. NO FADE OUT OF SECTION"; "START P2" | **MMNODIM** (no section dim under the MM), rewrite **P2.1** (grid_sync removed), **P2.3** (bz_big_* no longer set) |
 | 457 | "P1 THEN IF USAGE PERMITS DO P2" (rewrite, layout first) | rewrite **P1B** (strip content relative to `bz_strip_x`), **P1C** (stage fill / stage / art constants); zero visual change |
 | 456 | "SMALL BLACK PULSE ON BIG ALBUM ON MUSIC START"; "TRANSPORT BAR LABELS … CENTERED"; "MM FADES BLACK THEN BACK"; "TUNER … REMOVE NAV LEGEND"; "GLOW TEXTURES"; "TITLE ON THE FANART STAGE … HIDDEN" | **IDLEHOLD**, **TRANSCENTRE**, **MMCLEANFADE**, **TUNERCLEAN**, **GLOWSHIFT**, **FSTITLE**, rewrite **P1A** |
 | 455 | "EXTEND THE FANART STAGE RIGHT … KEEP LIST AND COLOR STRIP SAME SIZE"; "MM MUST MOVE"; "DELETE THE GRID VIEWS" | **STAGEWIDE** (stage 120–1050, strip 660–1050, gap 90), **GRIDDEL** |
@@ -218,6 +219,19 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.458 — MMNODIM + rewrite P2.1, P2.3
+Branch `claude/5.33.458` (one commit each, on 457).
+- **MMNODIM** (Rob on 457: the 456 MMCLEANFADE 1.5 s dim delay "makes it look broke"; "just have it fade in quick. no fade out of section"):
+  - The 22 `bz_at_mmdim` Background-dim Conditional fades (11 steps each in `BezelSecDim` and `BezelSecDimArt`, gated on `$EXP[bz_navmenu]`) are removed. The section stays at full opacity under the MM, and the MM fades in over it.
+  - Unchanged: Global dim (`bz_at_gdim`, outside the MM), the Dust3 MM-dim lit levels, the 1117 MediaSources static dims, and the MM art lane fade (1500 ms; it belongs to the locked mm-warm system).
+  - Side effects: the Tuner "Background dim" row has no MM effect now; on MM rows with no art the section shows undimmed.
+- **P2.1** (rewrite): `grid_sync` thread deleted (140 lines). Control 6600 doesn't exist since 455 GRIDDEL, so the thread only ran its idle branch (0.3 s poll, clears `bz_gslot` / `bz_gpend`).
+  - `bz_gpend` is set only with `bz_grid_video` (reset at start) and is still cleared by the MyVideoNav onload AlarmClock (2 s).
+  - Left for P3: bz_cmd `gridenter`/`gridclick`/`gridfocus` (only run when called), the 41 always-false XML `6600` conditions. Left for P2.6: nav_menu `bz_grid_*` checks.
+- **P2.3** (rewrite): `sway_clock` no longer sets `bz_big_go` / `bz_big_pulse` (no XML has read them since 453 ONESWAY). Saves ~40 Home calls/s. The exit cleanup still clears them.
+- **Check:** open the MM from Music / Movies / TV and close it again: the MM fades in over the section with no dim, delay or dark dip. Video sections still appear after loading. The album sway is unchanged.
+- **Static checks only:** XML parses, bz_flip.py compiles. Not device-tested.
 
 ## 5.33.457 — rewrite P1B + P1C (layout from constants, no visual change)
 Branch `claude/rewrite-p1b` (one commit per step), built as `claude/5.33.457`. Plan and tools: `REWRITE_PLAN.md` section 5.
