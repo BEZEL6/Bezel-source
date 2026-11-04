@@ -358,10 +358,17 @@ if home.getProperty('bz_flip_running') != 'true':
     _SETKIDS = '[' + ' | '.join('Window.IsActive(%s)' % w for _b, ws in SETTINGS_TREE for w in ws) + ']'   # = $EXP[bz_setkids]
     _V60_INFOWIN = '[Window.IsActive(music) | Window.IsActive(musicplaylist) | Window.IsActive(favourites) | Window.IsActive(favouritesbrowser) | Window.IsActive(programs) | Window.IsActive(games)]'
     _V60_GRIDV = 'Window.IsActive(videos) + Skin.HasSetting(bz_grid_video) + [Container(60).Content(movies) | Container(60).Content(tvshows) | Container(60).Content(seasons)]'
+    # 5.33.467 rewrite P2.6a OWNSHADOW (Rob 465 kodi.log: ~2,930 Kodi calls/s idle, most getProperty): every key set through _v60_set is
+    # written only here (checked: no XML Set/ClearProperty, no other script; bz_vmus's one direct clear in m_mirror now goes through here,
+    # the exit cleanup runs after the threads stop). So the last value written is known: an unchanged value skips the Kodi read. A key
+    # not yet written in this run (or a changed value) still reads Kodi first, exactly as before. Writes are unchanged.
+    _v60_sh = {}
     def _v60_set(k, v):
+        if k in _v60_sh and _v60_sh[k] == v: return
         if home.getProperty(k) != v:
             if v: home.setProperty(k, v)
             else: home.clearProperty(k)
+        _v60_sh[k] = v
     _setopen_t = [0]
     _v60_pend = ['', 0.0]; _v60_gone = [0.0]   # 5.33.372 POSTERHOLD: staged art (preload slot bz_v60_next) + list-60 gap grace
     def _v60_art_stage(a):   # 5.33.372 Rob t2671-t2677: never overwrite bz_v60_art with an undecoded path. New art -> hidden preload slot first
@@ -518,7 +525,7 @@ if home.getProperty('bz_flip_running') != 'true':
             if a: _m_idle_stage(a)
             _v60_set('bz_vmus', '1' if (not a or (home.getProperty('bz_m_idle_art') == a and _t.time() - _mi['flip'] >= _mi_guard())) else '')   # 5.33.427: album layer rises only once the artist art is decoded AND its A/B dissolve has finished
         elif _vs: pass   # Movies/TV row over Music: album hidden (railvis), keep its cover still
-        if _vs != 'music' and home.getProperty('bz_vmus'): home.clearProperty('bz_vmus')
+        if _vs != 'music' and home.getProperty('bz_vmus'): _v60_set('bz_vmus', '')   # 5.33.467 P2.6a: through the shadow
         elif cv('Window.IsActive(music)') and cv('Control.IsVisible(60)') and not home.getProperty('bz_m_idle_lock'):   # = BezelPoster60 music path; 5.33.369 MMHOLD: frozen on MM open until under_adv's first random step
             a = ''
             if cv('Container(60).ListItem.IsParentFolder'): a = il('Container(60).ListItemNoWrap(1).Art(thumb)')
