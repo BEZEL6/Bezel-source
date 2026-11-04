@@ -202,12 +202,6 @@ if action == 'xplay':
         if t in K: rpc('Player.Open', {'item': {K[t]: int(i)}, 'options': {'resume': mode == 'resume'}})
         else: xbmc.executebuiltin('RunScript(special://skin/scripts/bz_cmd.py,play,%s,%s)' % (t, i))
     sys.exit(0)
-if action == 'gstyle_removed_beta11':   # beta1 item 1: Grid Style cycle per section (skin string bz_gstyle_music / bz_gstyle_video): all grid -> focused poster -> all poster -> none
-    sec = dbtype if dbtype in ('music', 'video') else 'music'
-    cur = xbmc.getInfoLabel('Skin.String(bz_gstyle_%s)' % sec) or 'all'
-    nxt = {'all': 'focused', 'focused': 'poster', 'poster': 'none'}.get(cur, 'all')
-    xbmc.executebuiltin('Skin.SetString(bz_gstyle_%s,%s)' % (sec, nxt))
-    sys.exit()
 if action == 'npmode':   # 3.5.6: Now Playing colour block: 1 visualisation -> 2 artist bio -> 3 artist fanart -> 1
     cur = xbmc.getInfoLabel('Skin.String(bz_npmode)') or 'vis'
     nxt = {'vis': 'bio', 'bio': 'fanart', 'fanart': 'lyrics', 'lyrics': 'upnext'}.get(cur, 'vis')   # 4.1: + lyrics; beta1: + up next
@@ -220,17 +214,6 @@ if action == 'getmoreviz':   # 3.5.5: Get more in the visualisation picker: the 
         xbmc.sleep(25)
     xbmc.executebuiltin('ActivateWindow(AddonBrowser,addons://repository.xbmc.org/xbmc.player.musicviz/,return)')
     sys.exit()
-if action == 'gridfocus':
-    # BEZEL 3.2.0 item 2: switching to grid view gives the grid (6600) the focus first, once it is drawn (the list follows it via bz_flip.py)
-    mon = xbmc.Monitor()
-    mon.waitForAbort(0.15)
-    if not xbmc.getCondVisibility('[Window.IsActive(music) + Skin.HasSetting(bz_grid_music)] | [Window.IsActive(videos) + Skin.HasSetting(bz_grid_video)]'): sys.exit(0)
-    for _ in range(40):
-        if xbmc.getCondVisibility('Control.IsVisible(6600) + Integer.IsGreater(Container(6600).NumItems,0) + !Container(6600).IsUpdating'):
-            xbmc.executebuiltin('SetFocus(6600)')
-            if mon.waitForAbort(0.05) or xbmc.getCondVisibility('Control.HasFocus(6600)'): break
-        elif mon.waitForAbort(0.05): break
-    sys.exit(0)
 if action == 'fsexit':
     # 2.0a3: leave fullscreen Now Playing. Closing the window plays its WindowClose animations (the block slides back, the text fades),
     # exactly as with Back, then the list window returns.
@@ -475,54 +458,6 @@ if action == 'go':
         else:
             home.clearProperty('bz_nav'); home.clearProperty('bz_navtune'); home.clearProperty('bz_navbez'); home.setProperty('bz_tovideo', 'fade'); xbmc.Monitor().waitForAbort(0.6)
     _bz_load_then_close('Videos', path)
-    sys.exit(0)
-if action == 'gridenter':
-    # 3.5.4: Right from the list: the grid takes focus on the list's item (bz_grid_target from bz_flip.py; an unfocused panel ignores Control.Move)
-    mon = xbmc.Monitor()
-    t = home.getProperty('bz_grid_target')
-    xbmc.executebuiltin('SetFocus(6600)')
-    for i in range(20):
-        if xbmc.getCondVisibility('Control.HasFocus(6600)'): break
-        mon.waitForAbort(0.03)
-    if t:
-        # read the grid position once it is steady (the readback lags a frame or two), then one move
-        last = None
-        for i in range(12):
-            mon.waitForAbort(0.06)
-            try: c = int(xbmc.getInfoLabel('Container(6600).CurrentItem')) - 1
-            except Exception: c = None
-            if c is not None and c == last: break
-            last = c
-        if c is not None and int(t) != c:
-            # Control.Move steps a vertical panel by rows (4 tiles): rows by Move, then the column by Left / Right
-            t = int(t); dr = t // 4 - c // 4; dc = t % 4 - c % 4
-            if dr: xbmc.executebuiltin('Control.Move(6600,%d)' % dr)
-            for i in range(abs(dc)): xbmc.executebuiltin('Action(%s)' % ('Right' if dc > 0 else 'Left'))
-    sys.exit(0)
-if action == 'gridclick':
-    # 3.5.4: a grid tile opens / plays the same item as the list. A tap on an unfocused grid focuses and clicks in one go, so the
-    # list is put on the tapped item here first (DBID / label match), then selected.
-    mon = xbmc.Monitor()
-    L = xbmc.getInfoLabel
-    def key(c, i): return L('Container(%d).ListItemAbsolute(%d).DBID' % (c, i)) or L('Container(%d).ListItemAbsolute(%d).Label' % (c, i))
-    last = None
-    for i in range(12):
-        mon.waitForAbort(0.05)
-        try: c = int(L('Container(6600).CurrentItem')) - 1
-        except Exception: c = None
-        if c is not None and c == last: break
-        last = c
-    if c is not None and c >= 0:
-        k = key(6600, c)
-        n = int(L('Container(60).NumAllItems') or 0)
-        m = {key(60, i): i for i in range(n)}
-        j = m.get(k); p = m.get(L('Container(60).ListItem.DBID') or L('Container(60).ListItem.Label'))
-        if j is not None and p is not None and j != p:
-            xbmc.executebuiltin('Control.Move(60,%d)' % (j - p))
-            for i in range(20):
-                mon.waitForAbort(0.05)
-                if (L('Container(60).ListItem.DBID') or L('Container(60).ListItem.Label')) == k: break
-    xbmc.executebuiltin('SetFocus(60)'); mon.waitForAbort(0.1); xbmc.executebuiltin('Action(Select)')
     sys.exit(0)
 if action == 'vidsel':
     # BETA 2.6 item 5: Select in fullscreen video = pause / resume + show the OSD
