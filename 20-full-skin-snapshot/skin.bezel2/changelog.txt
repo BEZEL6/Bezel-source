@@ -1,3 +1,5 @@
-5.33.464 (2026-11-04)
-- SWAYEPOCH (rewrite P2.4, Rob: "CLOCK"): the poster sway now counts from exactly the same start time as the big album sway, also with no music playing, so album and poster swing in step. No other change.
+5.33.465 (2026-11-04)
+- TUNERHIDE: Back from the Tuner to the power menu no longer leaves the Tuner drawn under it.
+- OLDPILL / OLDNP: the old Now Playing screen is gone (its cycle pill at the old upper-right spot could flash when leaving the big album). Idle auto Now Playing, tapping the playing song, Info with no album and Tab while Kodi is busy now open the current fanart fullscreen.
+- Cleanup (rewrite P3.4-P3.6): unused Estuary fanart window, 18 hidden controls, the old grid conditions and grid script actions removed. Nothing else changes on screen.
 

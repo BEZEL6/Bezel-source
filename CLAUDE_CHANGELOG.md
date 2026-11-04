@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.464
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.465
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 465 | "TUNER MENU EXITS BUT IS STILL DRAWN"; "OLD FULLSCREEN FANART VIZ IS LEFT IN THE CODE" (fanart overlay + cycle pill at the old upper-right spot, back from the big album) → "REMOVE ANYTHING OLD"; "ANY REWRITE OPTIMIZATION" | **TUNERHIDE**, **DEL1104**, **OLDPILL**, **OLDNP** (old Now Playing dialog 1112 + routes → 1121 / Kodi FS), rewrite **P3.4–P3.6** (parked controls, grid 6600 conditions, grid script actions) |
 | 464 | "CAN CLOCK AND EVENT BE TRIED NEXT?" → "CLOCK" | rewrite **P2.4 SWAYEPOCH**: poster sway epoch = album idle clock bt0 (was its own art0). Event-driven playback (P2.5) dropped: ~25 mostly compound checks, ~2–3% saving, timing risk |
 | 463 | "MUSIC CONTROLS GET STUCK IN VIS SETTINGS"; "QUICK BACK FROM TUNER MENU DROPS IN RANDOM WINDOW"; "ADD A NP BAR WHEN UP NEXT IS TRIGGER IN KODI FULLSCREEN" | **VIZSETRESET** (bz_vizset by window id + cleared on load), **TUNERBACKQ** (power menu before Tuner hides), **UPNNPBAR** (compact NP bar under the home album with Up Next, viz + 1121) |
 | 462 | "TUNER ROWS HAVE DAYS AND MONTHS"; "HIDE"; "BACK ON LEVEL 2 → LEVEL 1"; "BACK ON LEVEL 1 → POWER MENU"; "SAME LOOK AS MM DUST IN THE ALBUM AND POSTER LIT DUST" | **TUNERRAILNUM** (rail counts were localized ids; hidden), **TUNERBACK** (6970 → 7001; 7001 → power menu), **LITMM** (lit dust default = textures cut from MM Dust 2.0) |
@@ -225,6 +226,31 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.465 — TUNERHIDE + DEL1104 + OLDPILL + OLDNP + rewrite P3.4–P3.6
+Branch `claude/5.33.465` (464 + one commit per item, 7 commits).
+- **TUNERHIDE** (Rob: "tuner menu exits but is still drawn on exit from tuner"; caused by 463 TUNERBACKQ):
+  - 463 put `ActivateWindow(1118)` before `ClearProperty(bz_navtune)`. 1118 is a modal dialog, and Kodi runs a modal dialog's render loop inside `ActivateWindow` (GUIDialog.cpp `Open_Internal`), so the later ClearProperty only ran after the power menu closed. The Tuner card stayed drawn under 1118.
+  - Tuner group 6975 now also needs `!Window.IsVisible(1118)`. The 463 order stays (the power menu takes the keys first, so quick Back is still safe). When 1118 closes, the held ClearProperty runs before the next frame. 1118 never opens the Tuner.
+- **DEL1104:** `Custom_1104_Fanart.xml` (Estuary fullscreen fanart window) deleted; nothing opened it.
+- **OLDPILL** (Rob: "a fanart overlay with the cycle pill in the old upper right fanart stage position … kodi fullscreen when return from big album back to the fanart … for a while now in many builds"):
+  - `BezelNPInPlace` is drawn in the music list (View_60, default params: pill at 620 right-aligned = the old upper-right spot) and in MusicVisualisation (pill at 140,136). Under 1121 the music copy is the current fanart stage; its pill hid only while 1121 was visible, so it faded in around 1121 opening / closing.
+  - The pill grouplist (6391) and the "press down to open" hint now need `Window.IsActive(visualisation)`. Kodi FS pill: same position and the same effective condition (viz + `bz_pnoff` = 1). 1121 keeps its own pill 6421. Geometry for MusicVisualisation and 1121: identical to 464.
+- **OLDNP** (Rob picked "old pill + routes"; "remove the old code so I won't see the wrong screen"):
+  - The old Now Playing (in-place panel as a screen of its own, and dialog 1112) is removed. `bz_cmd.py` `np` / `nptoggle` / `tab` / `vistoggle` are one block that opens the current fullscreen like the MM FULL pill: 1121 from the music window (kill switch `bz_m1121_off` respected), else Kodi FS.
+  - Routes this covers: auto Now Playing after idle (Tuner `bz_at_autonp`, off by default), tap / Select on the playing song, Info with no album (`xinfo`), and Tab pressed while Kodi was busy (`bz_flip.py` bz_tabq, now `ActivateWindow(1121)` like the Tab keymap).
+  - `Custom_1112_NowPlaying.xml` and the `<window1112>` keymap section deleted. The ~60 remaining `Window.IsActive(1112)` / `Dialog.Close(1112)` references are conditions / no-ops (false / nothing to close), left for a later pass. The MM menu itself is drawn elsewhere (`BezelNavMenu` in Includes_Bezel).
+  - The music window's in-place panel stays: it is the fanart stage under 1121.
+- **P3.4:** 18 parked `<visible>false</visible>` controls with no ids inside (so no focus / navigation target) removed, plus the 2 variables they used (`BezelMenuVidArt`, `BezelStats`). Kept: TUNERCLEAN's 5 labels and every hidden control holding an id (Kodi-required ids like 50 / 60 / 10, and nav targets such as 6891 / 6392 / 6880). Geometry: 156 resolved controls gone (all inside the removed ones), every other control identical.
+- **P3.5:** the always-false grid conditions removed (control 6600 gone since 455 GRIDDEL; `bz_gridfirst` was `false`): the grid title value, `bz_listbar`'s 6600 term, two focus-visible terms, 4 grid fades, 2 gridenter onrights, 2 `!Control.IsVisible(6600)` terms, the MyMusicNav / MyVideoNav grid onloads, then `bz_gridfirst`. Geometry identical.
+- **P3.6:** `bz_cmd.py` actions with no caller removed: `gridfocus`, `gridenter`, `gridclick`, `gstyle_removed_beta11` (65 lines).
+- **Totals:** 49 lines added, 325 removed; XML 4,602 KB; audit 0 unused includes / expressions / variables.
+- **Check:**
+  - Tuner: Back on the rail → power menu with no Tuner under it; Back → MM.
+  - Kodi FS and fanart FS: big album → Back to fanart: no pill at the upper right; the upper-left cycle pill works as before (six modes).
+  - Music list: Tab → fanart FS; with Tuner auto Now Playing on, idle → fanart FS; Select on the playing song → fanart FS.
+  - Everything else looks as 464.
+- **Static checks + mock run of the new route block.** Not device-tested.
 
 ## 5.33.464 — rewrite P2.4 SWAYEPOCH (one sway epoch)
 Branch `claude/5.33.464` (463 + one commit). A/B against 463.
