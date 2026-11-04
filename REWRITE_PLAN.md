@@ -175,6 +175,11 @@ Kodi facts checked in source: zoom without centre uses the control's own rect (s
       MyVideoNav onload AlarmClock. Left for P3: bz_cmd `gridenter/gridclick/gridfocus`, the 41 XML `6600` conditions (always false),
       `bz_gslot`/`bz_gtitle` consumers. Left for P2.6: nav_menu `bz_grid_*` checks (~1298, ~1340).
 - [x] P2.3 (feb53ab): sway_clock no longer sets `bz_big_go` / `bz_big_pulse` (unread since 453). Exit cleanup still clears them.
-- [ ] P2.2 merge the slow watchers (km_leave_watch, fpop_clock, allcnt, album_id, cw_clock) into one loop. This changes poll
-      timing, so it gets its own build and an A/B.
+- [x] Build 458 = MMNODIM + P2.1 + P2.3. Rob on device: "458 good".
+- [ ] P2.2 **TRIED AND REVERTED.** Build 459 (fb02378) put the five slow watchers in one `slow_watch` thread (generators
+      yielding their own waits; mock run showed unchanged intervals). Rob: "457 great", "458 good", "459 very bad",
+      "backgrounds perform poorly". Reverted on `claude/5.33.459`; bz_flip.py = 458. Cause unknown: none of the five touches
+      background art directly. Don't retry without a 459 kodi.log (BEZEL perf lines, "watcher crashed" lines).
+      Suspects: `cw_build` thread start-up; fpop / album_id / allcnt sharing one thread when a call is slow; GIL scheduling.
+- Next candidates (Python, one per build, A/B): P2.4 one sway clock. Or skip ahead to P3 dead code (XML only, safer).
 - Build hygiene: `py_compile` leaves `scripts/__pycache__` in the snapshot. Delete it before zipping.

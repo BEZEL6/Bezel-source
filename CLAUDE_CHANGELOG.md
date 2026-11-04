@@ -17,7 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
-| 459 | "P2.2 NEXT" "THEN BUILD" | rewrite **P2.2**: one `slow_watch` thread for km_leave_watch / fpop_clock / allcnt / album_id / cw_clock (A/B against 458) |
+| 459 | "P2.2 NEXT" "THEN BUILD" → "459 VERY BAD", "458 GOOD" | **REJECTED, reverted** rewrite **P2.2**: one `slow_watch` thread for km_leave_watch / fpop_clock / allcnt / album_id / cw_clock (A/B against 458) |
 | 458 | "THE 1.5 DELAY MAKES IT LOOK BROKE"; "JUST HAVE IT FADE IN QUICK. NO FADE OUT OF SECTION"; "START P2" | **MMNODIM** (no section dim under the MM), rewrite **P2.1** (grid_sync removed), **P2.3** (bz_big_* no longer set) |
 | 457 | "P1 THEN IF USAGE PERMITS DO P2" (rewrite, layout first) | rewrite **P1B** (strip content relative to `bz_strip_x`), **P1C** (stage fill / stage / art constants); zero visual change |
 | 456 | "SMALL BLACK PULSE ON BIG ALBUM ON MUSIC START"; "TRANSPORT BAR LABELS … CENTERED"; "MM FADES BLACK THEN BACK"; "TUNER … REMOVE NAV LEGEND"; "GLOW TEXTURES"; "TITLE ON THE FANART STAGE … HIDDEN" | **IDLEHOLD**, **TRANSCENTRE**, **MMCLEANFADE**, **TUNERCLEAN**, **GLOWSHIFT**, **FSTITLE**, rewrite **P1A** |
@@ -222,6 +222,7 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
 
 ## 5.33.459 — rewrite P2.2 (A/B against 458)
+**RESULT: REJECTED on device.** Rob: "457 great", "458 good", "459 very bad" (backgrounds perform poorly). P2.2 is reverted on `claude/5.33.459`; use 458. Not retried without a 459 kodi.log.
 Branch `claude/5.33.459` (458 + one commit).
 - **P2.2:** `km_leave_watch` (1 s), `fpop_clock` (1 s), `allcnt` (0.4 s), `album_id` (0.5 s) and `cw_clock` (1 s) were five threads. Each is now a generator that yields its own wait instead of `mon.waitForAbort`, so its body and poll interval are unchanged. One `slow_watch` thread schedules them.
   - A watcher that raises is logged (`BEZEL bz_flip watcher <name> crashed`) and restarted, max 5, like `_bzstart`.
