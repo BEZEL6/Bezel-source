@@ -220,9 +220,20 @@ if home.getProperty('bz_flip_running') != 'true':
     def _sn(x):
         x = 0.0 if x < 0 else 1.0 if x > 1 else x
         return (1 - math.cos(math.pi * x)) / 2
+    # 5.33.471 rewrite P2.6b SWAYSHADOW: bz_sway_t0 / _hold / _go / _pulse / _pulse2 are written only by sway_clock (and the exit cleanup after
+    # the threads stop; no XML Set/ClearProperty). sway_clock, _sway_anchor and _bz_cast (same thread) read them from this copy of the last
+    # written value instead of Kodi; the first read of each comes from Kodi. Writes to Kodi are unchanged (set only on a change).
+    _swsh = {}
+    def _swg(k):
+        if k not in _swsh: _swsh[k] = home.getProperty(k)
+        return _swsh[k]
+    def _sws(k, v):
+        if v: home.setProperty(k, v)
+        else: home.clearProperty(k)
+        _swsh[k] = v
     def _bz_cast(t0):
         L = R = None
-        if t0 is not None and not home.getProperty('bz_sway_hold'):   # 5.33.468 CASTIDLE: stubs follow the sway with or without music (t0 = album clock or idle bt0)
+        if t0 is not None and not _swg('bz_sway_hold'):   # 5.33.468 CASTIDLE: stubs follow the sway with or without music (t0 = album clock or idle bt0)
             u = time.time() - t0
             _ps = sway.get('ps'); _pl = sway.get('pl')   # 5.33.441 STUBPHASE: real start of the 1122 album's pulse (see _sway_anchor)
             if u >= 2.4 and xbmc.getCondVisibility('Skin.HasSetting(bz_swayright)'):
@@ -266,9 +277,9 @@ if home.getProperty('bz_flip_running') != 'true':
                                      ' | [String.IsEqual(Window(Home).Property(bz_np),true) + [Window.IsActive(music) | String.IsEqual(Window(Home).Property(bz_fsnp),true)]'
                                      ' + String.IsEqual(Window(Home).Property(bz_audio_latch),true) + !Player.HasVideo]]')
         if not vis: return
-        hold = bool(home.getProperty('bz_sway_hold')); right = xbmc.getCondVisibility('Skin.HasSetting(bz_swayright)')
-        cl = (not hold) and bool(home.getProperty('bz_sway_pulse')) and not right            # = album long pulse condition
-        cs = (not hold) and home.getProperty('bz_sway_go') == 'true' and right                # = album short pulse condition
+        hold = bool(_swg('bz_sway_hold')); right = xbmc.getCondVisibility('Skin.HasSetting(bz_swayright)')
+        cl = (not hold) and bool(_swg('bz_sway_pulse')) and not right            # = album long pulse condition
+        cs = (not hold) and _swg('bz_sway_go') == 'true' and right                # = album short pulse condition
         now = time.time()
         if cl and not sway.get('cl'): sway['pl'] = now
         if not cl: sway['pl'] = None
@@ -283,24 +294,24 @@ if home.getProperty('bz_flip_running') != 'true':
             if home.getProperty('bz_sway_restart'):
                 home.clearProperty('bz_sway_restart')
                 if not sway.get('busy') and sway['t0'] is not None:
-                    home.setProperty('bz_flipping', 'true'); home.setProperty('bz_sway_hold', 'true')
+                    home.setProperty('bz_flipping', 'true'); _sws('bz_sway_hold', 'true')
                     if mon.waitForAbort(0.25): break
-                    home.clearProperty('bz_sway_hold'); sway['t0'] = time.time(); sway['bt0'] = sway['t0']   # 5.33.415 SWAYCONT: one shared clock
+                    _sws('bz_sway_hold', ''); sway['t0'] = time.time(); sway['bt0'] = sway['t0']   # 5.33.415 SWAYCONT: one shared clock
                     if mon.waitForAbort(0.3): break
                     if not sway.get('busy'): home.clearProperty('bz_flipping')
             if sway.get('bt0') is None: sway['bt0'] = time.time()   # 5.33.415 SWAYCONT (Rob pt2930u): ONE shared sway clock from Home startup; music start no longer re-zeroes it
             t0 = sway['t0'] if sway['t0'] is not None else sway['bt0']
-            if home.getProperty('bz_sway_t0') != ('%.3f' % t0 if t0 is not None else ''): home.setProperty('bz_sway_t0', '%.3f' % t0 if t0 is not None else '')   # 3.5.3: for the music -> video wait-for-flat
-            go = t0 is not None and not home.getProperty('bz_sway_hold') and time.time() - t0 >= 2.4   # 3.5.1: end of the still hold -> lead-in (5 s)
-            if go and not home.getProperty('bz_sway_go'): home.setProperty('bz_sway_go', 'true')
-            elif not go and home.getProperty('bz_sway_go'): home.clearProperty('bz_sway_go')
-            on = t0 is not None and not home.getProperty('bz_sway_hold') and time.time() - t0 >= 7.4
-            if on and not home.getProperty('bz_sway_pulse'): home.setProperty('bz_sway_pulse', 'true')
-            elif not on and home.getProperty('bz_sway_pulse'): home.clearProperty('bz_sway_pulse')
+            if _swg('bz_sway_t0') != ('%.3f' % t0 if t0 is not None else ''): _sws('bz_sway_t0', '%.3f' % t0 if t0 is not None else '')   # 3.5.3: for the music -> video wait-for-flat
+            go = t0 is not None and not _swg('bz_sway_hold') and time.time() - t0 >= 2.4   # 3.5.1: end of the still hold -> lead-in (5 s)
+            if go and not _swg('bz_sway_go'): _sws('bz_sway_go', 'true')
+            elif not go and _swg('bz_sway_go'): _sws('bz_sway_go', '')
+            on = t0 is not None and not _swg('bz_sway_hold') and time.time() - t0 >= 7.4
+            if on and not _swg('bz_sway_pulse'): _sws('bz_sway_pulse', 'true')
+            elif not on and _swg('bz_sway_pulse'): _sws('bz_sway_pulse', '')
             # 5.33.459 P2.3: bz_big_go / bz_big_pulse no longer set (no XML has read them since 453 ONESWAY; cleared on exit below)
             on2 = on and time.time() - t0 >= 12.4   # 2.0a3.4: cross wobble, a quarter cycle after the swing, so the art keeps moving through the turns
-            if on2 and not home.getProperty('bz_sway_pulse2'): home.setProperty('bz_sway_pulse2', 'true')
-            elif not on2 and home.getProperty('bz_sway_pulse2'): home.clearProperty('bz_sway_pulse2')
+            if on2 and not _swg('bz_sway_pulse2'): _sws('bz_sway_pulse2', 'true')
+            elif not on2 and _swg('bz_sway_pulse2'): _sws('bz_sway_pulse2', '')
             try: _sway_anchor()   # 5.33.441 STUBPHASE
             except Exception: pass
             try: _bz_cast(t0)   # 5.33.170 BUG-021: stub cast opacity from this same sway clock
