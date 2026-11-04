@@ -17,8 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
-| 454 | "I PREFER FADE INS FOR ALL TRANSITIONS"; "KEEP SLIDES FOR BIG ALBUM"; "ADD RECOMMENDED SPEEDS"; "LIST MORE FLOATY" | **FADEINS**, **SPEEDS** (list 317 ms, idle cover fade 300 ms) |
-| 454 | "ADD RECOMMENDED SPEEDS TO BUILD"; "CAN THE LIST FEEL MORE FLOATY"; "I PREFER FADE INS FOR ALL TRANSITIONS"; "KEEP SLIDES FOR BIG ALBUM" | **SPEEDS** (317 ms list, 1000 ms A/B, 300 ms idle cover), **FADEINS** |
+| 454 | "ADD RECOMMENDED SPEEDS TO BUILD"; "CAN THE LIST FEEL MORE FLOATY"; "I PREFER FADE INS FOR ALL TRANSITIONS"; "KEEP SLIDES FOR BIG ALBUM" | **SPEEDS** (317 ms list, 300 ms idle cover), **FADEINS** |
 | 453 | "USE ONLY 1 CONTINUOUS UNBROKEN SWAY ANIM"; "THE PLAYING STYLE AND TEXTURES SHOULD BE FOR BOTH"; "NO RESET ON PLAY" | **ONESWAY**: one big album sway rig + one glare/dust/shadow set for idle and playing |
 | 452 | "SONG START RESTARTS GLARE AND DUST ON BIG ALBUM? IT SHOULD BE UNBROKEN ANIMATION" | **GLARECONT**: playing-album glare lead-in only while the sway leads in |
 | 451 | "SOME ARTIST DONT SHOW THE ALL ALBUM FOLDER EVEN WITH MULTI ALBUMS, SCROLL TO END OF LIST NAVS TO HOME"; L2 screenshot (gap under small album, ALL over last album) | **ALLCOUNT**, **L2PULL**, **NOWRAPGUARD** |
@@ -217,35 +216,12 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
 
-## 5.33.454 — FADEINS + SPEEDS
-- **Rob:** "I prefer fade-ins for all transitions" (picked art changes, menus & dialogs, section changes, fullscreen screens); "keep slides for big album"; "add recommended speeds to build"; "can the list feel more floaty?" (no pick, so the floaty recommendation was used).
-- **FADEINS** (same times, movement removed):
-  - `Includes_Animations.xml`: all 18 zoom effects in the dialog / window Open / Close / Visible / Hidden animations are dropped; the fade effects stay.
-  - `Includes.xml`: the 8 WindowOpen / Close grow-zooms (100,0 / 0,100) become fades (delay 500 kept).
-  - 1115 Music controls: slide 0,-30 / 0,-20 become fade in 250 / fade out 420. 1116 Pause screen: slide 906 → fade 600. `Includes_BezelDialogs` 579: slide 380 → fade 300. DialogNotification: the −30 px slide → fade in 300.
-  - **MM row cascade** (BezelNavMenu): the 18 `slide 0,-20` effects are removed; the fades stay.
-  - **Section list cascade:** 480 `slide start="0,-40"` → `start="0,0"` (no movement; fade + Tuner cascade speed/stagger kept). `bz_tune_patch` regex now accepts `start="0,(?:-40|0)"`, so Tuner re-patches keep the fade-only rows.
-  - **FS stage** (MusicVisualisation, 1112 Now Playing, Includes_Bezel): the Conditional `slide 0,0 → -1100,0` becomes `fade 100 → 0` (reversible, so it fades back in), and the WindowClose `slide −1100 → 0` becomes `fade 0 → 100`.
-  - **Not changed:** the big album rail slide (centre / home) per Rob; the cover tap-flip (rotatey); the Tuner episode-drum slides (`bz_at_eposlide` style option); the MM dust drift (`mmdslide` loop); art A/B lanes (already crossfades; their `fadetime 0` slots are faded by the A/B animations).
-- **SPEEDS:** a one-time start-up step in `bz_flip.py` (flag `Skin.String(bz_spd454)`) sets:
-  - `bz_at_rowscroll = 3` (0.6x = 317 ms; the shipped XML `bzt="row"` scrolltime is 271 → 317 too, so no repatch or reload);
-  - `bz_at_midlefade = 3` (300 ms).
-  - The Tuner can change both afterwards.
-- **For the main agent:**
-  - The Tuner row "A/B fade" (`bz_at_abfade`, 800–2500 ms) has no consumer (no XML / Python reads it; the MM A/B lanes use fixed 1500 ms), so it was left alone.
-  - `BzATVal_rowscroll` labels "empty" as 1x while the patch default is step 4 (0.7x). That mismatch is pre-existing.
-- **Check:**
-  - Open/close: settings dialogs, context menu, Tuner, Power, Music controls, Pause screen, notifications. Fades only, no zoom or slide.
-  - Main menu open: rows fade in without dropping.
-  - Section open: list rows fade in by cascade.
-  - Fullscreen music to album / Play Next: the stage fades out while the big album slides to centre; back, it fades in.
-  - Lists scroll with a softer 317 ms glide.
-
 ## 5.33.454 — SPEEDS + FADEINS
 - **SPEEDS** (Rob: "add recommended speeds to build"; "can the list feel more floaty?"; he didn't pick from the options, so I used my floaty pick):
-  - `bz_flip.py` sets, once (flag `Skin.String(bz_spd454)`): `bz_at_rowscroll=3` (0.6x = 317 ms, cubic-out ease unchanged), `bz_at_abfade=6` (1000 ms), `bz_at_midlefade=3` (300 ms).
+  - `bz_flip.py` sets, once (flag `Skin.String(bz_spd454)`): `bz_at_rowscroll=3` (0.6x = 317 ms, cubic-out ease unchanged) and `bz_at_midlefade=3` (300 ms).
   - The shipped `bzt="row"` scrolltimes are 271 → 317, so XML and the Tuner agree with no repatch or ReloadSkin.
-  - The Tuner can change all three afterwards.
+  - The Tuner can change both afterwards.
+  - **Not set:** the Tuner "A/B fade" row (`bz_at_abfade`, 800–2500 ms) has no consumer; no XML or Python reads it, and the MM A/B lanes use a fixed 1500 ms. Wiring it up is a separate change.
   - Known display quirk (not changed): `BzATVal_rowscroll` labels an *empty* string "1x" while the patch default is step 4 (0.7x = 271 ms). This build sets an explicit step, so the label is correct.
 - **FADEINS** (Rob: "I prefer fade ins for all transitions"; picked art changes, menus & dialogs, section changes and fullscreen screens; "keep slides for big album"):
   - `Includes_Animations.xml`: the 18 zoom effects in window/dialog open/close and visible/hidden anims are removed. Fades and timings are kept.
