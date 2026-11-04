@@ -948,10 +948,36 @@ if home.getProperty('bz_flip_running') != 'true':
             tt = il('Container(60).ListItem.TVShowTitle') if cv('Container.Content(seasons) | Container.Content(episodes)') else il('Container(60).ListItem.Label')
         else: lg = tt = ''
         _v60_set('bz_mmh_logo', lg); _v60_set('bz_mmh_title', tt)
+    # 5.33.469 PILLIDLE (Rob: "auto unfocus pills, after 5 seconds of inactivity focus returns to last position"; all pills + the A-Z bar;
+    # back to where focus came from). Checked 4x a second from mm_autohide: while focus is on a BEZEL pill and Kodi's idle time is >= 5 s,
+    # focus goes back to the last non-pill control of the same window (list 60 keeps its row, 6996 its MM row), else to the pill's home.
+    # Dialog buttons (OK / Cancel, keyboard, Settings tabs) are not pills. The ALL rows (6097 / 6098 / 6088 / 6089) are list rows, not pills.
+    _PILL_HOME = {'6886': '60', '6391': '6390', '6421': '6420', '6401': None, '6958': '6996', '6959': '6996', '6960': '6996', '6961': '6996', '6910': '6996'}
+    _PILL_HOME.update({str(i): '60' for i in range(6101, 6128)})   # A-Z jump bar letters
+    _PILL_MM = ('6958', '6959', '6960', '6961', '6910')
+    _pill = {'w': None, 'c': None, 'fired': False}
+    def _pill_idle(idle):
+        c = xbmc.getInfoLabel('System.CurrentControlId')
+        w = (xbmcgui.getCurrentWindowId(), xbmcgui.getCurrentWindowDialogId())
+        ispill = c in _PILL_HOME and not (c in _PILL_MM and (home.getProperty('bz_nav') != 'true' or home.getProperty('bz_navsub')))
+        if not ispill:
+            if c: _pill['w'] = w; _pill['c'] = c
+            _pill['fired'] = False; return
+        if idle < 5: _pill['fired'] = False; return
+        if _pill['fired']: return
+        t = _pill['c'] if (_pill['w'] == w and _pill['c'] and _pill['c'] not in _PILL_HOME) else _PILL_HOME[c]
+        if t is None:   # big album pill: the FS window's main control
+            t = '6420' if xbmc.getCondVisibility('Window.IsVisible(1121)') else ('6400' if xbmc.getCondVisibility('Window.IsVisible(1120)') else '6390')
+        _pill['fired'] = True
+        xbmc.executebuiltin('SetFocus(%s)' % t)
     def mm_autohide():
-        hid = False; row = None; prev = 0; wake_t = 0.0; mp_t = [0.0]
+        hid = False; row = None; prev = 0; wake_t = 0.0; mp_t = [0.0]; pn = 0
         while not mon.abortRequested() and home.getProperty('bz_flip_running') == 'true':
             if mon.waitForAbort(0.05): break
+            pn += 1
+            if pn % 5 == 0:   # 5.33.469 PILLIDLE (4 Hz)
+                try: _pill_idle(xbmc.getGlobalIdleTime())
+                except Exception: pass
             # 5.33.435 MPKEEP: hold the MM mini player through a track change (Player.HasMedia drops for a moment on Next/Prev)
             if xbmc.getCondVisibility('Player.HasMedia'):
                 mp_t[0] = time.time()
