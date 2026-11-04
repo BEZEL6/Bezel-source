@@ -93,6 +93,15 @@ elif a[0] == 'seed':   # t4691: first start on a new defaults version -> write R
         apply_defs('everything'); xbmc.executebuiltin('Skin.SetString(bz_defseed,%s)' % DEF.get('ver')); xbmc.sleep(300)
         sys.path.insert(0, here); import bz_tune_patch
         if bz_tune_patch.patch(xbmc.getInfoLabel): xbmc.executebuiltin('ReloadSkin()')
+elif a[0] == 'fastseed':   # 5.33.471 FASTPACK (Rob: "can you just make changes to make it faster"): the faster timing picks, written once on existing
+    # installs without touching any other Tuner setting (a DEF ver bump would re-seed everything). A fresh install gets them from the DEF seed.
+    F = _J.get('FAST', {})
+    if F and xbmc.getInfoLabel('Skin.String(bz_fastseed)') != F.get('ver'):
+        if xbmc.getInfoLabel('Skin.String(bz_defseed)') == DEF.get('ver'):
+            for k, v in F.get('str', {}).items(): xbmc.executebuiltin('Skin.SetString(%s,%s)' % (k, v))
+        xbmc.executebuiltin('Skin.SetString(bz_fastseed,%s)' % F.get('ver')); xbmc.sleep(300)
+        sys.path.insert(0, here); import bz_tune_patch
+        if bz_tune_patch.patch(xbmc.getInfoLabel): xbmc.executebuiltin('ReloadSkin()')
 elif a[0] == 'alldust':   # 4.1.0 O37: master All dust toggle (on / off / toggle)
     B = ('bz_dust_off', 'bz_sdust_off', 'bz_adust_off')
     off = all(xbmc.getCondVisibility('Skin.HasSetting(%s)' % b) for b in B)

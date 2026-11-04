@@ -5,7 +5,7 @@
 <window>
 	<defaultcontrol always="true">9999</defaultcontrol>
 	<backgroundcolor>FF000000</backgroundcolor>
-	<onload condition="!String.IsEqual(Skin.String(bz_defseed),5.0.20)">RunScript(special://skin/scripts/bz_tune.py,seed)</onload><!-- t4691: Rob default picks seed (once per defaults version) -->
+	<onload condition="!String.IsEqual(Skin.String(bz_defseed),5.0.20)">RunScript(special://skin/scripts/bz_tune.py,seed)</onload><onload condition="String.IsEqual(Skin.String(bz_defseed),5.0.20) + !String.IsEqual(Skin.String(bz_fastseed),5.33.471)">RunScript(special://skin/scripts/bz_tune.py,fastseed)</onload><!-- 5.33.471 FASTPACK: faster timing picks, once --><!-- t4691: Rob default picks seed (once per defaults version) -->
 	<onload condition="!String.IsEqual(Window(Home).Property(bz_flip_running),true)">RunScript(special://skin/scripts/bz_flip.py)</onload>
 	<onload condition="!String.IsEqual(Window(Home).Property(bz_precache_running),true)">RunScript(special://skin/scripts/bz_precache.py)</onload><!-- BEZEL 3.0: artwork pre-cache -->
 	<onload>RunScript(special://skin/scripts/bz_cmd.py,start)</onload>
