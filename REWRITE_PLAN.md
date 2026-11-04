@@ -142,3 +142,18 @@ Add a `tools/check_all.sh` that runs: XML parse, `py_compile`, the reference aud
   - Rob then said "skip glow", so no remake.
   - Removing the panel cleanly needs new textures, because the light effects are painted through it.
 - **Not checked on device:** all 456 items. They were checked statically only (parse, audit, geometry).
+
+---
+
+## 5. Progress log (P1B, session 2026-11-04, branch `claude/rewrite-p1b`, based on 456)
+Tools: `geom455/p1b.py <geom.json> <xml> --base 570|0|120 [--apply]` (container conversion, consistency-checked),
+`p1b_anchor.py` (full-screen/stage children -> `bz_strip_nx` / `bz_strip_tostage`), `zerodiff.py` (run with `ZD_GROUPS=1`:
+groups draw nothing, so only drawn controls + absolute anim centres must match), `striptest.py` (strip+1 simulation:
+set bz_strip_x 661, bz_strip_nx -661, bz_strip_tostage -541). Re-run geom after every --apply (inserted lefts shift ordinals).
+New constants next to `bz_strip_x`: `bz_strip_nx` -660, `bz_strip_tostage` -540 (change with bz_strip_x; Kodi has no arithmetic).
+Kodi facts checked in source: zoom without centre uses the control's own rect (safe); rotate without centre = parent origin
+(none exist in BEZEL); constants resolve in `end`/`start`/`center` attributes but whole-value only.
+- [x] part 1 (d35f4d1 / bc5ab22): 98 containers at old strip x 570 -> bz_strip_x. Strip test 859 -> 2,662.
+- [x] part 2 (4eb21f5): 29 groups at x 0 holding only strip content -> bz_strip_x. Strip test 3,085.
+- [ ] remaining ~1,800 strip controls: library list (zoom group 86.67 + slide 620.84, needs P1C), Includes_Bezel 513
+      main-menu group (inherits 120), root-level window controls (ChooseArt, Refresh: need a wrapping group), info dialogs.
