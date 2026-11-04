@@ -18,6 +18,7 @@
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
 | 454 | "I PREFER FADE INS FOR ALL TRANSITIONS"; "KEEP SLIDES FOR BIG ALBUM"; "ADD RECOMMENDED SPEEDS"; "LIST MORE FLOATY" | **FADEINS**, **SPEEDS** (list 317 ms, idle cover fade 300 ms) |
+| 454 | "ADD RECOMMENDED SPEEDS TO BUILD"; "CAN THE LIST FEEL MORE FLOATY"; "I PREFER FADE INS FOR ALL TRANSITIONS"; "KEEP SLIDES FOR BIG ALBUM" | **SPEEDS** (317 ms list, 1000 ms A/B, 300 ms idle cover), **FADEINS** |
 | 453 | "USE ONLY 1 CONTINUOUS UNBROKEN SWAY ANIM"; "THE PLAYING STYLE AND TEXTURES SHOULD BE FOR BOTH"; "NO RESET ON PLAY" | **ONESWAY**: one big album sway rig + one glare/dust/shadow set for idle and playing |
 | 452 | "SONG START RESTARTS GLARE AND DUST ON BIG ALBUM? IT SHOULD BE UNBROKEN ANIMATION" | **GLARECONT**: playing-album glare lead-in only while the sway leads in |
 | 451 | "SOME ARTIST DONT SHOW THE ALL ALBUM FOLDER EVEN WITH MULTI ALBUMS, SCROLL TO END OF LIST NAVS TO HOME"; L2 screenshot (gap under small album, ALL over last album) | **ALLCOUNT**, **L2PULL**, **NOWRAPGUARD** |
@@ -239,6 +240,28 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
   - Section open: list rows fade in by cascade.
   - Fullscreen music to album / Play Next: the stage fades out while the big album slides to centre; back, it fades in.
   - Lists scroll with a softer 317 ms glide.
+
+## 5.33.454 — SPEEDS + FADEINS
+- **SPEEDS** (Rob: "add recommended speeds to build"; "can the list feel more floaty?"; he didn't pick from the options, so I used my floaty pick):
+  - `bz_flip.py` sets, once (flag `Skin.String(bz_spd454)`): `bz_at_rowscroll=3` (0.6x = 317 ms, cubic-out ease unchanged), `bz_at_abfade=6` (1000 ms), `bz_at_midlefade=3` (300 ms).
+  - The shipped `bzt="row"` scrolltimes are 271 → 317, so XML and the Tuner agree with no repatch or ReloadSkin.
+  - The Tuner can change all three afterwards.
+  - Known display quirk (not changed): `BzATVal_rowscroll` labels an *empty* string "1x" while the patch default is step 4 (0.7x = 271 ms). This build sets an explicit step, so the label is correct.
+- **FADEINS** (Rob: "I prefer fade ins for all transitions"; picked art changes, menus & dialogs, section changes and fullscreen screens; "keep slides for big album"):
+  - `Includes_Animations.xml`: the 18 zoom effects in window/dialog open/close and visible/hidden anims are removed. Fades and timings are kept.
+  - `Includes.xml`: four grow-zoom WindowOpen/Close pairs → fades (same delay and time).
+  - Slides → fades: 1115 Music Controls (open 250 / close 420), 1116 Pause Screen (600), `Includes_BezelDialogs` 579 (300), DialogNotification (300, the existing late fade-out is kept).
+  - Main-menu row cascade: the 18 `slide 0,-20` drop-ins are removed; the fades and stagger are kept.
+  - Section list cascade: 480 `slide 0,-40` → `0,0` (no movement), so the Tuner cascade speed and stagger still apply. The `bz_tune_patch` cascade anchor now accepts `0,-40 | 0,0`; 480 anchors are verified to match.
+  - Fullscreen stage: every `slide 0,0 → −1100,0` Conditional → `fade 100 → 0` (same time, condition and reversibility), and the `−1100 → 0` WindowClose → fade `0 → 100`, in MusicVisualisation, Custom_1112 NowPlaying and Includes_Bezel.
+  - Not changed: the big album rail slide (centre / home), the leaf flip (locked), the Tuner drum `eposlide` option, the MM dust drift, and the A/B art lanes (they already crossfade; their `fadetime 0` slots are faded by the lane anims on purpose).
+- **Check:**
+  - Open and close Settings / info / context dialogs, Music Controls, Pause, notifications: fade only.
+  - Main menu opens with rows fading in, no drop.
+  - Enter Music / Movies / TV: rows fade in, no drop.
+  - Fullscreen music → Play Next / album viz: the stage fades away while the album slides to centre; back: the stage fades in.
+  - List scroll feels floatier.
+- **Rollback:** the files from 5.33.453.
 
 ## 5.33.453 — ONESWAY (one continuous big album sway, idle + playing)
 - **Rob:** "use only 1 continuous unbroken sway anim, if I want a diff style later I will work on it"; "the playing style and textures should be for both"; "no reset on play".

@@ -1,4 +1,8 @@
 5.33.454 (2026-11-03)
+- SPEEDS (Rob: "ADD RECOMMENDED SPEEDS TO BUILD", "CAN THE LIST FEEL MORE FLOATY"): list row scroll 0.6x = 317 ms cubic out (was 271 ms), album / poster A/B art fade 1000 ms (was 1500), idle album cover fade 300 ms (was 400). Set once on first start of this build; all three stay Tuner rows.
+- FADEINS (Rob: "I PREFER FADE INS FOR ALL TRANSITIONS"; "KEEP SLIDES FOR BIG ALBUM"): dialogs / settings / info windows open and close with a fade (no zoom pop); music controls, pause screen, BEZEL dialogs and notifications fade in (no slide); main-menu rows and the section list cascade fade in in place (no drop-in); the fullscreen music / viz / fanart / Now Playing stage fades out and back instead of sliding 1100 px. The big album keeps its slide to centre / home. Art swaps already crossfade (unchanged).
+
+5.33.454 (2026-11-03)
 - FADEINS (Rob: "I PREFER FADE INS FOR ALL TRANSITIONS"; "KEEP SLIDES FOR BIG ALBUM"): menus, dialogs, sections and fullscreen screens now fade in / out in place instead of sliding or zooming - dialog pop zooms (Includes_Animations, Includes.xml bar grows), Music controls / Pause screen / BEZEL dialogs / notification slide-ins, the main menu row drop-in, the section list cascade drop-in (Tuner cascade speed / stagger still apply) and the fullscreen music stage slide (-1100) are fades with the same timings. The big album's slide to centre / home is unchanged. Art changes already crossfade (A/B lanes).
 - SPEEDS (Rob: "ADD RECOMMENDED SPEEDS"; "CAN THE LIST FEEL MORE FLOATY"): list row scroll 0.6x = 317 ms, cubic out (was 0.7x = 271 ms); idle album cover fade 300 ms (was 400). Set once on first start of this build (Tuner can change them).
 
