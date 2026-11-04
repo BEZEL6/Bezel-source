@@ -4,7 +4,7 @@
 	<!-- 5.33.142: no onunload clear of bz_backdrop (was flash/repick on section change) -->
 	<defaultcontrol always="true">60</defaultcontrol>
 	<onload condition="!Control.HasFocus(6996) + !String.IsEqual(Window(home).Property(bz_mmpick),true) + !String.IsEmpty(Window(home).Property(bz_mmwarm)) + !String.IsEmpty(Window(home).Property(bz_mmlive))">SetFocus(6996,$INFO[Window(home).Property(bz_mmlive)],absolute)</onload><onload condition="!Control.HasFocus(6996) + !String.IsEqual(Window(home).Property(bz_mmpick),true) + !String.IsEmpty(Window(home).Property(bz_mmwarm)) + String.IsEmpty(Window(home).Property(bz_mmlive))">SetFocus(6996,$INFO[Window(home).Property(bz_mmpos)],absolute)</onload><!-- MMWARM2 t3407 -->
-	<onload condition="$EXP[bz_gridfirst] + Integer.IsGreater(Container(6600).NumItems,0) + !$EXP[bz_navmenu] + String.IsEmpty(Window(home).Property(bz_mmwarm))">SetFocus(6600)</onload><!-- 4.0.1 O22: back from fullscreen music the window opened on the list (60) for ~0.5 s before bz_flip moved focus to the grid, so the list bar flashed in and faded out; the grid now takes the focus on load -->
+	<!-- 4.0.1 O22: back from fullscreen music the window opened on the list (60) for ~0.5 s before bz_flip moved focus to the grid, so the list bar flashed in and faded out; the grid now takes the focus on load -->
 	<backgroundcolor>background</backgroundcolor>
 	<menucontrol>6385</menucontrol><!-- 2.0a3.1: M / Menu goes through 6385: player controls in the in-place Now Playing, else the old menu (9000) -->
 	<views>60</views>
