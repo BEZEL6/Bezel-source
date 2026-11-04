@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.454
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.455
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 455 | "EXTEND THE FANART STAGE RIGHT … KEEP LIST AND COLOR STRIP SAME SIZE"; "MM MUST MOVE"; "DELETE THE GRID VIEWS" | **STAGEWIDE** (stage 120–1050, strip 660–1050, gap 90), **GRIDDEL** |
 | 454 | "ADD RECOMMENDED SPEEDS TO BUILD"; "CAN THE LIST FEEL MORE FLOATY"; "I PREFER FADE INS FOR ALL TRANSITIONS"; "KEEP SLIDES FOR BIG ALBUM" | **SPEEDS** (317 ms list, 300 ms idle cover), **FADEINS** |
 | 453 | "USE ONLY 1 CONTINUOUS UNBROKEN SWAY ANIM"; "THE PLAYING STYLE AND TEXTURES SHOULD BE FOR BOTH"; "NO RESET ON PLAY" | **ONESWAY**: one big album sway rig + one glare/dust/shadow set for idle and playing |
 | 452 | "SONG START RESTARTS GLARE AND DUST ON BIG ALBUM? IT SHOULD BE UNBROKEN ANIMATION" | **GLARECONT**: playing-album glare lead-in only while the sway leads in |
@@ -215,6 +216,36 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.455 — STAGEWIDE + GRIDDEL
+- **STAGEWIDE** (Rob: "extend the fanart stage right to lessen the gap to the artwork, keep list and color strip same size give extra space to fanart"; picked "Strip moves right", "Gap 90 (+90)"; "mm must move to new fanart stage position"):
+  - **New layout:** fanart stage x 120–1050 (930 wide, was 840). Colour strip x 660–1050 (390, was 570–960). Gap to the art (x 1140) is 90 (was 180). The art itself does not move.
+  - **How it was done:** a static geometry resolver (`tools/geom455/geom.py` in the repo) expands every window's includes, params and constants and computes each control's absolute x box. `plan.py` then shifts the topmost strip-column controls (boxes inside 570–960, or 570–1020 for the wider context-menu strip) by +90 and widens stage boxes (120–960) by +90. It edits the element that holds the value (the literal, or the include param that feeds it). `diff.py` re-resolves and checks that every control moved exactly as expected. 0 unexpected moves remain, apart from the intentional manual ones below.
+  - **Moved +90, same size:** the MM strip and rows, section strips and lists, the small album, the ALL rows and pills, and every strip dialog (settings family, sources, add-ons, search, power, context, info, select, keyboard, confirm, PVR, file browser, Tuner list).
+  - **Section lists:** they sit in a zoom group, so the static slide `517,0` → `620.84,0` (×3: music list, video list, 6098). Visual x ≈ 658.2, the same 1.9 px inset as before.
+  - **Widened +90:** stage layers (`BezelFanartLayer` 840 call sites, `stagew`, viz / in-place NP block), 3 px stage frames (846 → 936; right line 960 → 1050), and block-left dims (120–570 fills 450 → 540, incl. the `listw` default).
+  - **In-place NP / FS meta / Up Next** (`BezelFSUpNext`, `BezelFSMeta`, `BezelNPInPlace`): the 150–930 column becomes 150–1020 (list and layouts 779 → 869). Right-aligned and right-column items +90.
+  - **Right panels that started in the old gap** (Rob: "scale for the new fanart area"): start +90 with the same right edge (width −90). This covers the section-settings description (515), the MM/Tuner info panel (501–503, 523), SettingsCategory, SettingsProfile, SkinSettings, the dialog info panel (3787/3791) and the mini-player tap target 6160. The 130 px icons only shift.
+  - **TV episode drum:** 900×506 @ 990 → 810×455 @ 1080 (uniform 0.9 about the centred face). Drum slides `0,±526` → `0,±473` (`BezelATEpSlideDown/Up`).
+  - **Casts:** the album cast (`BezelAlbumCast`, 1122) clip goes 570 → 660, the inner group −570 → −660, the images 480 → 570 and the zoom centres 960,520 → 1050,520. The poster cast images 480 → 570 and centres 960,570 → 1050,570. Both stay pinned to the strip's right edge.
+  - **Other:** the playing-video box in Movies/TV is recentred (+45, covers 655 → 610). `BezelRootArtHide` 962 → 1052. `BezelShadow` 554 → 644. The MyPics scrollbar 952 → 1042. The 1114 dust void clips that ended or started at 930/950/960 move +90; two 80 px strips between the strip and the album no longer exist and are hidden.
+  - **Not changed:** the big album / poster position, the FS transport and the centred album (rail centre), the PVR guide timeline (legacy, x 570–1800) and the top bar.
+- **GRIDDEL** (Rob: "delete the grid views we will make new ones at a later date"):
+  - `BezelGridMusic/Video`, `BezelGridOverlayM/V`, `BezelGridBounceAnim` and the grid poster/style vars are deleted.
+  - `bz_gridm`, `bz_gridv`, `bz_gridset` and `bz_gridfirst` are now `false`.
+  - The view-pill grid toggle is removed.
+  - `bz_flip` resets `bz_grid_video` at start, as it already did for `bz_grid_music`.
+  - The reference audit shows no new missing include, var or exp.
+- **Commits** (branch `claude/5.33.455`, both repos): `455 STAGEWIDE`, `455 GRIDDEL`, then the version and changelog commit. Either feature can be reverted on its own.
+- **Check:**
+  - MM, Music, Movies, TV, Pictures and Settings: the strip sits at 660–1050 with fanart filling 120–1050, and the art is 90 px to the right.
+  - Small album and ALL rows sit flush in the strip. Context menu, info and select dialogs are in the strip.
+  - Album and poster cast shadows fall from the strip edge and sway as before.
+  - TV episodes: the drum turns at the new size.
+  - FS music / viz: the stage fades and Up Next / meta use the wider column.
+  - Dust doesn't paint over the strip.
+  - No grid toggle.
+- **Static checks only:** all XML parses, `bz_flip.py` compiles, and geometry was diffed across 18,942 resolved controls. Not device-tested.
 
 ## 5.33.454 — SPEEDS + FADEINS
 - **SPEEDS** (Rob: "add recommended speeds to build"; "can the list feel more floaty?"; he didn't pick from the options, so I used my floaty pick):
