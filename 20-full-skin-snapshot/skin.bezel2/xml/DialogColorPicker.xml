@@ -77,15 +77,15 @@
 					</control>
 				</focusedlayout>
 			</control>
-			<control type="scrollbar" id="61">
-				<left>910</left>
+			<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="scrollbar" id="61">
+				<left>250</left>
 				<top>100</top>
 				<width>12</width>
 				<bottom>26</bottom>
 				<onleft condition="Control.IsVisible(6)">6</onleft>
 				<onright>9001</onright>
 				<orientation>vertical</orientation>
-			</control>
+			</control></control>
 			<control type="label">
 				<left>28</left>
 				<top>740</top>

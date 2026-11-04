@@ -18,9 +18,9 @@
 				<eventconfig type="right" />
 			</movingspeed>
 		</control>
-		<control type="mover" id="9">
+		<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="mover" id="9">
 			<description>right bottom mover</description>
-			<left>700</left>
+			<left>40</left>
 			<top>500</top>
 			<width>128</width>
 			<height>128</height>
@@ -32,7 +32,7 @@
 				<eventconfig type="left" />
 				<eventconfig type="right" />
 			</movingspeed>
-		</control>
+		</control></control>
 		<control type="resize" id="11">
 			<description>pixel aspect ratio</description>
 			<left>0</left>

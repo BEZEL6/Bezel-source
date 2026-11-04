@@ -12,7 +12,7 @@
 		<control type="label"><left>150</left><top>150</top><width>780</width><height>60</height><font>bz_mm48b</font><textcolor>white</textcolor><label>$VAR[BzVOSDTitle]</label></control>
 		<control type="label"><left>150</left><top>222</top><width>780</width><height>34</height><font>bz_mm22</font><textcolor>DDFFFFFF</textcolor><label>$INFO[VideoPlayer.Year]$INFO[VideoPlayer.Genre,  ·  ]</label></control>
 		<control type="progress"><left>150</left><top>298</top><width>640</width><height>4</height><info>Player.Progress</info><texturebg colordiffuse="59FFFFFF">bezel/white.png</texturebg><midtexture colordiffuse="FFFFFFFF">bezel/white.png</midtexture></control>
-		<control type="label"><left>800</left><top>284</top><width>130</width><height>30</height><align>right</align><font>bz_mm18</font><textcolor>EBFFFFFF</textcolor><label>$INFO[Player.Time]</label></control>
+		<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="label"><left>140</left><top>284</top><width>130</width><height>30</height><align>right</align><font>bz_mm18</font><textcolor>EBFFFFFF</textcolor><label>$INFO[Player.Time]</label></control></control>
 		<control type="image"><left>150</left><top>336</top><width>780</width><height>1</height><texture colordiffuse="3CFFFFFF">bezel/white.png</texture></control>
 		<control type="group"><left>150</left><top>336</top>
 			<control type="group"><top>0</top>

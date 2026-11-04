@@ -13,7 +13,7 @@
 				<param name="body" value="$VAR[BzSelBody]"/>
 				<param name="art" value="$VAR[BezelSelArt]"/><param name="tpl" value="true"/><param name="showinfo" value="false"/><param name="showart" value="[Window.IsVisible(movieinformation) | Window.IsVisible(musicinformation) | Player.HasVideo | Player.HasAudio]"/>
 			</include>
-			<!-- SELUI (Rob locked Select language): detail header + text above, buttons at bottom of strip --><control type="label"><left>688</left><top>142</top><width>340</width><height>40</height><font>bz_r26</font><textcolor>FFFFFFFF</textcolor><label>[B][UPPERCASE]$INFO[Container(3).ListItem.Label]$INFO[Container(6).ListItem.Label][/UPPERCASE][/B]</label></control><control type="textbox"><left>688</left><top>192</top><width>340</width><height>700</height><font>bz_bio</font><textcolor>E6FFFFFF</textcolor><label>$VAR[BzSelBody]</label><autoscroll time="3000" delay="6000" repeat="6000">true</autoscroll></control><control type="label" id="1"><left>-2000</left><width>10</width><height>10</height><font>font10</font></control>
+			<!-- SELUI (Rob locked Select language): detail header + text above, buttons at bottom of strip --><control type="group"><left>bz_strip_x</left><!-- P1B --><control type="label"><left>28</left><top>142</top><width>340</width><height>40</height><font>bz_r26</font><textcolor>FFFFFFFF</textcolor><label>[B][UPPERCASE]$INFO[Container(3).ListItem.Label]$INFO[Container(6).ListItem.Label][/UPPERCASE][/B]</label></control></control><control type="group"><left>bz_strip_x</left><!-- P1B --><control type="textbox"><left>28</left><top>192</top><width>340</width><height>700</height><font>bz_bio</font><textcolor>E6FFFFFF</textcolor><label>$VAR[BzSelBody]</label><autoscroll time="3000" delay="6000" repeat="6000">true</autoscroll></control></control><control type="label" id="1"><left>-2000</left><width>10</width><height>10</height><font>font10</font></control>
 			<control type="list" id="3">
 				<left>120</left><top>120</top><width>450</width><height>900</height>
 				<onup>3</onup><ondown>3</ondown><onleft>9001</onleft><onright>9001</onright><pagecontrol>61</pagecontrol>
@@ -50,15 +50,15 @@
 				<left>566</left><top>120</top><width>4</width><height>900</height><onleft condition="Control.IsVisible(3)">3</onleft><onleft condition="Control.IsVisible(6)">6</onleft><onright>9001</onright><orientation>vertical</orientation>
 				<texturesliderbackground/><texturesliderbar colordiffuse="66FFFFFF">colors/white.png</texturesliderbar><texturesliderbarfocus>colors/white.png</texturesliderbarfocus>
 			</control>
-			<control type="grouplist" id="9001">
-				<left>680</left><top>946</top><width>360</width><height>52</height><orientation>horizontal</orientation><align>right</align><itemgap>12</itemgap>
+			<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="grouplist" id="9001">
+				<left>20</left><top>946</top><width>360</width><height>52</height><orientation>horizontal</orientation><align>right</align><itemgap>12</itemgap>
 				<onleft condition="Control.IsVisible(3)">3</onleft><onleft condition="Control.IsVisible(6)">6</onleft><onright condition="Control.IsVisible(3)">3</onright><onright condition="Control.IsVisible(6)">6</onright>
 				<include content="BezelSelPillBtn"><param name="id" value="5"/></include>
 				<include content="BezelSelPillBtn"><param name="id" value="8"/></include>
 				<include content="BezelSelPillBtn"><param name="id" value="7"/><param name="label" value="$LOCALIZE[222]"/></include>
 				<!-- 3.5.5: the visualisation picker (Addon.Default.Set) has no Get more of its own: open the repository's visualisations -->
 				<include content="BezelSelPillBtn"><param name="id" value="9010"/><param name="label" value="$LOCALIZE[21452]"/><param name="visible" value="String.IsEqual(Control.GetLabel(1),$LOCALIZE[250])"/><param name="onclick" value="RunScript(special://skin/scripts/bz_cmd.py,getmoreviz)"/></include>
-			</control>
+			</control></control>
 		</control>
 	</include>
 	<variable name="BezelSelArt">

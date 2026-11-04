@@ -15,8 +15,8 @@
 
 		<control type="group"><left>120</left><top>120</top>
 <control type="label" id="2"><left>30</left><top>20</top><width>400</width><height>62</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[19142]</label></control>
-<control type="label"><left>562</left><top>22</top><width>346</width><height>26</height><font>bz_mm17</font><textcolor>C8FFFFFF</textcolor><label>[UPPERCASE]$LOCALIZE[19142][/UPPERCASE]</label></control>
-<control type="label"><left>562</left><top>56</top><width>346</width><height>40</height><font>bz_mm26b</font><textcolor>FFFFFFFF</textcolor><label>$INFO[Control.GetLabel(9).index(1)]</label><visible>!String.IsEmpty(Control.GetLabel(9).index(1))</visible></control>
+<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="label"><left>-98</left><top>22</top><width>346</width><height>26</height><font>bz_mm17</font><textcolor>C8FFFFFF</textcolor><label>[UPPERCASE]$LOCALIZE[19142][/UPPERCASE]</label></control></control>
+<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="label"><left>-98</left><top>56</top><width>346</width><height>40</height><font>bz_mm26b</font><textcolor>FFFFFFFF</textcolor><label>$INFO[Control.GetLabel(9).index(1)]</label><visible>!String.IsEmpty(Control.GetLabel(9).index(1))</visible></control></control>
 <control type="edit" id="9">
 				<hinttext>$LOCALIZE[137]...</hinttext>
 				<onleft>9000</onleft>
@@ -123,12 +123,12 @@
 			<onright>9000</onright></control>
 			</control>
 			
-<control type="grouplist" id="9000">
+<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="grouplist" id="9000">
 				<onup>9000</onup>
 				<ondown>9000</ondown>
-				<left>562</left><top>560</top><width>346</width><height>240</height><itemgap>4</itemgap><orientation>vertical</orientation><control type="button" id="26"><label>$LOCALIZE[137]</label><include content="BzDlgBtn"><param name="width" value="346" /><param name="height" value="52" /></include></control><control type="button" id="29"><label>$LOCALIZE[190]</label><include content="BzDlgBtn"><param name="width" value="346" /><param name="height" value="52" /></include></control><control type="button" id="28"><label>$LOCALIZE[13007]</label><include content="BzDlgBtn"><param name="width" value="346" /><param name="height" value="52" /></include></control><control type="button" id="25"><label>$LOCALIZE[222]</label><include content="BzDlgBtn"><param name="width" value="346" /><param name="height" value="52" /></include></control><onleft>5000</onleft><onright>5000</onright></control>
+				<left>-98</left><top>560</top><width>346</width><height>240</height><itemgap>4</itemgap><orientation>vertical</orientation><control type="button" id="26"><label>$LOCALIZE[137]</label><include content="BzDlgBtn"><param name="width" value="346" /><param name="height" value="52" /></include></control><control type="button" id="29"><label>$LOCALIZE[190]</label><include content="BzDlgBtn"><param name="width" value="346" /><param name="height" value="52" /></include></control><control type="button" id="28"><label>$LOCALIZE[13007]</label><include content="BzDlgBtn"><param name="width" value="346" /><param name="height" value="52" /></include></control><control type="button" id="25"><label>$LOCALIZE[222]</label><include content="BzDlgBtn"><param name="width" value="346" /><param name="height" value="52" /></include></control><onleft>5000</onleft><onright>5000</onright></control></control>
 		
-<control type="textbox"><left>562</left><top>110</top><width>346</width><height>400</height><font>bz_mm20</font><textcolor>E6FFFFFF</textcolor><label>$LOCALIZE[19001] $LOCALIZE[19002]</label></control><control type="textbox"><visible>false</visible><left>562</left><top>810</top><width>346</width><height>80</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><label>$LOCALIZE[19001] $LOCALIZE[19002]</label></control>
+<control type="group"><left>bz_strip_x</left><!-- P1B --><control type="textbox"><left>-98</left><top>110</top><width>346</width><height>400</height><font>bz_mm20</font><textcolor>E6FFFFFF</textcolor><label>$LOCALIZE[19001] $LOCALIZE[19002]</label></control></control><control type="group"><left>bz_strip_x</left><!-- P1B --><control type="textbox"><visible>false</visible><left>-98</left><top>810</top><width>346</width><height>80</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><label>$LOCALIZE[19001] $LOCALIZE[19002]</label></control></control>
 		</control>
 	</controls>
 </window>
