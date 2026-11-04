@@ -38,8 +38,6 @@
 	<variable name="BzAllRowLabel"><value condition="Container.Content(seasons)">ALL SEASONS$INFO[Window(Home).Property(bz_allcnt),  ·  ,]</value><value condition="$EXP[bz_discrow]">ALL DISCS$INFO[Window(Home).Property(bz_allcnt),  ·  ,]</value><value condition="Container.Content(albums)">ALL ALBUMS$INFO[Window(Home).Property(bz_allcnt),  ·  ,]</value><value>ALL DISCS$INFO[Window(Home).Property(bz_allcnt),  ·  ,]</value></variable><!-- 5.33.443 ALLROW2: + count (bz_flip allcnt: N EPISODES / N SONGS) -->
 	<variable name="BzOSDPlayLbl"><value condition="Player.Paused | Player.Forwarding | Player.Rewinding">Play</value><value>Pause</value></variable>
 		<!-- FS build t3826: next/prev song titles by the cycle-aid icons (fallback LAST/NEXT) -->
-	<variable name="BzFSPrevTitle"><value condition="!String.IsEmpty(MusicPlayer.offset(-1).Title)">$INFO[MusicPlayer.offset(-1).Title]</value><value>LAST</value></variable>
-	<variable name="BzFSNextTitle"><value condition="!String.IsEmpty(MusicPlayer.offset(1).Title)">$INFO[MusicPlayer.offset(1).Title]</value><value>NEXT</value></variable>
 	<include name="BezelDtapHint"><!-- FS build t3826: double-tap hint in the colour-strip panel (mock dtap/C_center_opaque) -->
 		<control type="group"><visible>!Window.IsVisible(1131) + !Window.IsVisible(1107) + !Window.IsVisible(1130) + !Window.IsVisible(1117) + !Window.IsVisible(1132) + !Window.IsActive(1120) + !Skin.HasSetting(bz_dtap_off) + [Control.IsVisible(60) | Control.IsVisible(63) | [Control.IsVisible(50) + [Window.IsActive(MyPVRChannels.xml) | Window.IsActive(MyPVRGuide.xml) | Window.IsActive(MyPVRRecordings.xml) | Window.IsActive(MyPVRTimers.xml) | Window.IsActive(MyPVRSearch.xml)]]] + !Window.IsVisible(1119) + !$EXP[bz_navmenu] + !$EXP[bz_np] + !Window.IsVisible(1112) + !Window.IsVisible(1115) + !$EXP[bz_infoup] + ![$EXP[bz_alllongshow]]</visible><control type="group"><left>bz_strip_x</left><!-- P1B --><control type="grouplist"><left>25</left><top>978</top><width>365</width><height>30</height><orientation>horizontal</orientation><align>left</align><itemgap>8</itemgap><usecontrolcoords>true</usecontrolcoords><!-- t4934 / K47: dtap hint left edge (595, strip 570-960) + "double-tap info" --><control type="image"><top>4</top><width>22</width><height>22</height><aspectratio>keep</aspectratio><texture colordiffuse="D9FFFFFF">bezel/np_info.png</texture></control><control type="label"><width>auto</width><height>30</height><aligny>center</aligny><font>bz_ral21</font><textcolor>D9FFFFFF</textcolor><shadowcolor>99000000</shadowcolor><label>double-tap info</label></control></control></control><!-- t4941 K47b: separate right group: arrow + gap + "controls" (labels only, no focus) --><control type="group"><left>bz_strip_x</left><!-- P1B --><control type="group"><left>230</left><top>978</top><width>160</width><height>30</height><control type="label"><left>0</left><width>120</width><height>30</height><align>right</align><aligny>center</aligny><font>bz_ral21</font><textcolor>D9FFFFFF</textcolor><shadowcolor>99000000</shadowcolor><label>controls</label></control><control type="label"><left>134</left><width>20</width><height>30</height><aligny>center</aligny><font>bz_ral21</font><textcolor>D9FFFFFF</textcolor><shadowcolor>99000000</shadowcolor><label>›</label></control><!-- 5.33.129 t940: arrow moved to RIGHT of controls --></control></control></control>
 	</include>
@@ -72,28 +70,10 @@
 		<value condition="!String.IsEmpty(ListItem.Art(tvshow.fanart))">$INFO[ListItem.Art(tvshow.fanart)]</value>
 		<value condition="!String.IsEmpty(Window(Home).Property(script.grab.fanart.Global.FanArt))">$INFO[Window(Home).Property(script.grab.fanart.Global.FanArt)]</value>
 	</variable>
-	<variable name="BezelStripArtist">
-		<value condition="ListItem.IsParentFolder"/>
-		<value condition="String.IsEqual(ListItem.DBType,artist)">$INFO[ListItem.Label]</value>
-		<value>$INFO[ListItem.Artist]</value>
-	</variable>
-	<variable name="BezelFocusDiffuse62">
-		<value condition="Control.HasFocus(62)">FFFFFFFF</value>
-		<value>bz_dimmed</value>
-	</variable>
 	<variable name="BezelBadge60">
 		<value condition="Control.HasFocus(60)">FF000000</value>
 		<value>DDFFFFFF</value>
 	</variable>
-	<variable name="BezelNPRepeatIcon"><value condition="Playlist.IsRepeatOne">bezel/np_repeat_one.png</value><value>bezel/np_repeat.png</value></variable>
-	<variable name="BezelNPFavIcon"><value condition="String.IsEqual(Window(Home).Property(bz_favpath),Player.Filenameandpath)">bezel/np_fav.png</value><value>bezel/np_fav_off.png</value></variable>
-	<variable name="BezelForYouFanart">
-		<value condition="Integer.IsOdd(Container(9105).CurrentItem) + !String.IsEmpty(Container(9106).ListItem.Art(fanart))">$INFO[Container(9106).ListItem.Art(fanart)]</value>
-		<value condition="!String.IsEmpty(Container(9105).ListItem.Art(fanart))">$INFO[Container(9105).ListItem.Art(fanart)]</value>
-		<value condition="!String.IsEmpty(Container(9106).ListItem.Art(fanart))">$INFO[Container(9106).ListItem.Art(fanart)]</value>
-		<value>$INFO[Window(Home).Property(script.grab.fanart.Movie.FanArt)]</value>
-	</variable>
-	<variable name="BezelForYouDiffuse"><value condition="Control.HasFocus(9101)">FFFFFFFF</value><value>40FFFFFF</value></variable>
 	<!-- v0.1.20: held covers for the track-change flip (scripts/bz_flip.py) -->
 	<!-- v0.1.21: view 60 is shared; in the music windows it is called BEZEL MUSIC LIST -->
 	<!-- v0.1.22: debounced "music is playing" for Home (latch from scripts/bz_flip.py) -->
@@ -124,45 +104,18 @@
 	<variable name="BzFSL3Big"><value condition="!String.IsEmpty(MusicPlayer.Title)">$INFO[MusicPlayer.Title]</value><value>$INFO[Player.Title]</value></variable><!-- 5.33.305 Fanart FS big line = song title (L3 big = album since .311) --><variable name="BzMMetaBig"><value condition="Container.Content(songs) + !String.IsEmpty(ListItem.Album)">$INFO[ListItem.Album]</value><value>$INFO[ListItem.Label]</value></variable><!-- 5.33.311 L3 big = album (Rob pt2364u) -->
 	<variable name="BzMMetaSmall"><value condition="Container.Content(artists)"></value><!-- 5.33.444 Rob: L1 "ARTIST" caption removed --><value condition="Container.Content(songs)">$INFO[ListItem.Artist]</value><!-- 5.33.311 L3 small = artist only --><value>$INFO[ListItem.Artist]</value></variable>
 	<expression name="bz_covercol">[$EXP[bz_inalbum] + !$EXP[bz_m13]] | [Window.IsActive(music) + Container.Content(albums) + Skin.HasSetting(bz_albumlist) + !Skin.HasSetting(bz_grid_music) + !$EXP[bz_artistalbums]] | [Window.IsActive(music) + String.StartsWith(Container.FolderPath,musicdb://albums/) + !String.IsEqual(Container.FolderPath,musicdb://albums/) + !Container.Content(songs)] | [Window.IsActive(music) + Container.Content(albums) + String.StartsWith(Container.FolderPath,musicdb://artists/)] | [Window.IsActive(music) + Container.Content(songs) + String.StartsWith(Container.FolderPath,musicdb://artists/)]</expression><!-- 5.33.280: L2/L3 half list --><!-- beta1 item 13: BEZEL ALBUM LIST --><!-- 5.33.274 t2094: L2 artist albums = full-height list (option A), no cover column --><!-- t5012: multi-disc disc picker under album keeps cover column -->
-	<variable name="BezelFSFanart"><value condition="!String.IsEmpty(Player.Art(fanart))">$INFO[Player.Art(fanart)]</value><value condition="!String.IsEmpty(Player.Art(artist.fanart))">$INFO[Player.Art(artist.fanart)]</value><value>$INFO[MusicPlayer.Property(Fanart_Image)]</value></variable>
 	<expression name="bz_mmaudio">Player.HasAudio + !Player.HasVideo + $EXP[bz_navmenu]</expression><!-- 5.33.397 MMAUDIO (Rob t2789-t2793): MM open + audio (no video) = big album up on EVERY strip row -->
 	<expression name="bz_mmmushide">Player.HasAudio + !Player.HasVideo + $EXP[bz_navmenu] + !String.IsEqual(Skin.String(bz_at_warmmusicposters),Off)</expression><!-- 5.33.191 WARM 2.0: hide MM poster lane while music plays -->
-	<variable name="BzWarmMusicArt"><value condition="!String.IsEmpty(Player.Art(thumb))">$INFO[Player.Art(thumb)]</value><value condition="!String.IsEmpty(Player.Art(album.thumb))">$INFO[Player.Art(album.thumb)]</value><value condition="!String.IsEmpty(MusicPlayer.Cover)">$INFO[MusicPlayer.Cover]</value><value condition="!String.IsEmpty(Player.Icon)">$INFO[Player.Icon]</value></variable><!-- 5.33.276: no stock placeholder; thumb > album.thumb > cover > icon, else empty -->
-	<variable name="BzAlbViewLbl"><value condition="Skin.HasSetting(bz_albview_a)">A · 3B ALBUM</value><value>D · SONGS + DISCS</value></variable>
+	<!-- 5.33.276: no stock placeholder; thumb > album.thumb > cover > icon, else empty -->
 	<variable name="BezelViewmodeLabel"><value condition="String.IsEqual(Container.Viewmode,BEZEL LIST) + [Window.IsActive(music) | Window.IsActive(musicplaylist)]">BEZEL MUSIC LIST</value><value>$INFO[Container.Viewmode]</value></variable>
 	<!-- v0.1.24: cover layers bind only to the held bz_cov_a/b properties from bz_flip.py (no Player.HasAudio gate, so a track gap never pops in the live art) -->
 	<!-- v0.1.32: tap-flip track list: the playing album (album id from scripts/bz_flip.py), else the music playlist -->
 	<variable name="BezelFlipA"><value condition="!Player.HasVideo + !String.IsEmpty(Window(Home).Property(bz_cov_a))">$INFO[Window(Home).Property(bz_cov_a)]</value><value condition="Window.IsActive(music) + !String.IsEmpty(Container(60).ListItem.Art(thumb))">$INFO[Container(60).ListItem.Art(thumb)]</value><value condition="Window.IsActive(music)">$INFO[Container(60).ListItem.Icon]</value><value condition="Window.IsActive(videos)">$VAR[BezelPoster60]</value></variable><!-- 5.33.161 BUG-010 -->
 	<variable name="BezelFlipB"><value condition="!Player.HasVideo + !String.IsEmpty(Window(Home).Property(bz_cov_b))">$INFO[Window(Home).Property(bz_cov_b)]</value><value condition="Window.IsActive(music) + !String.IsEmpty(Container(60).ListItem.Art(thumb))">$INFO[Container(60).ListItem.Art(thumb)]</value><value condition="Window.IsActive(music)">$INFO[Container(60).ListItem.Icon]</value><value condition="Window.IsActive(videos)">$VAR[BezelPoster60]</value></variable><!-- 5.33.161 BUG-010 -->
-	<variable name="BezelNPFlipA"><value condition="!Player.HasVideo + !String.IsEmpty(Window(Home).Property(bz_cov_a))">$INFO[Window(Home).Property(bz_cov_a)]</value><value>$VAR[BezelNPTileArt]</value></variable>
-	<variable name="BezelNPFlipB"><value condition="!Player.HasVideo + !String.IsEmpty(Window(Home).Property(bz_cov_b))">$INFO[Window(Home).Property(bz_cov_b)]</value><value>$VAR[BezelNPTileArt]</value></variable>
 	<variable name="BezelNPTileArt">
 		<value condition="Player.HasVideo + !String.IsEmpty(Player.Art(poster))">$INFO[Player.Art(poster)]</value>
 		<value condition="Player.HasVideo + !String.IsEmpty(Player.Art(tvshow.poster))">$INFO[Player.Art(tvshow.poster)]</value>
 		<value>$INFO[Player.Art(thumb)]</value>
-	</variable>
-	<variable name="BezelSpotItemArt"><value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value><value>$INFO[ListItem.Art(thumb)]</value></variable>
-	<variable name="BezelSpotFanart">
-		<value condition="!String.IsEmpty(Container(9675).ListItem.Art(fanart))">$INFO[Container(9675).ListItem.Art(fanart)]</value>
-		<value>$INFO[Container(9672).ListItem.Art(fanart)]</value>
-	</variable>
-	<variable name="BezelSpotDiffuse"><value condition="Control.HasFocus(9671)">FFFFFFFF</value><value>40FFFFFF</value></variable>
-	<variable name="BezelIPItemArt"><value condition="!String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value><value condition="!String.IsEmpty(ListItem.Art(tvshow.fanart))">$INFO[ListItem.Art(tvshow.fanart)]</value><value>$INFO[ListItem.Art(fanart)]</value></variable>
-	<variable name="BezelIPFanart">
-		<value condition="!String.IsEmpty(Container(9215).ListItem.Art(fanart))">$INFO[Container(9215).ListItem.Art(fanart)]</value>
-		<value condition="!String.IsEmpty(Window(Home).Property(bz_arthold)) + String.IsEmpty(ListItem.Label) + !String.IsEmpty(Window(Home).Property(bz_hold_fanart))">$INFO[Window(Home).Property(bz_hold_fanart)]</value><!-- fork.5 SPEC 9.3 held fanart during MM warm -->
-		<value>$INFO[Window(Home).Property(script.grab.fanart.TV.FanArt)]</value>
-	</variable>
-	<variable name="BezelIPDiffuse"><value condition="Control.HasFocus(9201)">FFFFFFFF</value><value>40FFFFFF</value></variable>
-	<variable name="BezelNPPlayIcon">
-		<value condition="Player.Playing">bezel/np_pause.png</value>
-		<value>bezel/np_play.png</value>
-	</variable>
-	<variable name="BezelPoster">
-		<value condition="Window.IsActive(videos) + !String.IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
-		<value condition="Window.IsActive(videos) + !String.IsEmpty(ListItem.Art(tvshow.poster))">$INFO[ListItem.Art(tvshow.poster)]</value>
-		<value condition="Window.IsActive(videos) + !String.IsEmpty(Window(Home).Property(bz_arthold)) + !String.IsEmpty(Window(Home).Property(bz_hold_poster))"><!-- 5.33.161 BUG-010 -->$INFO[Window(Home).Property(bz_hold_poster)]</value>
-		<value condition="Window.IsActive(videos)">$INFO[ListItem.Icon]</value>
 	</variable>
 	<!-- 2.0a3: art of the BEZEL list item (list 60) regardless of which control has focus (no art swap when focus moves to the track list / back buttons) -->
 	<variable name="BezelBigArt"><!-- BETA 2.4 item 1: big album shows the playing cover while music plays -->
@@ -174,8 +127,8 @@
 	<!-- 3.2.1 item 9: view options description (colour strip) -->
 	<variable name="BzVOTitle"><value condition="Control.HasFocus(6920) | Control.HasFocus(6979)">VIEW TYPE</value><value condition="Control.HasFocus(6921) | Control.HasFocus(6971)">SORT BY</value><value condition="Control.HasFocus(6922) | Control.HasFocus(6980)">ORDER</value><value condition="Control.HasFocus(6924) | Control.HasFocus(6981)">FILTER</value><value condition="Control.HasFocus(6972)">WATCHED FILTER</value><value condition="Control.HasFocus(6925)">VISUALIZATION</value><value condition="Control.HasFocus(6927)">SHORT SWAY</value><value condition="Control.HasFocus(6926) | Control.HasFocus(6973)">UPDATE LIBRARY</value><value condition="Control.HasFocus(6990) | Control.HasFocus(6982)">PARTY MODE</value><value condition="Control.HasFocus(6983)">MASTER MODE</value><value condition="Control.HasFocus(6991) | Control.HasFocus(6984)">GO TO PLAYLIST</value><value condition="Control.HasFocus(6992) | Control.HasFocus(6985)">GET MORE...</value><value condition="Control.HasFocus(6993) | Control.HasFocus(6988)">ADD-ON SETTINGS</value><value condition="Control.HasFocus(6994) | Control.HasFocus(6986)">EDIT NODES</value><value condition="Control.HasFocus(6987)">DOWNLOAD ICONS</value><value>VIEW OPTIONS</value></variable>
 	<variable name="BzVODesc"><value condition="Control.HasFocus(6920) | Control.HasFocus(6979)">Switch between the list and the artwork grid for this section. The current layout is shown on the right of the row.</value><value condition="Control.HasFocus(6921) | Control.HasFocus(6971)">Choose how items are ordered: by name, year, rating, date added and more. OK steps to the next method.</value><value condition="Control.HasFocus(6922) | Control.HasFocus(6980)">Flip the sort direction between ascending and descending.</value><value condition="Control.HasFocus(6924) | Control.HasFocus(6981)">Type to narrow this list down to matching items.</value><value condition="Control.HasFocus(6972)">Cycle between showing all, unwatched only, or watched only.</value><value condition="Control.HasFocus(6925)">Pick the visualization that plays on the Now Playing screen.</value><value condition="Control.HasFocus(6927)">Use the short sway motion on the artwork instead of the long one.</value><value condition="Control.HasFocus(6926) | Control.HasFocus(6973)">Scan your sources for new or changed items and add them to the library.</value><value condition="Control.HasFocus(6990) | Control.HasFocus(6982)">Shuffle the whole library continuously, like a radio station.</value><value condition="Control.HasFocus(6983)">Unlock locked sources and settings for this session.</value><value condition="Control.HasFocus(6991) | Control.HasFocus(6984)">Open the current playlist.</value><value condition="Control.HasFocus(6992) | Control.HasFocus(6985)">Browse the repository for more add-ons of this type.</value><value condition="Control.HasFocus(6993) | Control.HasFocus(6988)">Open the settings of this add-on.</value><value condition="Control.HasFocus(6994) | Control.HasFocus(6986)">Edit the library nodes shown in this section.</value><value condition="Control.HasFocus(6987)">Install the studio icon pack so studios show logos.</value></variable>
-	<variable name="BezelC2Text"><value>FFFFFFFF</value></variable><!-- BETA 2.6 item 2: card 2 text plain white -->
-	<variable name="BezelC2Shadow"><value>00000000</value></variable><!-- BETA 2.6 item 2: no emboss -->
+	<!-- BETA 2.6 item 2: card 2 text plain white -->
+	<!-- BETA 2.6 item 2: no emboss -->
 	<variable name="BezelPoster60">
 		
 		<!-- BUG-010: Videos poster frame only — never Music art / never hold into Music -->
@@ -218,48 +171,7 @@
 	<variable name="BezelAudio">
 		<value condition="!String.IsEmpty(ListItem.AudioCodec)">$INFO[ListItem.AudioCodec]$INFO[ListItem.AudioChannels, ,CH]</value>
 	</variable>
-	<variable name="BezelAlbumName">
-		<value condition="!String.IsEmpty(ListItem.Album)">$INFO[ListItem.Album]</value>
-		<value>$INFO[ListItem.Label]</value>
-	</variable>
-	<variable name="BezelNPTitle">
-		<value condition="Player.HasVideo">$INFO[VideoPlayer.Title]</value>
-		<value condition="!String.IsEmpty(MusicPlayer.Title)">$INFO[MusicPlayer.Title]</value>
-		<value>$INFO[Player.Title]</value>
-	</variable>
-	<variable name="BezelNPLine2">
-		<value condition="Player.HasVideo + !String.IsEmpty(VideoPlayer.TVShowTitle)">$INFO[VideoPlayer.TVShowTitle]</value>
-		<value condition="Player.HasVideo">$INFO[VideoPlayer.Year]</value>
-		<value>$INFO[MusicPlayer.Artist]</value>
-	</variable>
-	<variable name="BezelNPLine3">
-		<value condition="Player.HasVideo + !String.IsEmpty(VideoPlayer.Episode)">$INFO[VideoPlayer.Season,Season ,  ]$INFO[VideoPlayer.Episode,Episode ,]</value>
-		<value condition="Player.HasVideo">$INFO[VideoPlayer.Genre]</value>
-		<value>$INFO[MusicPlayer.Album]</value>
-	</variable>
-	<variable name="BezelNPPoster">
-		<value condition="!String.IsEmpty(Player.Art(poster))">$INFO[Player.Art(poster)]</value>
-		<value condition="!String.IsEmpty(Player.Art(tvshow.poster))">$INFO[Player.Art(tvshow.poster)]</value>
-		<value>$INFO[Player.Art(thumb)]</value>
-	</variable>
-	<variable name="BezelNPShuffleColor">
-		<value condition="Playlist.IsRandom">bz_accent</value>
-		<value>bz_dimmed</value>
-	</variable>
-	<variable name="BezelNPRepeatColor">
-		<value condition="Playlist.IsRepeat | Playlist.IsRepeatOne">bz_accent</value>
-		<value>bz_dimmed</value>
-	</variable>
-	<variable name="BezelTVPoster">
-		<value condition="!String.IsEmpty(ListItem.Art(tvshow.poster))">$INFO[ListItem.Art(tvshow.poster)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(poster))">$INFO[ListItem.Art(poster)]</value>
-		<value>$INFO[ListItem.Art(thumb)]</value>
-	</variable>
 	<!-- IN PROGRESS overlay: episode title for episodes, watched progress for tv shows -->
-	<variable name="BezelInProgressLine">
-		<value condition="String.IsEqual(ListItem.DBType,episode)">$INFO[ListItem.Title]</value>
-		<value condition="!String.IsEmpty(ListItem.Property(TotalEpisodes))">$INFO[ListItem.Property(WatchedEpisodes)] of $INFO[ListItem.Property(TotalEpisodes)][CR]watched</value>
-	</variable>
 	<!-- music: musicdb filter for the focused item's artist (artist items by id, others by name) -->
 	<variable name="BezelArtistQuery">
 		<value condition="String.IsEqual(ListItem.DBType,artist) + !String.IsEmpty(ListItem.DBID)">artistid=$INFO[ListItem.DBID]</value>
@@ -285,7 +197,7 @@
 		<value condition="Control.HasFocus(6600) + !String.IsEmpty(Window(Home).Property(bz_gtitle))">$INFO[Window(Home).Property(bz_gtitle)]</value>
 		<value>$VAR[BezelListLabel]</value>
 	</variable>
-	<variable name="BzMMIdleClear"><!-- 5.33.330 --><value condition="!String.IsEmpty(Container(60).ListItem.Art(clearlogo))">$INFO[Container(60).ListItem.Art(clearlogo)]</value><value condition="!String.IsEmpty(Container(60).ListItem.Art(tvshow.clearlogo))">$INFO[Container(60).ListItem.Art(tvshow.clearlogo)]</value><value condition="!String.IsEmpty(Container(60).ListItem.Art(artist.clearlogo))">$INFO[Container(60).ListItem.Art(artist.clearlogo)]</value><value condition="!String.IsEmpty(Container(60).ListItem.Art(clearart))">$INFO[Container(60).ListItem.Art(clearart)]</value><value>$INFO[Container(60).ListItem.Art(tvshow.clearart)]</value></variable><variable name="BzMMIdleTitle"><!-- 5.33.330 --><value condition="!String.IsEmpty(Container(60).ListItem.TVShowTitle)">$INFO[Container(60).ListItem.TVShowTitle]</value><value condition="String.IsEqual(Container(60).ListItem.DBType,movie)">$INFO[Container(60).ListItem.Title]</value><value condition="!String.IsEmpty(Container(60).ListItem.Artist)">$INFO[Container(60).ListItem.Artist]</value><value condition="!Container(60).ListItem.IsParentFolder">$INFO[Container(60).ListItem.Label]</value></variable><variable name="BzTVClearOnOff"><value condition="Skin.HasSetting(bz_tvclear_off)">OFF</value><value>ON</value></variable>
+	<variable name="BzTVClearOnOff"><value condition="Skin.HasSetting(bz_tvclear_off)">OFF</value><value>ON</value></variable>
 	<variable name="BzTVClear"><value condition="!String.IsEmpty(ListItem.Art(clearlogo))">$INFO[ListItem.Art(clearlogo)]</value><value condition="!String.IsEmpty(ListItem.Art(tvshow.clearlogo))">$INFO[ListItem.Art(tvshow.clearlogo)]</value><value condition="!String.IsEmpty(ListItem.Art(clearart))">$INFO[ListItem.Art(clearart)]</value><value>$INFO[ListItem.Art(tvshow.clearart)]</value></variable>
 	<variable name="BzTVShowName"><value condition="!String.IsEmpty(ListItem.TVShowTitle)">$INFO[ListItem.TVShowTitle]</value><value>$INFO[ListItem.Title]</value></variable>
 	<variable name="BezelListLabel">
@@ -298,12 +210,9 @@
 		<value>$INFO[ListItem.Label]</value>
 	</variable>
 	<!-- v0.1.26: fullscreen Now Playing column (playing album) -->
-	<variable name="BezelFSAlbumArt"><value condition="!String.IsEmpty(Container(6075).ListItem.Art(thumb))">$INFO[Container(6075).ListItem.Art(thumb)]</value><value>$INFO[MusicPlayer.Cover]</value></variable>
 	<variable name="BezelFSAlbumArtist"><value condition="!String.IsEmpty(Container(6075).ListItem.Artist)">$INFO[Container(6075).ListItem.Artist]</value><value>$INFO[MusicPlayer.Artist]</value></variable>
 	<variable name="BezelNPBio"><value condition="!String.IsEmpty(MusicPlayer.Property(Artist_Description))">$INFO[MusicPlayer.Property(Artist_Description)]</value><value>$INFO[MusicPlayer.Property(Album_Description)]</value></variable>
 	<variable name="BezelNPBioHeader"><value condition="!String.IsEmpty(MusicPlayer.Property(Artist_Description))">Biography</value><value condition="!String.IsEmpty(MusicPlayer.Property(Album_Description))">About the album</value></variable>
-	<variable name="BezelFSAlbumText"><value condition="!String.IsEmpty(MusicPlayer.Property(Album_Description))">$INFO[MusicPlayer.Property(Album_Description)]</value><value>$INFO[MusicPlayer.Property(Artist_Description)]</value></variable>
-	<variable name="BezelFSAlbumTextHeader"><value condition="!String.IsEmpty(MusicPlayer.Property(Album_Description))">About the album</value><value condition="!String.IsEmpty(MusicPlayer.Property(Artist_Description))">Biography</value></variable>
 	<!-- v0.1.25: in-album column (the ".." row uses the album's first song) -->
 	<!-- 5.0.9 t4362: own art first; 6074 (album-name xsp) only when it matches the album - bad/dup names made 6074 return the same first album --><variable name="BzInfoAlbumLbl"><!-- 5.33.95: ALL row focused = panel names ALL, not the parked Disc 2 --><value condition="Control.HasFocus(6097)">$VAR[BzAllRowLabel]</value><value>$INFO[ListItem.Label]</value></variable><variable name="BezelInAlbumArt"><value condition="!ListItem.IsParentFolder + !String.IsEmpty(ListItem.Art(thumb))">$INFO[ListItem.Art(thumb)]</value><value condition="!String.IsEmpty(Container(6074).ListItem.Art(thumb)) + !String.IsEmpty(ListItem.Album) + String.IsEqual(Container(6074).ListItem.Label,ListItem.Album)">$INFO[Container(6074).ListItem.Art(thumb)]</value><value condition="ListItem.IsParentFolder">$INFO[Container(60).ListItemAbsolute(1).Art(thumb)]</value><value>$INFO[ListItem.Art(thumb)]</value></variable>
 	<variable name="BezelInAlbumTitle"><value condition="ListItem.IsParentFolder">$INFO[Container(60).ListItemAbsolute(1).Album]</value><value>$INFO[ListItem.Album]</value></variable>
@@ -317,19 +226,6 @@
 	<variable name="BezelArtistBio">
 		<value condition="!String.IsEmpty(ListItem.Property(Artist_Description))">$INFO[ListItem.Property(Artist_Description)]</value>
 		<value condition="!String.IsEqual(ListItem.DBType,artist)">$INFO[Container(6073).ListItemAbsolute(0).Property(Artist_Description)]</value>
-	</variable>
-	<variable name="BezelHomeLandscape">
-		<value condition="!String.IsEmpty(ListItem.Art(banner))">$INFO[ListItem.Art(banner)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(tvshow.banner))">$INFO[ListItem.Art(tvshow.banner)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(landscape))">$INFO[ListItem.Art(landscape)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(tvshow.landscape))">$INFO[ListItem.Art(tvshow.landscape)]</value>
-		<value condition="!String.IsEmpty(ListItem.Art(tvshow.fanart))">$INFO[ListItem.Art(tvshow.fanart)]</value>
-		<value>$INFO[ListItem.Art(thumb)]</value>
-	</variable>
-	<variable name="BezelPicture">
-		<value condition="!ListItem.IsFolder + !String.IsEmpty(ListItem.FileNameAndPath)">$INFO[ListItem.FileNameAndPath]</value>
-		<value>$INFO[ListItem.Icon]</value>
 	</variable>
 	<variable name="BezelStats">
 		<value>$INFO[Window(Home).Property(Movies.Count),,  MOVIES   ][COLOR FF2189B5]$INFO[Window(Home).Property(Movies.UnWatched),,  UNWATCHED   ][/COLOR]$INFO[Window(Home).Property(Episodes.Count),,  TV EPISODES   ][COLOR FF2189B5]$INFO[Window(Home).Property(Episodes.UnWatched),,  UNWATCHED   ][/COLOR]$INFO[Window(Home).Property(Music.ArtistsCount),,  ARTISTS   ][COLOR FF2189B5]$INFO[Window(Home).Property(Music.AlbumsCount),,  ALBUMS   ][/COLOR]$INFO[Window(Home).Property(Music.SongsCount),,  SONGS]</value>
@@ -432,40 +328,15 @@
 	<!-- BEZEL 3.0: library root: the art / poster section (art, shadow, glare) is blacked out; the dust dialog (1114, mode R) draws over it -->
 	<include name="BezelRootArtHide"><control type="image"><left>1052</left><top>0</top><width>868</width><height>1080</height><texture colordiffuse="FF000000">bezel/white.png</texture><visible>$EXP[bz_libroot]</visible></control><control type="grouplist"><visible>$EXP[bz_libroot] + Skin.HasSetting(bz_amb_below)</visible><left>1052</left><top>0</top><width>868</width><height>1080</height><orientation>vertical</orientation><itemgap>0</itemgap><scrolltime>0</scrolltime><control type="group"><left>0</left><top>0</top><width>868</width><height>1080</height><animation effect="slide" start="-1052,0" end="-1052,0" time="0" condition="true">Conditional</animation><include>BezelAmbientBelow</include></control></control><!-- 4.7.5: Ambient BELOW was hidden under this root black (section root menus); clipped dust copy above it --><!-- 5.33.213: removed 3.1.2 MM-open black art cover (962-1920). It sat inside BezelSecDim, so Background dim faded the COVER: poster showed at (1-dim) = inverse of fanart, hinge ~50-60%. Warm wants the poster visible and dimmed like fanart. --></include>
 	<expression name="bz_navok">String.IsEmpty(Window(Home).Property(bz_navlock)) + String.IsEmpty(Window(Home).Property(bz_navgrace)) + !String.IsEqual(Window(Home).Property(bz_nav),true)</expression>
-	<variable name="BezelMiniArt"><value condition="!String.IsEmpty(Player.Art(thumb))">$INFO[Player.Art(thumb)]</value><value>$INFO[MusicPlayer.Cover]</value></variable>
-	<variable name="BezelVBackLine">
-		<value>$INFO[Container(60).ListItem.Year]$INFO[Container(60).ListItem.Rating,   RATED ]$INFO[Container(60).ListItem.Duration(mins),   , MIN]$INFO[Container(60).ListItem.Season,   SEASON ]$INFO[Container(60).ListItem.Episode,  EP ]</value>
-	</variable>
-	<variable name="BezelVBackTitle">
-		<value condition="String.IsEqual(Container(60).ListItem.DBType,episode)">$INFO[Container(60).ListItem.TVShowTitle,,  ·  ]$INFO[Container(60).ListItem.Title]</value>
-		<value>$INFO[Container(60).ListItem.Label]</value>
-	</variable>
-	<variable name="BezelVBackArgs"><value>$INFO[Container(60).ListItem.DBType],$INFO[Container(60).ListItem.DBID]</value></variable>
 
 	<!-- 2.0a1: left slide-out section menu, opened by the logo (6001) or Left from the list: they set bz_nav; bz_flip.py focuses the menu once it is shown
 	     and clears bz_nav when focus leaves it (Back, a tap outside or a pick). No hidden-focus controls, so a hidden menu never catches the pointer -->
 	<!-- beta1 item 6 / 1: back card values -->
 	<variable name="BezelCard2Sort"><value condition="String.IsEqual(Container.SortMethod,Production code)">Produc. code</value><value condition="String.IsEqual(Container.SortMethod,Video resolution)">Video resolu.</value><value condition="String.IsEqual(Container.SortMethod,Audio channels)">Audio channe.</value><value>$INFO[Container.SortMethod]</value></variable><!-- BETA 2 item 20: card 2 sort values wider than 260 px, abbreviated -->
-<variable name="BezelCard2Vis"><value condition="!String.IsEmpty(Window(Home).Property(bz_ab_vis))">$INFO[Window(Home).Property(bz_ab_vis)]</value><value>$INFO[Visualisation.Name]</value></variable><!-- BETA 2 item 20: abbreviated by bz_cmd.py abbr -->
+<!-- BETA 2 item 20: abbreviated by bz_cmd.py abbr -->
 	<variable name="BezelViewName"><value condition="$EXP[bz_gridset]">GRID</value><value condition="Window.IsActive(music) + Skin.HasSetting(bz_albumlist)">ALBUM LIST</value><value>LIST</value></variable>
-	<variable name="BezelKSet_player"><value condition="String.IsEqual(Window(Home).Property(bz_kset),player)">−</value><value>+</value></variable>
-	<variable name="BezelKSet_media"><value condition="String.IsEqual(Window(Home).Property(bz_kset),media)">−</value><value>+</value></variable>
-	<variable name="BezelKSet_library"><value condition="String.IsEqual(Window(Home).Property(bz_kset),library)">−</value><value>+</value></variable>
-	<variable name="BezelKSet_interface"><value condition="String.IsEqual(Window(Home).Property(bz_kset),interface)">−</value><value>+</value></variable>
-	<variable name="BezelKSet_system"><value condition="String.IsEqual(Window(Home).Property(bz_kset),system)">−</value><value>+</value></variable>
 	<!-- 3.5.3: side menu option row (label left, current value right) -->
-	<variable name="BezelNavHeading"><value condition="[Window.IsActive(music) | Window.IsActive(musicplaylist)]">MUSIC OPTIONS</value><value condition="Container.Content(tvshows) | Container.Content(seasons) | Container.Content(episodes)">TV OPTIONS</value><value>VIDEO OPTIONS</value></variable>
-	<variable name="BezelNavContent"><value condition="Container.Content(albums)">Albums</value><value condition="Container.Content(artists)">Artists</value><value condition="Container.Content(songs)">Songs</value><value condition="Container.Content(movies)">Movies</value><value condition="Container.Content(tvshows)">TV shows</value><value condition="Container.Content(episodes)">Episodes</value><value condition="Container.Content(seasons)">Seasons</value><value condition="Container.Content(musicvideos)">Music videos</value></variable>
 	<!-- 4.1: side menu helpers -->
-	<variable name="BezelNavCell_6912"><value condition="Control.HasFocus(6912)">FF161616</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelNavCell_6913"><value condition="Control.HasFocus(6913)">FF161616</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelNavCell_6914"><value condition="Control.HasFocus(6914)">FF161616</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelNavCell_6915"><value condition="Control.HasFocus(6915)">FF161616</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelNavChevCol_6910"><value condition="Control.HasFocus(6910)">FFFFFFFF</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelNavNPCol"><value condition="Player.HasAudio">white</value><value>FF6E6E6E</value></variable>
-	<variable name="BezelNavChevCol_6901"><value condition="Control.HasFocus(6901)">FFFFFFFF</value><value>FFA0A0A0</value></variable>
-	<variable name="BezelNavChevCol_6902"><value condition="Control.HasFocus(6902)">FFFFFFFF</value><value>FFA0A0A0</value></variable>
-	<variable name="BezelNavChevCol_6903"><value condition="Control.HasFocus(6903)">FFFFFFFF</value><value>FFA0A0A0</value></variable>
 	<!-- BETA 2 item 7: the standard BEZEL toggle (radiobutton, Kodi's radio-button-on / -off switch like every Skin settings toggle), sized for the 44 px card 2 rows -->
 		<variable name="BezelMenuVidArt"><value condition="!String.IsEmpty(ListItem.Art(fanart))">$INFO[ListItem.Art(fanart)]</value><value condition="!String.IsEmpty(ListItem.Art(tvshow.fanart))">$INFO[ListItem.Art(tvshow.fanart)]</value><value>$INFO[ListItem.Art(poster)]</value></variable>
 	<!-- BEZEL 3.2.0 Main menu vars -->
@@ -479,7 +350,6 @@
 <variable name="BzMMNext_movies"><value condition="String.IsEqual(Window(Home).Property(bz_mmsub_movies),1) | String.IsEmpty(Window(Home).Property(bz_mmsub_movies))">2</value><value condition="String.IsEqual(Window(Home).Property(bz_mmsub_movies),2)">3</value><value condition="String.IsEqual(Window(Home).Property(bz_mmsub_movies),3)">1</value></variable>
 <variable name="BzMMNext_tv"><value condition="String.IsEqual(Window(Home).Property(bz_mmsub_tv),1) | String.IsEmpty(Window(Home).Property(bz_mmsub_tv))">2</value><value condition="String.IsEqual(Window(Home).Property(bz_mmsub_tv),2)">3</value><value condition="String.IsEqual(Window(Home).Property(bz_mmsub_tv),3)">4</value><value condition="String.IsEqual(Window(Home).Property(bz_mmsub_tv),4)">5</value><value condition="String.IsEqual(Window(Home).Property(bz_mmsub_tv),5)">6</value><value condition="String.IsEqual(Window(Home).Property(bz_mmsub_tv),6)">1</value></variable>
 <variable name="BzMMSubLbl"><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),music) + [String.IsEqual(Window(Home).Property(bz_mmsub_music),1) | String.IsEmpty(Window(Home).Property(bz_mmsub_music))]">ARTISTS</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),music) + [String.IsEqual(Window(Home).Property(bz_mmsub_music),2)]">ALBUMS</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),music) + [String.IsEqual(Window(Home).Property(bz_mmsub_music),3)]">GENRES</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),music) + [String.IsEqual(Window(Home).Property(bz_mmsub_music),4)]">RECENT SONGS</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),music) + [String.IsEqual(Window(Home).Property(bz_mmsub_music),5)]">RECENT ALBUMS</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),movies) + [String.IsEqual(Window(Home).Property(bz_mmsub_movies),1) | String.IsEmpty(Window(Home).Property(bz_mmsub_movies))]">TITLES</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),movies) + [String.IsEqual(Window(Home).Property(bz_mmsub_movies),2)]">RECENTLY ADDED</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),movies) + [String.IsEqual(Window(Home).Property(bz_mmsub_movies),3)]">YEARS</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),tv) + [String.IsEqual(Window(Home).Property(bz_mmsub_tv),1) | String.IsEmpty(Window(Home).Property(bz_mmsub_tv))]">SHOWS</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),tv) + [String.IsEqual(Window(Home).Property(bz_mmsub_tv),2)]">WATCHING</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),tv) + [String.IsEqual(Window(Home).Property(bz_mmsub_tv),3)]">YEARS</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),tv) + [String.IsEqual(Window(Home).Property(bz_mmsub_tv),4)]">ACTORS</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),tv) + [String.IsEqual(Window(Home).Property(bz_mmsub_tv),5)]">RECENT</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),tv) + [String.IsEqual(Window(Home).Property(bz_mmsub_tv),6)]">GENRES</value></variable>
-<variable name="BzMMSubDots"><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),music) + [String.IsEqual(Window(Home).Property(bz_mmsub_music),1)]">• [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR]</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),music) + [String.IsEqual(Window(Home).Property(bz_mmsub_music),2) | String.IsEmpty(Window(Home).Property(bz_mmsub_music))]">[COLOR 55000000]•[/COLOR] • [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR]</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),music) + [String.IsEqual(Window(Home).Property(bz_mmsub_music),3)]">[COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] • [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR]</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),music) + [String.IsEqual(Window(Home).Property(bz_mmsub_music),4)]">[COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] • [COLOR 55000000]•[/COLOR]</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),music) + [String.IsEqual(Window(Home).Property(bz_mmsub_music),5)]">[COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] •</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),movies) + [String.IsEqual(Window(Home).Property(bz_mmsub_movies),1) | String.IsEmpty(Window(Home).Property(bz_mmsub_movies))]">• [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR]</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),movies) + [String.IsEqual(Window(Home).Property(bz_mmsub_movies),2)]">[COLOR 55000000]•[/COLOR] • [COLOR 55000000]•[/COLOR]</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),movies) + [String.IsEqual(Window(Home).Property(bz_mmsub_movies),3)]">[COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] •</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),tv) + [String.IsEqual(Window(Home).Property(bz_mmsub_tv),1) | String.IsEmpty(Window(Home).Property(bz_mmsub_tv))]">• [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR]</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),tv) + [String.IsEqual(Window(Home).Property(bz_mmsub_tv),2)]">[COLOR 55000000]•[/COLOR] • [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR]</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),tv) + [String.IsEqual(Window(Home).Property(bz_mmsub_tv),3)]">[COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] • [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR]</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),tv) + [String.IsEqual(Window(Home).Property(bz_mmsub_tv),4)]">[COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] • [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR]</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),tv) + [String.IsEqual(Window(Home).Property(bz_mmsub_tv),5)]">[COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] • [COLOR 55000000]•[/COLOR]</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),tv) + [String.IsEqual(Window(Home).Property(bz_mmsub_tv),6)]">[COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] [COLOR 55000000]•[/COLOR] •</value></variable>
 	<variable name="BzMMPreArt"><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),music)">$INFO[Skin.String(bz_lastart_music)]</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),movies)">$INFO[Skin.String(bz_lastart_movies)]</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),tv)">$INFO[Skin.String(bz_lastart_tv)]</value><value condition="String.IsEqual(Container(6996).ListItem.Property(sec),mv)">$INFO[Skin.String(bz_lastart_mv)]</value></variable>
 	<variable name="BzOSD85Play"><value condition="Player.Paused">Paused</value><value>Playing</value></variable><!-- 4.3.0 O85 -->
 	<variable name="BzMMTitle"><value condition="String.IsEqual(Window(Home).Property(bz_navstrip),movies)">Movies</value><value condition="String.IsEqual(Window(Home).Property(bz_navstrip),tv)">TV Shows</value><value condition="String.IsEqual(Window(Home).Property(bz_navstrip),settings)">Settings</value><value condition="String.IsEmpty(Window(Home).Property(bz_navstrip)) + Window.IsActive(videos)">Movies</value><value>Music</value></variable>
@@ -524,9 +394,6 @@
 	<!-- 2.0a1: mini player (non-music sections, only while music plays): long bar in the upper right, art on the left, title / artist, prev / play-pause / next.
 	     Slides in from the right; the BEZEL list poster scales down under it at the same time (BezelVideoPoster) -->
 	<!-- 2.0a3: BezelMiniPlayer rebuilt below (small card right of the poster) -->
-	<variable name="BezelMiniDiffuse6950"><value condition="Control.HasFocus(6950)">bz_accent</value><value>DDFFFFFF</value></variable>
-	<variable name="BezelMiniDiffuse6951"><value condition="Control.HasFocus(6951)">bz_accent</value><value>DDFFFFFF</value></variable>
-	<variable name="BezelMiniDiffuse6952"><value condition="Control.HasFocus(6952)">bz_accent</value><value>DDFFFFFF</value></variable>
 
 	<!-- 2.0a1: ONE large poster for movies / TV (and the icon for other sections) in the BEZEL list.
 	     Sway (2.0a3.3): one continuous sway like the album art (bz_pswayon then bz_ppulse, bz_flip.py), not reset by a new title; no zoom.
@@ -868,8 +735,7 @@
 	<!-- 5.33.64 Play Next: Music compact NP bar (BETA 1.1), one copy shared by the Music Now Playing screen and Fullscreen Play Next -->
 	<!-- 5.33.64 Play Next (Rob t416-t426): second FS Music look. Prev | Now | Next, 600 px, 3 px gaps, thin white bezel each, centre casts onto L/R, crossfade on song change. -->
 <variable name="BezelDFSModeName"><value condition="String.IsEqual(Skin.String(bz_dfs_mode),album)">ALBUM</value><value>PREV/NEXT</value></variable>
-	<variable name="BzPN107Nof"><value condition="Window.IsActive(1120) | String.IsEmpty(Window(Home).Property(bz_pnfoc))">00FFFFFF</value><value>4DFFFFFF</value></variable><!-- 5.33.107: 1120 buttons invisible (drawn in Music sway group) -->
-	<variable name="BzPN107Foc"><value condition="Window.IsActive(1120) | String.IsEmpty(Window(Home).Property(bz_pnfoc))">00FFFFFF</value><value>B3FFFFFF</value></variable>
+	<!-- 5.33.107: 1120 buttons invisible (drawn in Music sway group) -->
 	<!-- Oct 31 2026: big album pill — shared by Dialogue FS 1120 and FS album viz (MusicVisualisation). ALBUM ↔ PREV/NEXT via bz_dfs_mode. -->
 	<include name="BezelBigAlbumPill">
 		<param name="vis" default="true"/>
@@ -2464,7 +2330,6 @@
 		</control>
 	</include>
 	<variable name="BzPicTitle"><value condition="String.IsEmpty(Container.FolderPath) | String.IsEqual(Container.FolderPath,sources://pictures/)">PICTURES</value><value>$INFO[Container.FolderName]</value></variable>
-	<variable name="BzPicKind"><value condition="Container(63).ListItem.IsFolder">FOLDER</value><value>PICTURE</value></variable>
 
 	<!-- ============ BEZEL 2.0 alpha 3: shared geometry (BEZEL MUSIC LIST and BEZEL VIDEO POSTER LIST) ============
 	     Everything sits below the logo: y 120-1020. List 120-570 (rows flush with the block top), colour block 570-960, art area 990-1890. -->
@@ -2914,35 +2779,11 @@
 	<expression name="bz_np">String.IsEqual(Window(Home).Property(bz_np),true) + [Window.IsActive(music) | String.IsEqual(Window(Home).Property(bz_fsnp),true)] + String.IsEqual(Window(Home).Property(bz_audio_latch),true) + !Player.HasVideo</expression>
 	<!-- 3.5.1: BEZEL player controls (panel style), shared: under the art with "Player button backdrop" in the list, and inside the left half in Now Playing (dx -900, x 177-903) -->
 	<!-- 4.2 item 20: OSD icon / label colour: accent when the option is on, else white -->
-	<variable name="BezelOSDIconCol_6191"><value condition="!Control.HasFocus(6191) + [false]">bz_accent</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelOSDIconCol_6171"><value condition="!Control.HasFocus(6171) + [false]">bz_accent</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelOSDIconCol_6192"><value condition="!Control.HasFocus(6192) + [false]">bz_accent</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelOSDIconCol_6172"><value condition="!Control.HasFocus(6172) + [false]">bz_accent</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelOSDIconCol_6173"><value condition="!Control.HasFocus(6173) + [false]">bz_accent</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelOSDIconCol_6193"><value condition="!Control.HasFocus(6193) + [false]">bz_accent</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelOSDIconCol_6196"><value condition="!Control.HasFocus(6196) + [Playlist.IsRandom]">bz_accent</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelOSDIconCol_6197"><value condition="!Control.HasFocus(6197) + [[Playlist.IsRepeat | Playlist.IsRepeatOne]]">bz_accent</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelOSDIconCol_6174"><value condition="!Control.HasFocus(6174) + [false]">bz_accent</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelOSDIconCol_6198"><value condition="!Control.HasFocus(6198) + [String.IsEqual(Window(Home).Property(bz_favpath),Player.Filenameandpath)]">bz_accent</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelOSDIconCol_6177"><value condition="!Control.HasFocus(6177) + [false]">bz_accent</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelOSDIconCol_6179"><value condition="!Control.HasFocus(6179) + [false]">bz_accent</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelOSDIconCol_6195"><value condition="!Control.HasFocus(6195) + [false]">bz_accent</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelOSDIconCol_6176"><value condition="!Control.HasFocus(6176) + [false]">bz_accent</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelNPCPlay"><value condition="Player.Paused">PAUSED</value><value>PLAYING</value></variable>
-	<variable name="BezelNPCFull"><value condition="Window.IsActive(visualisation)">ON</value><value>OFF</value></variable>
-	<variable name="BezelNPCShuffle"><value condition="Playlist.IsRandom">ON</value><value>OFF</value></variable>
-	<variable name="BezelNPCRepeat"><value condition="Playlist.IsRepeat">ALL</value><value condition="Playlist.IsRepeatOne">ONE</value><value>OFF</value></variable>
 	<include name="BezelNPControls"><!-- BEZEL 3.2.1 item 1: old under-the-art controls (6191-6199, 6171-6179) removed; controls = colour-block list (1115 / VideoOSD) + mini player only --></include>
 	<!-- 3.5.7: sway shadows as separate includes, drawn AFTER the colour block, its text and the list (block, text, shadow, art: the shadow falls over the text;
 	     it ends at x 965, left of the art at x 990, so the art is never under it) -->
 			<!-- 4.1: Now Playing view toggle -->
 	<variable name="BezelNPModeName"><value condition="Window.IsActive(1115)">CONTROLS</value><value condition="$EXP[bz_npm_ctl]">CONTROLS  ▾</value><value condition="$EXP[bz_npm_bio]">BIOGRAPHY</value><value condition="$EXP[bz_npm_fan]">FANART</value><value condition="$EXP[bz_npm_lyr]">LYRICS</value><value condition="$EXP[bz_npm_upn]">UP NEXT</value><value condition="$EXP[bz_npm_ctl]">CONTROLS</value><value>VISUALIZER</value></variable>
-	<variable name="BezelNPModeShort"><value condition="$EXP[bz_npm_bio]">BIO</value><value condition="$EXP[bz_npm_fan]">ART</value><value condition="$EXP[bz_npm_lyr]">LYR</value><value condition="$EXP[bz_npm_upn]">NEXT</value><value condition="$EXP[bz_npm_ctl]">CTL</value><value>VIS</value></variable>
-	<variable name="BezelNPToggleText"><value condition="Control.HasFocus(6391)">FF000000</value><value>FFFFFFFF</value></variable>
-	<variable name="BezelNPDot1"><value condition="$EXP[bz_npm_vis]">bezel/np_dot.png</value><value>bezel/np_dot_ring.png</value></variable>
-	<variable name="BezelNPDot2"><value condition="$EXP[bz_npm_bio]">bezel/np_dot.png</value><value>bezel/np_dot_ring.png</value></variable>
-	<variable name="BezelNPDot3"><value condition="$EXP[bz_npm_fan]">bezel/np_dot.png</value><value>bezel/np_dot_ring.png</value></variable>
-	<variable name="BezelNPDot4"><value condition="$EXP[bz_npm_lyr]">bezel/np_dot.png</value><value>bezel/np_dot_ring.png</value></variable>
 	<include name="BezelFSUpNext"><!-- 5.33.315 Rob t2389: shared Up Next list 6395 + proxy 6396 (BezelNPInPlace on visualisation/Music/1112, and Music Fanart FS dialog 1121) -->
 		<param name="vis" default="$EXP[bz_np] + $EXP[bz_npm_upn]"/><param name="home" default="6390"/><param name="upc1" default="white"/><param name="upc2" default="B3FFFFFF"/><param name="upc3" default="FFEBEBEB"/>
 		<definition>
@@ -3183,9 +3024,7 @@
 	</include>
 	<variable name="BezelFMType20"><value condition="String.IsEqual(Container(20).ListItem.Label,..)">Parent folder</value><value condition="Container(20).ListItem.IsFolder">Folder</value><value condition="!String.IsEmpty(Container(20).ListItem.Label)">File</value></variable><!-- BETA 2 item 10 -->
 	<variable name="BezelFMType21"><value condition="String.IsEqual(Container(21).ListItem.Label,..)">Parent folder</value><value condition="Container(21).ListItem.IsFolder">Folder</value><value condition="!String.IsEmpty(Container(21).ListItem.Label)">File</value></variable><!-- BETA 2 item 10 -->
-	<variable name="BezelMIAbout"><value condition="String.IsEqual(ListItem.DBType,artist)">BIOGRAPHY</value><value>ABOUT THE ALBUM</value></variable><variable name="BezelMIBr"><value condition="Integer.IsGreater(ListItem.MusicBitrate,0)">$INFO[ListItem.MusicBitrate,  ·  , KBPS]</value></variable>
-	<variable name="BezelMISr"><value condition="!String.IsEmpty(ListItem.SampleRate) + !String.IsEqual(ListItem.SampleRate,0) + !String.IsEqual(ListItem.SampleRate,0.0)">$INFO[ListItem.SampleRate,  ·  , KHZ]</value></variable>
-	<variable name="BezelMICh"><value condition="Integer.IsGreater(ListItem.MusicChannels,0)">$INFO[ListItem.MusicChannels,  ·  , CH]</value></variable>
+	<variable name="BezelMIAbout"><value condition="String.IsEqual(ListItem.DBType,artist)">BIOGRAPHY</value><value>ABOUT THE ALBUM</value></variable>
 	<variable name="BezelMIOther"><value condition="String.IsEqual(ListItem.DBType,album) | String.IsEqual(ListItem.DBType,song)">ARTIST INFO</value><value>ALBUM INFO</value></variable><!-- BETA 2 item 15 -->
 	<variable name="BezelPartyOn"><value condition="MusicPartyMode.Enabled">ON</value><value>OFF</value></variable>
 	<variable name="BezelMasterOn"><value condition="System.IsMaster">ON</value><value>OFF</value></variable>
@@ -3202,7 +3041,6 @@
 	<include name="BzFSShRing_MP"><!-- 5.33.50 blur strength --><animation effect="slide" start="0,0" end="-2,2" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshblur),1)">Conditional</animation><animation effect="slide" start="0,0" end="-4,4" time="0" condition="[String.IsEmpty(Skin.String(bz_at_fsshblur)) | String.IsEqual(Skin.String(bz_at_fsshblur),2)]">Conditional</animation><animation effect="slide" start="0,0" end="-7,7" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshblur),3)">Conditional</animation><animation effect="slide" start="0,0" end="-11,11" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshblur),4)">Conditional</animation></include>
 	<include name="BzFSShRing_MM"><!-- 5.33.50 blur strength --><animation effect="slide" start="0,0" end="-2,-2" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshblur),1)">Conditional</animation><animation effect="slide" start="0,0" end="-4,-4" time="0" condition="[String.IsEmpty(Skin.String(bz_at_fsshblur)) | String.IsEqual(Skin.String(bz_at_fsshblur),2)]">Conditional</animation><animation effect="slide" start="0,0" end="-7,-7" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshblur),3)">Conditional</animation><animation effect="slide" start="0,0" end="-11,-11" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshblur),4)">Conditional</animation></include>
 	<include name="BzFSShSlide"><!-- 5.33.50 5-step distance 2/4/8/14/22 --><animation effect="slide" start="0,0" end="2,2" time="0" condition="[String.IsEmpty(Skin.String(bz_at_fsshang)) | String.IsEqual(Skin.String(bz_at_fsshang),1)] + String.IsEqual(Skin.String(bz_at_fsshdist),1)">Conditional</animation><animation effect="slide" start="0,0" end="4,4" time="0" condition="[String.IsEmpty(Skin.String(bz_at_fsshang)) | String.IsEqual(Skin.String(bz_at_fsshang),1)] + [String.IsEmpty(Skin.String(bz_at_fsshdist)) | String.IsEqual(Skin.String(bz_at_fsshdist),2)]">Conditional</animation><animation effect="slide" start="0,0" end="8,8" time="0" condition="[String.IsEmpty(Skin.String(bz_at_fsshang)) | String.IsEqual(Skin.String(bz_at_fsshang),1)] + String.IsEqual(Skin.String(bz_at_fsshdist),3)">Conditional</animation><animation effect="slide" start="0,0" end="14,14" time="0" condition="[String.IsEmpty(Skin.String(bz_at_fsshang)) | String.IsEqual(Skin.String(bz_at_fsshang),1)] + String.IsEqual(Skin.String(bz_at_fsshdist),4)">Conditional</animation><animation effect="slide" start="0,0" end="22,22" time="0" condition="[String.IsEmpty(Skin.String(bz_at_fsshang)) | String.IsEqual(Skin.String(bz_at_fsshang),1)] + String.IsEqual(Skin.String(bz_at_fsshdist),5)">Conditional</animation><animation effect="slide" start="0,0" end="0,2" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshang),2) + String.IsEqual(Skin.String(bz_at_fsshdist),1)">Conditional</animation><animation effect="slide" start="0,0" end="0,4" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshang),2) + [String.IsEmpty(Skin.String(bz_at_fsshdist)) | String.IsEqual(Skin.String(bz_at_fsshdist),2)]">Conditional</animation><animation effect="slide" start="0,0" end="0,8" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshang),2) + String.IsEqual(Skin.String(bz_at_fsshdist),3)">Conditional</animation><animation effect="slide" start="0,0" end="0,14" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshang),2) + String.IsEqual(Skin.String(bz_at_fsshdist),4)">Conditional</animation><animation effect="slide" start="0,0" end="0,22" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshang),2) + String.IsEqual(Skin.String(bz_at_fsshdist),5)">Conditional</animation><animation effect="slide" start="0,0" end="-2,2" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshang),3) + String.IsEqual(Skin.String(bz_at_fsshdist),1)">Conditional</animation><animation effect="slide" start="0,0" end="-4,4" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshang),3) + [String.IsEmpty(Skin.String(bz_at_fsshdist)) | String.IsEqual(Skin.String(bz_at_fsshdist),2)]">Conditional</animation><animation effect="slide" start="0,0" end="-8,8" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshang),3) + String.IsEqual(Skin.String(bz_at_fsshdist),3)">Conditional</animation><animation effect="slide" start="0,0" end="-14,14" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshang),3) + String.IsEqual(Skin.String(bz_at_fsshdist),4)">Conditional</animation><animation effect="slide" start="0,0" end="-22,22" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshang),3) + String.IsEqual(Skin.String(bz_at_fsshdist),5)">Conditional</animation><animation effect="slide" start="0,0" end="2,0" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshang),4) + String.IsEqual(Skin.String(bz_at_fsshdist),1)">Conditional</animation><animation effect="slide" start="0,0" end="4,0" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshang),4) + [String.IsEmpty(Skin.String(bz_at_fsshdist)) | String.IsEqual(Skin.String(bz_at_fsshdist),2)]">Conditional</animation><animation effect="slide" start="0,0" end="8,0" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshang),4) + String.IsEqual(Skin.String(bz_at_fsshdist),3)">Conditional</animation><animation effect="slide" start="0,0" end="14,0" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshang),4) + String.IsEqual(Skin.String(bz_at_fsshdist),4)">Conditional</animation><animation effect="slide" start="0,0" end="22,0" time="0" condition="String.IsEqual(Skin.String(bz_at_fsshang),4) + String.IsEqual(Skin.String(bz_at_fsshdist),5)">Conditional</animation></include>
-	<variable name="BezelEpBanner"><value condition="!String.IsEmpty(ListItem.Art(tvshow.banner))">$INFO[ListItem.Art(tvshow.banner)]</value><value condition="!String.IsEmpty(ListItem.Art(season.banner))">$INFO[ListItem.Art(season.banner)]</value><value>$INFO[ListItem.Art(tvshow.landscape)]</value></variable>
 	<!-- 3.5.6: in-place extended info (ext_info_inplace). Over the list + colour block region (x 120-959, y 118-999) while bz_xinfo is set
 	     (hosted in Custom_1111_XInfo so Back closes it; bz_cmd.py xinfo: I on the list / grid, or a long-press on a poster). Crossfade 550 ms sine; poster / grid, fanart and the mini player stay.
 	     Focus starts on PLAY; Back or 15 s without input closes it. Cast thumbs, resume point, tech line from the library (JSON). -->
@@ -3211,8 +3049,6 @@
 	     colour block 840x900 at 120,120 with the backdrop fanart, 450 px dark list panel, blue details panel, tilted art box with soft shadow,
 	     bottom title line. The window supplies its own 450 px list / grouplist at 120,120 (60 px rows, use BezelStdButton for grouplists). -->
 	<!-- 5.0.2 MEDIA SOURCES detail -->
-	<variable name="BzMSHead"><value condition="Control.HasFocus(7101)">VIDEOS SOURCES</value><value condition="Control.HasFocus(7107)">ADD VIDEO SOURCE</value><value condition="Control.HasFocus(7102)">REFRESH VIDEO LIBRARY</value><value condition="Control.HasFocus(7103)">CLEAN VIDEO LIBRARY</value><value condition="Control.HasFocus(7104)">EXPORT VIDEO LIBRARY</value><value condition="Control.HasFocus(7105)">IMPORT VIDEO LIBRARY</value><value condition="Control.HasFocus(7111)">MUSIC SOURCES</value><value condition="Control.HasFocus(7117)">ADD MUSIC SOURCE</value><value condition="Control.HasFocus(7112)">REFRESH MUSIC LIBRARY</value><value condition="Control.HasFocus(7113)">CLEAN MUSIC LIBRARY</value><value condition="Control.HasFocus(7114)">EXPORT MUSIC LIBRARY</value><value condition="Control.HasFocus(7115)">IMPORT MUSIC LIBRARY</value><value condition="Control.HasFocus(7121)">PICTURES SOURCES</value><value condition="Control.HasFocus(7122)">ADD PICTURE SOURCE</value></variable>
-	<variable name="BzMSBody"><value condition="Control.HasFocus(7101)">Estuary manage-sources list[CR]Add / Edit / Remove source[CR]Set content + scraper[CR]Scan to library[CR][CR]sources://video/</value><value condition="Control.HasFocus(7107)">Opens Add Video source (path + name on the strip keyboard).</value><value condition="Control.HasFocus(7102)">Scan all video sources for new items.</value><value condition="Control.HasFocus(7103)">Remove items whose files are gone.</value><value condition="Control.HasFocus(7104)">Kodi's library export: single file or separate files, then pick a folder.</value><value condition="Control.HasFocus(7105)">Opens Settings › Media › Library — Videos › Import library.</value><value condition="Control.HasFocus(7111)">Estuary manage-sources list[CR]Add / Edit / Remove source[CR]Scan to library[CR][CR]sources://music/</value><value condition="Control.HasFocus(7117)">Opens Add Music source (path + name on the strip keyboard).</value><value condition="Control.HasFocus(7112)">Scan all music sources for new items.</value><value condition="Control.HasFocus(7113)">Remove items whose files are gone.</value><value condition="Control.HasFocus(7114)">Kodi's music library export dialog.</value><value condition="Control.HasFocus(7115)">Opens Settings › Media › Library — Music › Import library.</value><value condition="Control.HasFocus(7121)">Estuary manage-sources list[CR]Add / Edit / Remove source[CR][CR]sources://pictures/</value><value condition="Control.HasFocus(7122)">Opens Add Pictures source. Pictures has no library scan or clean.</value></variable>
 	<include name="BezelStdFrame">
 		<param name="title" default=""/><param name="sub" default=""/><param name="head" default=""/><param name="body" default=""/>
 		<param name="art" default="$VAR[BezelStdArt]"/><param name="listw" default="bz_fill_w"/><param name="panelx" default="bz_strip_x"/><param name="panelw" default="bz_strip_w"/><param name="showinfo" default="true"/><param name="cover" default="FF000000"/><param name="showart" default="true"/><param name="tpl" default="false"/><param name="showline" default="true"/>
@@ -3315,7 +3151,6 @@
 	<variable name="BzCtxTxt"><value condition="Window.IsVisible(filebrowser) | Window.IsVisible(filemanager)">99FFFFFF</value><value>C8FFFFFF</value></variable>
 	<variable name="BzCtxFocTxt"><value condition="Window.IsVisible(filebrowser) | Window.IsVisible(filemanager)">FFFFFFFF</value><value>$VAR[BzMMFocTxt]</value></variable>
 	<variable name="BzCtxBarCol"><value condition="Window.IsVisible(filebrowser) | Window.IsVisible(filemanager)">button_focus</value><value>$VAR[BzMMBarCol]</value></variable>
-	<variable name="BzCtxHiTex"><value condition="Window.IsVisible(filebrowser) | Window.IsVisible(filemanager)">lists/focus.png</value><value>$VAR[BzATHiTex]</value></variable>
 	<!-- 5.33.199: non-modal splash overlay (property-gated). Drawn last on Startup/Music/Videos so UI builds underneath; no ActivateWindow(1113). -->
 	<include name="BezelWarmGateOverlay">
 		<control type="group">
