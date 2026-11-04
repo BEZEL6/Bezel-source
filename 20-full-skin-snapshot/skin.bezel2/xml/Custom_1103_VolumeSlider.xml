@@ -12,7 +12,7 @@
 			<param name="hints" value="‹ › volume   OK / BACK close" />
 			<param name="head" value="Volume" /><param name="stitle" value="$INFO[Player.Volume]" /><param name="sdesc" value="Use ‹ › to change the volume." />
 		</include>
-		<control type="group"><left>120</left><top>800</top>
+		<control type="group"><left>bz_stage_x</left><top>800</top>
 			<control type="label"><left>30</left><top>18</top><width>300</width><height>44</height><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[13376]</label></control>
 			<control type="label"><left>30</left><top>18</top><width>396</width><height>44</height><align>right</align><font>bz_mm24</font><textcolor>FFFFFFFF</textcolor><label>$INFO[Player.Volume]</label></control>
 			<control type="slider" id="11"><left>30</left><top>104</top><width>396</width><height>30</height>

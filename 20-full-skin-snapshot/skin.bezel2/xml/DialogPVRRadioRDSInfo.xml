@@ -16,7 +16,7 @@
 			<width>1920</width>
 
 			<control type="image">
-				<left>120</left>
+				<left>bz_stage_x</left>
 				<top>160</top>
 				<width>840</width>
 				<height>405</height>
@@ -68,7 +68,7 @@
 			</control>
 
 			<control type="image">
-				<left>120</left>
+				<left>bz_stage_x</left>
 				<top>575</top>
 				<width>840</width>
 				<height>225</height>
@@ -188,7 +188,7 @@
 			</control>
 
 			<control type="image">
-				<left>120</left>
+				<left>bz_stage_x</left>
 				<top>810</top>
 				<width>840</width>
 				<height>260</height>

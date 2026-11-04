@@ -9,7 +9,7 @@
 		<include>BzDlgDim</include>
 		
 		<include content="BzDlgFrame"><param name="blockw" value="1680" /><param name="dark" value="1290" /><param name="titlew" value="1200" /></include>
-		<control type="group"><left>120</left><top>120</top>
+		<control type="group"><left>bz_stage_x</left><top>120</top>
 <control type="label" id="100"><left>30</left><top>20</top><width>1200</width><height>62</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[24012]</label></control>
 <control type="label"><left>44</left><top>112</top><width>270</width><height>34</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><aligny>bottom</aligny><label>[UPPERCASE]$LOCALIZE[24018][/UPPERCASE]</label></control>
 <control type="list" id="150"><left>20</left><top>150</top><width>290</width><height>560</height><onleft>160</onleft><onright>120</onright><onup>150</onup><ondown>150</ondown><scrolltime>200</scrolltime><include content="BzDlgListLayouts"><param name="width" value="290" /><param name="height" value="56" /><param name="label" value="$INFO[ListItem.Label]" /><param name="label2" value="" /><param name="lw" value="240" /><param name="l2w" value="242" /><param name="selx" value="246" /><param name="id" value="150" /></include></control>

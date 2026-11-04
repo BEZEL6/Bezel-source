@@ -6,7 +6,7 @@
 		<include>DefaultBackground</include>
 		<!-- BETA 2.7 item 1: BEZEL standard view: categories as 60 px rows at 120,120, the info in the colour panel -->
 		<include content="BezelPVRStage"/><!-- 5.33.13 (Rob t154, mockup 15): categories in colour strip, info labels in fanart stage -->
-		<control type="image"><left>120</left><top>120</top><width>540</width><height>900</height><texture colordiffuse="66000000">colors/white.png</texture></control>
+		<control type="image"><left>bz_stage_x</left><top>120</top><width>bz_fill_w</width><height>900</height><texture colordiffuse="66000000">colors/white.png</texture></control>
 				<!-- 4.7.7 setsub: MM strip (same as Settings / Main menu) -->
 		<control type="group"><left>bz_strip_x</left><top>120</top><include>BezelSecFadeIn</include>
 			<control type="image"><left>bz_strip_nx</left><top>-120</top><width>1920</width><height>1080</height><texture colordiffuse="$VAR[BzMMStrip]">bezel/mm_glow_behind.png</texture></control>

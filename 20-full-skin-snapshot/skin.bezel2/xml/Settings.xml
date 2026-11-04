@@ -14,7 +14,7 @@
 		<control type="group">
 			<animation effect="fade" start="0" end="100" time="400" tween="sine" easing="out">WindowOpen</animation><!-- 5.33.177 section fade-in standard -->
 			<!-- 5.33.22 t226 Rob: fanart stage 120,120 840x900 (strip overlays its right side); void desc @1010 removed -->
-			<control type="group"><left>120</left><top>120</top>
+			<control type="group"><left>bz_stage_x</left><top>120</top>
 				<include>BezelOpenCloseSet</include>
 				<control type="image"><left>0</left><top>0</top><width>bz_stage_w</width><height>900</height><aspectratio>scale</aspectratio><texture background="true">$INFO[Window(Home).Property(bz_backdrop)]</texture></control>
 				<control type="image"><left>0</left><top>0</top><width>bz_stage_w</width><height>900</height><texture colordiffuse="B4000000">bezel/white.png</texture></control>

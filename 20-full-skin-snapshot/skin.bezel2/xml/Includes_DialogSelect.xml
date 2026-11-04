@@ -15,7 +15,7 @@
 			</include>
 			<!-- SELUI (Rob locked Select language): detail header + text above, buttons at bottom of strip --><control type="group"><left>bz_strip_x</left><!-- P1B --><control type="label"><left>28</left><top>142</top><width>340</width><height>40</height><font>bz_r26</font><textcolor>FFFFFFFF</textcolor><label>[B][UPPERCASE]$INFO[Container(3).ListItem.Label]$INFO[Container(6).ListItem.Label][/UPPERCASE][/B]</label></control></control><control type="group"><left>bz_strip_x</left><!-- P1B --><control type="textbox"><left>28</left><top>192</top><width>340</width><height>700</height><font>bz_bio</font><textcolor>E6FFFFFF</textcolor><label>$VAR[BzSelBody]</label><autoscroll time="3000" delay="6000" repeat="6000">true</autoscroll></control></control><control type="label" id="1"><left>-2000</left><width>10</width><height>10</height><font>font10</font></control>
 			<control type="list" id="3">
-				<left>120</left><top>120</top><width>450</width><height>900</height>
+				<left>bz_stage_x</left><top>120</top><width>450</width><height>900</height>
 				<onup>3</onup><ondown>3</ondown><onleft>9001</onleft><onright>9001</onright><pagecontrol>61</pagecontrol>
 				<scrolltime tween="cubic" easing="out">190</scrolltime>
 				<itemlayout height="60" width="450">
@@ -31,7 +31,7 @@
 				</focusedlayout>
 			</control>
 			<control type="list" id="6">
-				<left>120</left><top>120</top><width>450</width><height>900</height>
+				<left>bz_stage_x</left><top>120</top><width>450</width><height>900</height>
 				<onup>6</onup><ondown>6</ondown><onleft>9001</onleft><onright>9001</onright><pagecontrol>61</pagecontrol>
 				<scrolltime tween="cubic" easing="out">190</scrolltime>
 				<itemlayout height="60" width="450">

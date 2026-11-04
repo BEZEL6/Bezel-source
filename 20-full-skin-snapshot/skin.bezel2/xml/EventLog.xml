@@ -7,7 +7,7 @@
 	<controls><control type="group"><include>BezelSecDim</include>
 		<include content="BezelPVRStage"/>
 		<control type="group"><include>BezelSecFadeIn</include>
-			<control type="image"><left>120</left><top>120</top><width>540</width><height>900</height><texture colordiffuse="66000000">colors/white.png</texture></control>
+			<control type="image"><left>bz_stage_x</left><top>120</top><width>bz_fill_w</width><height>900</height><texture colordiffuse="66000000">colors/white.png</texture></control>
 			<control type="image"><left>150</left><top>150</top><width>120</width><height>120</height><aspectratio>keep</aspectratio><texture fallback="DefaultAddon.png">$INFO[Container(50).ListItem.Icon]</texture></control>
 			<control type="label"><left>150</left><top>290</top><width>390</width><height>40</height><font>bz_r26</font><textcolor>FFFFFFFF</textcolor><scroll>true</scroll><label>[UPPERCASE]$INFO[Container(50).ListItem.Label][/UPPERCASE]</label></control>
 			<control type="label"><left>150</left><top>335</top><width>390</width><height>30</height><font>bz_r20</font><textcolor>B3FFFFFF</textcolor><label>[UPPERCASE]$INFO[Container(50).ListItem.Property(Event.Level)]$INFO[Container(50).ListItem.Date, · ][/UPPERCASE]</label></control>

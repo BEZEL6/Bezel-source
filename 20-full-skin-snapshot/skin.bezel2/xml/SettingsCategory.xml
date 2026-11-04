@@ -8,7 +8,7 @@
 		     description of the highlighted setting, setting controls to the right of the bar -->
 		<include>BezelBlack</include>
 		<!-- 5.33.26 Rob t235: template fanart stage 120,120 840x900 (same as Settings home) -->
-		<control type="group"><left>120</left><top>120</top><control type="image"><left>0</left><top>0</top><width>bz_stage_w</width><height>900</height><aspectratio>scale</aspectratio><texture background="true">$INFO[Window(Home).Property(bz_backdrop)]</texture></control><control type="image"><left>0</left><top>0</top><width>bz_stage_w</width><height>900</height><texture colordiffuse="B4000000">bezel/white.png</texture></control></control>
+		<control type="group"><left>bz_stage_x</left><top>120</top><control type="image"><left>0</left><top>0</top><width>bz_stage_w</width><height>900</height><aspectratio>scale</aspectratio><texture background="true">$INFO[Window(Home).Property(bz_backdrop)]</texture></control><control type="image"><left>0</left><top>0</top><width>bz_stage_w</width><height>900</height><texture colordiffuse="B4000000">bezel/white.png</texture></control></control>
 		<include content="BezelLogo"><param name="col" value="FFFFFFFF"/></include><!-- t4284 -->
 		<!-- LFUI (Rob approved t3893s12053, mock mockups/lf_skin/after.png): dark settings list 120-570, colour strip 570-960 with categories + DETAIL panel, title bottom right -->
 		<control type="group"><include>BezelOpenCloseSet</include>

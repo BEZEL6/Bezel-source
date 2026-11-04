@@ -6,7 +6,7 @@
 		<control type="group"><!-- 4.7.4: SECTION PARENT GROUP — Global Dim fade under MM --><include>BezelSecDim</include>
 		<include content="BezelPVRStage"/><!-- 5.33.13 (Rob t154, mockup 16): profiles/options open in colour strip replacing parent list; avatar+name in fanart stage -->
 		<control type="group"><include>BezelSecFadeIn</include>
-			<control type="image"><left>120</left><top>120</top><width>540</width><height>900</height><texture colordiffuse="66000000">colors/white.png</texture></control>
+			<control type="image"><left>bz_stage_x</left><top>120</top><width>bz_fill_w</width><height>900</height><texture colordiffuse="66000000">colors/white.png</texture></control>
 			<control type="image"><left>195</left><top>200</top><width>300</width><height>300</height><aspectratio>keep</aspectratio><texture fallback="DefaultUser.png">$INFO[Container(2).ListItem.Icon]</texture><visible>Container(9000).HasFocus(2)</visible></control>
 			<control type="label"><left>150</left><top>530</top><width>390</width><height>50</height><font>bz_mm34</font><align>center</align><textcolor>FFFFFFFF</textcolor><scroll>true</scroll><label>$INFO[Container(2).ListItem.Label]</label><visible>Container(9000).HasFocus(2)</visible></control>
 			<control type="label"><left>150</left><top>585</top><width>390</width><height>30</height><font>bz_mm17</font><align>center</align><textcolor>B3FFFFFF</textcolor><label fallback="13170">$INFO[Container(2).ListItem.Label2]</label><visible>Container(9000).HasFocus(2)</visible></control>

@@ -13,7 +13,7 @@
 		<include>DefaultBackground</include>
 		<include>BezelWarmHold</include><!-- 5.33.211 WARM HOLD -->
 		<control type="group"><!-- 5.33.58 Rob t378-t387: Add-ons on MENU template (list in colour strip, fanart stage clean, all info inside artwork frame, no transition anim) -->
-			<control type="group"><left>120</left><top>120</top><!-- fanart stage: art only, no text -->
+			<control type="group"><left>bz_stage_x</left><top>120</top><!-- fanart stage: art only, no text -->
 				<control type="image"><left>0</left><top>0</top><width>bz_stage_w</width><height>900</height><aspectratio>scale</aspectratio><texture background="true">$INFO[Window(Home).Property(bz_backdrop)]</texture></control>
 				<control type="image"><left>0</left><top>0</top><width>bz_stage_w</width><height>900</height><texture colordiffuse="66000000">bezel/white.png</texture></control>
 			</control>
@@ -31,7 +31,7 @@
 				<control type="image"><left>20</left><top>842</top><width>350</width><height>1</height><texture colordiffuse="40FFFFFF">bezel/white.png</texture></control>
 				<control type="label"><left>34</left><top>852</top><width>330</width><height>30</height><aligny>center</aligny><font>bz_b12</font><textcolor>AAFFFFFF</textcolor><label>»  new menu       ‹ BACK  returns</label></control>
 			</control>
-			<control type="group"><left>1140</left><top>220</top><visible>false + !$EXP[bz_navmenu] + !String.IsEmpty(Container(60).ListItem.Label) + !Container(60).ListItem.IsParentFolder</visible><!-- artwork window: ALL info inside this frame -->
+			<control type="group"><left>bz_art_x</left><top>220</top><visible>false + !$EXP[bz_navmenu] + !String.IsEmpty(Container(60).ListItem.Label) + !Container(60).ListItem.IsParentFolder</visible><!-- artwork window: ALL info inside this frame -->
 				<control type="image"><left>0</left><top>0</top><width>600</width><height>600</height><texture colordiffuse="E6050508">bezel/white.png</texture></control>
 				<control type="image"><left>0</left><top>0</top><width>600</width><height>2</height><texture colordiffuse="66FFFFFF">bezel/white.png</texture></control>
 				<control type="image"><left>0</left><top>598</top><width>600</width><height>2</height><texture colordiffuse="66FFFFFF">bezel/white.png</texture></control>

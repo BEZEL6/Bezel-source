@@ -13,7 +13,7 @@
 			<param name="head" value="Numeric input" /><param name="stitle" value="$INFO[Control.GetLabel(1)]" />
 			<param name="sdesc" value="Type with the keypad or the remote's number keys. Del removes the last digit; ‹ › move between fields (time, date and IP address entry)." />
 		</include>
-		<control type="group"><left>120</left><top>120</top>
+		<control type="group"><left>bz_stage_x</left><top>120</top>
 			<control type="textbox" id="1"><left>30</left><top>20</top><width>400</width><height>62</height><font>bz_mm48b</font><textcolor>FFFFFFFF</textcolor><label /><autoscroll>false</autoscroll></control>
 			<control type="image"><left>30</left><top>140</top><width>396</width><height>84</height><texture border="10" colordiffuse="14FFFFFF">bezel/mm_round_a60.png</texture></control>
 			<control type="label" id="4"><left>30</left><top>140</top><width>396</width><height>84</height><align>center</align><aligny>center</aligny><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><label /></control>

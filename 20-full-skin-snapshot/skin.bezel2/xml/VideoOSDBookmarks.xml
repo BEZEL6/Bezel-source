@@ -9,7 +9,7 @@
 		<include>BzDlgDim</include>
 		
 		<include content="BzDlgFrame"></include>
-		<control type="group"><left>120</left><top>120</top>
+		<control type="group"><left>bz_stage_x</left><top>120</top>
 <control type="label"><left>30</left><top>20</top><width>400</width><height>62</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[298]</label></control>
 <control type="label"><left>44</left><top>112</top><width>380</width><height>34</height><font>bz_mm17</font><textcolor>A0FFFFFF</textcolor><aligny>bottom</aligny><label>[UPPERCASE]$INFO[Container(11).NumItems,, ]$LOCALIZE[298][/UPPERCASE]</label></control>
 <control type="panel" id="11"><left>20</left><top>150</top><width>410</width><height>690</height><onleft>9001</onleft><onright>9001</onright><onup>11</onup><ondown>11</ondown><pagecontrol>60</pagecontrol><scrolltime tween="sine">200</scrolltime><orientation>vertical</orientation><itemlayout width="410" height="120"><control type="image"><width>410</width><height>116</height><texture colordiffuse="00000000">bezel/white.png</texture></control><control type="image"><left>12</left><top>13</top><width>160</width><height>90</height><aspectratio>scale</aspectratio><texture background="true">$INFO[ListItem.Art(thumb)]</texture></control>

@@ -35,7 +35,7 @@
 			<control type="group">
 				<depth>DepthContentPanel</depth>
 				<include>BezelSecFadeIn</include>
-				<left>120</left><width>450</width><!-- 5.33.12: info in fanart block -->
+				<left>bz_stage_x</left><width>450</width><!-- 5.33.12: info in fanart block -->
 				<control type="scrollbar" id="73">
 					<left>-50</left>
 					<top>list_top_offset</top>

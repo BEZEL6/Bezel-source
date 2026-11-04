@@ -33,7 +33,7 @@
 		<control type="image" id="999"><left>0</left><top>0</top><width>1920</width><height>4320</height><texture/></control><!-- full-screen size so Kodi positioning (focus-centred, clamped to the screen) lands at 0,0 -->
 		<control type="grouplist" id="996">
 			<animation effect="slide" end="615,30" time="0" condition="Window.IsVisible(filebrowser) | Window.IsVisible(filemanager)">conditional</animation><animation effect="slide" end="450,112" time="0" condition="$EXP[bz_ctxwarm]">conditional</animation><!-- 5.33.242 Warm strip rows -->
-			<left>120</left><top>120</top><width>450</width><height>900</height>
+			<left>bz_stage_x</left><top>120</top><width>450</width><height>900</height>
 			<itemgap>0</itemgap><orientation>vertical</orientation>
 		</control>
 		<control type="button" id="1000"><!-- 5.33.94 t592: MM-bar focus (was white/black Estuary-style) -->

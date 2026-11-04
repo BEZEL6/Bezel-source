@@ -11,7 +11,7 @@
 			<param name="hints" value="‹ › tempo   BACK close" />
 			<param name="head" value="Tempo" /><param name="stitle" value="$LOCALIZE[31142]" /><param name="sdesc" value="Use ‹ › to slow down or speed up playback." />
 		</include>
-		<control type="group"><left>120</left><top>800</top>
+		<control type="group"><left>bz_stage_x</left><top>800</top>
 			<control type="label"><left>30</left><top>18</top><width>300</width><height>44</height><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><label>$LOCALIZE[31142]</label></control>
 			<control type="label"><left>30</left><top>90</top><width>396</width><height>60</height><align>center</align><aligny>center</aligny><font>bz_mm48b</font><textcolor>FFFFFFFF</textcolor><label>$INFO[Player.playspeed]</label></control>
 			<control type="button" id="11"><left>30</left><top>90</top><width>60</width><height>60</height><label>‹</label><font>bz_mm48b</font><align>center</align><aligny>center</aligny><textcolor>C8FFFFFF</textcolor><focusedcolor>$VAR[BzMMFocTxt]</focusedcolor><texturefocus border="0" colordiffuse="$VAR[BzMMBarCol]">$VAR[BzATHiTex]</texturefocus><texturenofocus/><onleft>12</onleft><onright>12</onright><onclick>PlayerControl(TempoDown)</onclick></control>

@@ -12,7 +12,7 @@
 				<param name="hints" value="▲▼ move   OK change   ‹ › section" />
 				<param name="head" value="Setting" /><param name="stitle" value="$INFO[System.CurrentControl]" /><param name="sdesc" value="" />
 			</include>
-			<control type="group"><left>120</left><top>120</top>
+			<control type="group"><left>bz_stage_x</left><top>120</top>
 				<control type="label" id="2"><left>30</left><top>20</top><width>400</width><height>62</height><font>bz_mm34</font><aligny>center</aligny><textcolor>FFFFFFFF</textcolor><scroll>true</scroll><label /></control>
 				<control type="textbox" id="6"><left>472</left><top>140</top><width>346</width><height>600</height><font>bz_mm20</font><textcolor>E6FFFFFF</textcolor><autoscroll delay="6000" time="3000" repeat="10000">true</autoscroll><label /></control>
 				<control type="grouplist" id="3">
