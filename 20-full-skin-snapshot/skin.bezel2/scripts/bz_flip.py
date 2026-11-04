@@ -222,7 +222,7 @@ if home.getProperty('bz_flip_running') != 'true':
         return (1 - math.cos(math.pi * x)) / 2
     def _bz_cast(t0):
         L = R = None
-        if t0 is not None and home.getProperty('bz_audio_latch') == 'true' and not home.getProperty('bz_sway_hold'):
+        if t0 is not None and not home.getProperty('bz_sway_hold'):   # 5.33.468 CASTIDLE: stubs follow the sway with or without music (t0 = album clock or idle bt0)
             u = time.time() - t0
             _ps = sway.get('ps'); _pl = sway.get('pl')   # 5.33.441 STUBPHASE: real start of the 1122 album's pulse (see _sway_anchor)
             if u >= 2.4 and xbmc.getCondVisibility('Skin.HasSetting(bz_swayright)'):
