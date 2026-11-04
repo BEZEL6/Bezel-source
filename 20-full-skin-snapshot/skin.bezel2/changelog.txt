@@ -1,3 +1,6 @@
+5.33.453 (2026-11-03)
+- ONESWAY (Rob: "USE ONLY 1 CONTINUOUS UNBROKEN SWAY ANIM"; "THE PLAYING STYLE AND TEXTURES SHOULD BE FOR BOTH"; "NO RESET ON PLAY"): the big album now has ONE sway for idle and playing. The idle album's own sway rig (bz_big_* clock) and its own glare / lit dust copy are gone; the idle art, the playing covers and ONE glare A/B + lit dust + sway shadow set (the playing set: textures, opacity, Tuner glare style/tint) all ride the playing sway rig, which now runs whether music plays or not. Starting / stopping a song only crossfades the art; the swing, glare and dust run on unbroken. The colour-strip cast also runs from the same start. Notes: idle now uses the playing perspective centre (camera y 520, was 570), the Short sway setting and the glare-off-while-scrolling rule apply to idle too.
+
 5.33.452 (2026-11-03)
 - GLARECONT (Rob: "SONG START RESTARTS GLARE AND DUST ON BIG ALBUM? IT SHOULD BE UNBROKEN ANIMATION"): the playing big album's glares (and the lit dust inside them) still ran their old start-up lead-in on a song start (4.7 s dark, then a 2.7 s fade in) although the album sway runs on without a restart since 5.33.415. The lead-in now only plays while the sway itself is leading in (as the colour-strip cast already did), so on a song start the glare + dust follow the running sway from the first frame.
 

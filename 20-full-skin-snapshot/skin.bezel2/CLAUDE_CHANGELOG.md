@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.452
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.453
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 453 | "USE ONLY 1 CONTINUOUS UNBROKEN SWAY ANIM"; "THE PLAYING STYLE AND TEXTURES SHOULD BE FOR BOTH"; "NO RESET ON PLAY" | **ONESWAY**: one big album sway rig + one glare/dust/shadow set for idle and playing |
 | 452 | "SONG START RESTARTS GLARE AND DUST ON BIG ALBUM? IT SHOULD BE UNBROKEN ANIMATION" | **GLARECONT**: playing-album glare lead-in only while the sway leads in |
 | 451 | "SOME ARTIST DONT SHOW THE ALL ALBUM FOLDER EVEN WITH MULTI ALBUMS, SCROLL TO END OF LIST NAVS TO HOME"; L2 screenshot (gap under small album, ALL over last album) | **ALLCOUNT**, **L2PULL**, **NOWRAPGUARD** |
 | 450 | "ADD NP BAR TO KODI FULLSCREEN VIZ WHEN BIG ALBUM IS CENTER" ("only the FS fanart dialogue fullscreen") | **VIZNPBAR**: compact NP bar under the centred album in Kodi FS viz, drawn in 1122 |
@@ -213,6 +214,34 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.453 — ONESWAY (one continuous big album sway, idle + playing)
+- **Rob:** "use only 1 continuous unbroken sway anim, if I want a diff style later I will work on it"; "the playing style and textures should be for both"; "no reset on play".
+- **Before:** `BezelMusicPlayingArt` (1122, home + centre copies) had two rigs.
+  - Idle rig: L1081, camera 1440,570, rotatey on `bz_big_go` / `bz_big_pulse`, excluded in 1120 / viz. It held the idle art, leaf hinge, frame and its own glare/dust copy (`BzATGlareTex` @ `BzATGlare8C`, IDLELIT dust).
+  - Playing rig: L1164, camera 1440,520, `<visible>Player.HasAudio</visible>`, rotatey on `bz_sway_go` / `bz_sway_pulse`. It held the covers, with a glare/dust/shadow copy inside each cover layer.
+  - Because the playing rig was hidden while idle, its pulse started at the first play (Kodi starts a pulse when the control is first processed), so the two rigs were never in phase. Each held different glare art.
+- **After (one rig, the old playing rig, camera 1440,520, always processed):**
+  1. **Idle stack:** the old L1081 children (shadows, `!Player.HasAudio` art group with A/B slots, np-art, leaf hinge, frame, ATLook), unchanged inside.
+  2. **Playing stack:** a new group carrying the old rig's `<visible>Player.HasAudio</visible>` and its Visible 150/1100 / WindowOpen / Hidden 450 fades. It holds the preload image and cover layers A and B with their glare copies removed. Cover B is never shown (no code sets `bz_cov_side=b` since 301).
+  3. **ONE glare set:** cover A's glare wrapper (flip / `Container.Scrolling` fades), short-sway glares, glare A + left dust, and glare B + sway shadow + right dust. It sits inside the idle Jumbo zoom group (150 idle / 100 playing, the same anims as the idle art) and the LEAFTUNE fold gate (`![music + bz_hf_a + bz_hf_g]`). The `Player.HasAudio +` term is dropped from its inner gates.
+  4. **Paused overlay:** unchanged, drawn last.
+  - **Removed:** the idle rig (camera + `bz_big_*` rotatey) and the idle glare/dust group (448 IDLESEQ / 444 IDLELIT; the unreleased IDLEMATCH edit is superseded).
+  - `bz_flip` still sets `bz_big_*`; no XML reads them now.
+  - **Cast (`BezelAlbumCast`):** the two animated groups drop `Player.HasAudio +` from `<visible>` so their pulse starts with the rig. When idle, the existing latch 200 ms fade keeps them at 0.
+  - **Stub anchor (`_sway_anchor`):** "album drawn" no longer needs `Player.HasAudio` (it uses the top gate `!HasAudio | !bz_navtune`).
+- **Sync lint:** one rotatey lead-in and pulse, one cast set, one glare pulse pair (per copy).
+- **Visible differences, on purpose:**
+  - Idle now uses the playing glare (100% default, `glare2_br` at the right end, Tuner style and tint) plus the sway shadow.
+  - Idle perspective centre is y520 (was 570).
+  - Short sway and glare-off-while-scrolling apply to idle too.
+  - Idle also sways under 1120 / viz (not normally visible).
+- **Check:**
+  - Idle album swings. Start a song: art crossfades and zooms down, with no jump, restart or dark gap in the swing, glare or dust. Stop: the same in reverse.
+  - Leaf flip (locked): unchanged, glare out/in around the fold.
+  - Album change while playing: crossfade.
+  - Rail slide centre/home, Play Next / viz / 1121, stub casts in step.
+- **Rollback:** restore `xml/Includes_Bezel.xml` and `scripts/bz_flip.py` from 5.33.452.
 
 ## 5.33.452 — GLARECONT (playing big album glare + lit dust unbroken on song start)
 - **Cause:** in BezelMusicPlayingArt, the 4 long-sway glare groups (glare A + glare B, cover layers A and B, lit dust inside) carry a lead-in `Conditional fade 0→100 time 2700 delay 4700` on `String.IsEmpty(bz_sway_hold)` only.

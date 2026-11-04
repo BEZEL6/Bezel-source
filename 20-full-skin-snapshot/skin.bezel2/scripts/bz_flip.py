@@ -253,7 +253,8 @@ if home.getProperty('bz_flip_running') != 'true':
         #     a play started under the music grid anchors when the album actually starts, not when the music starts.
         if not xbmc.getCondVisibility('Window.IsVisible(1122)'):
             sway['cl'] = sway['cs'] = False; sway['pl'] = sway['ps'] = None; return
-        vis = xbmc.getCondVisibility('Player.HasAudio + !String.IsEqual(Window(Home).Property(bz_navtune),true) + !String.IsEqual(Window(Home).Property(bz_rail),hide)'
+        vis = xbmc.getCondVisibility('[!Player.HasAudio | !String.IsEqual(Window(Home).Property(bz_navtune),true)] + !String.IsEqual(Window(Home).Property(bz_rail),hide)'   # 5.33.453 ONESWAY: the one sway rig is drawn playing or not (no HasAudio gate); same gate as BezelMusicPlayingArt top
+                                     
                                      ' + [![Window.IsActive(music) + Skin.HasSetting(bz_grid_music) + [Container(60).Content(albums) | Container(60).Content(artists)]]'
                                      ' | [String.IsEqual(Window(Home).Property(bz_np),true) + [Window.IsActive(music) | String.IsEqual(Window(Home).Property(bz_fsnp),true)]'
                                      ' + String.IsEqual(Window(Home).Property(bz_audio_latch),true) + !Player.HasVideo]]')
