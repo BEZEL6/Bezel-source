@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.465
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.466
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 466 | "MUSIC ALBUM SECTION USES AN OLD LIST AND NOT THE NEWER ALBUM LIST", "AS WELL AS RECENT PLAYED"; "MUSIC GENRES HAS UNWANTED META DATA DRAWN BEHIND THE LIST" (screenshot) | **ALBUMCOVER** (covercol for every music albums list, no bz_albumlist), **ALBUMPILL**, **GENREMETA** (old strip info card hidden whenever list 60 is up) |
 | 465 | "TUNER MENU EXITS BUT IS STILL DRAWN"; "OLD FULLSCREEN FANART VIZ IS LEFT IN THE CODE" (fanart overlay + cycle pill at the old upper-right spot, back from the big album) → "REMOVE ANYTHING OLD"; "ANY REWRITE OPTIMIZATION" | **TUNERHIDE**, **DEL1104**, **OLDPILL**, **OLDNP** (old Now Playing dialog 1112 + routes → 1121 / Kodi FS), rewrite **P3.4–P3.6** (parked controls, grid 6600 conditions, grid script actions) |
 | 464 | "CAN CLOCK AND EVENT BE TRIED NEXT?" → "CLOCK" | rewrite **P2.4 SWAYEPOCH**: poster sway epoch = album idle clock bt0 (was its own art0). Event-driven playback (P2.5) dropped: ~25 mostly compound checks, ~2–3% saving, timing risk |
 | 463 | "MUSIC CONTROLS GET STUCK IN VIS SETTINGS"; "QUICK BACK FROM TUNER MENU DROPS IN RANDOM WINDOW"; "ADD A NP BAR WHEN UP NEXT IS TRIGGER IN KODI FULLSCREEN" | **VIZSETRESET** (bz_vizset by window id + cleared on load), **TUNERBACKQ** (power menu before Tuner hides), **UPNNPBAR** (compact NP bar under the home album with Up Next, viz + 1121) |
@@ -226,6 +227,18 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.466 — ALBUMCOVER + ALBUMPILL + GENREMETA
+Branch `claude/5.33.466` (465 + one commit per fix). P2.6 waits for Rob's 465 kodi.log.
+- **ALBUMCOVER** (Rob: "music album section uses an old list and not the newer album list", "as well as recent played"; confirmed the cover list):
+  - `bz_covercol` (list 60's cover-list mode: 450 cover on top of the column, 75 px rows under it) applied to the root Albums node only with `Skin.HasSetting(bz_albumlist)`. bz_flip sets that bool on entering `musicdb://albums/`, but on Rob's box it was off and stayed off, so Albums and Recently played drew the plain 60 px list.
+  - The clause is now `Window.IsActive(music) + Container.Content(albums) + !bz_artistalbums` (artist albums keep their own clause). Covers Albums, Recently played / added, Genres / Years → albums, compilations. `!bz_grid_music` dropped (reset at start since 455 GRIDDEL). The bz_flip SetBool is left (harmless; no Python change in this build).
+- **ALBUMPILL:** `BezelViewName` / `BezelViewPillText` show ALBUM LIST / ALBUMS on `Container.Content(albums)` instead of the bool.
+- **GENREMETA** (Rob screenshot: Genres showed GENRE 80S / ARTIST ALBUMS 812 / ARTIST SONGS 13380 over the rows):
+  - The old strip info card in `View_60_BezelInfoList` (music info pairs, biography header + text, album year pairs, album text: 9 parts at strip x+30) was alpha-0 only for `bz_mstrip` (artists / albums / songs, 278 STRIPLIST). Every music folder draws list 60 in the strip, so in genres / years / roles / sources the card painted under the rows.
+  - The 9 fades are now `$EXP[bz_mstrip] | Control.IsVisible(60)`. Video already hides its card for folders (`bz_vfold` in `bz_vstrip`).
+- **Check:** Music → Albums and Recently played: cover on top, rows under it; Genres: rows only, no info text behind them; artist → albums and album tracks as before.
+- **Static checks:** XML parses; geometry identical to 465; audit clean. Not device-tested.
 
 ## 5.33.465 — TUNERHIDE + DEL1104 + OLDPILL + OLDNP + rewrite P3.4–P3.6
 Branch `claude/5.33.465` (464 + one commit per item, 7 commits).
