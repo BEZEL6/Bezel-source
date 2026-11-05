@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.473
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.474
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 474 | "474 GO" (Kodi visualisation → 1121); "FANART STAGE LABELS CAN BE EXPANDED TO MAKE USE OF THE NEW WIDER FANART STAGE"; "ADD A FANART STAGE TUNER MENU … FANART OPACITY, FADE TYPE, SPEED, MOVE COLOR STRIP TUNERS INSIDE" (fade type: "Crossfade + Cut") | **VIZREDIR**, **STAGELABELS** (400–410 → 480), **FANARTTUNER** |
 | 473 | "UPDATE ALL THE BEHAVIOR FILES … FORMAT … DETAILED BEHAVIOR INSTRUCTIONS THAT WILL MAKE THE PORTING PROCESS BETTER AT KEEPING THE FUNCTIONS FEEL AND LOOK", "HAVE A KODI SPECIFIC SECTION", "DO ALL AND INCLUDE IN NEW BUILD"; "RIP OUT THE SHADOWS FROM THE FULL SCREEN MUSIC OVERLAY AND TUNERS"; "ALIGN … ALBUM/PREV/NEXT PILL WITH BEZEL LOGO"; "DISABLE CLEAR ART FOR MOVIES SECTION BY DEFAULT … TOGGLE … SECTION OPTIONS"; "EXIT FROM INFO OPTION HID POSTERS??" | **DOCS** (50 behavior files, port format), **FSSHADOWDEL**, **PILLALIGN**, **MOVCLEAR**, **VIEWTYPEDEL** |
 | 472 | "SEPARATE DIALOGUE FULLSCREEN WRITTEN FOR EACH SECTION?" → one 1121 over any section, "ALWAYS HAVE ITS FANART STAGE READY", "TAB AND FULLSCREEN BUTTONS MAPPED TO NEW 1121", "OK 1121"; "ENTER ALBUMS FROM MM AND OLD ALBUM LIST IS SHOWN WITH THE SMALL ALBUM IN THE LEFT CORNER OF FANART STAGE"; "STUB ALBUMS NOT SHOWING ART" (side albums, 471) | **SHADOWHEAL**, **ALBUMHALF**, **FANPRELOAD**, **FSANY** |
 | 471 | "I WANT THE OVERALL SECTION SWITCHES FADES AND ARTWORK LOADING TO BE FASTER AND SMOOTHER"; "CAN YOU JUST MAKE CHANGES TO MAKE IT FASTER" | **FASTPACK** (7 faster timing picks, one-time seed on existing installs), rewrite **P2.6b SWAYSHADOW** |
@@ -234,6 +235,21 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.474 — VIZREDIR + STAGELABELS + FANARTTUNER
+Branch `claude/5.33.474` (473 + one commit per item + docs). Rob: "474 go".
+- **VIZREDIR** (planned since 472: Kodi's own visualisation window, opened by remote apps / add-ons / Kodi FullScreen, goes into 1121):
+  - Expression `bz_vizredir` = `!bz_m1121_off + Player.HasAudio + !Player.HasVideo + Window.Previous(music | home | videos | pictures | programs | addonbrowser)`. Bezel's own openers never open viz from those windows (they use 1121 there), so this case is always an outside caller. `Window.Previous` is set before WINDOW_INIT (GUIWindowManager::ActivateWindow `SetPreviousWindow(currentWindow)`), so it is valid in onload.
+  - MusicVisualisation onload when true: Home `bz_vizredir=1` (black 1920 × 1080 cover on top), no `bz_sway_restart`, no 6390 focus alarm, `AlarmClock(SetFocus(6297))` (with `bz_pnoff=1` that is the normal Kodi FS exit, `Action(Back)` → previous window). Onunload queues `ActivateWindow(1121)`; 1121 onload clears `bz_vizredir`.
+  - Kodi FS from Settings / PVR / with the kill switch: unchanged.
+- **STAGELABELS** (Rob: "fanart stage labels can be expanded to make use of the new wider fanart stage"): since 455 STAGEWIDE the strip starts at 660 but the stage text column still ended at 550–560. Music meta (small / big / pills) 400 → 480; Movies / TV VSTRIP meta: title / clear-logo box, pill rows, genre pill max, season / episode name, plot 400–410 → 480 (x 150–630). Fullscreen meta (870) unchanged. Geometry: 75 resolved controls change right edge only.
+- **FANARTTUNER** (Rob: "add a fanart stage tuner menu in the tuner menu. Fanart opacity, fade type, speed, move color strip tuners inside new fanart strip menu"; fade type → "Crossfade + Cut"):
+  - Rail 7001: FANART STAGE after LIST. Rows: Fanart opacity (fanop, from LOOK), **Fade type** (new), Fade speed (fanart, from LIST, no longer only in Music / Videos), Colour strip / Colour strip opacity (blockcol / blockop, from LOOK › COLOUR BLOCK; that sub-group head and `BzTSec_colourblock` removed), Reset fanart stage (`bz_tune.py reset,stage`: the four back to DEF, Fade type to Crossfade). Same skin strings and step actions as before.
+  - Fade type: `Skin.String(bz_at_fantype)` empty = Crossfade, 2 = Cut; `bz_tune_patch._bezel` bakes the section fanart `fadetime` (BETA 2.6 item 10 marker) to 0 for Cut, else Fade speed (checked on a copy: 150 / 0). `BzATVal_fantype`, `BzATBar_fantype`, new `media/bezel/at/bar_2_1.png` / `bar_2_2.png`.
+- **Docs:** fanart-fs, music-fanart-fs, skin-settings-tuner, music / movies / tv lists, section-transitions, README updated.
+- **Checks:** XML parses, `.py` compiles, audit clean; geometry vs 473: +1 (the VIZREDIR cover), 75 right edges moved to 630; Tuner patch applies and is idempotent.
+- **Check on device:** phone remote "fullscreen" in Movies with music → brief black → BEZEL fullscreen, Back → Movies; Kodi Settings → Tab → Kodi FS as before; Movies / TV / Music stage text reaches the strip; Tuner › FANART STAGE rows; Fade type Cut → fanart switches instantly (after the Tuner reload).
+- **Static checks only.** Not device-tested.
 
 ## 5.33.473 — DOCS + FSSHADOWDEL + PILLALIGN + MOVCLEAR + VIEWTYPEDEL
 Branch `claude/5.33.473` (472 + one commit per item; docs in batches).
