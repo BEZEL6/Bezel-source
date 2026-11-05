@@ -1,67 +1,57 @@
 # Recently played
 
-**Object:** MM row RECENTLY PLAYED → `bz_mm.py GO['recent']` → music window `musicdb://recentlyplayedalbums/` (`bz_navroot` set)
-**Where:** Main menu → Music window
-**Last updated:** 2026-10-31
-**Status:** Live in 5.33.207. Opens Music on recently played albums. That path is registered as the nav root, so Back there opens the MM. Draft: not Rob-approved.
-**Skin:** skin.bezel2
+**Object:** MM row RECENTLY PLAYED · Kodi: `bz_mm.py GO['recent']` → Music window `musicdb://recentlyplayedalbums/` with `bz_navroot` set
+**Where:** main menu → Music
+**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none
 
-Each section has three layers: **Simple**, **How it works**, **Wiring** (live tree).
+## Simple
+RECENTLY PLAYED on the main menu opens Music on the albums you played most recently, with the small album cover at the top of the strip above the rows. It behaves exactly like the Music Albums list. Back at the top reopens the main menu on the RECENTLY PLAYED row.
 
----
+## Feel contract (any framework)
+Same as the Music list's Albums level ([music-list](music-list.md)); differences:
 
-## Open
+### States
+| State | How you get in | How you leave | On screen |
+|---|---|---|---|
+| Recent albums | MM RECENTLY PLAYED | Select → songs; Back → MM (row RECENTLY PLAYED) | half list: small cover on top, album rows |
+### Timeline
+As section entry (400 fade-in, rows after 350).
+### Interruptions
+Fast Back-Back from the songs never overshoots into the MM.
+### Continuity
+The MM reopens on RECENTLY PLAYED, not MUSIC.
+### Layering
+As the Music list.
+### Geometry
+As the Music list (small cover 570, 120, 390 × 390).
+### Art
+As the Music list.
+### Input
+As the Music list.
+### Speed targets
+As the Music list.
+### Never
+- No old list-group cover in the stage corner (472 ALBUMHALF).
+- No plain 60 px list without the cover (466 ALBUMCOVER).
+### Acceptance checks
+MM → RECENTLY PLAYED → small cover above the rows; Back → MM on RECENTLY PLAYED.
 
-### Simple
-RECENTLY PLAYED on the main menu takes you to Music, showing the albums you played most recently. From there it behaves exactly like the music list.
+## Kodi implementation (sandbox)
 
 ### How it works
-1. The MM row first sets `bz_navroot` to the recently-played path, so BEZEL treats that folder as "home" for this visit.
-2. It then runs `bz_cmd.py tomusic` with the path:
-   - If 1112 Now Playing is open, it's closed first.
-   - The music window loads behind the menu, held hidden (`bz_secload`) until the list and focused art are in, with a 3 s cap.
-   - Then the MM closes and the section fades in once (`bz_secfade`, 400 ms).
-   - If MM warm already loaded this exact list, the menu just closes.
+- Opener: `SetProperty(bz_navroot,musicdb://recentlyplayedalbums/,home)` + `RunScript(bz_cmd.py,tomusic,musicdb://recentlyplayedalbums/)` (load-then-close).
+- Root: bz_flip sets `bz_rootarm` / `bz_atnavroot` after 0.6 s because the folder equals `bz_navroot`; `bz_atroot` makes list 60 Back open the MM.
+- MM reopen row: path starts with `musicdb://recentlyplayed` → row 3.
+- Half list via `bz_mhalf` (`Container.Content(albums)`).
 
 ### Wiring
 | Item | Value |
 |---|---|
-| Opener | `SetProperty(bz_navroot,musicdb://recentlyplayedalbums/,home)` · `RunScript(bz_cmd.py,tomusic,musicdb://recentlyplayedalbums/)` |
-| Load | `_bz_load_then_close` (`bz_secload` / `bz_secfade`, 3 s cap; warm short-cut) |
+| Home | `bz_navroot`, `bz_rootarm`, `bz_atnavroot` |
+| Expressions | `bz_atroot`, `bz_mhalf`, `bz_covercol` |
 
----
-
-## Back / Left to MM
-
-### Simple
-- Back at the recently-played list opens the main menu.
-- Left opens it whenever the A–Z bar isn't showing.
-- Inside an album, Back steps out first.
-
-### How it works
-- After the folder has been shown for 0.6 s, `bz_flip` sets `bz_rootarm`. It also sets `bz_atnavroot`, because the folder equals `bz_navroot`.
-- That makes `bz_atroot` true, so list 60 onback opens the MM (when `bz_navok`).
-- Left uses list 60's onleft: A–Z bars 6500/6100 hidden + `bz_navok` → MM.
-
-### Wiring
-- `bz_flip.py` ~L711: `bz_rootarm` when the folder is in ROOTS or equals `bz_navroot`.
-- `bz_atroot` (Includes_Bezel ~L2323) requires `bz_rootarm`.
-- List 60 onback / onleft: see music-list.md.
-
----
-
-## Keys
-Same as music-list.md: Up/Down (Up wrap to the ALL row 6097 when it's visible), Select opens or plays, Left (A–Z hidden + navok) → MM, Back at root (`bz_atroot`) → MM.
-
-## Touch
-Same as music-list.md.
+### Kodi workarounds (do not port)
+Root arm delay (Kodi Back queueing).
 
 ## Related
-mm-list.md · music-list.md · mm-warm.md
-
-<!-- PORTLINKS -->
----
-**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/recently-played.md) · [state](../state/recently-played.md) · [motion](../motion/recently-played.md) · [art](../art/recently-played.md) · [input](../input/recently-played.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
-
-## 5.33.400
-- Back from Recently Played reopens the MM on the RECENTLY PLAYED row (row 3), not MUSIC. See mm-list.md.
+[music-list](music-list.md) · [mm-list](mm-list.md)
