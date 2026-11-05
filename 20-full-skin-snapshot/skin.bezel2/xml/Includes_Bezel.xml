@@ -727,7 +727,7 @@
 		<param name="main" default="6400"/><!-- focus return: 6400 on 1120, 6390 on viz -->
 		<param name="back_close" default=""/><!-- "1" = Dialogue FS close latch; empty = SetFocus(main) -->
 		<definition>
-		<control type="grouplist"><left>1360</left><top>60</top><width>500</width><height>32</height><orientation>horizontal</orientation><align>right</align><usecontrolcoords>false</usecontrolcoords>
+		<control type="grouplist"><left>1360</left><top>42</top><!-- 5.33.473 PILLALIGN (Rob): centre y 58 = Bezel logo centre (logo 28,26 64x64); was top 60 --><width>500</width><height>32</height><orientation>horizontal</orientation><align>right</align><usecontrolcoords>false</usecontrolcoords>
 			<visible>$PARAM[vis]</visible>
 			<animation effect="fade" start="0" end="100" time="600" delay="1000" tween="sine" easing="inout">WindowOpen</animation><animation effect="fade" start="100" end="0" time="600" tween="sine" easing="inout">WindowClose</animation>
 			<control type="button" id="6401"><width>auto</width><height>32</height><label>$VAR[BezelDFSModeName]</label><onfocus>ClearProperty(bz_pnfoc,home)</onfocus><font>bz_b15</font><textoffsetx>16</textoffsetx><align>center</align><aligny>center</aligny><textcolor>$VAR[BzFSCTint]</textcolor><focusedcolor>$VAR[BzFSCTint]</focusedcolor>
