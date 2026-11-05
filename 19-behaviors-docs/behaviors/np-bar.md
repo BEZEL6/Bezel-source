@@ -53,6 +53,7 @@ Bar text updates within a frame of a track change.
 - No NP bar under the home album with Up Next on the fanart stage (463 → reverted in 470).
 - The centre bar shows in both fullscreens (Bezel and Kodi FS) (470 CENTREBAR).
 
+- No shadow copies of the transport pills (473 FSSHADOWDEL: they broke the bar texture).
 ### Acceptance checks
 1. Movies with music playing and the MM open → compact bar under the album.
 2. Fullscreen → double-Select → bar appears under the centred album after it lands; Back → fades.

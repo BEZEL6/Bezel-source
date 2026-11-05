@@ -43,7 +43,7 @@ Screen below < full-screen dim (840 × 900 at 120,120 + tap-to-close area) < col
 | Dim block | 120, 120, 840 × 900 |
 
 ### Art
-Column: solid near-black (#0E0F12) backing + the strip colour; section labels PLAYBACK / MODE / MORE; focus pill. Title with a soft shadow (Tuner can switch shadows off).
+Column: solid near-black (#0E0F12) backing + the strip colour; section labels PLAYBACK / MODE / MORE; focus pill. Title in plain text (no shadow).
 
 ### Input
 | Action | Result |
@@ -63,6 +63,7 @@ Panel visible within 250 ms; row actions immediate.
 - No stuck viz settings page on reopen: every open starts on the main rows (463 VIZSETRESET).
 - Tuner re-entry must work after a Tuner Back (469 TUNERREOPEN).
 
+- No drop shadow on the PLAYER CONTROLS title (473 FSSHADOWDEL).
 ### Acceptance checks
 1. Fullscreen → Menu → panel; Down × 3 wraps correctly; Left closes.
 2. Viz settings → close → reopen → main rows.

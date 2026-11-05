@@ -43,6 +43,7 @@ Same as Music Fanart FS.
 - No old cycle pill in the upper-right corner on return from the big album (465 OLDPILL).
 - No bounce back into the Music window (the old toggle-off path, removed t1584).
 
+- No drop shadows behind the overlay text, pills or transport bar (473 FSSHADOWDEL).
 ### Acceptance checks
 1. Open Kodi Settings with music playing → Tab → this screen; it looks identical to Bezel fullscreen.
 2. Double-Select → album view; Back → fanart; Back → Settings.

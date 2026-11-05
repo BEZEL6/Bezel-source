@@ -100,6 +100,7 @@ Section window (+ black cover + fanart stage when not in Music) < big album laye
 - No wait before side albums (317 "remove the wait").
 - No small cover in the stage's corner on open (472 ALBUMHALF).
 
+- No drop shadows behind the overlay text, pills or transport bar (473 FSSHADOWDEL: Rob "rip out the shadows", they broke the transport bar texture).
 ### Acceptance checks
 1. Music list, song playing → FULLSCREEN: one fade, album still mid-sway, meta + progress grow in.
 2. Same from Home, Movies, TV, Pictures, Add-ons → identical screen; Back → same section, same row.
