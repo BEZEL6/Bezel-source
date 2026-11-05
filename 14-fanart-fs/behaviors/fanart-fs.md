@@ -46,9 +46,9 @@ Same as Music Fanart FS.
 - No drop shadows behind the overlay text, pills or transport bar (473 FSSHADOWDEL).
 ### Acceptance checks
 1. Open Kodi Settings with music playing → Tab → this screen; it looks identical to Bezel fullscreen.
-4. From a phone remote, press fullscreen while in Movies with music playing → black for a moment, then Bezel fullscreen; Back → Movies.
 2. Double-Select → album view; Back → fanart; Back → Settings.
 3. No pill in the top-right at any point.
+4. From a phone remote, press fullscreen while in Movies with music playing → black for a moment, then Bezel fullscreen; Back → Movies.
 
 ## Kodi implementation (sandbox)
 
@@ -82,6 +82,7 @@ Same as Music Fanart FS.
 ### Kodi workarounds (do not port)
 - The whole screen: a port has one fullscreen music screen, not a Bezel one plus Kodi's.
 - `bz_sway_restart` on open: needed in Kodi because the window switch tears down the album's timing context.
+- The VIZREDIR hand-over (cover, Back, reopen): only needed because outside callers can open Kodi's window directly.
 - `AlarmClock(bz_fsfoc…)` focus on the next tick, the 6297 Back router, the 1 s alarm double-tap.
 - `bz_fsbounce` and `bz_cmd.py vistoggle` legacy names: no longer used for a bounce.
 
