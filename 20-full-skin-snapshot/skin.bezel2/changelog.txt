@@ -1,6 +1,7 @@
-5.33.472 (2026-11-04)
-- FSANY: the BEZEL fullscreen (1121) now opens from Home, Videos, Pictures, Programs and Add-ons too, not only Music: Tab / remote Display, the FULLSCREEN and MM FULL pills. With a video playing Tab still goes to video fullscreen. Other windows (Settings, PVR) keep Kodi's fullscreen.
-- FANPRELOAD: the playing artist's fanart is kept ready, so the fullscreen stage appears with its art at once.
-- ALBUMHALF: Music > Albums, Recently played / added use the same album list as an artist's albums (album in the strip above the rows), not the old cover in the stage corner.
-- SHADOWHEAL: fixes art / shading that could stay missing after a skin reload since 471 (e.g. the side albums in fullscreen).
+5.33.473 (2026-11-04)
+- FSSHADOWDEL: the drop shadows behind the fullscreen music overlay (meta text, cycle pill, transport bar, Music controls title) and their 7 Tuner rows are removed; they broke the transport bar texture.
+- PILLALIGN: the ALBUM / PREV-NEXT pill sits on the Bezel logo's centre line (18 px higher).
+- MOVCLEAR: Movies clear art is off by default; Info > Section options > Clearart turns it on (TV keeps its own Clearart toggle, on by default).
+- VIEWTYPEDEL: the dead View Type row is gone from video Section options; it switched the posters off after leaving Info.
+- DOCS: all 50 behavior files rewritten for porting: Simple / Feel contract (any framework) / Kodi implementation (sandbox). The old layout / state / motion / art / input / theme layers are retired.
 

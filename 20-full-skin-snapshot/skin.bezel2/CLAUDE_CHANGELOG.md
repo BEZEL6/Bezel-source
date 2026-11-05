@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.472
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.473
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 473 | "UPDATE ALL THE BEHAVIOR FILES … FORMAT … DETAILED BEHAVIOR INSTRUCTIONS THAT WILL MAKE THE PORTING PROCESS BETTER AT KEEPING THE FUNCTIONS FEEL AND LOOK", "HAVE A KODI SPECIFIC SECTION", "DO ALL AND INCLUDE IN NEW BUILD"; "RIP OUT THE SHADOWS FROM THE FULL SCREEN MUSIC OVERLAY AND TUNERS"; "ALIGN … ALBUM/PREV/NEXT PILL WITH BEZEL LOGO"; "DISABLE CLEAR ART FOR MOVIES SECTION BY DEFAULT … TOGGLE … SECTION OPTIONS"; "EXIT FROM INFO OPTION HID POSTERS??" | **DOCS** (50 behavior files, port format), **FSSHADOWDEL**, **PILLALIGN**, **MOVCLEAR**, **VIEWTYPEDEL** |
 | 472 | "SEPARATE DIALOGUE FULLSCREEN WRITTEN FOR EACH SECTION?" → one 1121 over any section, "ALWAYS HAVE ITS FANART STAGE READY", "TAB AND FULLSCREEN BUTTONS MAPPED TO NEW 1121", "OK 1121"; "ENTER ALBUMS FROM MM AND OLD ALBUM LIST IS SHOWN WITH THE SMALL ALBUM IN THE LEFT CORNER OF FANART STAGE"; "STUB ALBUMS NOT SHOWING ART" (side albums, 471) | **SHADOWHEAL**, **ALBUMHALF**, **FANPRELOAD**, **FSANY** |
 | 471 | "I WANT THE OVERALL SECTION SWITCHES FADES AND ARTWORK LOADING TO BE FASTER AND SMOOTHER"; "CAN YOU JUST MAKE CHANGES TO MAKE IT FASTER" | **FASTPACK** (7 faster timing picks, one-time seed on existing installs), rewrite **P2.6b SWAYSHADOW** |
 | 470 | "NP BAR SHOWN WHEN BIG ALBUM IS CENTER IN BOTH FULLSCREEN, BIG ALBUM NP BAR HIDE WHEN SWITCH BACK TO FANART STAGE" (+ remove the Up Next fanart bar); new dust defaults; "BEZEL FEELS SLOW WHEN NEW LISTS ARE LOADED" (all four: wait, cascade, big lists, folder open) | **CENTREBAR**, revert 463 **UPNNPBAR**, **DUSTDEF**, **ENTRYHOLD** (0.6 → 0.35 s), **LISTTIME** (`BEZEL list` log) |
@@ -233,6 +234,30 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.473 — DOCS + FSSHADOWDEL + PILLALIGN + MOVCLEAR + VIEWTYPEDEL
+Branch `claude/5.33.473` (472 + one commit per item; docs in batches).
+- **DOCS** (Rob: "update all the behavior files for the current build … can we format the behavior files and give detailed behavior instructions that will make the porting process better at keeping the functions feel and look … be sure to have a kodi specific section as kodi is the current sandbox"; "no sample needed. Do all and include in new build"):
+  - All 50 object files in `behaviors/` rebuilt from the 472 code and the 424–472 changelog, in one format: **Simple** · **Feel contract (any framework)**: States, Timeline (ms + named curves), Interruptions, Continuity, Layering, Geometry (1920×1080), Art, Input (generic actions), Speed targets, **Never** (rejected looks with the build that taught them), Acceptance checks · **Kodi implementation (sandbox)**: How it works, Wiring, **Kodi workarounds (do not port)**.
+  - `behaviors/README.md`: the format, writing rules, global feel tokens (canvas, layout columns, curves with cubic-bezier values, default timings from the Tuner DEF / FAST, global layering, global Never list) and Kodi sandbox notes.
+  - Locked files (`mm-warm`, `leaf-flip`, `idle-big-album-fold`): new Simple / Feel contract on top; the locked detail kept verbatim in the Kodi section.
+  - `PORT_INDEX.md` rewritten (behavior files = the blueprint, object map); `layout/ state/ motion/ art/ input/ theme/` (5.33.267) carry a RETIRED banner (237 files); the section-folder copies (02–19, 20-full-skin-snapshot/behaviors) are exact copies of the master.
+  - Found while documenting: Tuner Main menu › **Section fade** (`bz_at_mmsecfade`) is only written to the debug log by mm_warm (`_xf`), so the 471 FASTPACK pick for it has no visible effect (mm_warm is locked; not changed).
+- **FSSHADOWDEL** (Rob: "changing the fullscreen music tuner for shadow broke the transport bar texture. Rip out the shadows from the full screen music overlay and tuners"):
+  - 138 shadow-copy controls removed (a control whose own children include `BzFSSh*` or use `$VAR[BzFSShCol*]`): 128 in Includes_Bezel (labels, textboxes, images, progress, the 5 cycle-pill shadow grouplists), 10 in Music controls 1115 (title shadows). No ids among them.
+  - Tuner: the 7 FULLSCREEN MUSIC rows (Drop shadow, opacity, distance, blur, tint, soft / hard mix, angle) and their 54 card actions; then the 5 includes (`BzFSShSlide`, `BzFSShRing_*`) and 19 variables left unused. Audit clean.
+- **PILLALIGN** (Rob: "align fullscreen pill album/prev/next pill with bezel logo. It's currently looks too low"): `BezelBigAlbumPill` grouplist top 60 → 42, so the pill centre (y 76 → 58) is on the logo centre (logo 64 × 64 at 28, 26). 1120, 1121 and Kodi FS share it.
+- **MOVCLEAR** (Rob: "disable clear art for movies section by default. Add toggle to info options menu > section options. Same for tv section but default to on"):
+  - DialogVideoInfo Section options: new 9967 **Clearart** (DBType movie / set) → `Skin.ToggleSetting(bz_movclear_on)`, label2 `BzMovClearOnOff` (ON / OFF).
+  - VSTRIP META: the Movies clear-logo image needs `Skin.HasSetting(bz_movclear_on)`; the centred title shows when it's off (folder lists keep their rule).
+  - TV already had 9969 Clearart (`bz_tvclear_off`, default on): unchanged.
+- **VIEWTYPEDEL** (Rob: "exit from info option hid posters??" → "yes I pressed" View Type):
+  - DialogVideoInfo Section options 9979 View Type still ran `Skin.ToggleSetting(bz_grid_video)` (grid deleted in 455). With it set, bz_flip `v60_mirror` (`_V60_GRIDV`) keeps `bz_vpl_on` off, so the poster layer stayed down until bz_flip restarted (it resets the bool on start).
+  - Row removed; Section options now focuses Clearart (TV 9969 / Movies 9967) or Sort by (9971).
+- **Checks:** all XML parses, every `.py` compiles, audit 0 unused; geometry vs 472: 1,344 resolved controls removed (1,343 shadow copies + View Type), 1 added (9967), nothing moved (the pill's y is not in the resolver; its own change is the one `top`); `bz_tune_patch.patch` on a copy applies, is idempotent and parses.
+- **Check on device:** fullscreen music: transport bar pills clean, no shadow halos; Tuner › Fullscreen music: no shadow rows; album pill level with the logo; Movies: titles instead of logos, Info › Section options › Clearart ON → logos; TV unchanged; Info › Section options has no View Type; posters stay after closing Info.
+- **474 (next):** Kodi's own visualisation window (remote apps, add-ons) redirects into 1121.
+- **Static checks only.** Not device-tested.
 
 ## 5.33.472 — SHADOWHEAL + ALBUMHALF + FANPRELOAD + FSANY
 Branch `claude/5.33.472` (471 + one commit per item). Rob: "Ok 1121".
