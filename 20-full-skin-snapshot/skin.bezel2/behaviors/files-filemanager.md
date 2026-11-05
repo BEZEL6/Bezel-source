@@ -1,16 +1,53 @@
 # File manager
 
-**Object:** `FileManager.xml` (Kodi `filemanager`) · lists `20` / `21`, scrollbars `60` / `61` (offscreen)  
-**Where:** Main Menu row FILES (GO `files` → `ActivateWindow(filemanager)`)  
-**Last updated:** 2026-10-31 · 5.33.207  
-**Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
-**Skin:** skin.bezel2
+**Object:** Kodi file manager · Kodi: `FileManager.xml` (`filemanager`), lists `20` / `21`, scrollbars `60` / `61` (off-screen)
+**Where:** FILES (from Settings / tools)
+**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none
 
-Each section has three layers: **Simple** (what it does and why), **How it works** (the flow end to end, with the order and the races), and **Wiring** (props, conditions, controls, scripts and timings, all read from the live tree).
+## Simple
+Two file panes in the same spot: the one you're not using slides left and dims, so the active pane is in front. Left / Right swap panes, Up / Down move, Select opens, double-Select gives Kodi's copy / move / delete menu. Opens with a random backdrop; Back at the top of a pane opens the main menu.
 
----
+## Feel contract (any framework)
 
-## Open / close
+### States
+| State | How you get in | How you leave | On screen |
+|---|---|---|---|
+| Pane A / Pane B | open / Left / Right | Back at root → MM | active pane in front, the other slid left and dimmed |
+
+### Timeline
+pane swap: slide + dim of the inactive pane; window 400 fade-in.
+
+### Interruptions
+—
+
+### Continuity
+Under the MM the held art stays (Settings tree kid).
+
+### Layering
+Backdrop < inactive pane (dimmed) < active pane.
+
+### Geometry
+Both panes share one position; the inactive one offset left.
+
+### Art
+Random backdrop.
+
+### Input
+Left / Right swap panes; Up / Down move; Select opens; double Select → Kodi context menu; Back up / MM.
+
+### Speed targets
+—
+
+### Never
+No blank art under the MM (Settings kids hold).
+
+### Acceptance checks
+FILES → open a source → copy a file via the menu.
+
+## Kodi implementation (sandbox)
+
+### How it works (live detail; dated sections are the current state unless a later one supersedes them)
+#### Open / close
 
 **Simple.** It opens with a random backdrop. Back at the top of a pane opens the Main Menu.
 
@@ -20,13 +57,13 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 - `defaultcontrol` 20 (no `always`). `onload` / `onunload` backdrop as in addons.md.
 - 20/21 `onback` with `String.IsEmpty(Container(N).FolderPath) + !$EXP[bz_navmenu]` → `SetProperty(bz_nav,true,home)`.
 
-## Two panes
+#### Two panes
 
 **Simple.** It has two lists in the same spot. The one you are not using slides left and dims, so the active pane is always in front.
 
 **Wiring.** Lists 20 and 21: left 570, top 120, 390×900. Unfocused animation: slide to -450,0 and fade to 45 over 200 ms (sine). `pagecontrol` 60/61, `scrolltime` 200. Scrollbars 60/61 at left -400 (offscreen).
 
-## Keys
+#### Keys
 
 **Simple.** Left and Right swap panes. Up and Down move within a pane. Select opens. A double-tap gives Kodi's context menu (copy/move/delete).
 
@@ -37,28 +74,11 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 | Up / Down | 20 | 21 |
 | Double-tap | `bz_dtap.info()` → `Action(ContextMenu)` | same |
 
+### Wiring
+See the detail above.
+
+### Kodi workarounds (do not port)
+Kodi file manager windows; stock-style keyboard kept by Rob.
+
 ## Related
-filebrowser.md · media-sources.md · addons.md · keymaps.md
-
-
-## Wiring table (live XML, 5.33.267)
-**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
-
-**Source:** `xml/FileManager.xml`
-
-| id | type | x,y | w×h | nav L/R/U/D | visible |
-|---|---|---|---|---|---|
-| 20 | list | 570,120 | 390×900 | `21/21/20/20` | `—` |
-| 60 | scrollbar | -400,120 | 8×900 | `20/20/—/—` | `—` |
-| 101 | label | —,— | 340×56 | `—/—/—/—` | `false` |
-| 21 | list | 570,120 | 390×900 | `20/20/21/21` | `—` |
-| 61 | scrollbar | -400,120 | 8×900 | `21/21/—/—` | `—` |
-| 102 | label | —,— | 340×56 | `—/—/—/—` | `false` |
-
-Actions (`onclick`/`onload`/`onback`) found:
-- `RunScript(special://skin/scripts/bz_cmd.py,backdrop)`
-- `SetProperty(bz_nav,true,home)`
-
-<!-- PORTLINKS -->
----
-**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/files-filemanager.md) · [state](../state/files-filemanager.md) · [motion](../motion/files-filemanager.md) · [art](../art/files-filemanager.md) · [input](../input/files-filemanager.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+[filebrowser](filebrowser.md) · [settings](settings.md) · [keyboard](keyboard.md)
