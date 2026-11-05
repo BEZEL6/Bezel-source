@@ -11,7 +11,7 @@
 	<onload condition="Skin.HasSetting(bz_m1121_off) | !Player.HasAudio | Player.HasVideo | !$EXP[bz_fs1121win]">Dialog.Close(1121,true)</onload><onload condition="Player.HasVideo">ActivateWindow(fullscreenvideo)</onload><!-- 5.33.472 FSANY: video playing -> Kodi video fullscreen (Tab in Videos) -->
 	<onload condition="[Skin.HasSetting(bz_m1121_off) | !$EXP[bz_fs1121win]] + Player.HasAudio + !Player.HasVideo">ActivateWindow(visualisation)</onload><!-- 5.33.472 FSANY: a window without the stage (Settings, PVR ...) keeps Kodi fullscreen -->
 	<onload condition="Window.IsVisible(1112)">Dialog.Close(1112,true)</onload>
-	<onload>RunScript(special://skin/scripts/bz_cmd.py,keymap)</onload>
+	<onload>ClearProperty(bz_vizredir,home)</onload><!-- 5.33.474 VIZREDIR --><onload>RunScript(special://skin/scripts/bz_cmd.py,keymap)</onload>
 	<onload>SetProperty(bz_pnoff,1,home)</onload><onload condition="String.IsEmpty(Skin.String(bz_dfs_mode))">Skin.SetString(bz_dfs_mode,album)</onload>
 	<onload>SetProperty(bz_fsnp,true,home)</onload>
 	<onload>SetProperty(bz_np,true,home)</onload>

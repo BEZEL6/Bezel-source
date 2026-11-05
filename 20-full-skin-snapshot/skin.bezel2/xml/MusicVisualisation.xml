@@ -10,10 +10,10 @@
 	<onload>SetProperty(bz_pnoff,1,home)</onload><onload condition="String.IsEmpty(Skin.String(bz_dfs_mode))">Skin.SetString(bz_dfs_mode,album)</onload><!-- 5.33.109: land in fanart FS; Play Next by double-tap; pill default album -->
 	<onload>SetProperty(bz_fsnp,true,home)</onload>
 	<onload>SetProperty(bz_np,true,home)</onload>
-	<onload>AlarmClock(bz_fsfoc,SetFocus(6390),00:00,silent)</onload><!-- Fanart FS: re-focus 6390 after bz_np visible (defaultcontrol can miss hidden 6390 at init) -->
+	<onload condition="!$EXP[bz_vizredir]">AlarmClock(bz_fsfoc,SetFocus(6390),00:00,silent)</onload><!-- Fanart FS: re-focus 6390 after bz_np visible (defaultcontrol can miss hidden 6390 at init) -->
 	<onload condition="!String.IsEqual(Window(Home).Property(bz_flip_running),true)">RunScript(special://skin/scripts/bz_flip.py)</onload>
-	<onload>SetProperty(bz_sway_restart,true,home)</onload>
-	<onunload condition="String.IsEqual(Window(Home).Property(bz_fsnp),true)">ClearProperty(bz_np,home)</onunload>
+	<onload condition="!$EXP[bz_vizredir]">SetProperty(bz_sway_restart,true,home)</onload><onload condition="$EXP[bz_vizredir]">SetProperty(bz_vizredir,1,home)</onload><onload condition="$EXP[bz_vizredir]">AlarmClock(bz_vizredir,SetFocus(6297),00:00,silent)</onload><!-- 5.33.474 VIZREDIR: 6297 with bz_pnoff=1 = the normal Kodi FS exit (Action(Back) -> previous window); no sway restart -->
+	<onunload condition="String.IsEqual(Window(Home).Property(bz_fsnp),true)">ClearProperty(bz_np,home)</onunload><onunload condition="String.IsEqual(Window(Home).Property(bz_vizredir),1)">AlarmClock(bz_vizredir2,ActivateWindow(1121),00:00,silent)</onunload><!-- 5.33.474 VIZREDIR: once the section is back, open Bezel fullscreen (1121 onload clears bz_vizredir) -->
 	<onunload condition="!$EXP[bz_navmenu] + String.IsEmpty(Window(Home).Property(bz_fsmm)) + !Skin.HasSetting(bz_grid_music)">AlarmClock(bz_vizret,SetFocus(60),00:00,silent)</onunload><!-- 5.33.112 t786: Play Next / viz exit -> section list 60 --><!-- 5.33.410 FSBARFLASH: skipped when Music grid-first is on --><onunload>ClearProperty(bz_fsnp,home)</onunload><onunload>ClearProperty(bz_pnoff,home)</onunload><onunload>ClearProperty(bz_pnfoc,home)</onunload><onunload>ClearProperty(bz_vdtap,home)</onunload><!-- 5.33.108 t732: Back in play-next = plain viz FS -->
 	<onunload>SetProperty(bz_gridret,1,home)</onunload><onunload>AlarmClock(bzgridret,ClearProperty(bz_gridret,home),00:03,silent)</onunload><!-- 4.0.1 O22: the section underneath holds its list hidden for 1 s if its grid takes the focus (no list bar flash) -->
 	<controls>
@@ -45,5 +45,6 @@
 		<!-- 5.33.128 t926 touch (mouse-only, keys never land): tap fanart = Up Next list; tap big album = Play Next -->
 		<control type="button" id="6410"><left>960</left><top>0</top><width>960</width><height>1080</height><label></label><texturefocus></texturefocus><texturenofocus></texturenofocus><visible>String.IsEqual(Window(Home).Property(bz_pnoff),1) + !String.IsEqual(Window(Home).Property(bz_npctl),true)</visible><onfocus>SetFocus(6390)</onfocus><onclick>Skin.SetString(bz_npmode,upnext)</onclick></control>
 		<!-- 5.33.205: 6409 touch — onclick=play/pause; ondoubleclick=album viz (ClearProperty bz_pnoff). Keys bounce to 6390 (onfocus). --><control type="button" id="6409"><left>1100</left><top>220</top><width>680</width><height>680</height><label></label><texturefocus></texturefocus><texturenofocus></texturenofocus><visible>String.IsEqual(Window(Home).Property(bz_pnoff),1) + !String.IsEqual(Window(Home).Property(bz_npctl),true)</visible><onfocus>SetFocus(6390)</onfocus><onclick>PlayerControl(Play)</onclick><ondoubleclick>ClearProperty(bz_pnoff,home)</ondoubleclick></control>
+			<control type="image"><!-- 5.33.474 VIZREDIR: cover while Kodi FS hands over to 1121 --><left>0</left><top>0</top><width>1920</width><height>1080</height><texture>colors/white.png</texture><colordiffuse>FF000000</colordiffuse><visible>String.IsEqual(Window(Home).Property(bz_vizredir),1)</visible></control>
 	</controls>
 </window>
