@@ -1,126 +1,109 @@
-# Skin settings / BEZEL Tuner
+# BEZEL Tuner
 
-**Object:** `Includes_Tuner.xml`: group `6975`, Tuner list `6970` (left 570), BEZEL settings list `6968` · `SkinSettings.xml` · `scripts/bz_tune.py` + `bz_tune.json` · `scripts/bz_dtap.py` (`bz_tune_dirty` reload)
-**Where:** Inside the MM void. Opened from Power › TUNER, from FS controls, or from the MM BEZEL settings list
-**Last updated:** 2026-10-31
-**Status:** Live in 5.33.207. Left/Right change a row's value straight away. Changes that need a skin reload are batched 1.2 s after the last change. Back returns to whoever opened the Tuner. There's **no touch master row** in the live tree. Draft: not Rob-approved.
-**Skin:** skin.bezel2
+**Object:** Bezel's own settings screen · Kodi: group `6975` in `Includes_Tuner.xml` (section rail `7001`, rows `6970`, info panel), BEZEL settings list `6968`, `scripts/bz_tune.py` + `bz_tune.json`, `scripts/bz_tune_patch.py`, `scripts/bz_dtap.py` (debounced reload)
+**Where:** over the MM (rail on the stage, rows in the strip, info on the right)
+**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live (rail layout approved 439) · **Lock:** none
 
-Each section has three layers: **Simple**, **How it works**, **Wiring** (live tree).
+## Simple
+The Tuner is where every Bezel look and timing is set. A rail on the left lists the sections (Album / Poster, Poster glare, List, Warm, Main menu, Music, Dust, Look, Fullscreen music, System, Maps, About, All, Reset); the strip shows that section's rows; the right side shows a picture and description of the focused row. Left / Right change a value at once (a bar and the value text show where you are); presets set many rows together. Changes that need a skin reload are batched and applied 1.2 s after your last change. Back on a row returns to the rail; Back on the rail returns to whoever opened the Tuner (the power menu, or fullscreen music + its controls).
 
----
+## Feel contract (any framework)
 
-## Open / close
+### States
+| State | How you get in | How you leave | On screen |
+|---|---|---|---|
+| Rail | open the Tuner | Right / Select → rows; Back → opener | section names (no counts) |
+| Rows | Right / Select on the rail | Back / Left on a sub-row → rail | rows of that section, value bars, info panel |
+| Applying | a reload-type change | 1.2 s after the last change | skin reloads once; list position kept |
+| Closed | Back on the rail | — | power menu (from power) or fullscreen music + controls (from music controls) |
 
-### Simple
-The Tuner is BEZEL's own settings list, drawn on the main menu's dark side. Open it from Power › TUNER (or from the music controls or BEZEL settings). Back takes you back to wherever you came from.
+### Timeline
+| What | Duration |
+|---|---|
+| value step | immediate on screen |
+| batched reload | 1.2 s after the last change |
+| first start after an update with new defaults | one reload (defaults seeded once per version) |
+
+### Interruptions
+- Quick Back Back Back: power menu, then the MM; never a random window.
+- Re-entering after leaving works every time.
+
+### Continuity
+- Leaving the Tuner leaves the MM exactly as it was (strip, dust, art); the Tuner is never drawn behind the power menu.
+- Values persist; Reset returns a section to Rob's defaults.
+
+### Layering
+MM art + dim < Tuner (rail, rows, info panel) < power menu < dialogs.
+
+### Geometry
+| Piece | Value |
+|---|---|
+| Rail | x 120 (stage), top 200, 450 × 812 |
+| Rows | in the strip, top 196, h 812 |
+| Info panel | 1040–1800: image box 1040, 120, 760 × 500 (83 % scale); title / value 640, description 710, hints 962 |
+
+### Art
+Per-row info image; value bars (4- to 17-step bar images); rows in the strip style.
+
+### Input
+| Action | Rail | Rows |
+|---|---|---|
+| Up / Down | move | move |
+| Right / Select | rows | step / run (button, sub, preset) |
+| Left | — | step back; on a sub / button row → rail |
+| Back | close to opener | rail |
+
+### Speed targets
+Value text updates the same frame; reload ≤ a few seconds.
+
+### Never
+- No rail counts / localized numbers (462).
+- No nav legend (456).
+- No Tuner drawn under the power menu; no missing colour strip after exit (465 → 467).
+- Re-entry always works (469).
+- No fullscreen music shadow rows (473: removed, they broke the transport bar).
+- No cast "animated" row (468), no MM auto-hide park row (398; the 428 auto-hide row is the current one).
+
+### Acceptance checks
+1. Power → TUNER → rail → Right → rows → Right steps a value → bar moves.
+2. Back → rail; Back → power menu with the strip; TUNER → back in.
+3. Change a Dust value twice quickly → one reload 1.2 s after the last.
+4. Music controls → TUNER → Back on the rail → fullscreen music + controls.
+
+## Kodi implementation (sandbox)
 
 ### How it works
-- The Tuner is a group inside the MM include, shown only while the MM is open and `bz_navtune` is set.
-- The opener records itself in `bz_tunesrc`.
-- Back reads `bz_tunesrc` and returns to that opener:
-  - `pwr` → Power menu 1118.
-  - `fsctrl` → close the MM, then visualisation + music controls 1115.
-  - Opened from the BEZEL settings list (`bz_navbez`) → back to list 6968.
-  - Otherwise → the MM strip 6996.
-- Back always clears `bz_navtune` and `bz_tunesrc`, so the group hides immediately (BUG-007).
+- **Show:** group 6975 visible `$EXP[bz_navmenu] + bz_navtune`. Opener stamps `bz_tunesrc` (`pwr` from 1118, `fsctrl` from 1115; `bz_navbez` from the BEZEL settings list).
+- **Rail 7001** (ids albumposter, posterglare, list, warm20, mainmenu, music, dust, look, fsmusic, system, maps, about, all, reset → `bz_tune.py resetui open`). Right / OK → `SetFocus(6970,0,absolute)`. Back: `bz_tunesrc` ≠ `fsctrl` → `ActivateWindow(1118)` only (1118's onload clears `bz_tunesrc` / `bz_navtune`); `fsctrl` → clear `bz_nav` / `bz_navtune` / `bz_tunesrc` first, then 1121 (`$EXP[bz_m1121ok]`) or viz, then 1115.
+- **Rows 6970:** show items whose `sec` = `Container(7001).ListItem.Property(id)`; `bz_topen_<sub>` bools fold sub-sections; onback → `SetFocus(7001)`.
+- **Values:** `Skin.String(bz_at_<id>)` step index (empty = default). onleft / onright carry generated conditional `Skin.SetString` chains + `SetProperty(bz_tune_dirty,1)`. Display `BzATVal_<id>`, `BzATStep_<id>`, `BzATBar_<id>`.
+- **Script actions** (`bz_tune.py`): `preset,<sec>,<name|next>`, `reset[,force]`, `resetui`, `seed` (DEF once per `bz_defseed` ver 5.0.20), `fastseed` (471 FAST block once per `bz_fastseed` 5.33.471), `alldust`, `import` / `export`.
+- **Reload:** `bz_dtap.py` loop sees `bz_tune_dirty`, waits 1.2 s, `reload_tuned()` → `bz_tune_patch.patch()` (bakes timings into XML through temp files) → `ReloadSkin()` only if files changed, restoring path and row. The loop also clears a stale `bz_navtune` when `bz_nav` isn't true.
+- **Data** (`bz_tune.json`, compact one-line JSON): `P` slider rows `[id, sec, default, steps, labels]`, `V` value tables (e.g. rowscroll ms, cascspeed ms, fanart ms, mmxfade ms), `TOG` toggles, `SEC`, `DEF` (Rob's defaults: `str`, `on`, `off`), `FAST`.
 
-### Wiring
-| Item | Value |
+### Wiring (key defaults, DEF 5.0.20 + FAST 5.33.471)
+| Row | Default |
 |---|---|
-| Group 6975 | visible `$EXP[bz_navmenu]` + `bz_navtune` |
-| List 6970 | left 570 · onup/ondown noop (native list move) |
-| 6970 onback | `ClearProperty(bz_navtune)` · `pwr` → `ActivateWindow(1118)` · `fsctrl` → `ClearProperty(bz_nav)` + `ActivateWindow(visualisation)` + `ActivateWindow(1115)` · `bz_navbez` → 6968 · else 6996 · `ClearProperty(bz_tunesrc)` |
-| List 6968 | BEZEL settings list, left 570 / top 140 / 390×870 |
+| List › Row scroll | 0.7× (271 ms), cubic |
+| List › Cascade speed / stagger | 1.4× (286 ms) / 30 ms |
+| List › Fanart fade | 150 ms |
+| Main menu › Open / Close speed | 1.4× (286 / 250 ms) |
+| Main menu › MM-open art crossfade | 0.5 s |
+| Main menu › Section fade | step 5 (only logged by mm_warm; no visible effect) |
+| Main menu › Auto-hide | Off |
+| Album › Sway pause | 4 s |
+| Album › Leaf flip | Off |
+| Album / Poster › Poster ↔ album fade | 400 ms |
+| Album / Poster › MM album fade | 400 ms |
+| Fullscreen music › Slide speed | Mid-high (280 ms) |
+| Double-tap / window | On / 300 ms |
+| Dust | see [dust](dust.md) |
+| Warm › Startup splash / Album art during music | On / On |
 
----
-
-## Changing values
-
-### Simple
-- Highlight a row and press Left or Right to step its value. A bar and the value text show where you are.
-- On/Off rows flip.
-- Section presets (Default, Subtle, Mid, High, Extreme) set many rows at once.
-
-### How it works
-- **Storage.** Every value lives in a Skin.String `bz_at_<id>` as a step index. Empty means the row's default (for example, `mmdbright` empty ≡ 6 = 60 %).
-- **XML step chains.** 6970's onleft/onright carry generated per-row conditional `Skin.SetString` chains, so a step needs no Python start-up. Each step also sets `bz_tune_dirty`.
-- **Display.** Rows show `BzATVal_<id>` (value text), `BzATStep_<id>` and `BzATBar_<id>` (bar image) variables.
-- **Script actions.** `bz_tune.py` handles the bigger actions:
-  - `preset,<sec>,<name|next>` (default / subtle / mid / high / extreme)
-  - `reset[,force]`, `resetui`
-  - `seed`: writes defaults once per DEF version into `bz_defseed`
-  - `alldust`
-  - `import` / `export`
-- **Reload.** `bz_dtap.py`'s loop sees `bz_tune_dirty` and waits 1.2 s after the last change, then calls `reload_tuned()`. That runs `bz_tune_patch`, and does a `ReloadSkin()` only if the patched files actually changed, restoring the music/video path and list position afterwards. Values read live by XML apply instantly; values patched into XML wait for that one batched reload.
-- **Loop tidy-up.** The same loop clears a stale `bz_navtune` whenever `bz_nav` isn't true (every 5 ticks).
-
-### Wiring
-| Item | Value |
-|---|---|
-| `bz_tune.json` | P: 89 slider rows (dust 43, list 9, ashadow 9, menu 6, pshadow 5, look 4, art / aglare / pglare 3, block 2, music 2) · TOG: 20 · SEC list |
-| XML item kinds | slider 97 · toggle 48 · btn 32 · sub 20 · head 13 · preset 5 · pill 1 |
-| Step | 6970 onleft/onright → conditional `Skin.SetString(bz_at_<id>,n)` chains + `SetProperty(bz_tune_dirty,…)` |
-| Reload | `bz_dtap.py` → 1.2 s debounce → `reload_tuned()` (bz_tune_patch, `ReloadSkin` if changed) |
-| Info art | every row has `property name="info"` (`media/bezel/info/`) |
-
----
-
-## Touch-related rows
-
-### Simple
-Two rows control the remote double-tap: on/off, and how quick the double-tap has to be. There's no general "touch on/off" switch.
-
-### How it works / Wiring
-- `dtap` → `bz_dtap_off` (`BzATVal_dtap` ON/OFF).
-- `dtapwin` → `bz_at_dtapwin`, 15 steps of 150–600 ms (`STEPS` in bz_dtap.py, default 0.3 s).
-- No touch master row or setting was found in `Includes_Tuner.xml` or the scripts. See touch-group.md.
-
----
-
-## Keys
-| Key | Behavior |
-|---|---|
-| Up / Down | Move |
-| Left / Right | Step value / toggle (sets `bz_tune_dirty`) |
-| Select | Row action (button / sub / preset) |
-| Back | Return to opener (`bz_tunesrc`) |
-
-## Touch
-None specified. Touch master isn't present.
+### Kodi workarounds (do not port)
+- Bake-and-reload: Kodi can't change animation times at runtime. A port applies values live.
+- Generated XML step chains: avoid a script start per keypress.
+- `bz_tunesrc` ordering around modal `ActivateWindow`.
 
 ## Related
-power-menu.md · touch-group.md · dust.md · mm-warm.md · sway-animations.md
-
----
-
-# Row reference (live)
-
-## DUST (full row list → dust.md)
-Size rows `d20fsize` Distant / `d20msize` Mid / `d20ssize` Ambient spin / `mmdsize` Menu dust: **90% / 100% / 125%** (defaults 90 / 90 / 100 / 90 %). Dust presets (subtle/mid/…) in `bz_tune.py` set these with density/brightness/fade/slide.
-
-## DUST opacity sliders (5.33.147)
-All dust opacity rows step 10% → 100% in 10% increments (stored index 1–10; empty = default):
-- Empty-string defaults (from BzATVal_*): Distant `d20fbri` 70%, Mid `d20mbri` 70%, Ambient spin `d20sbri` 50%, Poster lit `pd3lit` 60%, Album lit `d3lit` 60%, Menu dust `mmdbright` 60%. (Row desc text for Distant/Mid/Spin/Poster says other defaults; desc text was not changed.)
-- Menu dust (`bz_at_mmdbright` → `BzMMDustA`) was 5 steps 20–100%; now 10 steps 10–100%, alpha = round(255×n/10), default 60% (index 6 / empty). Saved values 1–5 from older builds now read as 10–50%.
-- LEFT/RIGHT clamp at 10% / 100%; no 0% option.
-
-
-## 5.33.163 FULLSCREEN MUSIC › VIZ › Slide speed
-id `fsslide`, string `bz_at_fsslide` 1–4 (empty=3). Left/Right in 6970 nav block before fsvizop. Reset with fschrome reset.
-
-## Other live sections (5.33.194)
-- WARM 2.0.1 section (`warmmusicposters` On/Off → `bz_mmmushide`; `abfade` slider present but no effect since 5.33.192 — A/B fixed 1500 ms). See mm-warm.md.
-- LOOK: Global dim `gdim` (values listed 90%→30%; bz_tune.json default index 7 = last entry — **unverified** vs Rob standard "default 60%"; flagged), fanart `fanop`, logo colour/opacity, colour block.
-- MENU: `mmxfade` 0–5 s crossfade (MM-open only), `mmglow`.
-- Shadows/glare: album `ac*`/`agl*`, poster `pc*`/`pgl*`.
-- Sway timing: `swaypause`, `phold`, flip speed (sway-animations.md).
-- Every row carries `property name="info"` infographic (`media/bezel/info/`).
-- Opened from Power › TUNER (`bz_tunesrc=pwr`, focus 6970). Back restores opener.
-
-- WARM 2.0.1 `warmsplash` (Startup splash) On/Off → `bz_at_warmsplash`, default On; visuals only, warm-cache always runs. See mm-warm.md.
-
-**5.33.210:** Tuner onback `bz_tunesrc=fsctrl` → `ActivateWindow(1121)` when `$EXP[bz_m1121ok]`, else `ActivateWindow(visualisation)`. All Fanart FS / visualisation tuner rows also apply to 1121 (shared includes).
-
-### MAIN MENU › Auto-hide menu (5.33.216)
-`id=mmidle`, toggle, `Skin.String(bz_at_mmidle)` Off / On (empty = On). On = 30 s idle fades the MM strip to 0 (see mm-list.md). Info art `bezel/info/mm_autohide.png`. Row sits after Background dim level.
+[power-menu](power-menu.md) · [music-controls](music-controls.md) · [dust](dust.md) · [sway-animations](sway-animations.md) · [section-transitions](section-transitions.md) · [touch-group](touch-group.md)

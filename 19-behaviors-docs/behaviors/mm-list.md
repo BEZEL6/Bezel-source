@@ -1,94 +1,114 @@
-# MM list (Main Menu strip)
+# Main menu (MM) strip
 
-**Object:** Main Menu strip list `6996` (Includes_Bezel) · `scripts/bz_mm.py` · chrome `BezelMMStripChrome` (line ~2318)  
-**Where:** Colour strip under `$EXP[bz_navmenu]` (`String.IsEqual(Window(Home).Property(bz_nav),true)`)  
-**Last updated:** 2026-11-01 · 5.33.217  
-**Status:** approved. The live tree matches (re-verified 5.33.207). Warm underlay behavior is LOCKED in mm-warm.md.  
-**Skin:** skin.bezel2 (Estuary fork)
+**Object:** the main menu · Kodi: list `6996` (Includes_Bezel, `BezelNavMenu`), chrome `BezelMMStripChrome`, `scripts/bz_mm.py`, Home `bz_nav`
+**Where:** in the colour strip (x 660, 390 wide), over the current section
+**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live (approved) · **Lock:** the art behind the MM is LOCKED ([mm-warm](mm-warm.md))
 
-Each section has three layers: **Simple** (what it does and why), **How it works** (the flow end to end, with the order and the races), and **Wiring** (props, conditions, controls, scripts and timings, all read from the live tree).
+## Simple
+Left or Back at the top of a section list (or M) opens the main menu inside the colour strip: MUSIC, MOVIES, TV SHOWS, RECENTLY PLAYED, FAVOURITES, SEARCH, PICTURES, ADD-ONS, SETTINGS, MEDIA SOURCES, POWER. Behind it the screen shows the art of the row you're on, so moving between rows previews each section. Left / Right on MUSIC, MOVIES and TV choose which list opens (the "pill": Artists, Albums …), remembered across sessions. Select opens it; Back closes the menu. A second press within 0.4 s is ignored, so a fast double tap never opens two things.
 
----
+## Feel contract (any framework)
 
-## Open / close
+### States
+| State | How you get in | How you leave | On screen |
+|---|---|---|---|
+| Closed | — | Left / Back at a list top, M | section |
+| Open | as above | Back; Select a row | strip chrome + rows; art of the focused row behind |
+| Pill changed | Left / Right on MUSIC / MOVIES / TV | — | the row's chip shows the new list name + dots |
+| Picking | Select | destination opens | MM stays until the destination fades in |
+| Mini player | Up from MUSIC while playing | Down | focus on the mini player above the rows |
 
-**Simple.** Left or Back at the top of a section list, or M, opens the Main Menu with the strip focused. Back closes it. Select opens a destination and closes it.
+### Timeline
+| t (ms) | What | Duration | Curve |
+|---|---|---|---|
+| open | strip chrome fades in (no slide); art lanes already at 100 % | 286 | sine out |
+| close | chrome fades out | 250 | sine in |
+| row change | the art behind crossfades (warm system) | 500 / 1500 (see mm-warm) | sine in-out |
+| row scroll | focus bar moves | 150 | — |
+| mini player shown | rows shift down 120 px | 0 (instant) | — |
 
-**How it works.** Opening just sets Home `bz_nav=true`. The strip, the dim and the warm underlay all follow `$EXP[bz_navmenu]`. Section lists use `$EXP[bz_navok]` before opening, so the menu cannot reopen during a nav lock or grace window. While the menu is open, the focus bounces send any focus that lands on list 60 back to 6996, unless a pick is in progress (`bz_mmpick`). The underlay stays warm behind the strip (mm-warm.md, LOCKED).
+### Interruptions
+- A second Select / Back / Left / Right within 400 ms: ignored. Up / Down are never blocked.
+- Select during a running warm swap: opens the destination; the art keeps fading as is.
+- A destination that needs loading keeps the MM drawn until it fades in ([section-transitions](section-transitions.md)).
 
-**Wiring.**
-- `bz_navok` = empty `bz_navlock` + empty `bz_navgrace` + `bz_nav` not true (Includes_Bezel line ~366).
-- `BezelMMFocusBounce` / `BezelMMFocusBounceList` (the List variant also checks `bz_mmwarm`): `onfocus SetFocus(6996)` when navmenu is open and `bz_mmpick≠true`.
-- Visible: `$EXP[bz_navmenu] + !Window.IsVisible(1118) + bz_navtune≠true + bz_navbez≠true`. No `allowhiddenfocus` (5.33.190).
-- Anim: Visible slide -390→0 over 210 ms cubic out (when `bz_pwrswap` is empty). Hidden slide 0→390 over 180 ms cubic in (when not 1118 and `bz_pwrswap` is empty, "K48 no slide-out when POWER opens"). Slides 0,120 while `Player.HasMedia`, to make room for the mini-player.
-- Geometry: left 0, top 40, 390×728, `scrolltime` 150.
-- `onback`: restore `bz_mmsub_*` from Skin.String, clear `bz_nav` / `bz_navtune` / `bz_navbez`, focus 60.
+### Continuity
+- The menu reopens on the row of the section you are in (Recently played → row RECENTLY PLAYED; Media sources → row MEDIA SOURCES).
+- The pill choice per section is remembered; cold start resets the pills to the first list.
+- Fullscreen music opened from the MM returns to the MM.
 
-## Rows (top → bottom)
+### Layering
+Section (+ art lanes) < MM dim < strip chrome < rows / focus bar < mini player < dialogs.
 
-**Simple.** MUSIC · MOVIES · TV SHOWS · RECENTLY PLAYED · FAVOURITES · SEARCH · PICTURES · ADD-ONS · SETTINGS · MEDIA SOURCES · POWER
+### Geometry
+| Piece | Value |
+|---|---|
+| Strip | x 660, 390 wide; list top 40 (in the strip), 728 tall |
+| Mini player shift | rows +120 px down while media plays |
 
-**Wiring.** 11 items, index 0–10, each with `ListItem.Property(sec)`.
+### Art
+Rows: label in caps; focused row = bar with "›" on MUSIC / MOVIES / TV and the pill label + dots; SETTINGS = flat bar. Divider line above ADD-ONS.
+
+### Input
+| Action | Result |
+|---|---|
+| Up / Down | move; Down on the last row wraps to MUSIC; Up on MUSIC → mini player (video / audio) or POWER |
+| Left / Right on MUSIC / MOVIES / TV | previous / next pill (chip only) |
+| Select | open the row |
+| Back | close → section list |
+| 5 s idle on a header pill | focus back to where it came from |
+
+### Speed targets
+Open / close ≤ 300 ms; destination fade within ≤ 0.6 s.
+
+### Never
+- No MM slide (469 "disable the mm menu slide").
+- No MM auto-hide / idle fade (398 "old system was glitchy and broken").
+- No dip to black or 1.5 s wait on open (430, 431, 458 → 460).
+- No hitch or flash while moving rows (426).
+- No sway restart when moving between Music and Movies / TV (314).
+
+### Acceptance checks
+1. Movies list top → Left → menu fades in, poster unchanged behind.
+2. Down through every row: background previews each section, no flash; last row wraps to MUSIC.
+3. MUSIC Right × 2 → ALBUMS chip; Select → Albums list.
+4. Double-tap Select fast: opens once.
+5. Restart the app: pills back to the first list.
+
+## Kodi implementation (sandbox)
+
+### How it works
+- **Open** = Home `bz_nav=true`; strip, dim and underlay follow `$EXP[bz_navmenu]`. Sections check `$EXP[bz_navok]` (`bz_navlock` / `bz_navgrace` empty, `bz_nav` not true) first. While open, focus landing on list 60 bounces to 6996 unless `bz_mmpick`.
+- **Visible:** `$EXP[bz_navmenu] + !Window.IsVisible(1118) + bz_navtune ≠ true + bz_navbez ≠ true`. Chrome fades: `BezelATMenuAnim` (Tuner menu open / close, baked).
+- **Select.** `bz_mm.py <sec>` (`MMLOCK_S = 0.30` repeat guard): `store()` (`Skin.String(bz_lastart_<sec>)`), `bz_mmpick=true`, then `subgo()` with the 1-based pill index (music without a pill uses `bz_lastmusic`, clears `bz_music_underlay`) → `bz_cmd.py tomusic` / `go`. Other rows: clear `bz_nav` then `ActivateWindow(Favourites / 1107 / pictures / addonbrowser / Settings / 1117 / 1118)`; Settings kids set `bz_setopen` first.
+- **Quick-tap latch.** Every 6996 Select / Back / Left / Right is conditioned on empty `bz_mmtap` and sets it; `bz_flip.py mm_tap()` clears it after 400 ms.
+- **Pills.** Left / Right write Home `bz_mmsub_<key>` and `Skin.String(bz_last_mmsub_<key>)`; `$VAR[BzMMPrev_*]` / `$VAR[BzMMNext_*]`; `restore()` / `bz_cmd.py start` rebuild after a reload. Lists: MUSIC Artists · Albums · Genres · Recent songs · Recent albums; MOVIES Titles · Recently added · Years; TV Shows · Watching · Years · Actors · Recent · Genres.
+- **onback:** restore `bz_mmsub_*` from Skin.String, clear `bz_nav` / `bz_navtune` / `bz_navbez`, focus 60.
+- **Reopen row map:** SetFocus map {6902:1, 6903:2, 6905:3, 6904:3, 6908:8, 6919:9, 6909:10, 6920:9}; Recently played path → row 3; media sources via the msret latch.
+- **From fullscreen:** `bz_fsmm` latch → bz_flip reopens the MM when fullscreen closes.
+- **Pill idle:** `_pill_idle` covers MM header pills 6958–6961 / 6910 only while `bz_nav` and no `bz_navsub`.
+
+### Wiring
 | Row | sec | Select |
 |---|---|---|
-| MUSIC / MOVIES / TV SHOWS | music / movies / tv | `bz_mm.py,<sec>` → primed pill sub |
-| RECENTLY PLAYED | recent | `bz_mm.py` → `bz_navroot` + `bz_cmd.py tomusic/go` |
+| MUSIC / MOVIES / TV SHOWS | music / movies / tv | `bz_mm.py,<sec>` → pill list |
+| RECENTLY PLAYED | recent | `bz_navroot` + `bz_cmd.py tomusic/go` |
 | FAVOURITES | fav | `ActivateWindow(Favourites)` |
-| SEARCH | search | window 1107 |
+| SEARCH | search | 1107 |
 | PICTURES | pictures | `pictures` |
-| ADD-ONS | addons (`div=1` divider line) | `addonbrowser` |
-| SETTINGS | settings | `Settings` |
-| MEDIA SOURCES | mediasources | clear nav/navtune/navbez → `ActivateWindow(1117)` |
+| ADD-ONS | addons (`div=1`) | `addonbrowser` |
+| SETTINGS | settings | `Settings` (via 1130) |
+| MEDIA SOURCES | mediasources | clear nav props → `ActivateWindow(1117)` |
 | POWER | power | `ActivateWindow(1118)` |
+| Up (first row) | `Player.HasVideo` → 6966; `$EXP[bz_mpup]` → 6958; else `SetFocus(6996,12,absolute)` (clamps to POWER) |
+| Down (last row) | `SetFocus(6996,0,absolute)` |
+| Geometry | left 0 / top 40 in the strip, `bz_strip_w` × 728; slide 0,120 (time 0) on `$EXP[bz_mpup]` |
+| Home | `bz_nav`, `bz_navlock`, `bz_navgrace`, `bz_mmpick`, `bz_mmtap`, `bz_mmsub_*`, `bz_fsmm`, `bz_setopen` |
 
-Every non-library GO entry first runs `ClearProperty(bz_nav)`. `bz_mm.py` drops a repeat Select within 300 ms (`MMLOCK_S=0.30`). Before GO it runs `store()` (`Skin.String(bz_lastart_<sec>)`), sets `bz_mmpick=true` and closes 1112 if open.
-
-## Keys
-
-**Simple.** Up and Down move through the rows. Down from the last row wraps to MUSIC. Up from MUSIC goes to the mini-player when something plays. Left and Right on MUSIC/MOVIES/TV change the primed pill.
-
-**Wiring.**
-| Key | Behavior |
-|-----|----------|
-| Down (last) | `SetFocus(6996,0,absolute)`, wraps to MUSIC |
-| Up (first) | video → `6966`; audio → `6958`; nothing → `SetFocus(6996,12,absolute)` |
-| Select | open (table above) |
-| Back | close MM → list 60 |
-| Right / Left on MUSIC / MOVIES / TV | pill forward / back (chip only, does **not** enter the list) |
-| Left / Right on SETTINGS and other rows | *none* (Select only) |
-
-**Unverified:** with nothing playing, Up targets absolute index **12**, but the list has only 11 items (0–10). It presumably clamps to POWER (index 10). I did not check this on device.
-
-## Primed pills (wrap)
-
-**Simple.**
-| Section | Order |
-|---------|--------|
-| MUSIC | ARTISTS → ALBUMS → GENRES → RECENT SONGS → RECENT ALBUMS |
-| MOVIES | TITLES → RECENTLY ADDED → YEARS → ACTORS → SETS → GENRES |
-| TV | SHOWS → WATCHING → YEARS → ACTORS → RECENT → GENRES |
-
-The last choice is remembered across sessions. On a cold start the pills reset to index 1 (Artists / Titles / Shows, t5012).
-
-**How it works.** Left/Right write the new index to both Home `bz_mmsub_<key>` (live chip) and `Skin.String(bz_last_mmsub_<key>)` (persisted). Select calls `subgo()`, which uses the explicit 1-based index. For music without an explicit pill it clears `bz_music_underlay` and uses `bz_lastmusic`. `restore()` and `bz_cmd.py start` rebuild the Home props from Skin.String after ReloadSkin.
-
-**Wiring.**
-- `onleft`/`onright` gated on `ListItem.Property(sec)` = music/movies/tv, using `$VAR[BzMMPrev_*]` / `$VAR[BzMMNext_*]` (Includes_Bezel ~465–470). Empty or 1: Prev → 5 (music) / 6 (movies, tv). Next → 2.
-- `SUBS` paths: music `artists, albums, genres, recentlyaddedsongs, recentlyaddedalbums` · movies `titles, recentlyaddedmovies, years, actors, sets, genres` · tv `titles, inprogresstvshows, years, actors, recentlyaddedepisodes, genres`.
-
-## Pill UI and strip chrome
-
-**Wiring.**
-- Focused row: `BezelMMRowBar` with "›" on music/movies/tv. SETTINGS gets a flat bar with a plain label. Labels `$VAR[BzMMSubLbl]` / `$VAR[BzMMSubDots]`.
-- `BezelMMStripChrome`: w 390, w2 470. Soft cast `bezel/mm_strip_shadow_c.png` at **left=-47**, top=-36, width w2 (470). The dark contact sits on the colour-strip left edge.
+### Kodi workarounds (do not port)
+- Focus bounce from list 60 while the menu is open: Kodi keeps the section's list focusable underneath.
+- The 400 ms `bz_mmtap` latch and the 300 ms script lock: Kodi queues repeated remote presses.
+- `SetFocus(6996,12,absolute)`: relies on Kodi clamping.
 
 ## Related
-mm-warm.md (LOCKED) · mm-mini-player.md · music-list.md · movies-list.md · tv-list.md · media-sources.md
-
-## Idle auto-hide (5.33.216)
-- **When:** MM open, Tuner/BEZEL Settings closed, no modal, focus on 6996, `Skin.String(bz_at_mmidle)` ≠ Off (default On), Kodi global idle ≥ 30 s.
-- **Hide:** `bz_flip.py` `mm_idle()` sets focus to park button **6897** (2×2 off-screen, no textures, inside group 6899) then sets `Window(Home).Property(bz_mmidle)=1`. Wrapper group **6894** (all strip/label/glow groups of BezelNavMenu, not the dim veil or button 6898) is `Visible String.IsEmpty(bz_mmidle)` → Hidden fade 100→0 1500 ms sine. Warm art, dim and mini-player stay.
-- **Wake:** any key on 6897 (up/down/left/right/select/back) → `ClearProperty(bz_mmidle,home)`; touch/mouse wake when idle time < 1 s. Group fades in 200 ms; `mm_idle` restores focus via `_bzstrip` (same row). The first key only wakes; it does not navigate. MM close clears `bz_mmidle`.
-- **Background undim (5.33.217):** every `BezelSecDim` mmdim Conditional also needs `String.IsEmpty(Window(Home).Property(bz_mmidle))`. While idle the mmdim fades go false → section art/fanart reverses to full opacity (100%) over 600 ms. Wake clears `bz_mmidle` → Tuner Background dim reapplies (600 ms). gdim (closed MM) unchanged.
-- **Idle label (5.33.219):** XML group in BezelNavMenu (sibling before park button 6897, outside 6894), Visible `$EXP[bz_navmenu] + !String.IsEmpty(Window(Home).Property(bz_mmidle))`. Two stacked labels right of the Bezel logo: `PRESS ANY` (left 108, top 36) / `BUTTON` (top 58), `bz_mm17`, textcolor `6EFFFFFF` (~43%). Fade in 1500 ms sine with the idle fade; wake hides it in 200 ms. Logo stays.
-- **Tuner:** MAIN MENU › Auto-hide menu (`mmidle`, LEFT Off / RIGHT On), info `bezel/info/mm_autohide.png`.
+[mm-warm](mm-warm.md) · [mm-mini-player](mm-mini-player.md) · [section-transitions](section-transitions.md) · [music-list](music-list.md) · [movies-list](movies-list.md) · [tv-list](tv-list.md) · [media-sources](media-sources.md) · [power-menu](power-menu.md)

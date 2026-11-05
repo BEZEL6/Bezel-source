@@ -1,136 +1,100 @@
-# Play Next (1120 non-album mode)
+# Play Next and Up Next
 
-**Object:** `Custom_1120_PlayNext.xml` dialog `1120` with `bz_dfs_mode` ≠ album · main `6400`, **big album pill** `6401` (`BezelBigAlbumPill`, Includes_Bezel ~L940), tiles `6405`/`6406` · album viz in `MusicVisualisation.xml` (same pill `6401`, `6407`/`6408`, `bz_pnoff` + `bz_dfs_mode`) · sides `BezelFSPlayNext`
-**Where:** Dialogue FS (1120) over Music, and the FS album viz
-**Last updated:** 2026-10-31
-**Status:** Live. The big album pill toggles ALBUM ↔ PREV/NEXT on both windows, with one shared Skin.String. The prev/next side albums fade in after a 3 s delay over 2 s. Draft: not Rob-approved.
-**Skin:** skin.bezel2
+**Object:** side albums around the centred big album, and the Up Next queue list · Kodi: include `BezelFSPlayNext` (sides), include `BezelFSUpNext` (proxy `6396`, list `6395`) · touch `6405` / `6406` (1120), `6427` / `6428` (1121), `6407` / `6408` (Kodi FS)
+**Where:** album views (Dialogue FS, fullscreen album view) and the fullscreen cycle mode Up Next
+**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none
 
-**Naming:** control `6401` is the **big album pill** (ALBUM ↔ PREV/NEXT). It isn't the fan art pill `6391`.
+## Simple
+**Play Next** (PREV/NEXT mode): with the big album centred, the previous song's album sits on the left and the next song's on the right, each with its title and artist. Tap one to play it. They fade in gently; nothing waits.
+**Up Next**: on the fullscreen fanart stage, the cycle pill's Up Next mode shows the queue as a list at the left. Down from the pill enters it, Select plays the song.
 
-Each section has three layers: **Simple**, **How it works**, **Wiring** (live tree).
+## Feel contract (any framework)
 
----
-
-## Modes (big album pill)
-
-### Simple
-A small pill at the top right switches between **ALBUM** (just the big album) and **PREV/NEXT**, where the previous and next songs' albums show at the sides. The choice is remembered and shared between Dialogue FS and the full-screen album viz.
-
-### How it works
-- Both windows read the Skin.String `bz_dfs_mode`. `album` hides the sides, and empty (reset) shows them.
-- 1120's onload sets `album` if the string is empty, so a first open defaults to ALBUM.
-- Select, Left and Right on the pill all toggle the mode: Reset ↔ SetString album.
-- Up and Down return to the window's main control: 6400 on 1120, 6390 on viz.
-- On 1120 the pill's Back closes the dialog (`back_close=1`). On viz, Back returns to the main control.
-
-### Wiring
-| Handler (6401) | Value |
-|---|---|
-| onclick / onleft / onright | `bz_dfs_mode`=album → `Skin.Reset(bz_dfs_mode)` · else `Skin.SetString(bz_dfs_mode,album)` |
-| onup / ondown | `$PARAM[main]` |
-| onback (`back_close=1`) | `SetProperty(bz_fsret,true,home)` · `AlarmClock(bz_fsretclr,ClearProperty(bz_fsret,home),00:01,silent)` · `Dialog.Close(1120)` |
-| onback (else) | `$PARAM[main]` |
-| onfocus | `ClearProperty(bz_pnfoc,home)` |
-| 1120 onload | `String.IsEmpty(Skin.String(bz_dfs_mode))` → `Skin.SetString(bz_dfs_mode,album)` |
-
----
-
-## Main control (6400) on 1120
-
-### Simple
-- Select pauses or resumes, and a ghost logo shows while paused.
-- Left and Right change song, Up goes to the pill, and Back closes the view.
-
-### How it works
-- When Select pauses, it first sets `bz_pnfoc=6403`, which drives the pause ghost logo. Resuming clears it.
-- Down is a deliberate noop.
-- Back sets `bz_fsret` for 1 s so the music window knows it's returning from FS, then closes 1120.
-- On unload, 1120 clears `bz_pnfoc`/`bz_pnsel` and refocuses the album rail's home slot for the current `bz_at_fsslide`, through a 0 s `AlarmClock(bz_pvret,…)`.
-
-### Wiring
-| Handler (6400) | Value |
-|---|---|
-| defaultcontrol | `always` 6400 |
-| onclick | `!Player.Paused` → `SetProperty(bz_pnfoc,6403,home)` · `Player.Paused` → `ClearProperty(bz_pnfoc,home)` · `PlayerControl(Play)` |
-| onleft / onright | `PlayerControl(Previous)` / `PlayerControl(Next)` |
-| onup / ondown | 6401 / `SetProperty(bz_noop,1,home)` |
-| onback | `bz_fsret=true` + 1 s clear alarm + `Dialog.Close(1120)` |
-| onunload | clear `bz_pnfoc`, `bz_pnsel` · `AlarmClock(bz_pvret,SetFocus(6368\|6378\|6398\|6383),00:00,silent)` by fsslide 1 / 2 / empty-or-3 / 4 |
-
----
-
-## Prev / next tiles
-
-### Simple
-In PREV/NEXT mode, tapping the left or right album plays the previous or next song. A tile only appears when there's a song to go to.
-
-### How it works
-- 6405 and 6406 are touch targets. They're visible only outside album mode and when `MusicPlayer.offset(∓1).Title` exists.
-- If a remote lands focus on a tile, it bounces straight back to 6400.
-- On viz, 6407/6408 do the same and also need PREV/NEXT mode.
-
-### Wiring
-| ID | visible | onfocus | onclick |
+### States
+| State | How you get in | How you leave | On screen |
 |---|---|---|---|
-| 6405 | `!album + !String.IsEmpty(MusicPlayer.offset(-1).Title)` | `SetFocus(6400)` | `Playlist.PlayOffset(music,-1)` |
-| 6406 | `!album + !String.IsEmpty(MusicPlayer.offset(1).Title)` | `SetFocus(6400)` | `Playlist.PlayOffset(music,1)` |
+| Sides hidden | ALBUM mode; fanart stage | PREV/NEXT in album view | big album only |
+| Sides shown | PREV/NEXT + album view | ALBUM; leave album view | two side covers + labels, soft cast, soft frame |
+| No neighbour | first / last song | queue changes | that side is empty (no frame, no shadow) |
+| Up Next shown | cycle mode Up Next | other mode | queue list (fades 300 ms) |
+| Up Next focused | Down from the pill | Back / Left / Up on the first row | focused row highlighted |
 
----
+### Timeline
+| t (ms) | What | Duration | Curve |
+|---|---|---|---|
+| 0 (view opens) | sides fade in, no delay | 2000 | sine in-out |
+| track change | sides' covers crossfade to the new neighbours | 800 | sine in-out |
+| ALBUM | sides fade out | 800 | sine |
+| Up Next on / off | list fades | 300 / 300 | sine in-out |
 
-## Sides fade-in (WindowOpen)
+### Interruptions
+- Track change during the sides' fade-in: covers swap in place; the fade continues.
+- Mode flip mid-fade: reverses from where it is.
 
-### Simple
-When the view opens, the centre album and now-playing appear immediately. The side albums ease in a few seconds later.
+### Continuity
+- Side cast shadows breathe with the big album's sway (one clock).
+- Up Next keeps its scroll position while it stays up.
+
+### Layering
+Fanart stage < side albums (cover, glare, bottom gradient, label panel, soft frame, cast) < big album < chrome.
+
+### Geometry
+| Piece | Value |
+|---|---|
+| Left side | 90, 250, 540 × 540 |
+| Right side | 1290, 250, 540 × 540 |
+| Label panel | lower 162 px of the cover (0, 378); artist 22, 446 (496 × 26); title 22, 474 (496 × 40) |
+| Frame | 542 × 542 around the cover |
+| Up Next list | 150, 346, 869 × 640; rows 64 px: thumb 48 (14, 8), title 580 × 30 (78, 6), artist 580 × 22 (78, 36), time 110 (745) |
+
+### Art
+- Covers: previous / next song's album cover; empty when none.
+- Frame: soft frame texture; cast: soft cast under each side, only with a real cover.
+- Up Next rows: title white, artist 70 % white; focused row = white outline over a 25 % black rounded fill (one soft shadow per label).
+
+### Input
+| Action | Result |
+|---|---|
+| Touch left / right side | play previous / next |
+| Remote on sides | never lands there (focus goes to the album) |
+| Up Next: Up / Down | move |
+| Up Next: Select | play that song |
+| Up Next: Up on first row / Left / Back | back to the cycle pill |
+
+### Speed targets
+Sides begin fading on the first frame; no wait.
+
+### Never
+- No delay before the sides (317 "remove the wait"; was 3000 ms).
+- No stub cast without a real cover (127).
+- No four-ring label shadows on Up Next rows; no white block highlight (308).
+- No NP bar under the home album with Up Next (470 reverted 463).
+
+### Acceptance checks
+1. Album view, PREV/NEXT: sides fade in at once, labels readable.
+2. Next song: covers move along without a flash.
+3. First song in the queue: left side empty, no shadow.
+4. Fanart stage → pill → Up Next → Down → Select a row → that song plays.
+
+## Kodi implementation (sandbox)
 
 ### How it works
-- The shared include `BezelFSPlayNext` takes `sdelay`/`sfade` params.
-- 1120 passes 3000 / 2000 explicitly. MusicVisualisation uses the include defaults, which are the same values.
-- The sides gate is `sides = !album`.
+- `BezelFSPlayNext` params: `vis` (default `[!bz_pnoff=1] + Player.HasAudio`), `sdelay` (0), `sfade` (2000), `sides` (1120 / viz / 1121: `!String.IsEqual(Skin.String(bz_dfs_mode),album)`).
+- Covers `MusicPlayer.offset(-1 / 1).Cover`; labels from the same offsets; touch tiles visible only with `MusicPlayer.offset(∓1).Title`.
+- Cast opacity: Home `bz_castL` / `bz_castR` from bz_flip sway_clock (`_bz_cast`); Tuner `bz_at_fsvizop` sets the overall level (1 = off, 2 = 10 %, …).
+- `BezelFSUpNext` params: `vis` (`$EXP[bz_np] + $EXP[bz_npm_upn]`), `home` (control to return to), colours `upc1` / `upc2` / `upc3`. 1121 mounts its own copy (`home=6421`); the Music-window copy hides while 1121 is visible. Select → `bz_cmd.py upnext_goto`.
 
 ### Wiring
-- `Custom_1120_PlayNext.xml` L15: `BezelFSPlayNext` vis `Player.HasAudio`, `sdelay` 3000, `sfade` 2000, `sides` `!String.IsEqual(Skin.String(bz_dfs_mode),album)`.
-
----
-
-## Fanart FS Play Next sides (viz)
-
-### Simple
-In the full-screen viz, the side albums can be switched off. A double-Select on the main block brings them back.
-
-### How it works / Wiring
-- `bz_pnoff=1` turns the sides off. A double-Select on 6390 clears it (sides on / album viz).
-- 6409 (right hit) only bounces and doesn't clear `bz_pnoff`.
-- 6410 → `bz_npmode=upnext`.
-- Side tiles 6407/6408 → `Playlist.PlayOffset` ∓1.
-
----
-
-## Slide speed and cast
-
-### Simple
-How fast the album slides into FS is a tuner setting. The soft side shadows breathe with the sway.
-
-### How it works / Wiring
-- `bz_at_fsslide`: 1 = 480 ms · 2 = 380 · 3/empty = 280 · 4 = 180. It's shared with Dialogue FS and viz preview-next.
-- Stub cast opacity follows the shared sway clock (`bz_castL`/`bz_castR`, 5.33.170 BUG-021). Its overall level is the Tuner Viz opacity (5.33.171), and the cast is gated on Cover.
-
----
-
-## Keys (1120)
-| Key | Behavior |
+| Piece | Value |
 |---|---|
-| Select on 6400 | Play/Pause (sets `bz_pnfoc=6403` when pausing → ghost logo) |
-| Left / Right on 6400 | Previous / Next |
-| Up / Down on 6400 | Pill 6401 / noop |
-| Select / Left / Right on pill | Toggle ALBUM ↔ PREV/NEXT |
-| Up / Down on pill | 6400 |
-| Back | `bz_fsret` (1 s), close 1120 |
+| Side textures | `bezel/pn_glare_ul.png`, `bezel/grad_bottom.png`, `bezel/bz_frame_soft.png`, `bezel/pn_cast.png` |
+| Touch | 6405 / 6406 (1120), 6427 / 6428 (1121), 6407 / 6408 (viz): onfocus → main; click `Playlist.PlayOffset(music,-1 / 1)` |
+| Up Next | proxy 6396, list 6395 |
+| Skin | `bz_dfs_mode`, `bz_npmode=upnext`, `bz_at_fsvizop` |
 
-## Touch
-Prev/next tiles 6405/6406 (1120) and 6407/6408 (viz) play offset ∓1.
+### Kodi workarounds (do not port)
+- `MusicPlayer.offset(n)` infolabels stand in for a queue model.
+- Proxy control 6396 in front of list 6395: lets Up from the first row leave the list in Kodi.
 
 ## Related
-big-album-pill.md · dialogue-fs.md · fanart-fs.md · sway-animations.md · music-list.md
-
-**5.33.210:** Play Next is also **copied into Music Fanart FS 1121** (double-Select → album viz, sides + big album pill 6401 with main 6420). 1121 never opens or stacks 1120; `bz_pndlg_ok` is false while 1121 is visible.
+[big-album-pill](big-album-pill.md) · [dialogue-fs](dialogue-fs.md) · [music-fanart-fs](music-fanart-fs.md) · [fanart-fs](fanart-fs.md) · [sway-animations](sway-animations.md)

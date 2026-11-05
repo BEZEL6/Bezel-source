@@ -1,16 +1,55 @@
 # Fullscreen video
 
-**Object:** `VideoFullScreen.xml` (80 lines: group `0` with labels `10`–`12`, cache group `1`) · keymap `fullscreenvideo` / `videoosd` sections · `bz_cmd.py vidsel` / `vidback`  
-**Where:** Kodi `fullscreenvideo`  
-**Last updated:** 2026-10-31 · 5.33.207  
-**Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
-**Skin:** skin.bezel2
+**Object:** fullscreen video playback · Kodi: `VideoFullScreen.xml`, keymap `fullscreenvideo` / `videoosd` sections, `bz_cmd.py vidsel` / `vidback`
+**Where:** while a video plays fullscreen
+**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none
 
-Each section has three layers: **Simple** (what it does and why), **How it works** (the flow end to end, with the order and the races), and **Wiring** (props, conditions, controls, scripts and timings, all read from the live tree).
+## Simple
+Plain fullscreen video with Bezel chrome. Video starts in fullscreen. Select pauses and shows the controls (OSD); the pause screen shows while paused with no OSD. Back peels away whatever is on screen one layer at a time, and only then stops. Tab keeps Kodi's own behaviour here; Bezel fullscreen music never opens over a video.
 
----
+## Feel contract (any framework)
 
-## What it does
+### States
+| State | How you get in | How you leave | On screen |
+|---|---|---|---|
+| Playing | play a video | stop | video only |
+| Paused | Select / pause | Select / play | pause screen |
+| OSD | Select | Back / Left | OSD column |
+
+### Timeline
+See [video-osd](video-osd.md) and [pause-overlay](pause-overlay.md).
+
+### Interruptions
+Back with something on screen hides it first; Back with nothing on screen stops.
+
+### Continuity
+After stop, the section and row you started from.
+
+### Layering
+Video < pause screen < OSD < dialogs.
+
+### Geometry
+Full screen.
+
+### Art
+—
+
+### Input
+Select: pause + OSD; Back: stepped (hide → stop); Tab: Kodi default.
+
+### Speed targets
+Select responds at once.
+
+### Never
+Back never stops a film by accident (stepped Back).
+
+### Acceptance checks
+Play → Select → OSD; Back → OSD gone; Back → stops, back in the list.
+
+## Kodi implementation (sandbox)
+
+### How it works (live detail; dated sections are the current state unless a later one supersedes them)
+#### What it does
 
 **Simple.** Plain full-screen video with BEZEL chrome. Video starts in fullscreen. Select pauses and shows the controls. Back peels away whatever is on screen one layer at a time, and only then stops.
 
@@ -18,13 +57,13 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 **Wiring.** Labels 10/11/12 at 45, top 15/45/75 (Kodi info lines). Group 1 `DepthOSD+` visible `Player.Caching + Integer.IsGreater(Player.CacheLevel,0)`, fade in 200 ms after 300, fade out 150 ms after 200.
 
-## Select
+#### Select
 
 **Simple.** Pause or resume, and show the OSD.
 
 **Wiring.** keymap `fullscreenvideo` select → `bz_cmd.py vidsel` = `PlayerControl(Play)` + `ActivateWindow(videoosd)` (BETA 2.6).
 
-## Back
+#### Back
 
 **Simple.** The first Back hides the controls. The next Back stops.
 
@@ -39,10 +78,19 @@ Each section has three layers: **Simple** (what it does and why), **How it works
 
 **Unverified:** the np_tab keymap also has a second `FullscreenVideo` block that maps Back → `Action(FullScreen)` (minimise). Which of the two Back maps Kodi applies has not been tested on device.
 
-## Interactions
+#### Interactions
 - Pause screen 1116 shows when paused (pause-overlay.md).
 - The global logo-back button and FS pill are hidden here. Dust is off (dust.md).
 - The dtap keymap does not list `fullscreenvideo`, so Select is not double-tap-delayed here.
 
+#### Exit (5.33.378 audit)
+Video FS Back = `bz_cmd vidback` (OSD/info close, then Stop); Kodi returns to the opener window (section). No MM latch — video is started from a section list, so section return is intended.
+
+### Wiring
+See the detail above.
+
+### Kodi workarounds (do not port)
+`vidsel` / `vidback` scripts decide per press; duplicate `fullscreenvideo` / `FullscreenVideo` keymap blocks (which wins is untested).
+
 ## Related
-video-osd.md · pause-overlay.md · keymaps.md
+[video-osd](video-osd.md) · [pause-overlay](pause-overlay.md) · [keymaps](keymaps.md)

@@ -1,57 +1,98 @@
 # Options + Info
 
-**Object:** `DialogVideoInfo.xml` / `DialogMusicInfo.xml` · grouplist `9000` (582,166, 360 wide), cast list `50` (video); `Custom_1111_XInfo.xml` (legacy 1111, closes itself)  
-**Where:** Movies / TV / Music (and Pictures) item info  
-**Last updated:** 2026-10-31 · 5.33.207  
-**Status:** draft. This doc matches the live tree. The left fanart mask has been off since 5.33.205. Rob has not approved it.  
-**Skin:** skin.bezel2
+**Object:** the Info / Options menu for library items · Kodi: `DialogVideoInfo.xml`, `DialogMusicInfo.xml` (grouplist `9000` at 582,166, 360 wide; video cast list `50`), legacy `Custom_1111_XInfo.xml` (closes itself)
+**Where:** Movies, TV, Music (and Pictures) items; menu in the strip column, fanart on the left, the poster / big album stays on the right
+**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none
 
-Each section has three layers: **Simple** (what it does and why), **How it works** (the flow end to end, with the order and the races), and **Wiring** (props, conditions, controls, scripts and timings, all read from the live tree).
+## Simple
+One Bezel menu replaces both Info and the context menu for Movies, TV and Music: Info, Menu / C or a double-Select opens it. It has three pages. **Main**: Play, Play next, Queue, Browse seasons / set, Trailer, More options, Section options. **More**: choose art, refresh, set rating, director, watched, favourites, remove from library. **Section options**: Clearart (Movies: off by default; TV: on by default), Sort by, Watched filter, Update library, Order, Filter, and the extras that apply (party mode, playlist, get more…). Back on a sub-page returns to Main; Back on Main closes. Closing leaves the section exactly as it was.
 
----
+## Feel contract (any framework)
 
-## What it is
+### States
+| State | How you get in | How you leave | On screen |
+|---|---|---|---|
+| Main | open | Back → closed; More / Section → page | left fanart crop, title, rows; poster / album on the right |
+| More | More options | Back → Main | more rows |
+| Section | Section options | Back → Main | section rows (first row focused: Clearart, else Sort by) |
+| Cast (video) | Down from the last row | Up | cast list |
 
-**Simple.** One BEZEL menu replaces both Info and the context menu for Movies, TV and Music. Info, Menu/C or a double-tap Select opens it. It has three pages: Main, More and Section.
+### Timeline
+| What | Duration |
+|---|---|
+| open | dialog appears over the section (no pop-in) |
+| strip chrome under it | logo / list chrome fade 150 ms |
+| close | instant; section fanart was never faded, poster / album never moved |
 
-**How it works.** The menu routing is in context-menu.md (`bz_dtap.info()` → `Action(Info)`). Every open starts on Main, because `onload` clears the page prop. Page changes set the Window prop `bz_ci_more` and move focus on a 0-second AlarmClock, so the focus move happens after the rows' visible conditions update.
+### Interruptions
+Page change moves focus on the next frame (no flash of the old page's focus).
 
-**Wiring.**
-- `onload ClearProperty(bz_ci_more)`. `defaultcontrol always` 8 (Play) inside 9000.
-- Pages: empty = Main · `1` = More · `sec` = Section.
-- 9980 "Section options ›": `SetProperty(bz_ci_more,sec)` + `AlarmClock(bzci_sec,SetFocus(9979),00:00,silent)`. Video: visible on Main (`bz_ci_more` empty). Music: visible inside More (`=1`, t4183).
+### Continuity
+- Every open starts on Main.
+- The right-side poster / big album stays during and after (the art mirror holds while Info is up).
+- Closing never hides posters (the old View Type row that switched them off is gone).
 
-## Left fanart
+### Layering
+Section < fanart crop (opaque, 120…960) + title < menu rows (strip column) < confirm dialogs. The 1122 art layer stays visible on the right.
 
-**Simple.** The left fanart stays visible while the menu is open.
+### Geometry
+| Piece | Value |
+|---|---|
+| Fanart crop | x 120–960 |
+| Title | 150, 150 |
+| Rows | 582, 166, 360 wide |
+| Cast list | 593, 476, 352 × 108 |
 
-**Wiring.** The old left black mask (`-60,-60` 630×1200 `FF000000` `bezel/white.png`) is `visible=false` in DialogVideoInfo / DialogMusicInfo / DialogAddonInfo (5.33.205). Video still has `BezelBlack` when `!Window.IsVisible(videos)`.
+### Art
+Left fanart crop of the item; no art of its own on the right.
 
-## Pages
+### Input
+| Action | Result |
+|---|---|
+| Up / Down | move (no wrap; video Down from the last row → cast) |
+| Left / Right | close |
+| Select | run the row |
+| Back | sub-page → Main; Main → close |
+| Cast Select | Movies filtered by that actor |
 
-**Wiring.**
-- **Main:** Video → Play 8 · Play next 9081 · Queue 9082 · Browse seasons 9085 · Trailer 11 · Browse set 443 · More options 9089 · Section options 9980. Music → Play 8 · Play next 9081 · Queue 9082 · Favourite 9095 · Browse 9083/9084 · More options 9089.
-- **More (`1`):** Choose art 7710 · Refresh 6 · Set rating 7 · Director 13 / watched 9095 / Add to favourites 9097 / Remove from library 9098 (video) · Other 12 (music) · Section options 9980 (music) · ‹ Back 9096.
-- **Section (`sec`):** View type 9979 · Sort 9971 · Filter / Order · Update library · Party mode · Go to playlist · Get more · Edit nodes · Add-on settings · Clearart toggle 9969 (`bz_tvclear_off`, video) · Visualizer 9974 (music) · ‹ Back 9990/9967.
+### Speed targets
+Opens on the double-Select without delay beyond the tap window.
 
-## Keys
+### Never
+- No left black mask over the fanart (205).
+- No art flash on exit (395).
+- No poster loss after exit (473 VIEWTYPEDEL: View Type removed from video Section options; music lost it in 274).
+- No movie clear art unless switched on (473 MOVCLEAR).
 
-**Simple.** Up and Down move. Left or Right closes. Back on a sub-page goes back to Main. Back on Main closes.
+### Acceptance checks
+1. Movie → double-Select → Main; Section options → Clearart (OFF) focused; Back → Main; Back → closed, poster in place.
+2. TV show → Section options → Clearart ON → OFF → logo becomes the title.
+3. Remove from library → confirm → removed.
 
-**Wiring.**
-| Key | Video 9000 | Music 9000 |
-|---|---|---|
-| Up | `noop` | `noop` |
-| Down (last row) | `50` cast list | `9000` (stays) |
-| Left / Right | `Close` | `Close` |
-| Back on sub page | `ClearProperty(bz_ci_more)` + `AlarmClock(bzci_back,SetFocus(9980),00:00,silent)` | same |
-| Back on Main | close | close |
+## Kodi implementation (sandbox)
 
-Cast 50 Select opens Movies filtered by that actor and closes everything. Remove from library → `bz_ctx.py remove` → confirm (dialog-confirm.md).
+### How it works
+- Routing: `bz_dtap.info()` → `Action(Info)` for library windows ([context-menu](context-menu.md)).
+- `onload ClearProperty(bz_ci_more)`; defaultcontrol `always` 8 (Play). Pages by Window prop `bz_ci_more`: empty = Main, `1` = More, `sec` = Section. 9980 "Section options ›" (video: on Main; music: inside More): `SetProperty(bz_ci_more,sec)` + focus by 0 s alarm — video: 9969 (TV), 9967 (movie / set), else 9971; music: 9971.
+- Section rows (video): 9969 Clearart TV (`bz_tvclear_off`), 9967 Clearart Movies (`bz_movclear_on`), 9971 Sort, 9972 Watched filter, 9973 Update library, 9989 Order, 9981 Filter, 9982 Party mode (music videos), 9983 Master mode (locks), 9984 Go to playlist, 9985 Get more (add-ons) …; music adds Visualizer 9974.
+- Every sub-page row onback: `ClearProperty(bz_ci_more)` + `AlarmClock(bzci_back,SetFocus(9980))`.
+- Art: `bz_flip.v60_mirror` returns early while `movieinformation | musicinformation | songinformation` is visible; `bz_railvis` keeps the album in Music. Section fanart has no `bz_infoup` fade (395); logo / list chrome fade 150 ms on `bz_infoup`.
+- Remove from library → `bz_ctx.py remove` → confirm.
+- 1111: `onload Dialog.Close(1111,true)`, `onunload` clears `bz_xinfo`.
 
-## Legacy 1111
+### Wiring
+| Item | Value |
+|---|---|
+| Window prop | `bz_ci_more` |
+| Expression | `bz_infoup` |
+| Skin | `bz_tvclear_off`, `bz_movclear_on` |
+| Variables | `BzTVClearOnOff`, `BzMovClearOnOff` |
+| Row include | `BzCIBtn` |
 
-**Wiring.** `Custom_1111_XInfo.xml` runs `onload Dialog.Close(1111,true)` and `onunload` clears `bz_xinfo`. BezelXInfo was retired (t4166).
+### Kodi workarounds (do not port)
+- Kodi's info dialog reused as a menu (pages by property, focus by 0 s alarm).
+- The art mirror freeze: list 60 can't be read from a dialog.
+- Rows that `SendClick` Kodi's hidden window buttons (filter, party mode…).
 
 ## Related
-context-menu.md · dialog-confirm.md · favourites.md
+[context-menu](context-menu.md) · [movies-list](movies-list.md) · [tv-list](tv-list.md) · [music-list](music-list.md) · [dialog-confirm](dialog-confirm.md) · [favourites](favourites.md)

@@ -1,5 +1,8 @@
 # Theme tokens
 
+> **RETIRED 5.33.473.** This layer is frozen at 5.33.267 and may be out of date. The current port blueprint is the behavior file with the same name in [behaviors/](../behaviors/README.md) (Feel contract + Kodi implementation). Kept for history only.
+
+
 **Last updated:** 2026-11-01 · 5.33.267 · **Status:** current-state, generated from live tree · [PORT_INDEX](../PORT_INDEX.md)
 
 ## Simple

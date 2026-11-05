@@ -1,168 +1,121 @@
-# Music section list
+# Music list
 
-**Object:** `MyMusicNav.xml` · list `60` · grouplist (Includes_Bezel ~L1492) · ALL `6097` · A–Z `6100`/`6500` · album rails `6367`/`6377`/`6397`/`6382` · NP proxy `6385`
-**Where:** Main menu MUSIC (and the music pills) → music window
-**Last updated:** 2026-11-01 · 5.33.221
-**Status:** Live in 5.33.207. Edge-to-ALL with no wrap. Left opens the MM when the A–Z bar is hidden, and Back at the armed root opens the MM (clearing NP first). The big album and compact NP share album grouplist 6397, and the speed rail follows `bz_at_fsslide`. Tap big album → Dialogue FS 1120. Draft: not Rob-approved.
-**Skin:** skin.bezel2
+**Object:** the Music section · Kodi: `MyMusicNav.xml`, list `60` in `View_60_BezelInfoList` (Includes_Bezel), ALL row `6097` / long-list pill `6088`, A–Z bar `6100`, FULLSCREEN pill `6886`, NP block `6390`, meta `BzMMetaSmall` / `BzMMetaBig`
+**Where:** Music: fanart stage on the left, list in the colour strip, big album on the right
+**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none
 
-Each section has three layers: **Simple**, **How it works**, **Wiring** (live tree).
+## Simple
+Music has three levels: **Artists → Albums → Songs**, each a plain list in the colour strip. On the left the artist's fanart fills the stage with the meta on top (small ARTIST / artist name, big name / album title, year and genre pills); on the right the big album sways. On Albums (an artist's albums, the Albums list, Recently played / added) a small album cover sits at the top of the strip above the rows. An **ALL ALBUMS** (or **ALL DISCS**) row opens everything at once when there is more than one. Long lists get an A–Z jump bar on the left. Select on a song plays it in place. Back steps up a level, and at the top opens the main menu.
 
----
+## Feel contract (any framework)
 
-## Open
+### States
+| State | How you get in | How you leave | On screen |
+|---|---|---|---|
+| L1 Artists | MM MUSIC (pill Artists) | Select → L2; Back → MM | artist rows; stage = artist fanart; meta ARTIST / name; A–Z bar if > 38 rows |
+| L2 Albums | Select an artist; MM pill Albums; Recently played / added | Select → L3; Back → L1 / MM | small album at the top of the strip (half list), album rows; ALL ALBUMS under the last row (2+ albums) |
+| L3 Songs | Select an album / ALL ALBUMS | Back → L2 | song rows, `..` on top; meta artist / album title |
+| ALL ALBUMS | ALL row | Back → the ALL row | every song, grouped with an album header bar on each album's first track |
+| Folder lists (Genres, Years, Sources …) | MM pill / Select | Back | rows only, no info card behind them |
+| Playing | Select a song | stop | big album = playing cover; FULLSCREEN pill top left; compact NP under the album |
 
-### Simple
-MUSIC on the main menu (or one of its pills) opens the music library behind the menu, then fades it in.
+### Timeline
+| What | Duration | Curve |
+|---|---|---|
+| section entry (see [section-transitions](section-transitions.md)) | 400 fade-in, rows after 350 hold | sine out |
+| row cascade | 286 per row, 30 stagger | Tuner |
+| row scroll | 271 | cubic |
+| big album / poster art change | 400 crossfade | sine |
+| idle album dissolve (A/B) | 400 | sine |
+| list fades under Now Playing / fullscreen | 1000 | sine |
+
+### Interruptions
+- No wrap: Up on the first row / Down on the last stays put (or goes to the ALL row).
+- Fast Back-Back from a subfolder never overshoots into the MM (root must show for 0.6 s first).
+- A folder change is never treated as a wrap.
+
+### Continuity
+- Back returns to the row you came from on every level.
+- The big album keeps swaying through every level change; leaving fullscreen returns to the same row.
+- After music stops, the last cover stays as the big album until list art takes over.
+
+### Layering
+Fanart stage < meta (stage top) < colour strip < list rows / small album < pills (FULLSCREEN, A–Z) < big album layer < MM.
+
+### Geometry
+| Piece | Value |
+|---|---|
+| List | in the strip: layout 450 × 984 at 120, 120, scaled 86.67 % into x 570…960 (+7 nudge to the strip edge); bottom ≈ y 973 (5 px above the double-tap hint at y 978) |
+| Small album (L2) | 570, 120, 390 × 390 at the top of the strip |
+| Meta | small 150, 196; big 150, 226; pills 150, 296 |
+| FULLSCREEN pill | 140, 136 |
+| A–Z bar | left 78, top 151 |
+| ALL row | flush under the last row (≤ 14 rows); long lists: bottom pill 576, 972, 378 × 46 |
+| Big album | 1140, 220, 600 × 600 |
+
+### Art
+- Stage: artist fanart. Small album: the focused album's cover. Big album: playing cover, else the focused item's thumb (next item's for `..`), else the last cover.
+- No art → nothing (no default cover, no placeholder).
+- Meta pills: outlined pill, uppercase titles.
+
+### Input
+| Action | Result |
+|---|---|
+| Up / Down | move; edges → ALL row if shown, else stay |
+| Left | FULLSCREEN pill (if playing) → A–Z bar (if shown) → MM |
+| Right | music controls (if playing) |
+| Select | open / play in place (no jump to the visualiser) |
+| Double Select | Options / Info |
+| Back | up a level; at the section root → MM |
+| Tab / Display | fullscreen music |
+
+### Speed targets
+Rows visible ≤ 0.45 s after entry; Select on a song starts playback at once.
+
+### Never
+- No old list-group cover in the stage corner on Albums / Recently played (472 ALBUMHALF; 466 ALBUMCOVER).
+- No meta text behind Genres / Years / folder lists (466 GENREMETA).
+- No merged single song list for Artists; no view-type options (274).
+- No placeholder art (276).
+- No list wrap from top to bottom (451 NOWRAPGUARD).
+- No ALL row for a single album / disc (443, 444, 451).
+- No auto-switch to the visualiser on Select (409).
+
+### Acceptance checks
+1. MM → MUSIC → Artists: fanart + meta, rows in the strip, A–Z bar for a long list.
+2. Select an artist with 2 albums: small cover on top, two rows, ALL ALBUMS under them.
+3. Albums / Recently played: small cover on top, no cover in the stage corner.
+4. Genres: rows only.
+5. Up on the first artist: stays; Back at Artists: MM.
+
+## Kodi implementation (sandbox)
 
 ### How it works
-1. The MM row sets `bz_navroot` to `musicdb://albums/` and runs `bz_cmd.py tomusic`.
-2. If Now Playing 1112 is open, it's closed first.
-3. The music window loads hidden (`bz_secload`, 3 s cap), then the MM closes and the section fades in (`bz_secfade`, 400 ms).
-4. While the MM is open, the list chrome hides, the strip 6996 owns focus, and the warm underlay is `musicdb://artists/`.
-
-See mm-warm.md → Section enter / exit. Pills: ARTISTS → ALBUMS → GENRES → RECENT SONGS → RECENT ALBUMS.
+- **Levels:** L1 `musicdb://artists/`; L2 `musicdb://artists/ID/` (native artist albums; `..` and stock *All hidden and pulled up when `musiclibrary.showallitems` is on); L3 `…/ALBUMID/-2/` (or ALL `…/-1/-2/`). Back is native Kodi parent-folder.
+- **Half list (`bz_mhalf`)** = `$EXP[bz_mstrip] + [Container.Content(albums) | $EXP[bz_m13]]` (472): 390 strip album above the rows (HALFLIST 280 / HALFALB 296). `bz_covercol` (cover-list mode) for `Window.IsActive(music) + Container.Content(albums) + !bz_artistalbums` (466). `bz_allhalf` (ALL row in half list) still needs `bz_artistalbums`.
+- **Strip info card** (`View_60_BezelInfoList`, 9 parts) is alpha 0 for `$EXP[bz_mstrip] | Control.IsVisible(60)` (466).
+- **ALL row:** `$EXP[bz_allrow]` + View All Albums (`bz_allalbums`); needs `bz_all2` (`NumItems > 2 | [NumItems == 2 + !bz_allhas]`, Kodi doesn't count `..`). Short lists: 6097 slid under the last row; long lists: pill 6088 (`$EXP[bz_alllong]` focusable, drawn on `$EXP[bz_alllongshow]`). Select `bz_cmd allrow` (opens `-1/`, sort by album, stores `bz_allret`); onup restores `bz_allup`. Label `BzAllRowLabel` + `bz_allcnt` (bz_flip `allcnt` JSON-RPC). ALL list = `$EXP[bz_allgrp]` with album header bars.
+- **Navigation:** list 60 in a 450 × 900 clip grouplist that owns onup / ondown (→ 6097 if visible, else edge markers). bz_flip watcher catches Kodi's native wrap only when it really happened (451). onleft: `bz_vback` → close; 6886 visible → 6886; 6100 visible → 6100; else (`bz_navok`) `bz_nav=true`. onright (music): 6160 visible → `ActivateWindow(1115)`, else 6192. onback (first match): `bz_vback` → close; `bz_msret` on `sources://` → 1117; `bz_np` → clear + 6299; MM open → clear nav; `bz_atroot` + navok → MM; else 6299. Root arm: `bz_rootarm` after 0.6 s on a root / `bz_navroot`.
+- **Meta:** L1 small "ARTIST", big label; L2 small artist, big album; L3 small artist, big `ListItem.Album`. Pills year + genre.
+- **Big album art:** playing `Player.Art(thumb)`; stopped: list 60 thumb (via the 1122 mirror), fallback `bz_cov_last`. Idle A/B `bz_m_idle_a` / `_b` / `_side`, fade `bz_at_midlefade` (400 ms).
+- **Select = play in place:** `musicfiles.selectaction` forced off at startup (`bz_dustviz.py`).
+- **Random start row** (RANDSTART) on the first MM visit; the session row is kept by mm_warm.
+- **LISTTIME:** `BEZEL list …` kodi.log line per folder change (470).
 
 ### Wiring
 | Item | Value |
 |---|---|
-| GO | `SetProperty(bz_navroot,musicdb://albums/,home)` · `RunScript(bz_cmd.py,tomusic,musicdb://albums/)` |
-| SUBS | `musicdb://artists/`, `albums/`, `genres/`, `recentlyaddedsongs/`, `recentlyaddedalbums/` |
-| onload | `bz_np_focus` → `SetFocus(6390)` · onunload saves `bz_np_was` |
+| GO | `SetProperty(bz_navroot,musicdb://albums/,home)` + `bz_cmd.py tomusic` |
+| Pills | `musicdb://artists/`, `albums/`, `genres/`, `recentlyaddedsongs/`, `recentlyaddedalbums/` |
+| Expressions | `bz_mstrip`, `bz_mhalf`, `bz_m13`, `bz_covercol`, `bz_artistalbums`, `bz_allrow`, `bz_all2`, `bz_allhas`, `bz_alllong`, `bz_alllongshow`, `bz_allgrp`, `bz_allhalf`, `bz_atroot`, `bz_navok`, `bz_discbar` |
+| Home | `bz_navroot`, `bz_rootarm`, `bz_allup`, `bz_allret`, `bz_allcnt`, `bz_cov_last`, `bz_m_idle_*`, `bz_np_focus`, `bz_np_was` |
+| Pill text | `BezelViewName` / `BezelViewPillText` show ALBUM LIST / ALBUMS on `Container.Content(albums)` |
 
----
-
-## List 60 navigation
-
-### Simple
-- **Up / Down** move through the list. At the top or bottom edge, focus jumps to the **ALL** row if it's showing. Otherwise it stays put and doesn't wrap around to the far end.
-- **Left** opens the main menu whenever the A–Z bar isn't on screen.
-- **Back** steps out of folders, and at the section's home level it opens the main menu.
-
-### How it works
-- **Edges and wrap:**
-  - List 60 sits inside a vertical grouplist that's 450×900 with a true clip. The grouplist owns onup/ondown, because Kodi overwrites a single child's nav.
-  - At an edge, the grouplist sends focus to ALL `6097` when that row is visible. Otherwise it only writes the marker props `bz_topedge` / `bz_bottomedge`; no script reads them.
-  - Kodi's native wrap is caught by `bz_flip.py`. When a poll sees the list jump from the top row to the bottom, it focuses ALL if that's shown, or snaps back to the top row (`SetFocus(60,0,absolute)`).
-  - A folder change (open/Back) is never counted as a wrap.
-- **Left:**
-  1. `bz_vback` set (video back-face) → `bz_vback_close`.
-  2. Otherwise, if `!Control.IsVisible(6500)` + `!Control.IsVisible(6100)` and `$EXP[bz_navok]` → `bz_nav=true` (MM).
-- **Right:** `bz_vback` → 6291. If the grid entry 6600 is visible → `bz_cmd gridenter`.
-- **Back, first match wins:**
-  1. `bz_vback` → close the back-face.
-  2. `bz_msret=1` on `sources://` → `ActivateWindow(1117)`.
-  3. `bz_np` → clear `bz_np` + 6299
-  4. MM open → clear `bz_nav`/`bz_navtune`/`bz_navbez`.
-  5. `bz_atroot` + navok → `bz_nav=true`.
-  - Otherwise → 6299, which is Kodi's normal parent-folder Back.
-- **Root arm:**
-  - `bz_atroot` needs `bz_rootarm`. `bz_flip` sets that once the folder has shown for 0.6 s and is one of the section ROOTS, or equals `bz_navroot` (which also sets `bz_atnavroot`).
-  - So a fast Back-Back from a subfolder doesn't overshoot into the MM.
-  - `$EXP[bz_navok]` = `bz_navlock` empty + `bz_navgrace` empty + `bz_nav`≠true.
-
-### Wiring
-| Handler | Value (MyMusicNav.xml, Includes_Bezel ~L1492–1505) |
-|---|---|
-| grouplist onup | `Control.IsVisible(6097)` → 6097 · else `SetProperty(bz_topedge,1,home)` |
-| grouplist ondown | `Control.IsVisible(6097)` → 6097 · else `SetProperty(bz_bottomedge,1,home)` |
-| onleft | `bz_vback` → `bz_vback_close` · `!Control.IsVisible(6500)` + `!Control.IsVisible(6100)` + `$EXP[bz_navok]` → `SetProperty(bz_nav,true,home)` |
-| onright | `bz_vback` → 6291 · 6600 visible → `RunScript(bz_cmd.py,gridenter)` |
-| onright (music) | after the above: 6160 visible → `ActivateWindow(1115)` · else 6192 if visible and `!$EXP[bz_artbtn]` |
-| onback | order above; fallback 6299 |
-| Wrap catch | `bz_flip.py` ~L333–345 (`sw_top` / `sw_prev`; 0.8 s after a folder change) |
-| Root arm | `bz_flip.py` ~L711 `bz_rootarm` · `bz_atroot` Includes_Bezel ~L2323 |
-
----
-
-## ALL row (6097)
-
-### Simple
-At the bottom of an album, season, or disc list there's an **ALL** row that opens everything at once. Up from it goes back to where you were.
-
-### How it works
-- `6097` is shown by `$EXP[bz_allrow]` when the MM is closed (and not in cover-column mode). It slides down by NumItems×60 so it sits under the last row.
-- Select runs `bz_cmd allrow`. That opens the stock "All" node (`<path>-1/`), keeps the query, and stores `bz_allret` so Back from All lands on the ALL row.
-- When `bz_flip` sends focus here after a wrap, it stores `bz_allup`, the row count. ALL's onup then restores that row with `SetFocus(60,n,absolute)`.
-- Artist-album lists hide the parent `..`, so Up off the first album goes to ALL ALBUMS.
-
-### Wiring
-| Handler | Value |
-|---|---|
-| visible | `$EXP[bz_allrow] + !$EXP[bz_navmenu]` + covercol condition |
-| onup | `bz_allup` set → `SetFocus(60,$INFO[Window(Home).Property(bz_allup)],absolute)` · else 60 |
-| ondown | noop |
-| onleft | `$EXP[bz_navok]` → `bz_nav=true` · else 6996 |
-| onclick | `RunScript(bz_cmd.py,allrow)` |
-| onback | 60 |
-
----
-
-## A–Z jump bar
-
-### Simple
-For long lists, a strip of letters on the left lets you jump by letter. It's letters only, with no dark band behind it. While it's showing, Left uses the bar instead of opening the menu.
-
-### How it works
-- Grouplists `6100` (Music artists/songs, only when NumItems > 38) and `6500` (Movies/TV) sit at left 78, top 151. They're hidden while the MM is open.
-- `BezelAZFade` is empty (the old `fade_top`/`fade_bottom` were removed Oct 31 2026).
-
-### Wiring
-- `6100` visible `!$EXP[bz_navmenu]` + NumItems > 38 · `6500` visible `!$EXP[bz_navmenu]` · left 78 / top 151.
-- `BezelAZFade`: empty include.
-
----
-
-## Big album and speed rails
-
-### Simple
-While music plays, the big album art sits on the right. The compact now-playing view moves with it as one piece. Tapping the album opens the full-screen Dialogue view (1120). How fast it slides is a tuner setting.
-
-### How it works
-- There are four album grouplists, one per slide-speed setting. `bz_at_fsslide` picks which one is used, and its scrolltime sets the speed.
-- Each has a "home" slot and an "FS" slot:
-  - **Home slots** bounce focus straight to 6996 (MM open) or 60.
-  - **FS slots:** every direction and Back go to their home slot, then 6390.
-- The compact NP rides 6397 with the album (5.33.121). There's no 1120 fade, and the FS copy is hidden over Music (5.33.125).
-
-### Wiring
-| fsslide | Grouplist | scrolltime | Home slot | FS slot |
-|---|---|---|---|---|
-| 1 | 6367 | 480 | 6368 | 6369 |
-| 2 | 6377 | 380 | 6378 | 6379 |
-| empty / 3 (default) | 6397 | 280 | 6398 | 6399 |
-| 4 | 6382 | 180 | 6383 | 6384 |
-
-- Rails start at Includes_Bezel ~L2207. Home slot onfocus → `$EXP[bz_navmenu]` ? 6996 : 60. FS slot up/down/left/right/back → its home slot, then 6390.
-
----
-
-## Side menu
-
-### Simple
-The side menu has Update library, Playlist, node editor and More add-ons.
-
-### How it works / Wiring
-These are Kodi music-window side buttons in `9000`. Playlist `612` opens the queue (playlists.md).
-
----
-
-## Keys
-| Key | Behavior |
-|---|---|
-| Up / Down | Move; at an edge → ALL `6097` if visible, else stay (no wrap, never to `..`) |
-| Select | Open / play |
-| Left | `bz_vback` close · A–Z hidden + navok → MM |
-| Right | `bz_vback` → 6291 · grid → `gridenter` · 6160 → 1115 · else 6192 |
-| Back | … `bz_np` → clear + 6299 · `bz_atroot` → MM · else parent |
-| M / Red | Music controls 1115 |
-| Tab / Display | Now Playing 1112 |
-
-## Touch
-Big album tap → Dialogue FS 1120 (dialogue-fs.md).
+### Kodi workarounds (do not port)
+- Pull-up slides for the hidden `..` / *All rows and the 6097 offset tables: Kodi always inserts them.
+- 86.67 % scaled list group: the list was moved into the strip without re-laying every row.
+- Wrap watcher, root arm, `bz_allup`: Kodi list navigation quirks.
+- `bz_all2` count rule: Kodi's `NumItems` excludes `..`.
 
 ## Related
-mm-list.md · mm-warm.md · now-playing.md · np-bar.md · dialogue-fs.md · music-controls.md · section-transitions.md
-
-## Touch: big album tap (5.33.221)
-- Button `6180` (Includes_Bezel `BezelMusicPlayingArt`, left 1140 top 220, 600×600; visible while `bz_audio_latch` and no back/flip anim) now has the same Dialogue FS onclicks as remote 6390 when `$EXP[bz_pndlg_ok]`: SetFocus fsslide slot (`bz_at_fsslide` 1→6369, 2→6379, empty/3→6399, 4→6384) then `ActivateWindow(1120)`. When `bz_pndlg_ok` is false the tap does nothing.
+[music-fanart-fs](music-fanart-fs.md) · [big-album](big-album.md) · [fullscreen-pill](fullscreen-pill.md) · [dialogue-fs](dialogue-fs.md) · [recently-played](recently-played.md) · [section-transitions](section-transitions.md) · [idle-big-album-fold](idle-big-album-fold.md)

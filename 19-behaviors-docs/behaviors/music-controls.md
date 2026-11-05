@@ -1,121 +1,107 @@
-# Music controls (dialog 1115)
+# Music controls
 
-**Object:** `Custom_1115_MusicControls.xml` dialog `1115` (zorder 2, `DepthOSD`) · rows `6401–6413` · viz-settings page `6420–6427` + `6429` · `scripts/bz_vizset.py`
-**Where:** Over Music / visualisation / Dialogue FS while audio plays. Right-hand panel at x 570
-**Last updated:** 2026-10-31
-**Status:** Live in 5.33.207. Transport rows, the Viz settings sub-page, the TUNER hand-off and Right → Dialogue FS all work as described here. Draft: Rob hasn't approved or re-smoked it.
-**Skin:** skin.bezel2
+**Object:** the music "remote control" panel · Kodi: dialog `1115` (`Custom_1115_MusicControls.xml`, zorder 2, `DepthOSD`) · rows `6401`–`6413` · viz settings page `6420`–`6427` + Back `6429` · `scripts/bz_vizset.py`
+**Where:** over Music, fullscreen music and Dialogue FS while audio plays; column at x 570
+**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none
 
-Each section has three layers: **Simple** (what it does and why), **How it works** (the flow end to end, including order and races), and **Wiring** (properties, conditions, control IDs, scripts and timings from the live tree).
+## Simple
+A column of 13 rows over a dimmed screen: Play / Pause, Last, Next, Rewind, Fast forward, Stop, Shuffle, Repeat, Up next, Visualisation, Viz settings, TUNER, Close. It opens when Kodi would show its music OSD, with Menu / Red in fullscreen, from the cycle pill's Controls mode, and with Right from the Music list. Up / Down move (wrapping). Left closes. Right closes, or in Music slides the big album into Dialogue FS. Viz settings swaps the column for the current visualisation's own settings. TUNER jumps into the BEZEL Tuner, and Back from there returns here.
 
----
+## Feel contract (any framework)
 
-## Open / close
+### States
+| State | How you get in | How you leave | On screen |
+|---|---|---|---|
+| Rows | open | Left / Back / Close row / tap outside | dim backdrop, title PLAYER CONTROLS, column of rows, focus on Play / Pause |
+| Viz settings | Viz settings row | Back / ‹ Back row | header VIZ SETTINGS · name, up to 8 rows `label ‹ value ›` |
+| No viz settings | Viz settings with none | Back | "No settings for this visualisation" |
+| Handed to Tuner | TUNER row | Tuner Back | Tuner over the MM |
 
-### Simple
-The music controls panel is the "remote control" menu for music: play/pause, skip, shuffle, repeat, Up next, choose a visualisation, tweak its settings, or jump to the Tuner. It opens automatically when Kodi would show its music OSD, and from the fan art pill or the music list. Left always closes it.
+### Timeline
+| t (ms) | What | Duration | Curve |
+|---|---|---|---|
+| open | panel fades in; column rises 30 px into place | 250 | sine out (fade), cubic (rise) |
+| close | panel fades out; column drifts 20 px up | 420 | sine in-out |
+| Visualisation row | panel closes, then Kodi's visualisation picker opens 1 s later | — | — |
 
-### How it works
-- Kodi's own music OSD windows are thin wrappers. `MusicOSD.xml` and `PlayerControls.xml` open 1115 from their `onload`, so any key that would show the stock OSD lands on the BEZEL panel instead.
-- From the Music list, **Right** on list 60 opens 1115 when no vback card is up, no grid (6600) is visible, and the NP button 6160 is visible.
-- From the fan art pill (6391) in full-screen viz, **Down** opens 1115 when NP mode is `controls`. Otherwise it focuses 6390.
-- `bz_cmd.py npctl` toggles 1115. If full-screen video is active it opens `videoosd` instead, so the same command means "show controls" everywhere.
-- The panel fades in for 250 ms and the column slides up from 30 px below. On close it fades out over 420 ms and drifts 20 px. Focus always starts on Play/Pause (`defaultcontrol always`).
+### Interruptions
+- Right to Dialogue FS: the panel closes instantly (no fade) so the album slide starts at once.
+- Rows that open another screen (Up next, Visualisation) close the panel first: nothing stacks under it.
 
-### Wiring
-| Item | Value |
+### Continuity
+- Every open starts on Play / Pause and on the main rows (never on the viz page).
+- Closing while the cycle pill was on Controls returns the pill to Visualizer.
+
+### Layering
+Screen below < full-screen dim (840 × 900 at 120,120 + tap-to-close area) < column < system dialogs.
+
+### Geometry
+| Piece | Value |
 |---|---|
-| Window | `<window type="dialog" id="1115">`, zorder 2, `DepthOSD`, `defaultcontrol always="true"` 6401 |
-| Open anim | Fade 0→100, 250 ms sine out (WindowOpen); column group slide 0,30→0, 250 ms cubic |
-| Close anim | Fade 100→0, 420 ms sine inout (WindowClose); column slide 0→0,-20 |
-| Openers | `MusicOSD.xml` onload (`Player.HasAudio`) · `PlayerControls.xml` onload (`!Window.IsActive(fullscreenvideo) + Player.HasAudio`) · `Includes_Bezel.xml` list 60 onright (`String.IsEmpty(bz_vback) + !Control.IsVisible(6600) + Control.IsVisible(6160)`) · fan art pill ondown (`$EXP[bz_npm_ctl]` = `Skin.String(bz_npmode)=controls`) · `bz_cmd.py npctl` (`videoosd` when `Window.IsActive(fullscreenvideo)`) |
-| Backdrop | Full-screen button (click = Close) · 840×900 dim at 120,120 · title "PLAYER CONTROLS" at 570,66 with BzFSSh shadow variants (`!Skin.HasSetting(bz_fssh_off)`) |
-| Column | Group 570,120, 390×900 · solid FF0E0F12 backing + `BzMMStrip` colour · section labels PLAYBACK / MODE / MORE · focus pill `bezel/mm_pill.png` |
+| Column | 570, 120, 390 × 900 (the strip position) |
+| Title | 570, 66 |
+| Dim block | 120, 120, 840 × 900 |
 
----
+### Art
+Column: solid near-black (#0E0F12) backing + the strip colour; section labels PLAYBACK / MODE / MORE; focus pill. Title with a soft shadow (Tuner can switch shadows off).
 
-## Rows and keys
+### Input
+| Action | Result |
+|---|---|
+| Up / Down | move, wraps Close ↔ Play / Pause |
+| Select | run the row |
+| Left | close |
+| Right | Music + playing + allowed: Dialogue FS; else close |
+| Viz page Left / Right | step the value |
+| Viz page Back | main rows, focus Viz settings |
+| Tap outside | close |
 
-### Simple
-Thirteen rows in three blocks. Up/Down moves and wraps from Close back to Play. Left closes the panel. Right either jumps to the big Dialogue FS screen (when that makes sense) or just closes.
+### Speed targets
+Panel visible within 250 ms; row actions immediate.
+
+### Never
+- No stuck viz settings page on reopen: every open starts on the main rows (463 VIZSETRESET).
+- Tuner re-entry must work after a Tuner Back (469 TUNERREOPEN).
+
+### Acceptance checks
+1. Fullscreen → Menu → panel; Down × 3 wraps correctly; Left closes.
+2. Viz settings → close → reopen → main rows.
+3. TUNER → Tuner → Back → back here; TUNER again → Tuner opens.
+4. Music list → Right → panel → Right → Dialogue FS.
+
+## Kodi implementation (sandbox)
 
 ### How it works
-- Every row runs a Kodi `PlayerControl` or window action. Up next and Visualisation close the panel first, so the next window isn't stacked under a dialog.
-- Visualisation uses a 1 s `AlarmClock` to open Kodi's viz picker *after* the close animation has started. Opening the picker directly from inside the closing dialog would race it.
-- Right checks `$EXP[bz_pndlg_ok]`. When it's true: close 1115 without animation (`Close(1115,true)`), then put focus on the album-rail slot that matches the current slide speed, then open 1120. The focus must land first, because 1120's slide-in starts from the focused rail.
+- **Openers.** `MusicOSD.xml` onload (`Player.HasAudio`), `PlayerControls.xml` onload (`!fullscreenvideo + Player.HasAudio`), list 60 onright in Music (`bz_vback` empty, NP button 6160 visible), cycle pill Down in Controls mode (6391 / 6421), keymap m / red in 1121 and viz, `bz_cmd.py npctl` (toggle; fullscreen video → `videoosd`).
+- **Right → Dialogue FS.** Every row's `onright` with `$EXP[bz_pndlg_ok]`: `Close(1115,true)` → `bz_rail=centre` → `ActivateWindow(1120)`; else close.
+- **Visualisation row.** `Dialog.Close(1115)` → `AlarmClock(bzviz,Addon.Default.Set(xbmc.player.musicviz),00:01)` (picker after the close starts).
+- **Viz settings.** 6412: `SetProperty(bz_vizset,1,1115)` → `bz_vizset.py load` → focus 6420. The script reads the active viz (JSON-RPC `musicplayer.visualisation`), its `resources/settings.xml` (integer / number / boolean, max 8, options from `<option>`, min / max / step defaults 0 / 100 / 1) and publishes `bz_vsN_lab` / `bz_vsN_val` on the dialog. Steps write at once with `addon.setSetting`. Down skips empty rows to 6429.
+- **Page reset.** `bz_vizset` is always addressed to window 1115 and cleared on load and unload (463).
+- **TUNER row.** `bz_tunesrc=fsctrl` → close → `ActivateWindow(home)` → `bz_nav` + `bz_navtune` → `AlarmClock(bz_tunf,SetFocus(6970))`. Tuner rail Back with `fsctrl`: clear `bz_nav` / `bz_navtune` / `bz_tunesrc` first, then 1121 (or viz) + 1115 (469).
+- **onunload:** clear `bz_vizset`; `bz_npmode=controls` → `vis`.
 
 ### Wiring
-| ID | Label | onclick |
+| Id | Row | onclick |
 |---|---|---|
-| 6401 | Play/Pause | `PlayerControl(Play)` |
-| 6402 | Last | `PlayerControl(Previous)` |
-| 6403 | Next | `PlayerControl(Next)` |
-| 6404 | Rewind | `PlayerControl(Rewind)` |
-| 6405 | FF | `PlayerControl(Forward)` |
+| 6401 | Play / Pause | `PlayerControl(Play)` |
+| 6402 / 6403 | Last / Next | `PlayerControl(Previous / Next)` |
+| 6404 / 6405 | Rewind / Fast forward | `PlayerControl(Rewind / Forward)` |
 | 6406 | Stop | `PlayerControl(Stop)` |
-| 6407 | Shuffle | `PlayerControl(Random)` |
-| 6408 | Repeat | `PlayerControl(Repeat)` |
-| 6409 | Up next | Close + `ActivateWindow(musicplaylist)` |
-| 6411 | Visualisation | Close + `AlarmClock(bzviz,Addon.Default.Set(xbmc.player.musicviz),00:01,silent)` |
-| 6412 | Viz settings | `SetProperty(bz_vizset,1)` · `RunScript(bz_vizset.py,load)` · `SetFocus(6420)` |
-| 6413 | TUNER | see below |
-| 6410 | Close controls | Close |
+| 6407 / 6408 | Shuffle / Repeat | `PlayerControl(Random / Repeat)` |
+| 6409 | Up next | close + `ActivateWindow(musicplaylist)` |
+| 6411 | Visualisation | close + 1 s picker alarm |
+| 6412 | Viz settings | page (above) |
+| 6413 | TUNER | hand-off (above) |
+| 6410 | Close controls | `Dialog.Close(1115)` |
+| Chain | 6401 ↔ … ↔ 6408 ↔ 6409 ↔ 6411 ↔ 6412 ↔ 6413 ↔ 6410 ↔ 6401 (wraps); every row onleft = close |
+| Anim | WindowOpen fade 250 sine out; column slide 0,30 → 0 250 cubic; WindowClose fade 420 sine in-out, slide 0 → 0,−20 |
+| defaultcontrol | `always` 6401 |
 
-- Up/Down chain: 6401↔6402↔…↔6408↔6409↔6411↔6412↔6413↔6410↔6401 (wraps).
-- Every row: `onleft` = Close.
-- Every row `onright`: when `$EXP[bz_pndlg_ok]`, it runs `Close(1115,true)`, then SetFocus by `Skin.String(bz_at_fsslide)` (1→6369 · 2→6379 · empty/3→6399 · 4→6384), then `ActivateWindow(1120)`. Otherwise it runs Close.
-- `bz_pndlg_ok` (Includes_Bezel ~L318) = `!Skin.HasSetting(bz_pndlg_off) + Player.HasAudio + !Player.HasVideo + Window.IsActive(music) + !Window.IsActive(visualisation) + !Window.IsActive(1120)`.
-
----
-
-## TUNER hand-off (6413)
-
-### Simple
-TUNER jumps straight into the BEZEL Tuner on the main menu. Back from the Tuner returns you to the visualisation with this panel open again.
-
-### How it works
-6413 stamps the source (`bz_tunesrc=fsctrl`) **before** it closes, so the Tuner's Back handler knows where to return. It then opens Home, opens the MM (`bz_nav`) with the Tuner card (`bz_navtune`), and focuses the Tuner list 6970 with a zero-delay alarm. The alarm lets the MM build before focus is requested.
-
-### Wiring
-- onclick order: `SetProperty(bz_tunesrc,fsctrl,home)` → Close → `ActivateWindow(home)` → `SetProperty(bz_nav,true,home)` → `SetProperty(bz_navtune,true,home)` → `AlarmClock(bz_tunf,SetFocus(6970),00:00)`.
-- Tuner 6970 onback with `bz_tunesrc=fsctrl`: `ClearProperty(bz_nav)` → `ActivateWindow(visualisation)` → `ActivateWindow(1115)` (`Includes_Tuner.xml`).
-
----
-
-## Viz settings page (6420–6429)
-
-### Simple
-"Viz settings" swaps the panel to a page listing the current visualisation's own settings (up to 8). Left and Right change a value, and Back returns to the main rows. If the visualisation has no adjustable settings, it says so.
-
-### How it works
-1. 6412 sets `bz_vizset=1`, which shows the page group drawn over the main rows. The main rows have no `bz_vizset` condition of their own; focus moves to 6420.
-2. `bz_vizset.py load` asks Kodi (JSON-RPC `Settings.GetSettingValue musicplayer.visualisation`) which viz is active.
-3. It reads that add-on's `resources/settings.xml` and keeps only `integer`, `number` and `boolean` settings (up to MAX=8).
-   - Options come from `<option>` entries.
-   - min/max/step come from the constraints (defaults 0/100/1).
-4. It publishes labels and values as window properties on the current dialog, so the XML just shows `bz_vsN_lab` / `bz_vsN_val`.
-5. Stepping:
-   - Booleans toggle (shown On/Off).
-   - Option lists cycle (mod length).
-   - Numbers clamp to min/max (cast to int for integer settings).
-   - Each step writes immediately with `addon.setSetting` and republishes.
-6. If no viz is set, it publishes `bz_vs_n=0` and the name "None", and the page shows "No settings for this visualisation".
-7. Down on a row skips to Back (6429) when the next row's label is empty. That way focus never lands on a blank slot.
-
-### Wiring
-| Item | Value |
-|---|---|
-| Page group | visible `Window.Property(bz_vizset)=1` |
-| Header | "VIZ SETTINGS · `bz_vs_name`"; empty text when `bz_vs_n=0` |
-| Rows 6420–6427 | label `bz_vsN_lab`, value `‹ bz_vsN_val ›` · onclick/onright `bz_vizset.py step,N,1` · onleft `step,N,-1` · onback: clear `bz_vizset` + `SetFocus(6412)` · ondown → 6429 if the next label is empty |
-| 6429 ‹ Back | clear `bz_vizset` + `SetFocus(6412)`; onup → last populated row |
-| Script | `scripts/bz_vizset.py` (57 lines): `vizid()`, `rows()`, `show()`, step; target window `xbmcgui.getCurrentWindowDialogId()` |
-| onunload | `ClearProperty(bz_vizset)`; if `Skin.String(bz_npmode)=controls` → `Skin.SetString(bz_npmode,vis)` |
-
----
-
-## Touch
-None specified beyond normal focus/click. Tapping the dim area (full-screen button) closes the panel.
+### Kodi workarounds (do not port)
+- Hijacking `MusicOSD` / `PlayerControls` onload: the only way to replace Kodi's OSD.
+- The 1 s alarm before the viz picker: avoids a race with the closing dialog.
+- Window-scoped `bz_vizset`: Kodi's unscoped SetProperty targets the focused window.
+- `Close(1115,true)` before 1120: modal ordering.
 
 ## Related
-fanart-fs.md · dialogue-fs.md · music-viz-settings.md · skin-settings-tuner.md · play-next.md
+[music-viz-settings](music-viz-settings.md) · [dialogue-fs](dialogue-fs.md) · [music-fanart-fs](music-fanart-fs.md) · [skin-settings-tuner](skin-settings-tuner.md)
