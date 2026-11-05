@@ -1,44 +1,57 @@
-# Leaf flip (book-page leaf — family index)
+# Leaf flip (family index)
 
-**Object:** leaf-flip family — `xml/Includes_Bezel.xml` hinge group (camera 1440,520, FOLDLOCK) · `scripts/bz_flip.py` `idle_hinge()` · Home props `bz_hf_a` / `bz_hf_b` / `bz_hf_ph`
-**Last updated:** 2026-11-02 · 5.33.309
-**Status:** idle use **approved / LOCKED** (see idle-big-album-fold.md) · while-play next-song **not leaf** — uses album sway next song fade (5.33.301) · FS stubs **PLANNED** (not shipped)
+**Object:** the book-page leaf animation family · Kodi: hinge group (camera 1440,520, `FOLDLOCK`) · `bz_flip.py idle_hinge()` · Home `bz_hf_a` / `bz_hf_b` / `bz_hf_ph` / `bz_hf_g`
+**Where:** big album
+**Last updated:** 2026-11-04 · 5.33.473 · **Status:** idle use live (off by default), other uses not shipped · **Lock:** **LOCKED** (look and timing = [idle-big-album-fold](idle-big-album-fold.md))
 
 ## Simple
-Leaf flip is its own animation: the cover is cut at the slit (x1440) and the right half turns like a book page to reveal the next cover. It has its own clock (`bz_hf_ph`, 1400 ms per phase) and its own props. It is **not** the rock/sway tip and **not** the album-change full flip. Every place that wants a "page turn" uses this file's behaviour — nothing borrows from sway or `bz_cov_side`.
+"Leaf flip" is the page-turn animation: the cover is cut at the spine and its right half turns like a book page to show the next cover. It has its own clock and its own state. It is not the sway and not the whole-cover flip. Anywhere Bezel wants a page turn uses this; today only the idle big album does.
 
-## How it works
-- **Look source:** the locked idle Big Album fold — [idle-big-album-fold.md](idle-big-album-fold.md) is the single source for geometry, shadows, frames, glare (5.33.266 look / 267 lock). Do not restate or alter it here.
-- **Core:** pivot rotatey at slit x1440 (group 1140,220 600×600), camera 1440,520. ph1 A-right 0→+90, ph2 B-left −90→0, 1400 ms sine in/out each, then A:=B and `bz_hf_ph` cleared.
-- **Own clock:** phases are driven by Python (`bz_hf_ph` = 1/2, `waitForAbort(1.4)`), not by the sway go/pulse clock.
-- **Uses:**
-  | Use | Status | Trigger / hold |
-  |---|---|---|
-  | Idle Big Album (Music list 60, no audio) | **LIVE · LOCKED** | 10 s hold (5 s under MM warm, 5.33.279 MMLEAF) |
-  | While-play next-song | **Not leaf** (5.33.301) | album change while playing = album sway next song fade inside the sway tree (`bz_cov_x`/`bz_cov_xf`, 900 ms); leaf on that path stays parked |
-  | FS stubs leaf | **PLANNED** — not shipped | reuse same 1400 ms × 2 timing / slit model |
-- **MUST NOT:**
-  - share the sway clock (idle rock removed 5.33.408) (`bz_sway_go`, `bz_big_go`/`bz_big_pulse`, `bz_audio_latch` lead-in, ±13° / −30° tips) — see [sway-animations.md](sway-animations.md);
-  - reuse the `bz_cov_side` full flip (0→90 / −90→0 whole cover, ~1857 ms) — separate path, **parked for next-song since 5.33.301** (XML kept for the music → video path);
-  - be triggered by play start (play start = sway lead-in only).
+## Feel contract (any framework)
+The full contract (states, timeline, shadows, geometry, checks) is in [idle-big-album-fold](idle-big-album-fold.md). Family rules:
 
-## Wiring
+### States
+| Use | Status |
+|---|---|
+| Idle big album (Music list, nothing playing) | live, off by default (Tuner) |
+| While playing, next song | **not a leaf**: album changes while playing use the sway-tree next-song fade (900 ms) |
+| Fullscreen side albums | planned, not shipped |
+### Timeline
+Two phases of 1400 ms, sine in-out, pivot at the spine (x 1440). Hold 10 s (5 s under the MM).
+### Interruptions
+Focus change aborts within 50 ms.
+### Continuity
+Own clock: never the sway clock, never triggered by play start.
+### Layering
+See the fold file.
+### Geometry
+Spine x 1440 on the 600 × 600 album at 1140, 220.
+### Art
+Half covers, half frames, fold shadows (fold file).
+### Input
+None; Tuner toggle.
+### Speed targets
+Exactly 1400 ms per phase.
+### Never
+- Never share the sway clock or the whole-cover flip (0 → 90 / −90 → 0, ≈ 1857 ms, kept only for the music → video path).
+- No tap-to-flip track list (deleted 309: "we don't use it anymore").
+### Acceptance checks
+See the fold file.
+
+## Kodi implementation (sandbox)
+
+### How it works
+Python drives `bz_hf_ph` = 1 / 2 with `waitForAbort(1.4)`; XML hinge group (visible `!Player.HasAudio + Window.IsActive(music) + !String.IsEmpty(bz_hf_a)`) runs the rotations. Gate `Skin.HasSetting(bz_leafflip)`.
+
+### Wiring
 | Piece | Where |
 |---|---|
-| Props (owned) | `bz_hf_a` current cover · `bz_hf_b` next (preload at hold start) · `bz_hf_ph` 1/2 during phases |
-| Driver | `bz_flip.py` `idle_hinge()` (gate `ok()` idle OR `mmw()`); future uses get their own entry point but same props/timing |
-| XML | hinge group visible `!Player.HasAudio + Window.IsActive(music) + !String.IsEmpty(bz_hf_a)` |
-| Not owned | `bz_cov_side` (album-change flip) · `bz_sway*` / `bz_big_*` / `bz_audio_latch` (sway; idle rock removed 5.33.408) |
-| Restart | XML/media → ReloadSkin; `bz_flip.py` → FULL restart |
+| Owned props | `bz_hf_a`, `bz_hf_b`, `bz_hf_ph`, `bz_hf_g` |
+| Not owned | `bz_cov_side` (whole-cover flip), `bz_sway*` / `bz_big_*` (sway) |
+| Driver | `bz_flip.py idle_hinge()`; future uses get their own entry point with the same props and timing |
 
-## Track-list flip — DELETED (5.33.309)
-Rob (Nov 2 2026): "We don't use it anymore." The tap-to-flip track list is gone: list 6185, include `BezelFlipText`, `BezelNPHeader`, variable `BezelBackPath`, the black back-face panel, the 1112 album tap 6381, `bz_back` / `bz_backanim` / `bz_back_close` / `bz_back_pick` / `bz_back_fade`, and `back_face()` / `play_pick()` in `bz_flip.py` (only the `bz_albumid` tracker is kept, as `album_id()`).
-**Kept, separate from the picker:** leaf flip (this file), sway, album next song fade, the `bz_flipping` glare fade and the `bz_cov_side` album flip.
+### Kodi workarounds (do not port)
+Phase stepping from Python (see the fold file).
 
-
-## Enable gate (5.33.405 LEAFFLIP)
-Leaf flip runs only when `Skin.HasSetting(bz_leafflip)` — **default OFF**. Toggle: Tuner › ALBUM / POSTER › Leaf flip (Idle rock row removed 5.33.408). Off → `idle_hinge()` `ok()` false → `bz_hf_*` cleared, no phases. Look/timing above unchanged (LOCKED).
-
-
-## 5.33.438 LEAFTUNE
-Look/timing unchanged. `idle_hinge()` arms `bz_hf_a/b` only after the base idle album (`bz_m_idle_art`) shows the cover and its A/B dissolve is done (no snap over the dissolve, no render-thread load). Hinge images load `background="true"`. Fold aborts within 50 ms of a focus change. New `bz_hf_g`: glare group fades out 500 ms before ph1 and back 600 ms after landing (was hidden all hold). 0.3 s grace on a one-frame focus hop. RPC album thumbs unwrapped.
+## Related
+[idle-big-album-fold](idle-big-album-fold.md) · [sway-animations](sway-animations.md) · [big-album](big-album.md)
