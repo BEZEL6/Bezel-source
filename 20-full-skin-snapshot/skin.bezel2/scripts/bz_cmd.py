@@ -240,7 +240,7 @@ if action in ('tab', 'np', 'nptoggle', 'vistoggle'):
     # opens the current fullscreen instead, the same as the MM FULL pill: Music Fanart FS 1121 from the music window, else Kodi FS.
     if xbmc.getCondVisibility('Player.HasAudio + !Player.HasVideo') and (action == 'tab' or home.getProperty('bz_audio_latch') == 'true'):
         home.clearProperty('bz_nav'); home.clearProperty('bz_navtune'); home.clearProperty('bz_navbez')
-        if xbmc.getCondVisibility('!Skin.HasSetting(bz_m1121_off) + Window.IsActive(music) + !Window.IsActive(visualisation)'):
+        if xbmc.getCondVisibility('!Skin.HasSetting(bz_m1121_off) + [Window.IsActive(music) | Window.IsActive(home) | Window.IsActive(videos) | Window.IsActive(pictures) | Window.IsActive(programs) | Window.IsActive(addonbrowser)] + !Window.IsActive(visualisation)'):   # 5.33.472 FSANY
             xbmc.executebuiltin('ActivateWindow(1121)')
         elif not xbmc.getCondVisibility('Window.IsActive(visualisation)'):
             xbmc.executebuiltin('ActivateWindow(visualisation)')

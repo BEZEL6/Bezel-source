@@ -225,7 +225,7 @@
 
 	<!-- ============ Shared pieces ============ -->
 	<!-- ============ BEZEL 2.0 alpha 1 ============ -->
-	<expression name="bz_m1121ok">!Skin.HasSetting(bz_m1121_off) + Player.HasAudio + !Player.HasVideo + Window.IsActive(music) + !Window.IsActive(visualisation)</expression><!-- 5.33.210 Music Fanart FS 1121 gate -->
+	<expression name="bz_fs1121win">[Window.IsActive(music) | Window.IsActive(home) | Window.IsActive(videos) | Window.IsActive(pictures) | Window.IsActive(programs) | Window.IsActive(addonbrowser)]</expression><!-- 5.33.472 FSANY (Rob: separate dialogue fullscreen for every section -> one 1121 over any section): windows that draw the fullscreen stage under 1121 (Music: its own NP panel; the others: BezelFSUnderlay) --><expression name="bz_m1121ok">!Skin.HasSetting(bz_m1121_off) + Player.HasAudio + !Player.HasVideo + $EXP[bz_fs1121win] + !Window.IsActive(visualisation)</expression><!-- 5.33.210 Music Fanart FS 1121 gate -->
 	<!-- 5.33.389 Rob t2725 SETTINGS TREE (single source of truth: behaviors/artwork-group.md "Settings tree"; mirror = bz_flip SETTINGS_TREE, checked by scripts/bz_tree_check.py).
 	     MM -> SETTINGS (root bz_setkids owns global artwork) -> branches -> kids. Add a kid ONLY to its branch here + the same branch in SETTINGS_TREE. -->
 	<expression name="bz_set_hub">Window.IsActive(1130) | Window.IsActive(1131) | Window.IsActive(1117) | Window.IsActive(addonbrowser)</expression>
@@ -3142,6 +3142,19 @@
 		<control type="grouplist"><left>0</left><top>1000</top><width>1920</width><height>28</height><align>center</align><orientation>horizontal</orientation><itemgap>12</itemgap>
 			<control type="label"><width>auto</width><height>28</height><aligny>center</aligny><font>bz_splash20r</font><textcolor>80FFFFFF</textcolor><label>Design by Robert Politano</label></control>
 			<control type="image"><top>7</top><width>27</width><height>14</height><aspectratio>stretch</aspectratio><texture colordiffuse="80FFFFFF">bezel/us_flag.png</texture></control>
+		</control>
+	</include>
+	<include name="BezelFSUnderlay"><!-- 5.33.472 FSANY: the fullscreen stage under 1121 in a non-Music window: full black + the same NP stage the Music window draws (artist fanart, panel, bio / lyrics / viz modes). Drawn on top of the window, under 1122 (album, zorder 0) and 1121 (chrome, zorder 1), exactly like the Music window today -->
+		<control type="group"><visible>Window.IsVisible(1121) + !Window.IsActive(music) + Player.HasAudio</visible>
+			<animation effect="fade" start="0" end="100" time="300" tween="sine" easing="inout">Visible</animation><animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout">Hidden</animation>
+			<control type="image"><left>0</left><top>0</top><width>1920</width><height>1080</height><texture colordiffuse="FF000000">bezel/white.png</texture></control>
+			<include content="BezelNPInPlace"><param name="npfade" value="300"/></include>
+		</control>
+	</include>
+	<include name="BezelFSUnderlayBlack"><!-- 5.33.472 FSANY: black only, for windows that already carry the NP stage (MyPrograms reuses the music list view) -->
+		<control type="group"><visible>Window.IsVisible(1121) + !Window.IsActive(music) + Player.HasAudio</visible>
+			<animation effect="fade" start="0" end="100" time="300" tween="sine" easing="inout">Visible</animation><animation effect="fade" start="100" end="0" time="300" tween="sine" easing="inout">Hidden</animation>
+			<control type="image"><left>0</left><top>0</top><width>1920</width><height>1080</height><texture colordiffuse="FF000000">bezel/white.png</texture></control>
 		</control>
 	</include>
 </includes>

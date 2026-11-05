@@ -60,5 +60,6 @@
 		<include>BezelMiniPlayer</include>
 		</control><!-- 4.7.4 end SECTION PARENT GROUP -->
 		<include>BezelLogoButton</include>
+			<include>BezelFSUnderlayBlack</include><!-- 5.33.472 FSANY -->
 	</controls>
 </window>

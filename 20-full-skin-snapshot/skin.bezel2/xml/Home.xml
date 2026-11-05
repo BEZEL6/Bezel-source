@@ -16,5 +16,6 @@
 			<texturefocus></texturefocus><texturenofocus></texturenofocus>
 			<onclick>RunScript(special://skin/scripts/bz_cmd.py,start)</onclick>
 		</control>
+			<include>BezelFSUnderlay</include><!-- 5.33.472 FSANY -->
 	</controls>
 </window>

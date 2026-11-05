@@ -122,5 +122,6 @@
 		<include>BezelLogoButton</include>
 		<!-- 5.33.199: warm-gate splash overlay (non-modal) — UI builds underneath -->
 		<include>BezelWarmGateOverlay</include>
+			<include>BezelFSUnderlay</include><!-- 5.33.472 FSANY -->
 	</controls>
 </window>

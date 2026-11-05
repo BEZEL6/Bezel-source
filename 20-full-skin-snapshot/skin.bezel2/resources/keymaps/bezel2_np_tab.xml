@@ -9,10 +9,14 @@
 		<keyboard><red>ActivateWindow(1115)</red></keyboard><!-- BEZEL 3.2.0 item 7: CEC RED (Samsung Frame 123/colour pad; arrives as remote red, or as keyboard red via Android PROG_RED on the Shield) opens the music controls -->
 	</music>
 	<videos>
-		<keyboard><escape>Back</escape></keyboard><!-- BETA 2.3 item 11 -->
+		<keyboard><escape>Back</escape><tab>ActivateWindow(1121)</tab></keyboard><remote><display>ActivateWindow(1121)</display></remote><!-- 5.33.472 FSANY: 1121 hands a playing video to fullscreenvideo --><!-- BETA 2.3 item 11 -->
 	</videos>
 	<!-- BETA 1.1b: Kodi's busy dialog is up while a song opens (long on the first play after Kodi starts: audio output init), and keys then go to it,
 	     not to the music window. Tab / Display there are remembered (bz_tabq) and bz_flip.py opens Now Playing once the busy dialog is gone. -->
+	<home><!-- 5.33.472 FSANY --><keyboard><tab>ActivateWindow(1121)</tab></keyboard><remote><display>ActivateWindow(1121)</display></remote></home>
+	<pictures><!-- 5.33.472 FSANY --><keyboard><tab>ActivateWindow(1121)</tab></keyboard><remote><display>ActivateWindow(1121)</display></remote></pictures>
+	<programs><!-- 5.33.472 FSANY --><keyboard><tab>ActivateWindow(1121)</tab></keyboard><remote><display>ActivateWindow(1121)</display></remote></programs>
+	<addonbrowser><!-- 5.33.472 FSANY --><keyboard><tab>ActivateWindow(1121)</tab></keyboard><remote><display>ActivateWindow(1121)</display></remote></addonbrowser>
 	<busydialog>
 		<keyboard><tab>SetProperty(bz_tabq,true,home)</tab></keyboard>
 		<remote><display>SetProperty(bz_tabq,true,home)</display></remote>
