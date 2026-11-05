@@ -2,10 +2,10 @@
 
 **Object:** Kodi's fullscreen music window · Kodi: `MusicVisualisation.xml` (`visualisation`) · main `6390` (`BezelNPInPlace`, 120,120 840×900) · cycle pill `6391` · big album pill `6401` · Back router `6297` · redirects `6299`, `6385`, `60` · touch `6407`–`6410`
 **Where:** fullscreen music when Bezel's own fullscreen ([music-fanart-fs](music-fanart-fs.md)) can't be used
-**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live (fallback) · **Lock:** none. **Rob rule:** every change here is made to Music Fanart FS in the same build, and the reverse; alert Rob that it applies to both.
+**Last updated:** 2026-11-04 · 5.33.474 · **Status:** live (fallback) · **Lock:** none. **Rob rule:** every change here is made to Music Fanart FS in the same build, and the reverse; alert Rob that it applies to both.
 
 ## Simple
-This is Kodi's own fullscreen music screen, dressed to look and work exactly like Bezel's fullscreen music: the fanart stage, the swaying big album, the meta and progress bar, the six-mode cycle pill, double-Select for album view, Back to the fanart and Back again to leave. Bezel now uses its own fullscreen almost everywhere; this screen appears only from places that can't host it (Settings, PVR and other Kodi screens, the kill switch, or when another app or add-on opens Kodi's visualisation).
+This is Kodi's own fullscreen music screen, dressed to look and work exactly like Bezel's fullscreen music: the fanart stage, the swaying big album, the meta and progress bar, the six-mode cycle pill, double-Select for album view, Back to the fanart and Back again to leave. Bezel now uses its own fullscreen almost everywhere; this screen stays only where Bezel's can't be hosted (Settings, PVR and other Kodi screens) or when Bezel's fullscreen is switched off. When a remote app, an add-on or Kodi's own FullScreen action opens it over Music, Home, Movies / TV, Pictures, Programs or Add-ons, it hands over to Bezel's fullscreen at once (behind a black cover).
 
 ## Feel contract (any framework)
 A port has **one** fullscreen music screen: build [music-fanart-fs](music-fanart-fs.md). This screen must match it. The only allowed differences are listed here.
@@ -46,13 +46,15 @@ Same as Music Fanart FS.
 - No drop shadows behind the overlay text, pills or transport bar (473 FSSHADOWDEL).
 ### Acceptance checks
 1. Open Kodi Settings with music playing → Tab → this screen; it looks identical to Bezel fullscreen.
+4. From a phone remote, press fullscreen while in Movies with music playing → black for a moment, then Bezel fullscreen; Back → Movies.
 2. Double-Select → album view; Back → fanart; Back → Settings.
 3. No pill in the top-right at any point.
 
 ## Kodi implementation (sandbox)
 
 ### How it works
-- **When it opens.** Any `ActivateWindow(visualisation)`: openers when `$EXP[bz_m1121ok]` is false (window outside `bz_fs1121win`, kill switch `bz_m1121_off`), 1121's own onload redirect, Tuner `fsctrl` Back with 1121 not allowed, and outside callers (remote apps, add-ons). 474 plan: redirect those into 1121.
+- **When it opens.** Any `ActivateWindow(visualisation)` / `Action(FullScreen)` with audio: Bezel openers when `$EXP[bz_m1121ok]` is false (window outside `bz_fs1121win`, kill switch `bz_m1121_off`), 1121's own onload redirect, Tuner `fsctrl` Back with 1121 not allowed, and outside callers (remote apps, add-ons, Kodi FullScreen).
+- **Hand-over (474 VIZREDIR, Intent: one fullscreen).** `$EXP[bz_vizredir]` = `!bz_m1121_off + Player.HasAudio + !Player.HasVideo + Window.Previous(music | home | videos | pictures | programs | addonbrowser)` (Window.Previous is set before WINDOW_INIT, so it is valid in onload; Bezel's own openers never produce this case). Onload then sets Home `bz_vizredir` (black 1920 × 1080 cover on top), skips the sway restart and the 6390 focus alarm, and focuses 6297 (with `bz_pnoff=1` = `Action(Back)` → previous window). Onunload queues `ActivateWindow(1121)`; 1121 onload clears `bz_vizredir`.
 - **onload:** keymap refresh (`bz_cmd.py keymap`), `bz_pnoff=1` (fanart), `bz_dfs_mode` defaults to `album`, `bz_fsnp`, `bz_np`, `AlarmClock(bz_fsfoc,SetFocus(6390))`, start bz_flip if needed, **`bz_sway_restart=true`** (album re-zeroes).
 - **onunload:** clear `bz_np` (if `bz_fsnp`), `bz_fsnp`, `bz_pnoff`, `bz_pnfoc`, `bz_vdtap`; `bz_gridret` 3 s; MM closed and not opened from the MM → `AlarmClock(bz_vizret,SetFocus(60))`; opened from the MM (`bz_fsmm`) → bz_flip reopens the MM.
 - **Two views.** `bz_pnoff=1` = fanart stage; empty = album view. Back is keymapped to `SetFocus(6297)`; 6297 onfocus: album view → `bz_pnoff=1`, else `Action(Back)`; then focus 6390.

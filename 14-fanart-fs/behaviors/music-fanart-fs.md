@@ -2,7 +2,7 @@
 
 **Object:** fullscreen music screen over any section · Kodi: dialog `1121` (`Custom_1121_MusicFanartFS.xml`) · main `6420` · cycle pill `6421` · Back router `6422` · touch `6426`–`6430` · big album pill `6401` (shared)
 **Where:** over Music, Home, Movies / TV, Pictures, Programs, Add-ons while music plays
-**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none. **Rob rule:** any change to Kodi Fanart FS ([fanart-fs](fanart-fs.md)) is made here in the same build, and the reverse; alert Rob that it applies to both.
+**Last updated:** 2026-11-04 · 5.33.474 · **Status:** live · **Lock:** none. **Rob rule:** any change to Kodi Fanart FS ([fanart-fs](fanart-fs.md)) is made here in the same build, and the reverse; alert Rob that it applies to both.
 
 ## Simple
 With music playing, FULLSCREEN (the strip pill, the MM FULL pill, Tab or the remote's Display key) fills the screen with the playing artist's fanart, the big album swaying on the right, the song's artist / album / title at the top left and a progress bar that grows out of the year pill. Nothing restarts: the fanart and the album keep moving exactly as they were. Double-Select slides the big album to the centre with the previous and next albums beside it (album view). Back from album view returns to the fanart; Back from the fanart closes fullscreen and returns you where you were. If the music stops, fullscreen closes by itself.
@@ -18,6 +18,7 @@ With music playing, FULLSCREEN (the strip pill, the MM FULL pill, Tab or the rem
 | Up Next list | cycle mode Up Next, Down | Back / Up from first row / Left | queue list; Select plays that song |
 | Controls | cycle mode Controls, Down; or Menu / Red | close it | music controls dialog on top |
 | Closed | Back from Fanart stage; Tab / Display; music stops | — | the screen you came from, same row focused |
+| Handed over | a remote app / add-on / Kodi FullScreen opens Kodi's fullscreen over a hosting screen | — | a moment of black, then this screen |
 
 ### Timeline
 **Open (from any section)**
@@ -112,7 +113,7 @@ Section window (+ black cover + fanart stage when not in Music) < big album laye
 
 ### How it works
 - **Why a dialog (Intent: one fullscreen over everything).** Kodi's real visualisation window replaces the section window, which would restart the stage and the album. 1121 is a dialog over the current window, so the window and the always-open big album dialog 1122 keep running. Since 5.33.309 the album, sway, glare, dust and NP bar live in 1122, so 1121 only needs the window for the fanart stage.
-- **Openers.** When `$EXP[bz_m1121ok]` (audio, no video, kill switch off, window in `bz_fs1121win` = Music / Home / Videos / Pictures / Programs / Add-ons, not viz): FULLSCREEN pill 6886, MM FULL pills 6960 / 6910, big album routes, Tab / Display keymap in those windows, `bz_cmd.py` `tab` / `np` / `nptoggle` / `vistoggle` / Info-with-no-album / auto-NP / bz_flip `bz_tabq`, Tuner Back with `bz_tunesrc=fsctrl`. Otherwise the same controls open Kodi FS (`ActivateWindow(visualisation)`).
+- **Openers.** When `$EXP[bz_m1121ok]` (audio, no video, kill switch off, window in `bz_fs1121win` = Music / Home / Videos / Pictures / Programs / Add-ons, not viz): FULLSCREEN pill 6886, MM FULL pills 6960 / 6910, big album routes, Tab / Display keymap in those windows, `bz_cmd.py` `tab` / `np` / `nptoggle` / `vistoggle` / Info-with-no-album / auto-NP / bz_flip `bz_tabq`, Tuner Back with `bz_tunesrc=fsctrl`, and Kodi's visualisation when an outside caller opens it from one of those windows (474 VIZREDIR, see [fanart-fs](fanart-fs.md)). Otherwise the same controls open Kodi FS (`ActivateWindow(visualisation)`).
 - **Fanart stage outside Music.** `BezelFSUnderlay` (black 1920×1080 + `BezelNPInPlace`, npfade 300) at the end of Home, MyVideoNav, MyPics, AddonBrowser; `BezelFSUnderlayBlack` in MyPrograms (it already has the stage). Visible `Window.IsVisible(1121) + !Window.IsActive(music) + Player.HasAudio`, 300 ms fades. In Music the list view's own `BezelNPInPlace` is the stage.
 - **Fanart preload.** 1122 draws `Player.Art(artist.fanart)` at 3 % while audio plays and neither 1121 nor viz is up, so the texture is cached.
 - **onload** (in order): close if kill switch / no audio / video / window not allowed; video → `ActivateWindow(fullscreenvideo)`; not allowed + audio → `ActivateWindow(visualisation)`; keymap refresh; `bz_pnoff=1` (fanart stage); `bz_dfs_mode` defaults to `album`; `bz_fsnp`, `bz_np`; start bz_flip if not running. **No `bz_sway_restart`.**
