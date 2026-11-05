@@ -1,7 +1,7 @@
 # Big album pill
 
 **Object:** ALBUM ↔ PREV/NEXT mode pill · Kodi: include `BezelBigAlbumPill` → button `6401`, mode `Skin.String(bz_dfs_mode)` · used in Dialogue FS (1120), Music Fanart FS (1121) album view and Kodi FS album view
-**Where:** upper right, 1360,60 500 × 32, right-aligned
+**Where:** upper right, 1360,42 500 × 32, right-aligned (centred on the Bezel logo, y 58)
 **Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none
 
 ## Simple
@@ -35,7 +35,7 @@ Mode survives closing, reopening and app restarts; one value for all album views
 Over the fanart / Music window and the big album layer; same level as the other fullscreen chrome.
 
 ### Geometry
-Group 1360, 60, 500 × 32, text right-aligned (pill grows left).
+Group 1360, 42, 500 × 32, text right-aligned (pill grows left); its centre (y 58) lines up with the Bezel logo (64 × 64 at 28, 26).
 
 ### Art
 32 px rounded pill, 16 px caps, fill = fullscreen tint at 50 % (unfocused) / 80 % (focused), label in the tint colour, 15 px bold font. Labels: ALBUM, PREV/NEXT.

@@ -1,74 +1,95 @@
-# Keymaps (BEZEL profile keymaps)
+# Keymaps
 
-**Object:** `scripts/bz_km.py` (leave/cleanup) · `bz_cmd.py keymap` / `keymap_leave` (np_tab) · `scripts/bz_dtap.py` (dtap + noctx) · `bz_flip.py km_leave_watch` (line 457) · source `resources/keymaps/bezel2_np_tab.xml`  
-**Where:** Installed into the profile keymaps folder as `zz_bezel2_np_tab.xml`, `zz_bezel2_dtap.xml`, `zz_bezel2_noctx.xml`  
-**Last updated:** 2026-10-31 · 5.33.207  
-**Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
-**Skin:** skin.bezel2
+**Object:** Bezel's key mapping · Kodi: profile keymaps `zz_bezel2_np_tab.xml` (source `resources/keymaps/bezel2_np_tab.xml`), `zz_bezel2_dtap.xml`, `zz_bezel2_noctx.xml` · `scripts/bz_km.py`, `bz_cmd.py keymap` / `keymap_leave`, `scripts/bz_dtap.py`, `bz_flip.py km_leave_watch`
+**Where:** every screen while Bezel is the skin
+**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none
 
-Each section has three layers: **Simple** (what it does and why), **How it works** (the flow end to end, with the order and the races), and **Wiring** (props, conditions, controls, scripts and timings, all read from the live tree).
+## Simple
+Bezel adds its own key behaviours on top of the remote: Tab / Display opens fullscreen music from the main screens; M / Red opens music controls; one Select acts after a short pause, two quick Selects open Options / Info; the Menu / long-press keys open Bezel's own section menu instead of Kodi's; Back on Home does nothing. All of it disappears when you switch to another skin.
 
----
+## Feel contract (any framework)
+These are the global input rules a port must reproduce (generic actions).
 
-## Why profile keymaps
+### States
+| State | On screen |
+|---|---|
+| Bezel active | Bezel actions below |
+| Other skin / app | none of them |
 
-**Simple.** A skin cannot ship keymaps, so BEZEL writes its own into the Kodi profile while BEZEL is the skin. It removes them again as soon as you switch skins, so other skins behave normally.
+### Timeline
+| What | Value |
+|---|---|
+| Single Select | acts after the tap window (Tuner, default 300 ms; 150–600) |
+| Double Select | second press inside the window → Options / Info (shown 0.8 s flag) |
+| Late Select | dropped if > 0.6 s late or focus moved |
 
-**How it works.** Kodi loads keymaps alphabetically and later files win, so every file gets a `zz_` name and loads last. Installing a file is followed by `reloadkeymaps`. When the skin changes, two watchers notice (`bz_dtap` every ~1 s and `bz_flip km_leave_watch` every 1 s) and call `bz_km.leave()`.
+### Interruptions
+A delayed single Select is dropped if focus changed or navigation is locked meanwhile.
 
-**Wiring.**
-- `bz_km.py`: `FILES` = the three `zz_bezel2_*` files. `SKIN='skin.bezel2'`. `on_bezel()` falls back to True on exception, so a glitch never deletes the maps. `leave()` deletes the files, clears `bz_km_loaded`, runs `reloadkeymaps` if anything was removed, and logs.
-- `bz_cmd.py keymap` (line 41): copy `bezel2_np_tab.xml` → `zz_bezel2_np_tab.xml`, delete the legacy `bezel2_np_tab.xml`, log other Tab/Display maps, then reload. `keymap_leave` (line 38).
-- `bz_flip.py` line 457 `km_leave_watch`: 1 s poll → `leave()` + clear `bz_flip_running`.
+### Continuity
+Rules apply the same in every section.
 
-## Double-tap Select (dtap)
+### Layering
+—
 
-**Simple.** One Select acts after a short pause. Two quick Selects open the Options/Info menu. Rob sets the pause length in the Tuner.
+### Geometry
+—
 
-**How it works.** The keymap turns Select into a notify. A single tap is held for the tap window and then replayed as `Action(Select)`. Before replaying, the script checks that focus has not moved (a fingerprint of window|dialog|control), that it is not more than 0.6 s late, and that `bz_navlock` is not set. So a delayed Select can never land on a new screen. With `bz_dtap_off`, Select passes straight through with no delay.
+### Art
+—
 
-**Wiring.**
-- `zz_bezel2_dtap.xml`: Select / return / enter (and longpress) → `NotifyAll(bz,bz_sel)` in home, music, videos, filebrowser, filemanager + SECW.
-- SECW = pictures, programs, games, addonbrowser, music/video playlist, PVR windows.
-- Window = `STEPS[bz_at_dtapwin-1]`, default 0.3 s. STEPS = 150, 175, 200, 225, 250, 275, 300, 325, 350, 375, 400, 450, 500, 550, 600 ms.
-- Second tap → `info()` + `bz_dtapinfo` for 0.8 s. `info()`: filebrowser/filemanager → `Action(ContextMenu)`. SECW not on 1119 → `ActivateWindow(1119)`. Else `Action(Info)`.
+### Input
+| Generic action | Where | Result |
+|---|---|---|
+| Fullscreen music (Tab / Display) | Music, Home, Movies / TV, Pictures, Programs, Add-ons | open Bezel fullscreen music; inside it: close |
+| Music controls (M / Red) | Music, fullscreen music | open / close music controls |
+| Select ×2 | lists and section screens | Options / Info (or the section menu) |
+| Context (Menu, long Select, title, right-click, long-click) | Home, Music, Videos, Pictures, Programs, Games, Add-ons, playlists, PVR | Bezel section menu (never Kodi's) |
+| Back | Home | nothing |
+| Back | fullscreen music | album view → fanart → close |
+| Right | Kodi FS | next song |
+| Back | fullscreen video / video OSD | Bezel video Back rules ([fullscreen-video](fullscreen-video.md)) |
+| Tab while busy | busy dialog | queued, opens fullscreen after |
+| Long Select | fullscreen music | play / pause |
 
-## No Kodi context menu (noctx)
+### Speed targets
+Select feels immediate at 300 ms; Tuner can shorten it.
 
-**Wiring.** `zz_bezel2_noctx.xml`: in home/music/videos+SECW, c/menu/title/contextmenu/rightclick/longclick → `NotifyAll(bz,bz_ctx)`. The handler closes Kodi's contextmenu (up to 40 × 25 ms) and then runs `info()`. Back in 7 settings windows → `bz_setback`. See context-menu.md.
+### Never
+- Never Kodi's own context menu (noctx).
+- No power menu from repeated Back on Home (321).
 
-## bz_dtap loop
+### Acceptance checks
+1. Movies list: Tab with music playing → fullscreen music.
+2. Double-Select on a movie → info; single → plays after a short pause.
+3. Switch to another skin: Tab / double-Select behave as in that skin.
 
-**Wiring.** Guard `bz_dtap_running`. Loop every 20 ms. `install()` every 25 ticks (rewrites only once when fresh). `on_bezel` check every 50 ticks (~1 s) → `leave()` and break. Side jobs: close a stray Kodi contextmenu, mirror 9880 into `bz_secfan` / `bz_secfanlbl`, clear `bz_navtune`, apply `bz_tune_dirty` after 1.2 s. `finally`: not on BEZEL → `leave()`, else if not aborting → `install(False)`. Exit signal `bz_quit_dtap` (bz_cmd quit).
+## Kodi implementation (sandbox)
 
-## np_tab sections
+### How it works
+- A skin can't ship keymaps, so Bezel writes `zz_*` files into the profile keymaps folder (loaded last, so they win) and runs `reloadkeymaps`. Watchers (`bz_dtap` ~1 s, `bz_flip km_leave_watch` 1 s) call `bz_km.leave()` when the skin changes: delete the three files, clear `bz_km_loaded`, reload. `on_bezel()` returns True on error so a glitch never deletes them.
+- `bz_cmd.py keymap` (1121 / Kodi FS / Music onload): copy `bezel2_np_tab.xml` → `zz_bezel2_np_tab.xml`, delete the legacy name, log other Tab / Display maps, reload.
+- **dtap** (`zz_bezel2_dtap.xml`): Select / return / enter (+ long) → `NotifyAll(bz,bz_sel)` in home, music, videos, filebrowser, filemanager + SECW (pictures, programs, games, addonbrowser, playlists, PVR). `bz_dtap.py` holds the tap for `STEPS[bz_at_dtapwin-1]` (150, 175 … 600 ms; default 300) and replays `Action(Select)` if the window|dialog|control fingerprint is unchanged, ≤ 0.6 s late and no `bz_navlock`. Second tap → `info()` + `bz_dtapinfo` 0.8 s (filebrowser / filemanager → `Action(ContextMenu)`; SECW → `ActivateWindow(1119)`; else `Action(Info)`).
+- **noctx** (`zz_bezel2_noctx.xml`): c / menu / title / contextmenu / rightclick / longclick → `NotifyAll(bz,bz_ctx)`; handler closes Kodi's context menu (≤ 40 × 25 ms) then `info()`. Back in 7 settings windows → `bz_setback`.
+- **bz_dtap loop** (20 ms): `install()` every 25 ticks, `on_bezel` every 50; side jobs: close stray contextmenu, mirror 9880 → `bz_secfan` / `bz_secfanlbl`, clear `bz_navtune`, apply `bz_tune_dirty` after 1.2 s.
 
-**Wiring.**
+### Wiring (np_tab sections)
 | Window | Keys → action |
 |---|---|
-| music | m/red → 1115 · tab → 1112 · escape → Back |
-| videos | escape → Back |
-| busydialog / busydialognocancel | tab/display → `bz_tabq=true` |
-| window1112 | m → 1115 · tab/display → `Dialog.Close(1112)` |
-| window1115 | m/red → close |
-| home/music/videos/programs/pictures/addonbrowser/playlists | longpress select, gamepad a, joystick holdtime 500, menu/title/contentsmenu/etc. → `bz_ctx` |
-| fullscreenvideo | select → `bz_cmd vidsel` · back → `vidback` (fullscreen-video.md) |
-| FullscreenVideo (second block) | back/backspace/escape/browser_back, joystick b/back → `Action(FullScreen)` |
+| music | m / red → 1115 · tab / display → `ActivateWindow(1121)` · escape → Back |
+| home, videos, pictures, programs, addonbrowser | tab / display → `ActivateWindow(1121)` (472); home: Back (all devices) → noop |
+| window1121 | m / red → 1115 · tab / display → `Dialog.Close(1121)` · escape → Back · back / backspace / browser_back / b → `SetFocus(6422)` · long return / enter → PlayPause |
+| visualisation | Right → `PlayerControl(Next)` · back → `SetFocus(6297)` · m / red → 1115 · select → Select · long return → PlayPause · gamepad / joystick to match |
+| window1115 | m / red → close |
+| busydialog / busydialognocancel | tab / display → `bz_tabq=true` |
+| home / music / videos / programs / pictures / addonbrowser / playlists | long select, gamepad a, joystick hold 500, menu / title / contentsmenu … → `bz_ctx` |
+| fullscreenvideo | select → `bz_cmd vidsel` · back → `vidback`; second `FullscreenVideo` block: back keys → `Action(FullScreen)` (which wins is untested) |
 | videoosd | back → `vidback` |
-| visualisation | Right → `PlayerControl(Next)` (5.33.205) · back → `SetFocus(6297)` · M/RED → 1115 · select → Select · longpress return → PlayPause · gamepad/joystick mapped to match |
+| Removed | `window1112` (465) |
+| Note | duplicate window sections in the file are merged by Kodi |
 
-**Note:** the `visualisation` block now applies from every section, Music included — the Music→Music bounce that used to skip it was removed (t1584).
-
-**Unverified:** both a `fullscreenvideo` and a `FullscreenVideo` block map Back. Which one wins on device has not been tested.
+### Kodi workarounds (do not port)
+Everything about install / leave, `NotifyAll` hand-offs and the replayed Select: Kodi has no per-skin input layer and no double-press event.
 
 ## Related
-context-menu.md · fanart-fs.md · fullscreen-video.md · skin-settings-tuner.md
-
-**5.33.210:** `<music>` Tab / remote Display → `ActivateWindow(1121)` (was 1112). New `<window1121>`: M/RED → 1115, Tab/Display → close, Back/Backspace/B → `SetFocus(6422)`, longpress Select → PlayPause.
-
-<!-- PORTLINKS -->
----
-**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/keymaps.md) · [state](../state/keymaps.md) · [motion](../motion/keymaps.md) · [art](../art/keymaps.md) · [input](../input/keymaps.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
-
-## Home Back ignored (5.33.321, Rob t2408 — current)
-- `bezel2_np_tab.xml` `<home>` maps Back to `noop`: keyboard escape/backspace/browser_back, remote back, gamepad b/back, joystick b (default + shield). Quick or HDMI-CEC repeat Back while the Home bounce pad is active no longer reaches Kodi default ShutdownMenu → Power 1118. MM POWER row → 1118 unchanged. Installed as `zz_bezel2_np_tab.xml` on start (FULL restart).
+[music-fanart-fs](music-fanart-fs.md) · [context-menu](context-menu.md) · [fullscreen-video](fullscreen-video.md) · [touch-group](touch-group.md) · [skin-settings-tuner](skin-settings-tuner.md)
