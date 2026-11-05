@@ -13,6 +13,9 @@
 	<visible>!Window.IsActive(fullscreenvideo) + !Window.IsActive(slideshow) + !Window.IsActive(screensaver) + !Window.IsActive(1113)</visible>
 	<animation effect="fade" start="0" end="100" time="600" tween="sine" easing="inout">WindowOpen</animation><animation effect="fade" start="100" end="0" time="200">WindowClose</animation>
 	<controls>
+		<!-- 5.33.472 FANPRELOAD (Rob: "the new 1121 will always have its fanart stage ready"): the playing artist's fanart is kept decoded here (same path, size and aspect as the NP stage image, 1 % alpha, off-screen-safe) so 1121 opens from any section with the stage art already in the texture cache -->
+		<control type="image"><left>bz_stage_x</left><top>120</top><width>bz_stage_w</width><height>900</height><aspectratio>scale</aspectratio><texture background="true" colordiffuse="03FFFFFF">$INFO[Player.Art(artist.fanart)]</texture><visible>Player.HasAudio + !Player.HasVideo + !Window.IsVisible(1121) + !Window.IsActive(visualisation)</visible></control>
+
 		<!-- 5.33.366 Rob t2616 GLOBAL ARTWORK GROUP 6400: album layer (cover + leaf-flip/sway + cast) + Compact NP (rides 6397/FS rails) + poster layer, one shared frame.
 		     Both layers are ALWAYS drawn (never Visible=false) so textures stay warm and the sway clocks never restart; Music<->Movies/TV is an opacity crossfade only.
 		     Colour strip and MM Warm underlay are NOT in this group. bz_rail=hide is the only hard hide. -->
