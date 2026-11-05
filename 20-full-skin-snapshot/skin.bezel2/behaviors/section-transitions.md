@@ -36,7 +36,7 @@ Every screen you open from the main menu (MM) appears with one quick, gentle fad
 | 0 | MM chrome fades in over the section; MM art lanes are already at 100 % on frame 1 (seeded with the on-screen art) | 286 | sine out |
 | close | MM chrome fades out | 250 | sine in |
 
-**Switching between sections while the MM is open (warm switch)**: the MM row moves; the section behind swaps under the MM with a 500 ms crossfade (Tuner Section fade); a full Movies → TV switch took ≈ 1.3 s on Rob's box before 471 and is now about half the fade.
+**Switching between sections while the MM is open (warm switch)**: the MM row moves; after a 0.2 s park the section behind swaps under the MM; its art is held until the new list has art (≤ 0.9 s) and the MM art lanes cross over 1500 ms (LOCKED, see [mm-warm](mm-warm.md)). A Movies → TV switch measured ≈ 1.3 s on Rob's box (468 log).
 
 **Other screens**: 400 ms fade-in on open, sine out. Close: none.
 
@@ -100,7 +100,7 @@ Section art is the focused item's fanart / poster / thumb. The section waits for
 - **Other windows.** Each includes one WindowOpen-only fade include; no WindowClose, so close is an instant swap.
 - **MM enter / leave.** BezelNavMenu chrome uses `BezelATMenuAnim` (Visible fade in, Hidden fade out), times baked from Tuner Menu open / close (286 / 250 ms). Art lanes are not faded on MM enter: mirror-enter seeds them (mm-warm).
 - **Dims.** `BezelSecDim` on section parents: `bz_at_gdim` (1–6 → 30–60 %, MM closed) and `bz_at_mmdim` (MM open; default 10 %); 600 ms fades, no delay (460).
-- **Warm switch crossfade.** `bz_flip.py mm_warm` reads `bz_at_mmsecfade` as `_xf` (steps 1–8 → 0 / 0 / 0.15 / 0.25 / 0.35 / 0.5 / 0.7 / 1.0 s; default step 5 = 0.5 s since 471).
+- **Warm switch.** `bz_flip.py mm_warm` (LOCKED). It reads `bz_at_mmsecfade` into `_xf` (0 / 0 / 0.15 / 0.25 / 0.35 / 0.5 / 0.7 / 1.0 s) but only writes it to the debug log; no fade uses it, so the 471 FASTPACK Section fade pick has no visible effect.
 
 ### Wiring
 | Piece | Value |

@@ -84,7 +84,7 @@ A heading that does not apply keeps its place and says `—` or one line why, so
 | Token | Value | Tunable |
 |---|---|---|
 | Section fade-in | 400 ms sine out, no fade-out of the old section | code |
-| Warm section switch crossfade (MM row → section behind it) | 500 ms | Tuner Main menu › Section fade |
+| Warm section swap under the MM | art held, then released when the new list has art (≤ 0.9 s); MM art lanes cross over 1500 ms | **LOCKED**. Tuner Main menu › Section fade is read but only logged (no effect) |
 | Menu (MM) open / close | 286 / 250 ms | Tuner Main menu |
 | MM-open art crossfade | 500 ms | Tuner Main menu |
 | MM warm A/B art swap | 1500 ms, fixed | **LOCKED** |
