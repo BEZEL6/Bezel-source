@@ -224,13 +224,14 @@ if home.getProperty('bz_flip_running') != 'true':
     # the threads stop; no XML Set/ClearProperty). sway_clock, _sway_anchor and _bz_cast (same thread) read them from this copy of the last
     # written value instead of Kodi; the first read of each comes from Kodi. Writes to Kodi are unchanged (set only on a change).
     _swsh = {}
-    def _swg(k):
-        if k not in _swsh: _swsh[k] = home.getProperty(k)
-        return _swsh[k]
+    def _swg(k):   # 5.33.472 SHADOWHEAL: re-read from Kodi when the copy is older than 1 s
+        e = _swsh.get(k)
+        if e is None or time.time() - e[1] >= 1.0: e = _swsh[k] = (home.getProperty(k), time.time())
+        return e[0]
     def _sws(k, v):
         if v: home.setProperty(k, v)
         else: home.clearProperty(k)
-        _swsh[k] = v
+        _swsh[k] = (v, time.time())
     def _bz_cast(t0):
         L = R = None
         if t0 is not None and not _swg('bz_sway_hold'):   # 5.33.468 CASTIDLE: stubs follow the sway with or without music (t0 = album clock or idle bt0)
@@ -373,13 +374,16 @@ if home.getProperty('bz_flip_running') != 'true':
     # written only here (checked: no XML Set/ClearProperty, no other script; bz_vmus's one direct clear in m_mirror now goes through here,
     # the exit cleanup runs after the threads stop). So the last value written is known: an unchanged value skips the Kodi read. A key
     # not yet written in this run (or a changed value) still reads Kodi first, exactly as before. Writes are unchanged.
+    # 5.33.472 SHADOWHEAL: a remembered value is trusted for at most 1 s, then Kodi is read again, so an outside clear (e.g. the old
+    # bz_flip's exit cleanup landing after a ReloadSkin restarted the script) is repaired within a second instead of sticking.
     _v60_sh = {}
     def _v60_set(k, v):
-        if k in _v60_sh and _v60_sh[k] == v: return
+        e = _v60_sh.get(k)
+        if e is not None and e[0] == v and time.time() - e[1] < 1.0: return
         if home.getProperty(k) != v:
             if v: home.setProperty(k, v)
             else: home.clearProperty(k)
-        _v60_sh[k] = v
+        _v60_sh[k] = (v, time.time())
     _setopen_t = [0]
     _v60_pend = ['', 0.0]; _v60_gone = [0.0]   # 5.33.372 POSTERHOLD: staged art (preload slot bz_v60_next) + list-60 gap grace
     def _v60_art_stage(a):   # 5.33.372 Rob t2671-t2677: never overwrite bz_v60_art with an undecoded path. New art -> hidden preload slot first
