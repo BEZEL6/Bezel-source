@@ -1,48 +1,67 @@
-# Busy dialog
+# Busy indicator
 
-**Object:** `DialogBusy.xml` (Kodi `busydialog`) · label `10` hidden · include `BezelATBusyOpen` (Includes_Tuner line 11)  
-**Where:** Over any window while Kodi is working  
-**Last updated:** 2026-10-31 · 5.33.207  
-**Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
-**Skin:** skin.bezel2
+**Object:** Kodi's "working" indicator · Kodi: `DialogBusy.xml` (`busydialog`), label `10` hidden, include `BezelATBusyOpen` (Tuner delay)
+**Where:** over any screen while Kodi works
+**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none
 
-Each section has three layers: **Simple** (what it does and why), **How it works** (the flow end to end, with the order and the races), and **Wiring** (props, conditions, controls, scripts and timings, all read from the live tree).
+## Simple
+The busy indicator waits a moment before it shows, so quick loads never flash it, and it stays out of the way while music or video plays, while caching and during Bezel's own art changes. Tab pressed while it's up is remembered and opens fullscreen music afterwards.
 
----
+## Feel contract (any framework)
 
-## What it does
+### States
+| State | How you get in | How you leave | On screen |
+|---|---|---|---|
+| Hidden | work shorter than the delay; audio / video playing; caching; art flip; startup | — | nothing |
+| Shown | work longer than the delay | done | busy indicator (no logo, no label) |
 
-**Simple.** It is Kodi's "working…" indicator, restyled. It waits a moment before showing, so quick loads never flash it. It stays out of the way during music, video, caching and flips.
+### Timeline
+| What | Duration | Curve |
+|---|---|---|
+| show | after the Tuner delay, 300 fade | — |
+| hide | 300 fade after 500 delay (not during video) | — |
 
-**How it works.** The open fade has a Tuner delay. A load that finishes inside the delay closes the dialog before anything is drawn. The visible group then hides itself in every case where BEZEL already shows its own feedback or where a spinner would cover playback. The close fade waits 500 ms, so a busy that blinks off and back on does not flicker. That close fade only runs when no video is playing.
+### Interruptions
+Tab / Display while busy → queued fullscreen music.
 
-**Wiring.**
-- `BezelATBusyOpen`: WindowOpen fade 0→100 over 200 ms, delay from `Skin.String(bz_at_busydelay)`: 1=150 · 2/empty=300 (default) · 3=500 · 4=800 · 5=1200 ms.
-- WindowClose: fade 100→0 over 300 ms, delay 500, only when `!Player.HasVideo` (4.0.1 O32).
-- Group visible only when all of these hold: CinemaVision not running · startup window not active · `!Player.Caching` · not audio-only playback · `Window(Home).Property(bz_flipping)` empty · no video and not fullscreenvideo · not `[Player.HasMedia` without audio`]`.
-- Visible fade 300 ms, `DepthMax`. Label 10 `visible=false`. No BEZEL logo.
+### Continuity
+Never covers playback.
 
-## Keys
+### Layering
+Top (DepthMax).
 
-**Simple.** None. Kodi's own cancel handling applies where Kodi allows it. The np_tab keymap maps Tab/Display in `busydialog`/`busydialognocancel` to `bz_tabq=true`, (keymaps.md). This doc does not trace what reads `bz_tabq`.
+### Geometry
+Kodi busy layout.
+
+### Art
+Spinner only; no Bezel logo; no text.
+
+### Input
+None (Kodi cancel where allowed).
+
+### Speed targets
+Short work never shows it.
+
+### Never
+No flash on quick loads; no busy over music / video.
+
+### Acceptance checks
+Open a large section: indicator only if it takes longer than the delay.
+
+## Kodi implementation (sandbox)
+
+### How it works
+- Group visible only when CinemaVision isn't running, not the startup window, `!Player.Caching`, not audio-only playback, `bz_flipping` empty, no video / fullscreenvideo …; Visible fade 300 ms; WindowClose fade 100 → 0 300 ms delay 500 when `!Player.HasVideo`.
+- Keymap: busydialog / busydialognocancel tab / display → `bz_tabq=true`; bz_flip opens 1121 when the busy state ends.
+
+### Wiring
+| Item | Value |
+|---|---|
+| Include | `BezelATBusyOpen` (Tuner open delay) |
+| Home | `bz_flipping`, `bz_tabq` |
+
+### Kodi workarounds (do not port)
+Hiding Kodi's dialog instead of not raising it.
 
 ## Related
-dialog-confirm.md · keymaps.md · skin-settings-tuner.md
-
-
-## Wiring table (live XML, 5.33.267)
-**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
-
-**Source:** `xml/DialogBusy.xml`
-
-| id | type | x,y | w×h | nav L/R/U/D | visible |
-|---|---|---|---|---|---|
-| 10 | label | —,— | —×— | `—/—/—/—` | `false` |
-
-**Source:** `xml/Includes_Tuner.xml` include `BezelATBusyOpen`
-
-_No id’d controls in this file (layout comes from includes)._
-
-<!-- PORTLINKS -->
----
-**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/dialog-busy.md) · [state](../state/dialog-busy.md) · [motion](../motion/dialog-busy.md) · [art](../art/dialog-busy.md) · [input](../input/dialog-busy.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
+[keymaps](keymaps.md) · [now-playing](now-playing.md) · [skin-settings-tuner](skin-settings-tuner.md)

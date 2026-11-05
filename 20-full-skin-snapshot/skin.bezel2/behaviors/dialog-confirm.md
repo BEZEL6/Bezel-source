@@ -1,88 +1,70 @@
-# Confirm dialog
+# Confirm (Yes / No)
 
-**Object:** `DialogConfirm.xml` (Kodi yes/no) · include `BzStdProgress` (Includes_BezelDialogs ~514) or `BzRefreshProgress` (Includes_BezelRefresh ~112) · grouplist `9000` with buttons `10` / `11` / `12`  
-**Where:** Colour strip at 570,120 (390×900) plus body text in the fanart block (140,220)  
-**Last updated:** 2026-11-03 · 5.33.420
-**Status:** draft. This doc matches the live 5.33.207 tree. Rob has not approved it and it has not been re-smoked.  
-**Skin:** skin.bezel2
+**Object:** Kodi's yes / no and OK dialogs · Kodi: `DialogConfirm.xml`, grouplist `9000` with buttons `10` (No) / `11` (Yes) / `12` (custom), includes `BzStdProgress` / `BzRefreshProgress`, `BzMSUnderlay`
+**Where:** CONFIRM rows in the colour strip (570, 120, 390 × 900), message on the fanart stage (140, 220)
+**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none
 
-Each section has three layers: **Simple** (what it does and why), **How it works** (the flow end to end, with the order and the races), and **Wiring** (props, conditions, controls, scripts and timings, all read from the live tree).
+## Simple
+Every Yes / No question looks like the main menu: a CONFIRM strip with the choices as rows and the message on the left, over the Warm background (black + the MM fanart at MM dim). **No** is the first row and has focus, so a stray Select never confirms. Up / Down move, Select chooses, Back = No. Over fullscreen video or music it uses a light dim instead, so playback stays visible. Nothing else can steal its focus.
 
-**Focus ownership (5.33.420 MODALGUARD).** While the Confirm (yesnodialog) or any modal is up, Python never pulls focus to MM strip 6996. `scripts/bz_flip.py` `_modal_blocks_strip()` (`System.HasModalDialog | Window.IsActive(yesnodialog) | Window.IsVisible(yesnodialog)`) gates every reclaim: `_bzstrip`, MM-start `bz_mmstart` row hold + 6 s focus loop (keep-this-skin dialog on skin switch), open-MM section SetFocus, warm `_defer`/`_restore2` bounces, mini-player song-change refocus. `bz_warmgate.py` strip bounce has the same guard. Result: No (10) / Yes (11) keep focus; the MM-start loop just waits (still times out at 6 s).
+## Feel contract (any framework)
 
-**Focus (5.33.432 CONFIRMFOCUS).** Kodi delivers `SetFocus` to the topmost modal dialog and unfocuses its current control first, so a script `SetFocus` aimed at the window behind left No/Yes with no focus. All BEZEL scripts that set focus wrap `xbmc.executebuiltin` (`_bz_fg_install`) and drop `SetFocus`/`Control.SetFocus` while `yesnodialog` or `okdialog` is visible.
+### States
+| State | How you get in | How you leave | On screen |
+|---|---|---|---|
+| Question | an app action asks | Yes / No / Back | Warm underlay, CONFIRM rows, message |
+| Over playback | asked during fullscreen video / music | same | dim (70 %) instead of the Warm underlay |
+| Refresh layout | music info refresh with progress | same | refresh layout with progress |
 
----
+### Timeline
+| What | Duration | Curve |
+|---|---|---|
+| open | 200 fade | cubic out |
+| close | 150 fade | cubic in |
 
-## What it does
+### Interruptions
+Background scripts never move focus while it's up (No / Yes always focused).
 
-**Simple.** Kodi's yes/no question in the Main Menu style: a CONFIRM strip with rows and the message on the left. **No** is the first row and gets focus, so a stray Select never confirms by accident. BEZEL uses it for things like "Remove from library".
+### Continuity
+—
 
-**How it works.** The buttons are vertical rows (BETA 2.7: "Buttons are rows; No (10) first = safe default"). When the yes/no shows over Music Information with a progress dialog (refresh), the window uses the refresh layout. Otherwise it uses the standard one.
+### Layering
+Screen < Warm underlay (or dim) < strip chrome < rows / message.
 
-**Wiring.**
-- WindowOpen fade 200 ms cubic out · WindowClose fade 150 ms cubic in · `DepthDialog+`.
-- `<defaultcontrol always="true">9000</defaultcontrol>`.
-- Layout: `Window.IsActive(musicinformation) + Window.IsActive(progressdialog)` → `BzRefreshProgress`, else `BzStdProgress`.
-- `BzStdProgress`: B3 black full-screen dim · strip `$VAR[BzMMStrip]` · "CONFIRM" title `bz_mm34` · grouplist 9000 (top 100, 390×754, vertical) with buttons 10 (No), 11 (Yes), 12 (custom), each 390×58 `bz_mm28` with focus bar `$VAR[BzATHiTex]` / `$VAR[BzMMBarCol]` · heading label 1 · textbox 9 (autoscroll 3000/4000/5000) · progress 20 (only with `progressdialog` and `System.Progressbar`).
+### Geometry
+Rows 390 × 58 from the strip top; title label 0, 30 (410 × 46); message textbox 0, 106 (410 × 480); progress 0, 610 (410 × 12).
 
-## Warm look (5.33.364, global)
+### Art
+Warm underlay: MM fanart lane at MM dim over black.
 
-**Simple.** Every Yes/No is Warm, everywhere — not just Media Sources. Same Warm underlay (BzMSUnderlay: black + MM fanart lane at MM dim) and Warm MM strip chrome (BezelMMStripChrome box) behind the CONFIRM rows.
+### Input
+Up / Down move; Select chooses; Back = No; Left / Right nothing.
 
-**Wiring.** `BzStdProgress`: `BzMSUnderlay` visible `!Window.IsActive(fullscreenvideo) + !Window.IsActive(visualisation)`; over fullscreen video / visualisation only, the old B3 dim shows instead so playback stays visible. BzMSUnderlay itself draws nothing when 1117 is under (1117 is the underlay). Strip chrome `!Window.IsActive(1117)`. `bz_msflow` expression still exists but no longer gates the confirm. Refresh-over-Music-info path (`BzRefreshProgress`) unchanged. Callers: bz_ctx remove, bz_wipe, bz_tune reset, msclean, Add Source scan ask, source Remove, core Kodi yes/no.
+### Speed targets
+—
 
-## Keys
+### Never
+- No focus loss on Yes / No (420 MODALGUARD, 432 CONFIRMFOCUS).
+- No Yes as default.
 
-**Simple.** Up and Down move between No and Yes. Select chooses. Back cancels, which is the same as No.
+### Acceptance checks
+Remove a movie from library → CONFIRM, No focused; Back → nothing removed.
 
-**How it works.** 9000 is a vertical grouplist, so Up and Down move between rows. Left and Right have no skin handler.
+## Kodi implementation (sandbox)
 
-**Wiring.** Kodi's own yes/no ids: 10 = No, 11 = Yes, 12 = custom (hidden when unused). Back = Kodi cancel.
+### How it works
+- defaultcontrol `always` 9000; `DepthDialog+`. Layout: `Window.IsActive(musicinformation) + Window.IsActive(progressdialog)` → `BzRefreshProgress`, else `BzStdProgress` (`BzMSUnderlay` visible `!fullscreenvideo + !visualisation`, else the B3 dim).
+- Focus guards: `bz_flip.py _modal_blocks_strip()` (no strip focus while a modal is up); `_bz_fg_install(xbmc)` in every Bezel script drops `SetFocus` while yesno / ok dialogs are visible.
+- Bezel caller: `bz_ctx.py remove <type> <id>` → Yes → `Dialog.Close(all)` → `VideoLibrary.Remove*` → `Container.Refresh`.
 
-## Where BEZEL calls it
+### Wiring
+| Item | Value |
+|---|---|
+| Ids | 10 No, 11 Yes, 12 custom, 1 title, 9 message, 20 progress |
+| Includes | `BzStdProgress`, `BzRefreshProgress`, `BzMSUnderlay`, `BezelMMStripChrome` |
 
-**Wiring.** `bz_ctx.py remove <type> <id>`: yes/no "Remove from library" → on Yes `Dialog.Close(all)` → `VideoLibrary.Remove*` → `Container.Refresh`.
+### Kodi workarounds (do not port)
+Script-side `SetFocus` filter: Kodi's `SetFocus` targets the topmost modal and unfocuses its control first.
 
 ## Related
-info-options.md · context-menu.md · dialog-busy.md
-
-
-## Wiring table (live XML, 5.33.267)
-**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
-
-**Source:** `xml/DialogConfirm.xml`
-
-_No id’d controls in this file (layout comes from includes)._
-
-**Source:** `xml/Includes_BezelDialogs.xml` include `BzStdProgress`
-
-| id | type | x,y | w×h | nav L/R/U/D | visible |
-|---|---|---|---|---|---|
-| 9000 | grouplist | 0,100 | 390×754 | `—/—/—/—` | `—` |
-| 10 | button | —,— | 390×58 | `—/—/—/—` | `—` |
-| 11 | button | —,— | 390×58 | `—/—/—/—` | `—` |
-| 12 | button | —,— | 390×58 | `—/—/—/—` | `—` |
-| 1 | label | 0,30 | 410×46 | `—/—/—/—` | `—` |
-| 9 | textbox | 0,106 | 410×480 | `—/—/—/—` | `—` |
-| 20 | progress | 0,610 | 410×12 | `—/—/—/—` | `Window.IsActive(progressdialog) + !String.IsEmpty(System.Progressbar)` |
-
-**Source:** `xml/Includes_BezelRefresh.xml` include `BzRefreshProgress`
-
-| id | type | x,y | w×h | nav L/R/U/D | visible |
-|---|---|---|---|---|---|
-| 1 | label | -3000,— | 10×10 | `—/—/—/—` | `—` |
-| 20 | progress | 596,248 | 200×16 | `—/—/—/—` | `—` |
-| 9 | textbox | 598,292 | 345×110 | `—/—/—/—` | `—` |
-| 9000 | grouplist | 580,410 | 370×200 | `—/—/—/—` | `—` |
-| 10 | button | —,— | 370×52 | `—/—/—/—` | `—` |
-| 11 | button | —,— | 370×52 | `—/—/—/—` | `—` |
-| 12 | button | —,— | 370×52 | `—/—/—/—` | `—` |
-
-<!-- PORTLINKS -->
----
-**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/dialog-confirm.md) · [state](../state/dialog-confirm.md) · [motion](../motion/dialog-confirm.md) · [art](../art/dialog-confirm.md) · [input](../input/dialog-confirm.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
-
-## Media Sources look (5.33.363, current state)
-In any Media Sources flow (`bz_msflow` = 1117 active, mediasource dialog active, or folder path starts with sources://), the Yes/No dialog uses the Warm look: no dark full-screen dim. It draws the shared Media Sources underlay `BzMSUnderlay` (the same one the Add Source dialog uses: held fanart + poster). Over Videos it also draws the MM strip chrome (`BezelMMStripChrome` box). Over 1117 it uses 1117's own chrome, and 1117 hides its rows while `yesnodialog` is open. Outside Media Sources the dialog is unchanged (dark dim, flat strip).
-This covers every Yes/No in these flows: the scan question after Add Source OK, Remove source, the CLEAN LIBRARY confirm, and Edit source questions.
+[info-options](info-options.md) · [context-menu](context-menu.md) · [dialog-busy](dialog-busy.md)
