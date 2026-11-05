@@ -2,10 +2,10 @@
 
 **Object:** Bezel's own settings screen · Kodi: group `6975` in `Includes_Tuner.xml` (section rail `7001`, rows `6970`, info panel), BEZEL settings list `6968`, `scripts/bz_tune.py` + `bz_tune.json`, `scripts/bz_tune_patch.py`, `scripts/bz_dtap.py` (debounced reload)
 **Where:** over the MM (rail on the stage, rows in the strip, info on the right)
-**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live (rail layout approved 439) · **Lock:** none
+**Last updated:** 2026-11-04 · 5.33.474 · **Status:** live (rail layout approved 439) · **Lock:** none
 
 ## Simple
-The Tuner is where every Bezel look and timing is set. A rail on the left lists the sections (Album / Poster, Poster glare, List, Warm, Main menu, Music, Dust, Look, Fullscreen music, System, Maps, About, All, Reset); the strip shows that section's rows; the right side shows a picture and description of the focused row. Left / Right change a value at once (a bar and the value text show where you are); presets set many rows together. Changes that need a skin reload are batched and applied 1.2 s after your last change. Back on a row returns to the rail; Back on the rail returns to whoever opened the Tuner (the power menu, or fullscreen music + its controls).
+The Tuner is where every Bezel look and timing is set. A rail on the left lists the sections (Album / Poster, Poster glare, List, Fanart stage, Warm, Main menu, Music, Dust, Look, Fullscreen music, System, Maps, About, All, Reset); the strip shows that section's rows; the right side shows a picture and description of the focused row. Left / Right change a value at once (a bar and the value text show where you are); presets set many rows together. Changes that need a skin reload are batched and applied 1.2 s after your last change. Back on a row returns to the rail; Back on the rail returns to whoever opened the Tuner (the power menu, or fullscreen music + its controls).
 
 ## Feel contract (any framework)
 
@@ -62,6 +62,7 @@ Value text updates the same frame; reload ≤ a few seconds.
 - No Tuner drawn under the power menu; no missing colour strip after exit (465 → 467).
 - Re-entry always works (469).
 - No fullscreen music shadow rows (473: removed, they broke the transport bar).
+- Fanart and colour strip settings live together in FANART STAGE (474), not spread over List / Look.
 - No cast "animated" row (468), no MM auto-hide park row (398; the 428 auto-hide row is the current one).
 
 ### Acceptance checks
@@ -74,10 +75,11 @@ Value text updates the same frame; reload ≤ a few seconds.
 
 ### How it works
 - **Show:** group 6975 visible `$EXP[bz_navmenu] + bz_navtune`. Opener stamps `bz_tunesrc` (`pwr` from 1118, `fsctrl` from 1115; `bz_navbez` from the BEZEL settings list).
-- **Rail 7001** (ids albumposter, posterglare, list, warm20, mainmenu, music, dust, look, fsmusic, system, maps, about, all, reset → `bz_tune.py resetui open`). Right / OK → `SetFocus(6970,0,absolute)`. Back: `bz_tunesrc` ≠ `fsctrl` → `ActivateWindow(1118)` only (1118's onload clears `bz_tunesrc` / `bz_navtune`); `fsctrl` → clear `bz_nav` / `bz_navtune` / `bz_tunesrc` first, then 1121 (`$EXP[bz_m1121ok]`) or viz, then 1115.
+- **Rail 7001** (ids albumposter, posterglare, list, fanartstage, warm20, mainmenu, music, dust, look, fsmusic, system, maps, about, all, reset → `bz_tune.py resetui open`). Right / OK → `SetFocus(6970,0,absolute)`. Back: `bz_tunesrc` ≠ `fsctrl` → `ActivateWindow(1118)` only (1118's onload clears `bz_tunesrc` / `bz_navtune`); `fsctrl` → clear `bz_nav` / `bz_navtune` / `bz_tunesrc` first, then 1121 (`$EXP[bz_m1121ok]`) or viz, then 1115.
+- **FANART STAGE (474):** rows fanop, fantype (`Skin.String(bz_at_fantype)`: empty = Crossfade, 2 = Cut; `BzATVal_fantype`, `BzATBar_fantype` with `bar_2_*`), fanart, blockcol, blockop, Reset; `bz_tune_patch._bezel` bakes the section fanart `fadetime` to 0 for Cut, else Fade speed.
 - **Rows 6970:** show items whose `sec` = `Container(7001).ListItem.Property(id)`; `bz_topen_<sub>` bools fold sub-sections; onback → `SetFocus(7001)`.
 - **Values:** `Skin.String(bz_at_<id>)` step index (empty = default). onleft / onright carry generated conditional `Skin.SetString` chains + `SetProperty(bz_tune_dirty,1)`. Display `BzATVal_<id>`, `BzATStep_<id>`, `BzATBar_<id>`.
-- **Script actions** (`bz_tune.py`): `preset,<sec>,<name|next>`, `reset[,force]`, `resetui`, `seed` (DEF once per `bz_defseed` ver 5.0.20), `fastseed` (471 FAST block once per `bz_fastseed` 5.33.471), `alldust`, `import` / `export`.
+- **Script actions** (`bz_tune.py`): `preset,<sec>,<name|next>`, `reset[,force]`, `resetui`, `seed` (DEF once per `bz_defseed` ver 5.0.20), `fastseed` (471 FAST block once per `bz_fastseed` 5.33.471), `reset,stage` (474: fanart opacity / fade speed / colour strip back to DEF, Fade type to Crossfade), `alldust`, `import` / `export`.
 - **Reload:** `bz_dtap.py` loop sees `bz_tune_dirty`, waits 1.2 s, `reload_tuned()` → `bz_tune_patch.patch()` (bakes timings into XML through temp files) → `ReloadSkin()` only if files changed, restoring path and row. The loop also clears a stale `bz_navtune` when `bz_nav` isn't true.
 - **Data** (`bz_tune.json`, compact one-line JSON): `P` slider rows `[id, sec, default, steps, labels]`, `V` value tables (e.g. rowscroll ms, cascspeed ms, fanart ms, mmxfade ms), `TOG` toggles, `SEC`, `DEF` (Rob's defaults: `str`, `on`, `off`), `FAST`.
 
@@ -86,7 +88,10 @@ Value text updates the same frame; reload ≤ a few seconds.
 |---|---|
 | List › Row scroll | 0.7× (271 ms), cubic |
 | List › Cascade speed / stagger | 1.4× (286 ms) / 30 ms |
-| List › Fanart fade | 150 ms |
+| Fanart stage › Fanart opacity | 30 % (DEF step 4) |
+| Fanart stage › Fade type | Crossfade (Cut = instant) |
+| Fanart stage › Fade speed | 150 ms |
+| Fanart stage › Colour strip / opacity | Red / 60 % |
 | Main menu › Open / Close speed | 1.4× (286 / 250 ms) |
 | Main menu › MM-open art crossfade | 0.5 s |
 | Main menu › Section fade | step 5 (only logged by mm_warm; no visible effect) |

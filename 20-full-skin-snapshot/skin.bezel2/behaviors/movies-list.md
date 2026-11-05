@@ -2,7 +2,7 @@
 
 **Object:** the Movies section · Kodi: `MyVideoNav.xml`, list `60` (strip list), A–Z bar `6500`, VSTRIP META group (Includes_Bezel), poster layer in 1122 (see [artwork-group](artwork-group.md))
 **Where:** Movies: fanart stage left with meta and plot, list in the colour strip, swaying poster on the right
-**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none
+**Last updated:** 2026-11-04 · 5.33.474 · **Status:** live · **Lock:** none
 
 ## Simple
 Movies opens on Titles (or Recently added / Years from the MM pill). The list sits in the colour strip; the focused movie's fanart fills the stage with its title (or its clear logo if you turn Movies clear art on), the info pills (year, MPAA, runtime; genre on its own row) and the plot; its poster sways on the right. Folder lists (years, genres, sets, actors) show the folder name as the title. Long lists have an A–Z bar. Double-Select opens Info / Options, where Section options holds the Movies Clearart switch (off by default).
@@ -24,7 +24,7 @@ Movies opens on Titles (or Recently added / Years from the MM pill). The list si
 | meta group appears | 300 fade | sine |
 | clear logo / title change | 200 image fade | — |
 | poster change | preload ≥ 600, then 1000 crossfade | sine |
-| fanart change | 150 | — |
+| fanart change | 150 crossfade (Tuner Fanart stage: speed, or Cut) | — |
 | row scroll / cascade | 271 cubic / 286 + 30 stagger | — |
 
 ### Interruptions
@@ -41,10 +41,11 @@ Fanart stage < meta + plot < colour strip + list < A–Z bar < poster layer (112
 ### Geometry
 | Piece | Value |
 |---|---|
-| Title / clear logo box | 150, 120, 410 × 176, centred (stage top to the pills) |
-| Pills row 1 | y 296, width 410: YEAR · MPAA · RUNTIME |
-| Pills row 2 | y 336: GENRE (truncates at 410) |
-| Plot | from y 386 |
+| Title / clear logo box | 150, 120, 480 × 176, centred (stage top to the pills) |
+| Pills row 1 | y 296, width 480: YEAR · MPAA · RUNTIME |
+| Pills row 2 | y 336: GENRE (truncates at 480) |
+| Plot | from y 386, 480 wide |
+| Text column | x 150–630 (30 px before the strip at 660) |
 | List | strip x 570–960 (see [music-list](music-list.md) for the scaled list rule) |
 | A–Z bar | 78, 151 |
 | Poster | big album column (x 1140), sway axis 1290 |
@@ -69,6 +70,7 @@ Rows ≤ 0.45 s after entry; poster ≤ 0.6 s after focus settles.
 ### Never
 - No clear logo by default (473 MOVCLEAR: Rob "disable clear art for movies section by default").
 - No director label above the title (418).
+- Stage text never stops short of the wider stage: it uses the column up to the strip (474 STAGELABELS).
 - No poster hold / stand-in posters (152).
 - No poster gone after closing Info (473 VIEWTYPEDEL: the dead View Type option removed).
 - No dip to black between Movies and Music / TV (392, 413, 430, 431).

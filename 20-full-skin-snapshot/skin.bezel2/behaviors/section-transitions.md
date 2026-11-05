@@ -1,7 +1,7 @@
 # Section transitions (standard)
 
 **Object:** section open / switch standard for every screen opened from the MM · **Where:** all sections and their sub-pages
-**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live (Rob standard, Oct 30 2026) · **Lock:** the section ↔ MM art handoff is LOCKED (see [mm-warm](mm-warm.md))
+**Last updated:** 2026-11-04 · 5.33.474 · **Status:** live (Rob standard, Oct 30 2026) · **Lock:** the section ↔ MM art handoff is LOCKED (see [mm-warm](mm-warm.md))
 
 ## Simple
 Every screen you open from the main menu (MM) appears with one quick, gentle fade-in and nothing else. Screens don't fade out, zoom or slide away. Library sections (Music, Movies, TV, Recently played) stay hidden until their list and the focused item's picture are ready, so you never see them half-loaded. The rows then drop in one after another (the cascade). The background picture never blinks: the section's art is already there under the menu, and the menu's art fades away over it.
@@ -115,7 +115,7 @@ Section art is the focused item's fanart / poster / thumb. The section waits for
 | `BezelWindowFade` | same: MyFavourites, MyGames, MyPics, MyPlaylist, MyPrograms, MyWeather |
 | `BezelSecDim` | MyVideoNav, MyMusicNav, MyPics, MyPlaylist parent groups |
 | `BezelATMenuAnim` | baked by `bz_tune_patch._tuner` from `MOPEN` / `MCLOSE` tables |
-| Tuner | `bz_at_mmsecfade`, `bz_at_menuopen`, `bz_at_menuclose`, `bz_at_cascspeed`, `bz_at_cascstag`, `bz_at_gdim`, `bz_at_mmdim` |
+| Tuner | `bz_at_fantype` / `bz_at_fanart` (fanart stage fade type / speed), `bz_at_mmsecfade`, `bz_at_menuopen`, `bz_at_menuclose`, `bz_at_cascspeed`, `bz_at_cascstag`, `bz_at_gdim`, `bz_at_mmdim` |
 
 ### Kodi workarounds (do not port)
 - The "held at 0 % until ready" trick exists because Kodi shows a window before its list and textures load. A native port should simply build the screen off-screen and show it when ready.

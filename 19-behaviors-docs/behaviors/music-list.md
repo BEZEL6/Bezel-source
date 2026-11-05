@@ -2,7 +2,7 @@
 
 **Object:** the Music section · Kodi: `MyMusicNav.xml`, list `60` in `View_60_BezelInfoList` (Includes_Bezel), ALL row `6097` / long-list pill `6088`, A–Z bar `6100`, FULLSCREEN pill `6886`, NP block `6390`, meta `BzMMetaSmall` / `BzMMetaBig`
 **Where:** Music: fanart stage on the left, list in the colour strip, big album on the right
-**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none
+**Last updated:** 2026-11-04 · 5.33.474 · **Status:** live · **Lock:** none
 
 ## Simple
 Music has three levels: **Artists → Albums → Songs**, each a plain list in the colour strip. On the left the artist's fanart fills the stage with the meta on top (small ARTIST / artist name, big name / album title, year and genre pills); on the right the big album sways. On Albums (an artist's albums, the Albums list, Recently played / added) a small album cover sits at the top of the strip above the rows. An **ALL ALBUMS** (or **ALL DISCS**) row opens everything at once when there is more than one. Long lists get an A–Z jump bar on the left. Select on a song plays it in place. Back steps up a level, and at the top opens the main menu.
@@ -47,7 +47,7 @@ Fanart stage < meta (stage top) < colour strip < list rows / small album < pills
 |---|---|
 | List | in the strip: layout 450 × 984 at 120, 120, scaled 86.67 % into x 570…960 (+7 nudge to the strip edge); bottom ≈ y 973 (5 px above the double-tap hint at y 978) |
 | Small album (L2) | 570, 120, 390 × 390 at the top of the strip |
-| Meta | small 150, 196; big 150, 226; pills 150, 296 |
+| Meta | small 150, 196; big 150, 226; pills 150, 296; all 480 wide (x 150–630, 474) |
 | FULLSCREEN pill | 140, 136 |
 | A–Z bar | left 78, top 151 |
 | ALL row | flush under the last row (≤ 14 rows); long lists: bottom pill 576, 972, 378 × 46 |

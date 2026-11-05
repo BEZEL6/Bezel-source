@@ -2,7 +2,7 @@
 
 **Object:** the TV section · Kodi: `MyVideoNav.xml`, list `60` (strip list), ALL row `6098` / long-list pill `6089`, A–Z bar `6500`, VSTRIP META group, strip clear art (`BzTVClear`), poster layer in 1122
 **Where:** TV: fanart stage left with logo, meta and plot; list in the colour strip; swaying poster on the right
-**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none
+**Last updated:** 2026-11-04 · 5.33.474 · **Status:** live · **Lock:** none
 
 ## Simple
 TV has Shows → Seasons → Episodes, all in the strip-list look. The show's clear logo sits at the top of the stage on every level (the show title if there's no logo, or if you switch TV clear art off in Info › Section options; it's on by default), with pills underneath (S×E, year, studio, MPAA, runtime; genre on its own row), the season / episode name and the plot. Opening a show lands on its first season, never on `..`. An **ALL SEASONS** row opens every episode when a show has two or more seasons. The poster sways on the right.
@@ -38,9 +38,10 @@ Fanart stage < logo / meta / plot < strip + list < poster layer < MM.
 ### Geometry
 | Piece | Value |
 |---|---|
-| Logo / title box | 150, 120, 410 × 176, centred |
-| Pills | row 1 y 296 (S×E · YEAR · STUDIO max 200 · MPAA · RUNTIME), row 2 y 336 (GENRE) |
-| Season / episode name | 150, 382 |
+| Logo / title box | 150, 120, 480 × 176, centred |
+| Pills | row 1 y 296, 480 wide (S×E · YEAR · STUDIO max 200 · MPAA · RUNTIME), row 2 y 336 (GENRE, max 480) |
+| Season / episode name | 150, 382, 480 wide |
+| Text column | x 150–630 |
 | Plot | from y 386 (L1) / below the name (L2–L3) |
 | ALL row | under the last row (≤ 14 rows); long lists: pill 576, 972, 378 × 46 |
 

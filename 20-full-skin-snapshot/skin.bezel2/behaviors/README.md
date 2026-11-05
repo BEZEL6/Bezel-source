@@ -1,6 +1,6 @@
 # BEZEL behavior files
 
-**Last updated:** 2026-11-04 · 5.33.473 · **Status:** current-state
+**Last updated:** 2026-11-04 · 5.33.474 · **Status:** current-state
 
 **What these are.** One file per Bezel object (a screen, dialog, list, pill or animation system). Each file says what the object must feel and look like on **any** framework, then how it is built today in **Kodi**, which is the current sandbox. A porter should be able to rebuild an object from its file without reading Kodi XML. Someone fixing the Kodi skin should find every id, property and file name in the same place.
 
@@ -68,6 +68,7 @@ A heading that does not apply keeps its place and says `—` or one line why, so
 | Gap | 1050 | 90 | strip to big album |
 | Big album / poster | 1140 | 600 (to 1740) | square album or poster, its own layer |
 | List column (no strip) | 120 | — | Kodi-list fallback position |
+| Stage text column | 150 | 480 (to 630) | meta, pills, plot on the stage; 30 px before the strip |
 
 ### Curves
 | Name | CSS / cubic-bezier | Where Bezel uses it |
@@ -88,7 +89,7 @@ A heading that does not apply keeps its place and says `—` or one line why, so
 | Menu (MM) open / close | 286 / 250 ms | Tuner Main menu |
 | MM-open art crossfade | 500 ms | Tuner Main menu |
 | MM warm A/B art swap | 1500 ms, fixed | **LOCKED** |
-| Fanart image fade | 150 ms | Tuner List › Fanart fade |
+| Fanart image fade | 150 ms crossfade (or Cut) | Tuner Fanart stage › Fade type / Fade speed |
 | Row scroll | 271 ms, cubic | Tuner List (Rob: "floaty", 0.7×) |
 | Row cascade | 286 ms per row, 30 ms stagger (15th row lands ≈ 0.69 s) | Tuner List |
 | Section-entry row hold | 350 ms | code |
