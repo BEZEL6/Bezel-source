@@ -1,45 +1,102 @@
-# Big album (dialog 1122)
+# Big album layer
 
-**Object:** `xml/Custom_1122_BigAlbum.xml` (dialog 1122, zorder 0) · includes `BezelAlbumCast` + 2× `BezelMusicPlayingArt` · expressions `bz_railvis` / `bz_railc` (Includes_Bezel) · Home prop `bz_rail`
-**Last updated:** 2026-11-03 · 5.33.417
-**Status:** built (P1), awaiting device smoke
+**Object:** the always-present big album / poster layer · Kodi: dialog `1122` (`Custom_1122_BigAlbum.xml`, zorder 0, modeless) · group `6400` · includes `BezelAlbumCast`, 2 × `BezelMusicPlayingArt` · expressions `bz_railvis`, `bz_railc` · Home `bz_rail`
+**Where:** right of the strip (home, x 1140) or centred (x 660), over every section that shows it
+**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none
 
 ## Simple
-The big playing album is one global layer that stays open across sections, like the dust. Changing section never remounts it, so the sway never restarts. Sections only say *where* it sits: home (right, x1140), centre (x660) or hidden.
+The big playing album is one layer that lives above every section, like the dust. Changing section, opening the menu or going fullscreen never rebuilds it, so its sway, glare and dust never restart. Screens only say where it sits: home (right of the strip), centre, or hidden. It also holds the artwork group for posters (see [artwork-group](artwork-group.md)) and, while music plays, quietly keeps the artist's fanart loaded so fullscreen opens instantly.
 
-## How it works
-- 1122 has a `<visible>` tag (splash done, not fullscreen video / slideshow / screensaver / 1113), so Kodi opens it by itself, **modeless**. Modeless dialogs never get key actions — so **nothing focusable is inside it**. Touch/mouse still reaches it: tap 6180 on the album (Music only, `bz_pndlg_ok`) opens Play Next 1120.
-- Shows when `$EXP[bz_railvis]`: Music lists (artists/albums/songs), MM open over **any** section while music plays (`bz_mmmushide` — incl. Music itself since 5.33.327, so Movies/TV→Music under MM never drops a frame while the Music container loads), Kodi FS (visualisation), Play Next 1120, Music fan art 1121 — and `bz_rail` is not `hide`. Inside, the old gate still applies: hidden by the grid (`bz_gridm`) unless Now Playing.
-- Position: two real copies (as 5.33.307), each with its own real left, so each sway camera is right when it is at rest. **Both copies are always visible** — neither is ever set Visible=false, so the art and NP fade-ins inside `BezelMusicPlayingArt` never restart.
-  - Home copy (left 0, at x 1140): Conditional slide −480 when `$EXP[bz_railc]`; goes alpha 0 only when the slide ends (fade time 0, delay = slide time).
-  - Centre copy (left −480, at x 660): parked at home (Conditional slide +480 when `!$EXP[bz_railc]`) under alpha 0, same end-of-slide rule. WindowOpen hold at alpha 0 (600 ms) when the dialog opens at home, so it is not seen parking.
-  - `$EXP[bz_railc]` = `bz_rail` is `centre`, OR (1121 or Kodi FS) and album viz (`bz_pnoff` ≠ 1).
-  - Home↔centre is always **one continuous slide** at the FS Slide speed (`bz_at_fsslide` 1/2/empty-3/4 = 480/380/280/180 ms), both directions. Both copies move together and overlap during the slide; the arriving copy is drawn from the first frame (reverse restores its alpha at once). Never a fade, never a gap.
-  - 5.33.309 bug (fixed): copies swapped by Visible, so the arriving copy remounted and its inner fade-ins replayed (~1 s with no album).
-- Cast (`BezelAlbumCast`) is mounted once, outside both copies (CASTPIN, unchanged).
-- The compact NP rides with the album because it is inside `BezelMusicPlayingArt`.
+## Feel contract (any framework)
 
-## Wiring
+### States
+| State | How you get in | How you leave | On screen |
+|---|---|---|---|
+| Hidden | no music and no screen that shows it; fullscreen video, slideshow, screensaver | a showing screen | nothing |
+| Home | Music lists, MM over any section with music, settings / add-ons / sources with music, fullscreen fanart stage | centre request | album at x 1140, swaying |
+| Centre | Dialogue FS, fullscreen album view | back to home | album at x 660, swaying |
+| Splash | app start | splash fade | album loads hidden and dissolves in with the splash |
+
+### Timeline
+| t (ms) | What | Duration | Curve |
+|---|---|---|---|
+| home ↔ centre | one continuous slide of 480 px, both directions | 280 default (480 / 380 / 280 / 180) | sine in-out |
+| app start | album dissolves in with the splash's own fade | 3000 | sine |
+| dims | MM dim / global dim apply to the album exactly like section content | 600 | sine |
+| art change | new cover crossfades over the old | image fade | — |
+
+### Interruptions
+- A centre request while sliding home (or the reverse): the slide reverses from its current position.
+- Section change mid-slide: the slide completes; nothing restarts.
+
+### Continuity
+- The album is never removed and re-added while its screen family stays up: the sway, glare, lit dust, cast and the inner fade-ins never replay (5.33.309 fixed a remount that left ~1 s with no album).
+- Home ↔ centre is never a fade and never leaves a gap: the arriving copy is on screen from the first frame.
+- Sway phase is shared with the poster (see [sway-animations](sway-animations.md)).
+
+### Layering
+Below: the section window. In the layer, back → front: fanart preload (3 %) · cast shadow · album art (+ glare, lit dust) · compact NP bar under the album · NP bar under the centred album. Above: fullscreen chrome, MM chrome, dialogs.
+
+### Geometry
+| Piece | Value |
+|---|---|
+| Album home | x 1140, y 220, 600 × 600 |
+| Album centre | x 660 (home − 480) |
+| Cast shadow | mounted once, outside the album, follows its sway |
+| Fanart preload | stage x 120, 930 × 900, 3 % |
+
+### Art
+- Playing album cover (or the focused item's poster through the artwork group).
+- No art → nothing drawn; no default cover (276).
+- The preload draws the playing artist's fanart, scaled to cover, background-loaded.
+
+### Input
+None. The layer never takes keys. Touch: tapping the album in Music opens Dialogue FS.
+
+### Speed targets
+Slide ≤ 280 ms by default; art on screen with the splash, not after.
+
+### Never
+- No remount on section change (5.33.309).
+- No fade or gap on home ↔ centre.
+- No album pop after the splash (412).
+- No art left invisible after the splash (417).
+
+### Acceptance checks
+1. Music → Movies → Music with a song playing and the MM open: album never blinks or restarts its swing.
+2. Dialogue FS open / close: one smooth slide each way.
+3. Cold start: album appears with the splash fade.
+4. Start a video fullscreen: album gone; stop: back, swaying.
+
+## Kodi implementation (sandbox)
+
+### How it works
+- **Modeless dialog with a `<visible>` tag** (Intent: global layer). `!fullscreenvideo + !slideshow + !screensaver + !1113`; Kodi opens it by itself. Modeless dialogs get no key actions, so nothing focusable lives inside. Touch reaches button 6180 (tap → `bz_rail=centre` + `ActivateWindow(1120)` when `bz_pndlg_ok`).
+- **Shown when `$EXP[bz_railvis]`:** `bz_mmaudio` · MM open on the Music row with `bz_vmus` · music info dialogs · music / playlist windows on artists / albums / songs · `bz_mmmushide` (MM open with audio) · Kodi FS · 1120 · 1121 · audio + `bz_setkids` (settings / add-ons / sources) unless Tuner Album art during music = Off; and `bz_rail` ≠ `hide`.
+- **Two copies** (Intent: never remount), each with its own real `left` so each sway camera is right at rest; both always "visible":
+  - home copy (left 0, x 1140): Conditional slide −480 while `$EXP[bz_railc]`, alpha 0 at the end of the slide (fade 0 ms, delay = slide time).
+  - centre copy (left −480): parked home (+480 while `!bz_railc`) under alpha 0; WindowOpen holds it at 0 for 600 ms.
+  - `bz_railc` = `bz_rail` = `centre`, or (1121 or Kodi FS) + album view (`bz_pnoff` ≠ 1). Slide time from `bz_at_fsslide` (1 / 2 / empty-3 / 4 = 480 / 380 / 280 / 180).
+- **Dims:** the `bz_railvis` group takes `BezelSecDim` (`bz_at_mmdim`, `bz_at_gdim`).
+- **Splash:** group 6400 holds at alpha 0 (Conditional `start=100 end=0 time=0`) while `bz_warm_gate`; fades in 3000 ms when it clears.
+- **Fanart preload (472):** image at the start of `<controls>`: `bz_stage_x`, `bz_stage_w` × 900, scale, background, `colordiffuse 03FFFFFF`, `Player.Art(artist.fanart)`; visible `Player.HasAudio + !Player.HasVideo + !Window.IsVisible(1121) + !Window.IsActive(visualisation)`.
+- **NP bar under the centred album (VIZNPBAR):** `[viz | Window.IsVisible(1121)] + bz_fsnp + bz_railc + Player.HasAudio`, 600 ms in after 480, 300 out (see [np-bar](np-bar.md)).
+
+### Wiring
 | Piece | Where |
 |---|---|
-| `bz_rail` = `centre` | 1120 onload; 6390 Select/Right, 6180 tap and 1115 Right set it just before `ActivateWindow(1120)` |
-| `bz_rail` = `home` | 1120 onunload (then focus → 60, or 6996 when the MM is open) |
-| `bz_rail` = `hide` | free for any section that wants the album off (nothing sets it yet) |
-| 1121 / Kodi FS centre | follows `bz_pnoff` live (album viz vs fan art), no property needed |
-| Removed | `BezelMusicRail` include + its mounts (Music View_60, MyVideoNav); MusicVisualisation's own album + cast copies |
-| Restart | XML → ReloadSkin |
-- 5.33.311: centre copy on Custom_1122 WindowOpen fade must end=100 (full alpha after 600ms); a fade ending at 0 leaves centre invisible after the slide.
+| `bz_rail=centre` | 1120 onload; 6390 Select / Right, 6180 tap and 1115 Right just before `ActivateWindow(1120)` |
+| `bz_rail=home` | 1120 onunload |
+| `bz_rail=hide` | free; nothing sets it |
+| Fullscreen centre | follows `bz_pnoff` live |
+| Expressions | `bz_railvis`, `bz_railc`, `bz_mmmushide`, `bz_mmaudio`, `bz_setkids`, `bz_pndlg_ok` |
+| Tuner | `bz_at_fsslide`, `bz_at_warmmusicposters`, `bz_at_mmdim`, `bz_at_gdim` |
 
-## 5.33.314 — Background dim
-- The visible album group in Custom_1122 (`$EXP[bz_railvis]` group: cast + art + NP) now takes `BezelSecDim`, so MM dim (`bz_at_mmdim`, MM open + not idle) and Global dim (`bz_at_gdim`, MM closed) fade the big album exactly like section content. No parallel dim system.
-- MM Music focus no longer restarts sway (MyMusicNav onload restart removed).
+### Kodi workarounds (do not port)
+- Two parked copies with alpha tricks: Kodi can't animate a control's position without restarting its children's animations when visibility flips. A port moves one album.
+- The reversed-Conditional hold `start=100 end=0 time=0`: a reversed Kodi Conditional rests at its start value (417).
+- The 3 % preload image: Kodi has no texture prefetch call.
+- A dialog for a global layer: Kodi has no app-wide overlay.
 
-## 5.33.332–333 — under Settings / Add-ons / Media Sources
-- `bz_railvis` also true while audio plays (no video) and 1130, 1131, addonbrowser, 1117 or 1132 is visible (unless Tuner Album art during music = Off). Verified live on 334 with MM closed: shots `audit_settings_levels/334_album_{1130,1131,1117,1132}.png`.
-
-
-## Art under the splash (5.33.412 ARTUNDERSPLASH)
-
-**Simple.** Big album and poster (dialog 1122, group 6400) load **behind** the splash and dissolve in **with** the 3 s splash fade — no art pop after the splash closes. Dust (1114) still waits for `bz_splash_done`.
-
-**Wiring.** 1122 `<visible>` has no `bz_splash_done` term (opens at startup, zorder 0, modeless). Group 6400 carries two Conditional fades: alpha 0 (time 0) while `bz_warm_gate` is set, and 0→100 over 3000 ms sine when `bz_warm_gate` clears (same moment `bz_warmgate.py dismiss()` starts the overlay's 3 s Hidden fade). Splash Off → gate never set → art shows at once. **5.33.417 ARTGATEFIX:** the hold fade is `start=100 end=0 time=0` — a reversed Kodi Conditional rests at its *start* value, so the old `start=0 end=0` hold rested at alpha 0 forever and the art never showed after the splash. List-60 section art (Music/Videos windows) already rendered under the overlay.
+## Related
+[artwork-group](artwork-group.md) · [sway-animations](sway-animations.md) · [dialogue-fs](dialogue-fs.md) · [music-fanart-fs](music-fanart-fs.md) · [np-bar](np-bar.md) · [dust](dust.md) · [home-splash](home-splash.md)

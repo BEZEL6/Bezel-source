@@ -1,145 +1,153 @@
-# Music Fanart FS (dialog 1121)
+# Music Fanart FS (Bezel fullscreen music)
 
-**Object:** `Custom_1121_MusicFanartFS.xml` dialog `1121` · main `6420` · fan art pill copy `6421` · Back router `6422` · touch `6426`–`6430` · big album pill `6401` (shared include)
-**Where:** Music section only, over the Music window
-**Last updated:** 2026-11-02 · 5.33.377
-**Status:** draft — built, not smoke-tested on device. Rob locks t1589–t1595.
-**Skin:** skin.bezel2
-
-**ALERT RULE (Rob):** before making any Fanart FS or 1121 change, alert Rob that it applies to BOTH (Kodi Fanart FS `MusicVisualisation.xml` and Music Fanart FS 1121).
-
-**STANDING (Rob):** any change to Kodi Fanart FS (`MusicVisualisation.xml`, fanart-fs.md) is applied to 1121 in the same build — shared includes / same wiring so they cannot drift. Shared: `BezelLogo`, `BezelFSPlayNext`, `BezelBigAlbumPill`, `BezelNPControls`, `BezelNPInPlace` (drawn by Music), keys/props (`bz_pnoff`, `bz_vdtap`, `bz_pnfoc`, `bz_dfs_mode`, `bz_npmode`). Any Tuner row that drives Fanart FS / visualisation also drives 1121.
+**Object:** fullscreen music screen over any section · Kodi: dialog `1121` (`Custom_1121_MusicFanartFS.xml`) · main `6420` · cycle pill `6421` · Back router `6422` · touch `6426`–`6430` · big album pill `6401` (shared)
+**Where:** over Music, Home, Movies / TV, Pictures, Programs, Add-ons while music plays
+**Last updated:** 2026-11-04 · 5.33.473 · **Status:** live · **Lock:** none. **Rob rule:** any change to Kodi Fanart FS ([fanart-fs](fanart-fs.md)) is made here in the same build, and the reverse; alert Rob that it applies to both.
 
 ## Simple
-In Music, FULLSCREEN goes to a dialog copy of Fanart FS instead of Kodi's visualisation window. The Music window stays underneath, so the fanart stage and the swaying album never restart. Same look, same keys. Every other section still opens real Kodi visualisation.
+With music playing, FULLSCREEN (the strip pill, the MM FULL pill, Tab or the remote's Display key) fills the screen with the playing artist's fanart, the big album swaying on the right, the song's artist / album / title at the top left and a progress bar that grows out of the year pill. Nothing restarts: the fanart and the album keep moving exactly as they were. Double-Select slides the big album to the centre with the previous and next albums beside it (album view). Back from album view returns to the fanart; Back from the fanart closes fullscreen and returns you where you were. If the music stops, fullscreen closes by itself.
 
-## How it works
-- Triggers (when `$EXP[bz_m1121ok]`: Music active, audio, no video, not viz, kill switch off): FS pill `6886`, MM FULL `6960`, old menu Full `6910`, Tab / remote Display in Music, Tuner Back with `bz_tunesrc=fsctrl`. Otherwise the same controls run `ActivateWindow(visualisation)`.
-- Onload sets `bz_np=true` (Music draws `BezelNPInPlace` in place — same include and coords as viz = pixel-match), `bz_fsnp`, `bz_pnoff=1`, keymap refresh, starts bz_flip if needed. **No `bz_sway_restart`.** Closes 1112 if open.
-- Play Next copied in: double-Select (or double-tap 6429) clears `bz_pnoff` → album viz. Music's stage slides -1100 (same `bz_at_fsslide` rails as 1120), sides + big album pill draw in 1121. 1120 is never opened (`bz_pndlg_ok` false while 1121 visible).
-- Back: album viz → fanart; fanart → close, focus Music list `60`.
-- Music's own fan art pill 6391 and FULLSCREEN pill hide while 1121 is visible; 1121's 6421 replaces 6391 in the same spot.
-- Auto-close: Timers `bz_m1121stop` on `!Player.HasAudio`.
-- Kill switch: `Skin.SetBool(bz_m1121_off)` → onload closes and opens visualisation.
+## Feel contract (any framework)
 
-## Wiring
-| Key | 1121 |
+### States
+| State | How you get in | How you leave | On screen |
+|---|---|---|---|
+| Fanart stage | open fullscreen | double-Select → Album view; Back → closed | artist fanart full screen, big album home (right), meta + progress top left, cycle pill top left, transport bar |
+| Album view | double-Select (or double-tap the album) | Back → Fanart stage | big album slides to centre; side albums fade in; NP bar under the centred album |
+| Cycle mode | Up to the cycle pill, Left / Right / Select | Down | one of six panels: Visualizer, Bio, Fanart, Lyrics, Up Next, Controls; mode name flashes 2 s |
+| Up Next list | cycle mode Up Next, Down | Back / Up from first row / Left | queue list; Select plays that song |
+| Controls | cycle mode Controls, Down; or Menu / Red | close it | music controls dialog on top |
+| Closed | Back from Fanart stage; Tab / Display; music stops | — | the screen you came from, same row focused |
+
+### Timeline
+**Open (from any section)**
+| t (ms) | What | Duration | Curve |
+|---|---|---|---|
+| 0 | fullscreen layer fades in over the section; behind it a black cover and the fanart stage fade in (non-Music sections) | 300 | sine |
+| 0 | big album already swaying; it is not restarted | — | — |
+| 150 | progress bar grows right out of the year pill (from the pill's left edge) | 2000 | sine in-out |
+| 0 → 1000 | genre pill fades away (hard-hidden at 1150) | 1000 | sine |
+| 2100 | elapsed / duration labels fade in | 300 | sine |
+
+**Fanart stage → Album view**
+| t (ms) | What | Duration | Curve |
+|---|---|---|---|
+| 0 | big album slides left 480 px to centre (1140 → 660) | 280 (Tuner: 480 / 380 / 280 / 180) | sine in-out |
+| 0 | side albums fade in (no wait) | 2000 | sine |
+| 480 | NP bar fades in under the centred album | 600 | sine |
+| Back | NP bar fades out 300 ms; album slides home (reverse of the slide); sides fade out | 280 / 300 | sine |
+
+**Close**: fade-out (300 ms chrome, 600 ms whole screen, sine in-out); the section underneath is already drawn, focus returns to its list (or the MM reopens if fullscreen was opened from the MM). Exception: closing onto the Music song list of an artist's album (Level 3) is instant, no fade (5.33.306).
+
+### Interruptions
+- Back during the slide to centre: the slide reverses from where it is (no jump).
+- Track change in either state: art crossfades in place; no slide, no restart; side albums update.
+- Music stops: closes at once (any state).
+- Video starts: fullscreen music closes and video fullscreen opens.
+- Second Select within 1 s on the fanart stage = album view; a single Select = play / pause, applied after the 1 s window.
+
+### Continuity
+- The fanart stage and the big album's sway, glare, lit dust and cast never restart when fullscreen opens or closes, or on Fanart ↔ Album view.
+- The fanart image under fullscreen is the same image the section showed (or the preloaded artist fanart outside Music): no reload flash.
+- Leaving returns focus to the same list row.
+
+### Layering
+Section window (+ black cover + fanart stage when not in Music) < big album layer (album, side albums, sway, glare, dust, NP bar under centred album) < fullscreen chrome (meta, progress, cycle pill, transport bar, Up Next list) < music controls < system dialogs.
+
+### Geometry
+| Element | Position (1920×1080) |
 |---|---|
-| Select (6420) fanart | 1st: `AlarmClock(bz_vdtapgo,PlayerControl(Play),00:01)` + `bz_vdtap=1`; 2nd in 1 s: cancel + `ClearProperty(bz_pnoff)` |
-| Select album viz | pause/resume + `bz_pnfoc=6403` ghost |
-| Left / Right | `PlayerControl(Previous/Next)` |
-| Up | fanart → 6421 · album viz → 6401 |
-| Down | noop |
-| Back / Backspace / B | `SetFocus(6422)` (keymap `<window1121>`) |
-| M / RED | 1115 · Tab / Display → `Dialog.Close(1121)` |
-| onunload | clear `bz_np bz_fsnp bz_pnoff bz_pnfoc bz_vdtap` · `!bz_navmenu` → `AlarmClock(bz_m1121ret,SetFocus(60))` |
+| Fanart stage | full screen |
+| Big album home / centre | x 1140–1740 / x 660–1260, y 220–820 (600 × 600) |
+| Side albums | 90, 250 and 1290, 250, 540 × 540 (title / artist panel on their lower 162 px) |
+| Meta: small ARTIST · ALBUM | 150, 196, 780 × 30 |
+| Meta: big SONG TITLE | 150, 226, 780 × 60 |
+| Year pill → progress bar | 150, 296; bar 780 × 32 |
+| Cycle pill | 140, 136, left-aligned; "press down to open" hint 140, 172 |
+| Prev / next song pills | 226 × 32 at x 128 / 726, y 981 |
+| NP bar under centred album | album x range, y 892–1004 |
+| Touch: prev / next album | 90, 250 / 1290, 250 (540 × 540); album 1100, 220 (680 × 680); right half 960, 0 (960 × 1080); logo 0, 0 (120 × 116) |
 
-## Album centre (property-driven slide, Rob t1600)
-- In 1121 album viz (`Window.IsVisible(1121)` + `bz_pnoff` cleared), the playing-album group inside each Music speed rail (6367/6377/6397/6382, `BezelMusicPlayingArt`) gets a Conditional slide `-480,0` → album 1140 → 660, same distance as 1120's rail scroll. Time follows the active rail: 480/380/280/180 ms (`bz_at_fsslide` 1/2/3-default/4), sine inout.
-- No focus moves into Music from the dialog. Leaving album viz (Back → fanart sets `bz_pnoff`) or closing 1121 drops the condition → Kodi reverses the slide back to 1140.
-- Gated on 1121 only — real visualisation / 1120 paths unchanged (1120 still centres by focusing rail 6399).
+### Art
+- Fanart: playing artist's fanart, fills the screen (scale to cover).
+- Big album / side albums: the playing / previous / next covers; no cover → nothing drawn (no placeholder, no stub shadow).
+- Progress bar 25 % white ring and fill over 25 % black; time labels 100 %.
+- Pills: rounded 32 px pill, 16 px caps, tinted fill.
+
+### Input
+| Action | Fanart stage | Album view |
+|---|---|---|
+| Select | 1st: play / pause after 1 s; 2nd within 1 s: Album view | play / pause (pause logo on the album) |
+| Left / Right | previous / next song | previous / next song |
+| Up | cycle pill | big album pill |
+| Down | — | — |
+| Back | close fullscreen | Fanart stage |
+| Long Select | play / pause | play / pause |
+| Menu / Red | music controls | music controls |
+| Tab / Display | close fullscreen | close fullscreen |
+| Cycle pill Left / Right / Select | previous / next mode (wraps); Down: Controls → music controls, Up Next → list, else back to the stage | |
+| Touch | album double-tap → Album view, tap → play / pause; right half tap → Up Next; logo → close; side albums → previous / next | |
+
+### Speed targets
+- Fullscreen visible ≤ 300 ms after the key; the fanart is already cached (preloaded while music plays).
+- Album view slide feels immediate (≤ 280 ms default).
+
+### Never
+- No sway / glare / dust restart on open (5.33.210 copy design; 452, 453).
+- No old Now Playing panel or old upper-right cycle pill around open / close (465 OLDPILL / OLDNP).
+- No NP bar on the fanart stage under the home album (470 reverted 463).
+- No idle auto-open (5.33.311).
+- No wait before side albums (317 "remove the wait").
+- No small cover in the stage's corner on open (472 ALBUMHALF).
+
+### Acceptance checks
+1. Music list, song playing → FULLSCREEN: one fade, album still mid-sway, meta + progress grow in.
+2. Same from Home, Movies, TV, Pictures, Add-ons → identical screen; Back → same section, same row.
+3. Double-Select → album to centre with sides and NP bar; Back → album home, bar fades, sides fade.
+4. Stop music while fullscreen → closes to the section.
+5. Play a video, press Tab → video fullscreen, not music.
+
+## Kodi implementation (sandbox)
+
+### How it works
+- **Why a dialog (Intent: one fullscreen over everything).** Kodi's real visualisation window replaces the section window, which would restart the stage and the album. 1121 is a dialog over the current window, so the window and the always-open big album dialog 1122 keep running. Since 5.33.309 the album, sway, glare, dust and NP bar live in 1122, so 1121 only needs the window for the fanart stage.
+- **Openers.** When `$EXP[bz_m1121ok]` (audio, no video, kill switch off, window in `bz_fs1121win` = Music / Home / Videos / Pictures / Programs / Add-ons, not viz): FULLSCREEN pill 6886, MM FULL pills 6960 / 6910, big album routes, Tab / Display keymap in those windows, `bz_cmd.py` `tab` / `np` / `nptoggle` / `vistoggle` / Info-with-no-album / auto-NP / bz_flip `bz_tabq`, Tuner Back with `bz_tunesrc=fsctrl`. Otherwise the same controls open Kodi FS (`ActivateWindow(visualisation)`).
+- **Fanart stage outside Music.** `BezelFSUnderlay` (black 1920×1080 + `BezelNPInPlace`, npfade 300) at the end of Home, MyVideoNav, MyPics, AddonBrowser; `BezelFSUnderlayBlack` in MyPrograms (it already has the stage). Visible `Window.IsVisible(1121) + !Window.IsActive(music) + Player.HasAudio`, 300 ms fades. In Music the list view's own `BezelNPInPlace` is the stage.
+- **Fanart preload.** 1122 draws `Player.Art(artist.fanart)` at 3 % while audio plays and neither 1121 nor viz is up, so the texture is cached.
+- **onload** (in order): close if kill switch / no audio / video / window not allowed; video → `ActivateWindow(fullscreenvideo)`; not allowed + audio → `ActivateWindow(visualisation)`; keymap refresh; `bz_pnoff=1` (fanart stage); `bz_dfs_mode` defaults to `album`; `bz_fsnp`, `bz_np`; start bz_flip if not running. **No `bz_sway_restart`.**
+- **Album view.** 6420 double-Select clears `bz_pnoff`; 1122 reads `bz_rail` / `bz_pnoff` and slides the album −480 on the `bz_at_fsslide` rail (1 / 2 / 3 / 4 = 480 / 380 / 280 / 180 ms, default 3). Sides: `BezelFSPlayNext` (sdelay 0, sfade 2000). NP bar: 1122 VIZNPBAR group, gate `[viz | Window.IsVisible(1121)] + bz_fsnp + bz_railc + Player.HasAudio` (600 ms in after 480, 300 out).
+- **Back.** Keymap Back / Backspace / B → `SetFocus(6422)`; 6422 onfocus: album view → `bz_pnoff=1` + focus 6420; fanart → `Dialog.Close(1121)`.
+- **Open / close fades.** WindowOpen fade 300 ms; WindowClose 300 + 600 ms fades, both gated `!$EXP[bz_m13]` (no fade onto Music Level 3).
+- **onunload.** Clears `bz_np`, `bz_fsnp`, `bz_pnoff`, `bz_pnfoc`, `bz_vdtap`; sets `bz_gridret` for 3 s; if MM closed and not opened from the MM (`bz_fsmm` empty): `AlarmClock(bz_m1121ret,SetFocus(60))`. Opened from the MM (`bz_fsmm` latched by bz_cmd / bz_flip): bz_flip reopens the MM on exit.
+- **Auto-close.** Timer `bz_m1121stop`: `!Player.HasAudio` → `Dialog.Close(1121)`.
+- **Meta / progress.** Shared include `BezelFSMeta` (same as Kodi FS). Tuner `bz_fs_ttl_off` (meta), `bz_fs_prog_off` (progress), `bz_fs_pill_off`, `bz_fschrome_fan` (Fanart cycle mode keeps chrome; default hides meta + progress, 300 ms).
+- **Cycle pill 6421.** `Skin.String(bz_npmode)` = vis / bio / fanart / lyrics / upnext / controls (empty = vis); label flash via `bz_npmlabel` (2 s alarm `bznpml`). Down: controls → `ActivateWindow(1115)`, upnext → 6396 (list 6395, `BezelFSUpNext`, Select `bz_cmd.py upnext_goto`), else 6420.
+- **Pill idle.** bz_flip `_pill_idle`: 6421 idle 5 s → focus back to where it came from (else 6420).
+
+### Wiring
+| Control / key | Action |
+|---|---|
+| 6420 Select, fanart | 1st `AlarmClock(bz_vdtapgo,PlayerControl(Play),00:01)` + `bz_vdtap=1`; 2nd within 1 s: `CancelAlarm(bz_vdtapgo)`, `ClearProperty(bz_pnoff)`, `bz_vdtap=2`; always `AlarmClock(bz_vdtapclr,…,00:01)` |
+| 6420 Select, album view | `bz_pnfoc=6403` (pause logo) / clear if paused; `PlayerControl(Play)` |
+| 6420 Left / Right | `PlayerControl(Previous / Next)` |
+| 6420 Up | album view → 6401; fanart → 6421 |
+| 6422 | Back router (above) |
+| 6426 logo (touch) | `Dialog.Close(1121)` |
+| 6427 / 6428 | `Playlist.PlayOffset(music,-1 / 1)` (album view only) |
+| 6429 album (touch) | click `PlayerControl(Play)`, doubleclick clear `bz_pnoff` (fanart only) |
+| 6430 right half (touch) | `Skin.SetString(bz_npmode,upnext)` (fanart only) |
+| Keymap `<window1121>` | m / red → 1115; tab / display → `Dialog.Close(1121)`; escape → Back; back / backspace / browser_back / b → `SetFocus(6422)`; long return / enter → PlayPause |
+| Includes | `BezelFSMeta`, `BezelLogo`, `BezelBigAlbumPill`, `BezelFSPlayNext`, `BezelFSUpNext`, `BezelNPControls` |
+| Expressions | `bz_m1121ok`, `bz_fs1121win`, `bz_railc`, `bz_npm_fan` |
+| Home props | `bz_pnoff`, `bz_fsnp`, `bz_np`, `bz_pnfoc`, `bz_vdtap`, `bz_rail`, `bz_fsmm`, `bz_npmlabel`, `bz_gridret` |
+| Skin | `bz_m1121_off` (kill switch), `bz_dfs_mode`, `bz_npmode`, `bz_at_fsslide` |
+
+### Kodi workarounds (do not port)
+- Opening a dialog instead of a window, and the per-window underlays, exist only because a Kodi window switch would restart the stage. A native port draws one fullscreen layer over the app.
+- The 1 s `AlarmClock` double-tap and the 6422 focus trick for Back: Kodi has no double-press event and no per-state Back handler.
+- The onload close / redirect chain: Kodi can't refuse to open a dialog, so it opens and closes itself.
+- `Dialog.Close(1112)` in onload: no-op since 465.
+- `bz_gridret` 3 s: legacy grid return flag (grid removed in 455).
 
 ## Related
-fanart-fs.md · play-next.md · fullscreen-pill.md · mm-mini-player.md · keymaps.md · skin-settings-tuner.md
-
-
-## Wiring table (live XML, 5.33.267)
-**Simple.** Every control with an id in the files this object names, read straight from the live tree. Positions are parent-relative skin units on the 1920×1080 canvas; nested `<include>`s are *not* expanded here (unverified beyond what is listed).
-
-**Source:** `xml/Custom_1121_MusicFanartFS.xml`
-
-| id | type | x,y | w×h | nav L/R/U/D | visible |
-|---|---|---|---|---|---|
-| 6421 | button | —,— | auto×32 | `prev mode/next mode/6420/cycle (Select)` | `—` |
-| 6420 | button | 0,0 | 1920×1080 | `PlayerControl(Previous)/PlayerControl(Next)/6401/SetProperty(bz_noop,1,home)` | `—` |
-| 6422 | button | -400,40 | 10×10 | `—/—/—/—` | `—` |
-| 6427 | button | 90,250 | 540×540 | `—/—/—/—` | `[!String.IsEqual(Window(Home).Property(bz_pnoff),1)] + !String.IsEqual(Skin.String(bz_d…` |
-| 6428 | button | 1290,250 | 540×540 | `—/—/—/—` | `[!String.IsEqual(Window(Home).Property(bz_pnoff),1)] + !String.IsEqual(Skin.String(bz_d…` |
-| 6430 | button | 960,0 | 960×1080 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_pnoff),1) + !String.IsEqual(Window(Home).Proper…` |
-| 6429 | button | 1100,220 | 680×680 | `—/—/—/—` | `String.IsEqual(Window(Home).Property(bz_pnoff),1) + !String.IsEqual(Window(Home).Proper…` |
-| 6426 | button | 0,0 | 120×116 | `—/—/—/—` | `—` |
-
-Actions (`onclick`/`onload`/`onback`) found:
-- `6422`
-- `ActivateWindow(1115)`
-- `ActivateWindow(visualisation)`
-- `AlarmClock(bz_vdtapclr,ClearProperty(bz_vdtap,home),00:01,silent)`
-- `AlarmClock(bz_vdtapgo,PlayerControl(Play),00:01,silent)`
-- `AlarmClock(bznpml,ClearProperty(bz_npmlabel,home),00:02,silent)`
-- `CancelAlarm(bz_vdtapgo,true)`
-- `CancelAlarm(bznpml,true)`
-- `ClearProperty(bz_pnfoc,home)`
-- `ClearProperty(bz_pnoff,home)`
-- `Dialog.Close(1112,true)`
-- `Dialog.Close(1121)`
-- `Dialog.Close(1121,true)`
-- `PlayerControl(Play)`
-- `Playlist.PlayOffset(music,-1)`
-- `Playlist.PlayOffset(music,1)`
-- `RunScript(special://skin/scripts/bz_cmd.py,keymap)`
-- `RunScript(special://skin/scripts/bz_flip.py)`
-- `SetProperty(bz_fsnp,true,home)`
-- `SetProperty(bz_np,true,home)`
-- `SetProperty(bz_npmlabel,1,home)`
-- `SetProperty(bz_pnfoc,6403,home)`
-- `SetProperty(bz_pnoff,1,home)`
-- `SetProperty(bz_vdtap,1,home)`
-- `SetProperty(bz_vdtap,2,home)`
-
-
-## FS meta + pill→progress (5.33.277, current)
-**Simple.** On Music Fanart FS (1121) the top-left of the fanart shows the same meta block as the approved Music-section mock: small artist, big album, then year/genre pills. As FS opens, the first (year) pill stretches right into the Now Playing progress bar (pill-shaped, elapsed left in black, duration right); the genre pill fades away. The FULLSCREEN pill's spot (fanart upper-left) now holds the 6-cycle pill — same labels and same cycle behaviour as before, only the position moved.
-
-**Wiring.** `Custom_1121_MusicFanartFS.xml`: meta group visible `bz_pnoff=1`; artist label 150,196 780×30 `bz_mm18s` C8FFFFFF; album 150,226 780×60 `bz_mm34` bold; pill row group 150,296. Progress group zoom WindowOpen 12%→100% x, centre 150,312, 600 ms sine, delay 150; 780×32 white np_pill32 outline over E6000000 fill, `progress` 772×24 `Player.Progress`; time labels fade in at 700 ms. Pill grouplist (year/genre, `bz_mm18s` black on white np_pill32) fades out 150–450 ms then held hidden. Tuner `bz_fs_ttl_off` hides meta, `bz_fs_prog_off` hides progress. Cycle pill 6421 grouplist moved 530,130 right-aligned → 140,136 left-aligned. `BezelNPInPlace` title/artist/album and progress overlay groups (Includes_Bezel ~L3172/3176) fade to 0 while `Window.IsVisible(1121)` (still show in MusicVisualisation).
-
-<!-- PORTLINKS -->
----
-**Port blueprint (feel layer — Simple above, Deep = How it works + Wiring):** [layout](../layout/music-fanart-fs.md) · [state](../state/music-fanart-fs.md) · [motion](../motion/music-fanart-fs.md) · [art](../art/music-fanart-fs.md) · [input](../input/music-fanart-fs.md) · [theme](../theme/tokens.md) · [PORT_INDEX](../PORT_INDEX.md)
-
-## 5.33.280 (Nov 1 2026)
-- Music L2/L3 half list (bz_mhalf → bz_covercol): small album at top of strip, list under it, no big strip title (BezelArtistMeta3B hidden). Strip slide 450→510.
-- Meta = FS fanart format: small artist bz_mm18s, big title bz_mm34 uppercase, outlined pills np_pill32_ol.png (also in Custom_1121 year/genre).
-- FULLSCREEN pill 6886: Left from list 60 (music strip, pill visible) → 6886; Left on 6886 → list 60 + open MM; Select unchanged (1121 when bz_m1121ok, else visualisation).
-- Open: L2 ALL ALBUMS row 6097/6098 not shown in half-list mode.
-
-## FS meta pill→progress bar morph (5.33.286, Rob t2210/t2211)
-- Year pill (grouplist at 150,296, h32) zooms right into the 780×32 NP bar on WindowOpen. Zoom centre fixed `150,312` → `0,16` (local to the 150,296 group — old value was double-offset, so the bar grew from the wrong origin and didn't line up with the pill). Bar now grows from the pill's left edge, same y/height.
-- Extend time **2000 ms** (sine inout, delay 150; 5.33.327 Rob t2423 slowed from 1200). Time/duration labels fade in at **2100 ms** (300 ms fade). Genre pill row fade-out **1000 ms**, hard-hide **1150 ms**.
-- Bar opacity lowered: ring + fill `FFFFFFFF` → `99FFFFFF` (~60%), dark inner `E6000000` → `99000000`.
-
-### Cycle pill 6421 Left/Right (5.33.287)
-With 6421 focused, **Right = next** and **Left = previous** mode, wrapping through all six: Visualizer → Bio → Fanart → Lyrics → Up Next → Controls → (Visualizer). State is `Skin.String(bz_npmode)` (vis/bio/fanart/lyrics/upnext/controls; empty = vis). Each step flashes the mode name 2 s via `Window(Home).Property(bz_npmlabel)`. Left/Right/Select/Down never open Music controls (5.33.288): Select cycles to next mode in every mode (Controls → Visualizer), Down always → 6420.
-
-## 5.33.304 — "press down to open" hint (Rob)
-- In Fanart FS the hint now sits under the cycle pill in the upper-left fanart corner (140,172, left-aligned). The old hint at 530,166 is hidden while Fanart FS is open.
-
-## Meta text (current, 5.33.311 — Rob pt2364u)
-- Small line: ARTIST · ALBUM (`MusicPlayer.Artist` + `MusicPlayer.Album`).
-- Big line: SONG TITLE (`BzFSL3Big` → MusicPlayer.Title, falls back to Player.Title).
-- This intentionally differs from Music L3 (L3 = artist / album). Pills unchanged.
-
-## Big album (5.33.309 P1)
-The big album, its sway, next-song fade, cast and compact NP no longer live in this screen. They live in the always-open dialog **1122** — see [big-album.md](big-album.md). This screen only decides where the album sits (Home prop `bz_rail`: `home` / `centre` / `hide`). The old album grouplists 6367/6377/6397/6382 and their focus buttons (6368/6369, 6378/6379, 6398/6399, 6383/6384) are deleted; nothing focuses into an album rail any more.
-
-## 5.33.314 — cycle pill Down (6421)
-- Controls mode → `ActivateWindow(1115)`; else → 6420.
-- Up Next: Down → 1121's own 6396 (BezelFSUpNext inside the dialog, 5.33.315).
-
-## Fanart cycle mode hides chrome (5.33.314 Fix D, Rob t2385/t2386)
-When the cycle pill is on **Fanart** (`$EXP[bz_npm_fan]`) and Tuner `bz_fschrome_fan` is **unset** (default "A Hide"), these fade out (300ms sine Conditional):
-- BezelNPInPlace title/artist/album group and progress+time group (Music / MusicVisualisation path).
-- 1121 FSMETA: artist/album meta block and pill-row→progress strip.
-**Stay visible:** the 6-mode cycle pill (6391 + its shadow grouplist in NPInPlace; 6421 on 1121) and the transport bar (prev/next triangles at the bottom of the colour block, `bz_fs_tbar_off` group). The prev/next song-title pills (226×32 at 128 / 726, y981) use the same chrome as cycle pill 6391: `bezel/np_pill32.png` border 16, `BzFSCTint50` fill, `bz_b15` text in `BzFSCTint`, live shadow/ring copies kept; whole bar still static 50% (K43), plus BezelFSPlayNext neighbour tiles on 1121.
-Tuner "Keep" (`bz_fschrome_fan` set) keeps all chrome. The fade used to sit on the whole NPInPlace text wrapper (t4326b), which also hid the pill and transport bar — moved onto the two child groups.
-Down on 6421 in Up Next focuses 1121's own Up Next proxy **6396** (list **6395**), from shared include `BezelFSUpNext` mounted inside 1121 (5.33.315). Up from the first row / Left / Back return to **6421**; Down/Up move the list; Select plays via `bz_cmd.py upnext_goto`. Controls → 1115; other modes → 6420. The Music-window copy hides while 1121 is visible (`!Window.IsVisible(1121)`).
-
-## Progress bar opacity (5.33.319, Rob t2399 — current)
-- FS meta pill bar (1121, 780×32 at 150,296): ring `40FFFFFF`, dark inner `40000000`, fill `40FFFFFF` = **25%** (was `99` ≈ 60% since 5.33.286). Time/duration labels unchanged (100%).
-
-## 5.33.377 — layout matches Music Fanart FS 1121 (current)
-On the fanart stage (`bz_pnoff=1`) Kodi Fanart FS and 1121 draw the same chrome: shared include `BezelFSMeta` (small ARTIST · ALBUM 150,196 `bz_mm18s`; big SONG TITLE 150,226 `bz_mm34`; year pill zooms into 780×32 progress at 150,296, 25% bar, time/duration in at 2100 ms; genre pill fades). BezelNPInPlace's old title/artist/album + thin progress/time overlay is hidden while `visualisation` is active (as for 1121). Cycle pill 6391 sits at 140,136 left-aligned (NPInPlace params `pillx/pilly/pillal`, defaults 530/130/right for other hosts), no live-shadow copies in viz; "press down to open" hint 140,172 left. Tuner `bz_fs_ttl_off` / `bz_fs_prog_off` / `bz_fs_pill_off` / `bz_fschrome_fan` act on the shared block. Keys/pill cycle logic unchanged (6391 Select-on-Controls still opens 1115; 6421 L/R cycles).
-
-
-## Exit rule (5.33.378)
-- FS opened **from MM** (MM open, or MM closed by the opener <0.8 s before FS): `bz_fsmm` latches (bz_cmd tab/np + bz_flip FS rise edge). On FS exit bz_flip reopens MM (`bz_nav=true`, normal open path → strip 6996 on the current section row); the `SetFocus(60)` onunload alarm and fs_was list re-focus are skipped.
-- FS opened **from inside a section** (list / FULLSCREEN pill 6886): exit → section list 60 (intended, unchanged).
+[fanart-fs](fanart-fs.md) · [big-album](big-album.md) · [big-album-pill](big-album-pill.md) · [play-next](play-next.md) · [np-bar](np-bar.md) · [fullscreen-pill](fullscreen-pill.md) · [music-controls](music-controls.md) · [keymaps](keymaps.md) · [sway-animations](sway-animations.md)
