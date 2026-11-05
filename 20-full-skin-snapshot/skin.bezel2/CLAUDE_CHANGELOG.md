@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.471
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.472
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 472 | "SEPARATE DIALOGUE FULLSCREEN WRITTEN FOR EACH SECTION?" → one 1121 over any section, "ALWAYS HAVE ITS FANART STAGE READY", "TAB AND FULLSCREEN BUTTONS MAPPED TO NEW 1121", "OK 1121"; "ENTER ALBUMS FROM MM AND OLD ALBUM LIST IS SHOWN WITH THE SMALL ALBUM IN THE LEFT CORNER OF FANART STAGE"; "STUB ALBUMS NOT SHOWING ART" (side albums, 471) | **SHADOWHEAL**, **ALBUMHALF**, **FANPRELOAD**, **FSANY** |
 | 471 | "I WANT THE OVERALL SECTION SWITCHES FADES AND ARTWORK LOADING TO BE FASTER AND SMOOTHER"; "CAN YOU JUST MAKE CHANGES TO MAKE IT FASTER" | **FASTPACK** (7 faster timing picks, one-time seed on existing installs), rewrite **P2.6b SWAYSHADOW** |
 | 470 | "NP BAR SHOWN WHEN BIG ALBUM IS CENTER IN BOTH FULLSCREEN, BIG ALBUM NP BAR HIDE WHEN SWITCH BACK TO FANART STAGE" (+ remove the Up Next fanart bar); new dust defaults; "BEZEL FEELS SLOW WHEN NEW LISTS ARE LOADED" (all four: wait, cascade, big lists, folder open) | **CENTREBAR**, revert 463 **UPNNPBAR**, **DUSTDEF**, **ENTRYHOLD** (0.6 → 0.35 s), **LISTTIME** (`BEZEL list` log) |
 | 469 | "EXIT FROM TUNER THEN ATTEMPT TO RE ENTER TUNER DOES NOT WORK"; "DISABLE THE MM MENU SLIDE"; "AUTO UNFOCUS PILLS, AFTER 5 SECONDS OF INACTIVITY FOCUS RETURNS TO LAST POSITION" (all pills + A-Z bar, back to where focus came from) | **TUNERREOPEN** (no Tuner-flag clears after a modal opens), **MMNOSLIDE**, **PILLIDLE** (mm_autohide, 4 Hz) |
@@ -232,6 +233,28 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.472 — SHADOWHEAL + ALBUMHALF + FANPRELOAD + FSANY
+Branch `claude/5.33.472` (471 + one commit per item). Rob: "Ok 1121".
+- **SHADOWHEAL** (Rob: "stub albums not showing art?" → prev / next side albums, on 471):
+  - Found while tracing it: the 467 OWNSHADOW / 471 SWAYSHADOW copies trusted their last written value forever. A ReloadSkin (471's first start does one; every Tuner patch does) restarts bz_flip, and the old instance's exit cleanup can clear Home flags after the new instance has written them: the new instance then never writes them again (before 467 every tick re-read and repaired). The side albums carry the stub-cast shading (`bz_castL/R`, sway_clock).
+  - Now a copy is trusted for 1 s, then Kodi is read again. Mock: an outside clear of `bz_sway_go` stays cleared on 471, is back after 0.6 s on 472. Savings kept: poster_clock 1,192 → 1,237, sway_clock 598 → 623 reads / 6 s (465 levels: 1,708 / 1,407).
+  - Not proven to be the only cause of the blank stubs (Kodi resolves `MusicPlayer.offset(n).Cover` fine, MusicGUIInfo.cpp GetPlaylistInfo; the side-album XML is unchanged since 464); if they stay blank on 472, a photo + kodi.log.
+- **ALBUMHALF** (Rob: "enter albums from mm and old album list is shown with the small album shown in the left corner of fanart stage"; caused by 466 ALBUMCOVER):
+  - Artist → albums use the half list (`bz_mhalf`: 390 strip album above the rows, 280 HALFLIST / 296 HALFALB). 466 gave Albums / Recently played the cover-list mode (`bz_covercol`) but not `bz_mhalf`, so they drew the old beta1 list-group cover, which now lands in the stage's left corner.
+  - `bz_mhalf` = `bz_mstrip + [Container.Content(albums) | bz_m13]` (was `bz_artistalbums | bz_m13`). `bz_allhalf` (ALL row) still needs `bz_artistalbums`.
+- **FANPRELOAD:** 1122 (always open, zorder 0) holds the playing artist's fanart (`Player.Art(artist.fanart)`, bz_stage_w × 900, scale, background load, 3 % alpha) while audio plays and 1121 / viz are not up, so the texture is cached when the stage asks for it.
+- **FSANY** (Rob: "how about separate dialogue fullscreen written for each section?" → one 1121 for every section; "tab and fullscreen buttons will be mapped to new 1121?"):
+  - Since 5.33.309 the big album / sway / glare / dust live in 1122, so 1121 no longer needs the Music window for them, only for the stage (`BezelNPInPlace`). Layering stays as in Music: window (+ stage) < 1122 album < 1121 chrome.
+  - `BezelFSUnderlay` (full black + `BezelNPInPlace`, npfade 300) at the top of Home, MyVideoNav, MyPics, AddonBrowser; `BezelFSUnderlayBlack` in MyPrograms (it already carries the stage through the music list view; no duplicate ids). Shown only with `Window.IsVisible(1121) + !Window.IsActive(music) + Player.HasAudio`, 300 ms fades.
+  - `bz_fs1121win` = Music / Home / Videos / Pictures / Programs / Add-ons; `bz_m1121ok` uses it, so the FULLSCREEN pill (6886), MM FULL pills (6960 / 6910) and big album routes open 1121 there; `bz_cmd.py` tab / np / Info / idle route likewise.
+  - Keymap (`zz_bezel2_np_tab.xml`): Tab / remote Display → `ActivateWindow(1121)` in home, videos, pictures, programs, addonbrowser (music already); plain builtins, no Python delay. Video fullscreen keeps Kodi's own Tab.
+  - 1121 onload: video playing → closes and opens `fullscreenvideo`; a window outside `bz_fs1121win` (Settings, PVR …) or the kill switch → closes and opens Kodi FS; nothing playing → closes.
+  - Geometry: every existing control unchanged; 975 new resolved controls (the underlays + preload); audit clean.
+- **Mock:** `bz_cmd np` with Videos active → `ActivateWindow(1121)`.
+- **Check:** music playing → Tab / FULL pill from Home, Movies / TV, Pictures, Add-ons → 1121 fades in with the artist fanart stage, big album swaying, pills / Up Next / NP bar as in Music; Back → the section, same row. Video playing → Tab → video fullscreen. Albums / Recently played → strip album above the rows. Side albums in fullscreen show their covers.
+- **473 (next):** Kodi's own visualisation window (remote apps, add-ons) redirects into 1121.
+- **Static checks + mock.** Not device-tested.
 
 ## 5.33.471 — FASTPACK + rewrite P2.6b SWAYSHADOW
 Branch `claude/5.33.471` (470 + 2 commits). 470 zip also at `github.com/BEZEL6/Bezel/raw/claude/downloads/` (releases are blocked for this session).
