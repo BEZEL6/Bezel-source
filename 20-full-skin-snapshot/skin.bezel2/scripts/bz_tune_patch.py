@@ -30,7 +30,7 @@ def _bezel(s, g):
     s = re.sub(r'(<animation type="Focus" condition="!Container\(61\)\.Scrolling"><effect type="zoom" start="100" end=")\d+(" center="150,225" time=")\d+', r'\g<1>%d\g<2>%d' % (zs, zt), s)
     s = re.sub(r'(<animation type="Unfocus" condition="!Container\(61\)\.Scrolling"><effect type="zoom" start=")\d+(" end="100" center="150,225" time=")\d+', r'\g<1>%d\g<2>%d' % (zs, zt), s)
     s = re.sub(r'(condition="Container\(61\)\.Scrolling \+ Control\.HasFocus\(61\)"><effect type="zoom" start=")\d+(" end=")\d+', r'\g<1>%d\g<2>%d' % (zs, zs), s)
-    f = val('fanart', g)
+    f = 0 if g('Skin.String(bz_at_fantype)') == '2' else val('fanart', g)   # 5.33.474 FANARTTUNER: Fade type Cut = instant fanart change
     s = re.sub(r'<fadetime>\d+</fadetime>(<!-- BETA 2\.6 item 10)', r'<fadetime>%d</fadetime>\1' % f, s)
     s = re.sub(r'<fadetime>\d+</fadetime>(<!-- BZMMXF)', r'<fadetime>%d</fadetime>\1' % val('mmxfade', g), s)   # t4084 MM-open art crossfade
     cs, cg = val('cascspeed', g), val('cascstag', g)

@@ -55,7 +55,7 @@ if a[0] == 'preset':   # preset,<section>,<subtle|mid|high|extreme|next>
     xbmc.executebuiltin('Skin.SetString(bz_ps_%s,%s)' % (sec, nm.capitalize()))
     note('%s preset: %s' % (sec.upper(), nm.capitalize()))
 elif a[0] == 'reset':
-    what = {'all': 'all timing (look kept)', 'everything': 'EVERYTHING (timing, look, double-tap)'}.get(a[1], 'the %s section' % a[1].upper())
+    what = {'all': 'all timing (look kept)', 'everything': 'EVERYTHING (timing, look, double-tap)', 'stage': 'the FANART STAGE section'}.get(a[1], 'the %s section' % a[1].upper())
     # t5022: force = in-Tuner Yes (no Dialog.yesno popup)
     if a[2] != 'force' and not xbmcgui.Dialog().yesno('BEZEL tuner', 'Reset %s to the defaults?' % what): sys.exit(0)
     for i, sec, d, n, vals in P:
@@ -73,6 +73,13 @@ elif a[0] == 'reset':
     if a[1] in ('everything', 'fschrome'):   # t4504 FULLSCREEN MUSIC chrome
         for b in ('Skin.Reset(bz_at_fschromeop)', 'Skin.Reset(bz_at_fschromecol)', 'Skin.Reset(bz_fschrome_fan)', 'Skin.Reset(bz_at_fsvizop)', 'Skin.Reset(bz_at_fsslide)'): xbmc.executebuiltin(b)
     if a[1] in ('everything', 'block'): xbmc.executebuiltin('Skin.Reset(bz_blockcol)'); xbmc.executebuiltin('Skin.Reset(bz_blockcol_name)')
+    if a[1] in ('everything', 'stage'): xbmc.executebuiltin('Skin.Reset(bz_at_fantype)')   # 5.33.474 FANARTTUNER
+    if a[1] == 'stage':   # 5.33.474 FANARTTUNER: FANART STAGE = fanart opacity / fade type / fade speed + colour strip (json sections look / list / block)
+        for i in ('fanart', 'fanop', 'blockcol', 'blockop'): setv(i, '')
+        xbmc.executebuiltin('Skin.Reset(bz_blockcol)'); xbmc.executebuiltin('Skin.Reset(bz_blockcol_name)')
+        for k in ('bz_at_fanart', 'bz_at_fanop', 'bz_at_blockcol', 'bz_at_blockop'):
+            v = DEF.get('str', {}).get(k, [''])[0]
+            if v: xbmc.executebuiltin('Skin.SetString(%s,%s)' % (k, v))
     apply_defs(a[1])
     note('Reset ' + a[1])
 elif a[0] == 'resetui':  # t5022: in-Tuner Yes/No mode (list visibility needs ReloadSkin)
