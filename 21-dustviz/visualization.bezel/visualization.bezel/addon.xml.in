@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon id="visualization.bezel" version="0.2.1" name="Bezel Viz" provider-name="Rob / DustViz">
+  <requires>@ADDON_DEPENDS@</requires>
+  <extension point="xbmc.player.musicviz" library_@PLATFORM@="@LIBRARY_FILENAME@"/>
+  <extension point="xbmc.addon.metadata">
+    <platform>@PLATFORM@</platform>
+    <license>GPL-2.0-or-later</license>
+    <summary lang="en_GB">Bezel viz engine: soft sprite style packs driven by audio bins</summary>
+    <description lang="en_GB">Audio-reactive smear for the Bezel skin. Default pack topbar_smear is bundled under resources/packs (not the solid_test placeholder). Styles: original, A cascade, B side whip, C neon rain, D fog bloom, E mirror, F stagger. GL, GLES, and DX11.</description>
+    <assets><icon>resources/icon.png</icon></assets>
+  </extension>
+</addon>
