@@ -1,0 +1,17 @@
+{
+  "id": "topbar_smear",
+  "name": "DustViz Smear",
+  "version": "0.2.1",
+  "engine_min": "0.2.1",
+  "atlas": "textures/",
+  "textures": ["bar_soft", "smear_fall", "glow_disc", "cascade_trail", "whip_streak", "rain_line", "fog_bloom", "mirror_trail", "stagger_pulse"],
+  "styles": ["original", "cascade", "side_whip", "neon_rain", "fog_bloom", "mirror", "stagger"],
+  "default_style": "cascade",
+  "layers": [
+    {"id": "topbar", "kind": "topbar", "band": "low", "additive": true,
+     "envelope": {"attack": 0.04, "release": 0.55, "grow": 1.2, "fade_min": 0.0},
+     "topbar": {"columns": 24, "column_fill": 0.62, "bar_h": 0.022, "bar_pulse": 0.45, "smear_max": 0.82, "hue_span": 0.92, "sat": 0.85,
+                "glow": 1.1, "blur": 2.5, "smear_alpha": 0.9, "column_mix": 1.0}}
+  ],
+  "defaults": {"particle_cap": 0, "spawn_rate": 0}
+}

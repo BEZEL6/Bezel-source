@@ -28,6 +28,7 @@ Each numbered folder is one system. Overlap is intentional (e.g. splash ⊂ warm
 - `18-dialogs-overlays/` — Busy, confirm, pause, context, search, power, info
 - `19-behaviors-docs/` — Full behaviors/ documentation set (current .md only)
 - `20-full-skin-snapshot/` — Complete skin.bezel2 5.33.196 tree snapshot for reference (current files; bak ignored)
+- `21-dustviz/` — visualization.bezel engine + DustViz smear pack only (not part of the skin zip)
 
 ## Packaging note
 
