@@ -1,2 +1,3 @@
-5.33.475 (2026-11-06)
-- ARTPROBE: diagnostics for the planned MANAGE ART section. Five new rows at the top of Tuner > ABOUT / VERSIONS (Art probe 1 read, 2 set test cover, 3 check, 4 restore, 5 folder write test). Results go to addon_data/skin.bezel2/art_probe.json. Nothing else changes.
+5.33.476 (2026-11-06)
+- ARTPROBE2: diagnostics only. Art probe 1 (read) now also records what Kodi returns for GetAvailableArt (album, artist, movie), the JSON-RPC parameter lists, and movie / TV art keys. Art probe 4 (restore) now ignores the harmless icon key Kodi adds. Nothing else changes.
+

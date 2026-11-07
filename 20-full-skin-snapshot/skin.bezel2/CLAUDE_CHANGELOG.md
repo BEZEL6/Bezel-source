@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.475
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.476
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 476 | "go" (finish MANAGE ART probe info; use the screen time) | **ARTPROBE2** |
 | 475 | "GO" (MANAGE ART phase 1 probe; "lets build it for kodi then in the future bezel will be using its own library and artwork manager") | **ARTPROBE** |
 | 474 | "474 GO" (Kodi visualisation → 1121); "FANART STAGE LABELS CAN BE EXPANDED TO MAKE USE OF THE NEW WIDER FANART STAGE"; "ADD A FANART STAGE TUNER MENU … FANART OPACITY, FADE TYPE, SPEED, MOVE COLOR STRIP TUNERS INSIDE" (fade type: "Crossfade + Cut") | **VIZREDIR**, **STAGELABELS** (400–410 → 480), **FANARTTUNER** |
 | 473 | "UPDATE ALL THE BEHAVIOR FILES … FORMAT … DETAILED BEHAVIOR INSTRUCTIONS THAT WILL MAKE THE PORTING PROCESS BETTER AT KEEPING THE FUNCTIONS FEEL AND LOOK", "HAVE A KODI SPECIFIC SECTION", "DO ALL AND INCLUDE IN NEW BUILD"; "RIP OUT THE SHADOWS FROM THE FULL SCREEN MUSIC OVERLAY AND TUNERS"; "ALIGN … ALBUM/PREV/NEXT PILL WITH BEZEL LOGO"; "DISABLE CLEAR ART FOR MOVIES SECTION BY DEFAULT … TOGGLE … SECTION OPTIONS"; "EXIT FROM INFO OPTION HID POSTERS??" | **DOCS** (50 behavior files, port format), **FSSHADOWDEL**, **PILLALIGN**, **MOVCLEAR**, **VIEWTYPEDEL** |
@@ -236,6 +237,12 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.476 — ARTPROBE2
+Branch `claude/5.33.476` (475 + one commit + docs). Rob: "go". Diagnostics only; results written up in project doc `claude/MEDIA_MANAGER_PLAN.md`.
+- **ARTPROBE2:** `scripts/bz_probe_art.py`. Row 1 (read) also records `more` in `art_probe.json`: parameter schemas for `GetAvailableArt(Types)` and `SetAlbumDetails`, what `GetAvailableArt` returns for an album, an artist and a movie, movie / TV show art keys. Row 4 (restore) ignores the `icon` art key Kodi adds (clearing it by script does not work) and clears its backup on a match.
+- **Run on Rob's PC (Kodi 21.3):** artist thumb 1 remote candidate; movie poster 10 candidates (no preview URLs); album returned none (embedded cover, no scraper thumbs). Test cover shows in album list, big art and info screen. Kodi's Refresh looped on "No match - type name" and never completed.
+- **Checks:** py compiles; XML unchanged. Ran on Kodi, tester-only rows.
 
 ## 5.33.475 — ARTPROBE
 Branch `claude/5.33.475` (474 + one commit + docs). Rob: "go" (phase 1 of MANAGE ART; build it for Kodi, Bezel's own library and artwork manager replace it later). Plan: project doc `claude/MEDIA_MANAGER_PLAN.md`; mockup https://claude.ai/artifact/J9sFUFjxdv3f5T3XcNXiYy.
