@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.474
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.475
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 475 | "GO" (MANAGE ART phase 1 probe; "lets build it for kodi then in the future bezel will be using its own library and artwork manager") | **ARTPROBE** |
 | 474 | "474 GO" (Kodi visualisation → 1121); "FANART STAGE LABELS CAN BE EXPANDED TO MAKE USE OF THE NEW WIDER FANART STAGE"; "ADD A FANART STAGE TUNER MENU … FANART OPACITY, FADE TYPE, SPEED, MOVE COLOR STRIP TUNERS INSIDE" (fade type: "Crossfade + Cut") | **VIZREDIR**, **STAGELABELS** (400–410 → 480), **FANARTTUNER** |
 | 473 | "UPDATE ALL THE BEHAVIOR FILES … FORMAT … DETAILED BEHAVIOR INSTRUCTIONS THAT WILL MAKE THE PORTING PROCESS BETTER AT KEEPING THE FUNCTIONS FEEL AND LOOK", "HAVE A KODI SPECIFIC SECTION", "DO ALL AND INCLUDE IN NEW BUILD"; "RIP OUT THE SHADOWS FROM THE FULL SCREEN MUSIC OVERLAY AND TUNERS"; "ALIGN … ALBUM/PREV/NEXT PILL WITH BEZEL LOGO"; "DISABLE CLEAR ART FOR MOVIES SECTION BY DEFAULT … TOGGLE … SECTION OPTIONS"; "EXIT FROM INFO OPTION HID POSTERS??" | **DOCS** (50 behavior files, port format), **FSSHADOWDEL**, **PILLALIGN**, **MOVCLEAR**, **VIEWTYPEDEL** |
 | 472 | "SEPARATE DIALOGUE FULLSCREEN WRITTEN FOR EACH SECTION?" → one 1121 over any section, "ALWAYS HAVE ITS FANART STAGE READY", "TAB AND FULLSCREEN BUTTONS MAPPED TO NEW 1121", "OK 1121"; "ENTER ALBUMS FROM MM AND OLD ALBUM LIST IS SHOWN WITH THE SMALL ALBUM IN THE LEFT CORNER OF FANART STAGE"; "STUB ALBUMS NOT SHOWING ART" (side albums, 471) | **SHADOWHEAL**, **ALBUMHALF**, **FANPRELOAD**, **FSANY** |
@@ -235,6 +236,17 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.475 — ARTPROBE
+Branch `claude/5.33.475` (474 + one commit + docs). Rob: "go" (phase 1 of MANAGE ART; build it for Kodi, Bezel's own library and artwork manager replace it later). Plan: project doc `claude/MEDIA_MANAGER_PLAN.md`; mockup https://claude.ai/artifact/J9sFUFjxdv3f5T3XcNXiYy.
+- **ARTPROBE:** `scripts/bz_probe_art.py` + five Select-only rows at the top of Tuner > ABOUT / VERSIONS. Results merge into `addon_data/skin.bezel2/art_probe.json` (Windows: `%APPDATA%\Kodi\userdata\addon_data\skin.bezel2\`), with `BEZEL ARTPROBE` lines in kodi.log.
+  - **1 read** (read only): Kodi build, JSON-RPC methods with Art / Export / Scan / Refresh / GetAvailable / Set*Details, music-library settings, sample album / artist art keys and where each points (embedded tag, remote, local), what a song and the player see (`album.thumb`), the album folder listing and `album.nfo` / `artist.nfo` beside the media. Start a song first for the player view.
+  - **2 set test cover:** one album (newest with a cover) gets a generated dark-blue test image as `thumb`; the original art dict is saved first to `art_probe_state.json`. **3 check** reports whether it is still set (run it after a Refresh / rescan of that album). **4 restore** writes the original art back and verifies it matches. **5 folder** creates and deletes a tiny temp file in that album folder.
+  - Checked against a stubbed Kodi (all five modes; restore matches; PNG valid). Not run in Kodi.
+- **Changes your library only in step 2** (one album, until step 4). Rows 1, 3, 5 change nothing except the log file; 5 touches one temp file in the album folder and removes it.
+- **Docs:** skin-settings-tuner.
+- **Checks:** XML parses, `.py` compiles; no skin geometry change (Tuner rows only).
+- **Static checks only.** Not device-tested.
 
 ## 5.33.474 — VIZREDIR + STAGELABELS + FANARTTUNER
 Branch `claude/5.33.474` (473 + one commit per item + docs). Rob: "474 go".
