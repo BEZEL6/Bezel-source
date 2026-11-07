@@ -7,7 +7,7 @@
 	<controls>
 		<!-- left panel: art + details area (shell: frame only) -->
 		<control type="group"><left>bz_stage_x</left><top>120</top>
-			<control type="image"><left>0</left><top>0</top><width>540</width><height>900</height><texture colordiffuse="66000000">bezel/white.png</texture></control>
+			<control type="image"><left>0</left><top>0</top><width>540</width><height>900</height><texture colordiffuse="F0000000">bezel/white.png</texture></control>
 			<control type="label"><left>30</left><top>30</top><width>480</width><height>44</height><aligny>center</aligny><font>bz_mm28</font><textcolor>FFFFFFFF</textcolor><label>MANAGE ART</label></control>
 			<control type="label"><left>30</left><top>84</top><width>480</width><height>60</height><wrapmultiline>true</wrapmultiline><font>bz_b18</font><textcolor>99FFFFFF</textcolor><label>Artwork and library info for the artist picked on the right. Browsing and editing arrive in the next builds.</label></control>
 		</control>
