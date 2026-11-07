@@ -1,4 +1,4 @@
-# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.476
+# CLAUDE CHANGELOG — skin.bezel2 5.33.424 → 5.33.477
 
 **For:** review by the main BEZEL project agent
 **Author:** Claude (this session, 2026-11-03, with Rob)
@@ -17,6 +17,7 @@
 | 426 | "I DONT WANT THE LIST TO HITCH OR FLASH WHEN NAVIGATING"; "THE BACKGROUND SHOULD REFLECT THE ROW HIGHLIGHTED"; chose "Rebuild MM" | **VWARM**: no window switch while navigating the MM; library-fed art for rows whose window is not behind |
 | 427 | "WHEN SWITCHING FROM ALBUM TO POSTER THERE IS A POP" (MM rows) | **A2PONE**: album↔poster is one dissolve onto the final art |
 | 428 | "Movie/TV row will flash on first new focus only … unless you focus Music again"; fresh auto-hide ("old system was glitchy and broken") | **POSKEEP** fix; **MMHIDE** new auto-hide + Tuner row |
+| 477 | "go" (MANAGE ART shell: MM row after SETTINGS, one screen) | **MANAGEART** |
 | 476 | "go" (finish MANAGE ART probe info; use the screen time) | **ARTPROBE2** |
 | 475 | "GO" (MANAGE ART phase 1 probe; "lets build it for kodi then in the future bezel will be using its own library and artwork manager") | **ARTPROBE** |
 | 474 | "474 GO" (Kodi visualisation → 1121); "FANART STAGE LABELS CAN BE EXPANDED TO MAKE USE OF THE NEW WIDER FANART STAGE"; "ADD A FANART STAGE TUNER MENU … FANART OPACITY, FADE TYPE, SPEED, MOVE COLOR STRIP TUNERS INSIDE" (fade type: "Crossfade + Cut") | **VIZREDIR**, **STAGELABELS** (400–410 → 480), **FANARTTUNER** |
@@ -237,6 +238,15 @@ On a MUSIC virtual row over Videos, `_ab_poster` keeps returning the list poster
 - **Exit cleanup** clears `bz_spot`, `bz_spot_t`, `bz_spot_r`, `bz_spot_m`, `bz_spot_pend`.
 - **Check:** each row from top/bottom, with and without music playing (start position must match the row); rows that go through `_bz_load_then_close` (label must still be on screen while the section fades in); POWER / submenus (no lift); Off in Tuner.
 - **Risk:** `Container(6996).Position` is the on-screen offset; the strip fits all 11 rows so it equals the row index. If rows are ever added past the visible height, use `CurrentItem` minus scroll offset.
+
+## 5.33.477 — MANAGEART (shell)
+Branch `claude/5.33.477` (476 + one commit + docs). Rob: "go" (both: Refresh check, then the MANAGE ART shell). Plan: project doc `claude/MEDIA_MANAGER_PLAN.md`.
+- **MANAGEART:** MM row `MANAGE ART` (sec `manageart`) right after SETTINGS (12 rows; MEDIA SOURCES / POWER move down one). `bz_mm.py manageart` → `bz_setopen` latch, clear `bz_nav`, `ActivateWindow(1133)`. New `Custom_1133_ManageArt.xml`: dialog in the Settings 1130 pattern (strip chrome, title, one placeholder row, empty 540 px left panel). Back: `bz_nav` set + close, same as 1130. 1133 added to `bz_set_hub` / `SETTINGS_TREE` (bz_tree_check OK) and to the Warm-strip hide lists (double-tap hint, list 60 fades x2).
+- **Not touched:** the hard-coded MM return table in `bz_flip.py` (`{6902: 1, 6903: 2, 6905: 3, ... 6920: 9}`): its numbers do not match the row order (even before this build), so Back-from-Media-Sources / Settings row landing is unchanged by design and needs a check on device.
+- **Found while testing on Rob's PC (475):** Settings → Back landed in the Music artist list with no MM (twice); that is the existing 1130 Back path, not changed here.
+- **Docs:** manage-art (new), mm-list.
+- **Checks:** XML parses, `.py` compiles, audit clean, bz_tree_check OK.
+- **Static checks only until device-tested.**
 
 ## 5.33.476 — ARTPROBE2
 Branch `claude/5.33.476` (475 + one commit + docs). Rob: "go". Diagnostics only; results written up in project doc `claude/MEDIA_MANAGER_PLAN.md`.
