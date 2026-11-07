@@ -178,8 +178,78 @@ def do_read():
         R['player_item'] = 'nothing playing: start a song first and run READ again to see the player view'
 
     record('read', R)
+    try:
+        do_more()
+    except Exception as e:
+        record('more', {'_error': str(e)})
     toast('BEZEL art probe: read', 'Saved to addon_data/skin.bezel2/art_probe.json')
 
+
+
+# ---------------------------------------------------------------- extras (run by read)
+def brief(res, n=8):
+    """Trim a JSON-RPC result so the log stays readable."""
+    if bad(res):
+        return {'_error': res['_error']}
+    if isinstance(res, dict):
+        out = {}
+        for k, v in res.items():
+            out[k] = v[:n] + [{'_more': len(v) - n}] if isinstance(v, list) and len(v) > n else v
+        return out
+    return res
+
+
+def try_variants(method, variants):
+    tried = []
+    for params in variants:
+        res = rpc(method, params)
+        tried.append({'params': params, 'result': brief(res)})
+        if not bad(res):
+            break
+    return tried
+
+
+def do_more():
+    R = {}
+    intro = rpc('JSONRPC.Introspect', {'getdescriptions': True, 'getmetadata': False, 'filterbytransport': False})
+    ms = (intro.get('methods') or {}) if not bad(intro) else {}
+    sch = {}
+    for m in ('AudioLibrary.GetAvailableArt', 'AudioLibrary.GetAvailableArtTypes', 'VideoLibrary.GetAvailableArt',
+              'VideoLibrary.GetAvailableArtTypes', 'AudioLibrary.SetAlbumDetails'):
+        p = (ms.get(m) or {}).get('params')
+        sch[m] = json.dumps(p, ensure_ascii=False)[:1800] if p is not None else None
+    R['schemas'] = sch
+
+    al = rpc('AudioLibrary.GetAlbums', {'properties': ['title'], 'limits': {'start': 0, 'end': 1}})
+    ar = rpc('AudioLibrary.GetArtists', {'limits': {'start': 0, 'end': 2}})
+    albumid = (al.get('albums') or [{}])[0].get('albumid') if not bad(al) else None
+    arts = (ar.get('artists') or []) if not bad(ar) else []
+    artistid = arts[-1].get('artistid') if arts else None
+    R['ids'] = {'albumid': albumid, 'artistid': artistid}
+    if albumid:
+        R['album_types'] = try_variants('AudioLibrary.GetAvailableArtTypes', [
+            {'item': {'albumid': albumid}}, {'albumid': albumid}, {'item': albumid}])
+        R['album_available_thumb'] = try_variants('AudioLibrary.GetAvailableArt', [
+            {'item': {'albumid': albumid}, 'arttype': 'thumb'}, {'albumid': albumid, 'arttype': 'thumb'},
+            {'item': {'albumid': albumid}, 'type': 'thumb'}])
+    if artistid:
+        R['artist_types'] = try_variants('AudioLibrary.GetAvailableArtTypes', [
+            {'item': {'artistid': artistid}}, {'artistid': artistid}])
+        R['artist_available_thumb'] = try_variants('AudioLibrary.GetAvailableArt', [
+            {'item': {'artistid': artistid}, 'arttype': 'thumb'}, {'artistid': artistid, 'arttype': 'thumb'}])
+    mv = rpc('VideoLibrary.GetMovies', {'properties': ['title', 'art'], 'limits': {'start': 0, 'end': 2}})
+    movies = (mv.get('movies') or []) if not bad(mv) else []
+    R['movies'] = [{'title': m.get('title'), 'art_keys': sorted((m.get('art') or {}).keys()),
+                    'art_kinds': art_kinds(m.get('art'))} for m in movies]
+    if movies:
+        mid = movies[0].get('movieid')
+        R['movie_types'] = try_variants('VideoLibrary.GetAvailableArtTypes', [{'item': {'movieid': mid}}, {'movieid': mid}])
+        R['movie_available_poster'] = try_variants('VideoLibrary.GetAvailableArt', [
+            {'item': {'movieid': mid}, 'arttype': 'poster'}, {'movieid': mid, 'arttype': 'poster'}])
+    tv = rpc('VideoLibrary.GetTVShows', {'properties': ['title', 'art'], 'limits': {'start': 0, 'end': 2}})
+    shows = (tv.get('tvshows') or []) if not bad(tv) else []
+    R['tvshows'] = [{'title': t.get('title'), 'art_keys': sorted((t.get('art') or {}).keys())} for t in shows]
+    record('more', R)
 
 # ---------------------------------------------------------------- set / check / restore
 def make_png(path, size=300):
@@ -261,11 +331,18 @@ def do_restore():
     if not st.get('albumid') or st.get('orig_art') is None:
         toast('BEZEL art probe: restore', 'Nothing to restore.')
         return
-    res = rpc('AudioLibrary.SetAlbumDetails', {'albumid': st['albumid'], 'art': st['orig_art']})
+    orig = st['orig_art']
+    res = rpc('AudioLibrary.SetAlbumDetails', {'albumid': st['albumid'], 'art': orig})
     now = album_now(st['albumid'])
-    same = ((now or {}).get('art') or {}) == st['orig_art']
-    R = {'album': {'id': st['albumid'], 'title': st.get('title')}, 'restore_result': res,
-         'art_now': (now or {}).get('art'), 'matches_original': same}
+    icon_clear = None
+    if 'icon' in ((now or {}).get('art') or {}) and 'icon' not in orig:
+        # Kodi adds an 'icon' art key when art is set by script; try to drop it again
+        icon_clear = rpc('AudioLibrary.SetAlbumDetails', {'albumid': st['albumid'], 'art': {'icon': None}})
+        now = album_now(st['albumid'])
+    cur = dict(((now or {}).get('art') or {}))
+    same = {k: v for k, v in cur.items() if k != 'icon'} == orig
+    R = {'album': {'id': st['albumid'], 'title': st.get('title')}, 'restore_result': res, 'icon_clear_result': icon_clear,
+         'art_now': (now or {}).get('art'), 'matches_original_ignoring_icon': same, 'icon_key_left': 'icon' in cur}
     record('restore', R)
     if same:
         try:
