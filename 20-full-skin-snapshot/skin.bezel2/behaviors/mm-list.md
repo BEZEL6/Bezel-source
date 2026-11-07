@@ -5,7 +5,7 @@
 **Last updated:** 2026-11-04 · 5.33.473 · **Status:** live (approved) · **Lock:** the art behind the MM is LOCKED ([mm-warm](mm-warm.md))
 
 ## Simple
-Left or Back at the top of a section list (or M) opens the main menu inside the colour strip: MUSIC, MOVIES, TV SHOWS, RECENTLY PLAYED, FAVOURITES, SEARCH, PICTURES, ADD-ONS, SETTINGS, MEDIA SOURCES, POWER. Behind it the screen shows the art of the row you're on, so moving between rows previews each section. Left / Right on MUSIC, MOVIES and TV choose which list opens (the "pill": Artists, Albums …), remembered across sessions. Select opens it; Back closes the menu. A second press within 0.4 s is ignored, so a fast double tap never opens two things.
+Left or Back at the top of a section list (or M) opens the main menu inside the colour strip: MUSIC, MOVIES, TV SHOWS, RECENTLY PLAYED, FAVOURITES, SEARCH, PICTURES, ADD-ONS, SETTINGS, MANAGE ART, MEDIA SOURCES, POWER. Behind it the screen shows the art of the row you're on, so moving between rows previews each section. Left / Right on MUSIC, MOVIES and TV choose which list opens (the "pill": Artists, Albums …), remembered across sessions. Select opens it; Back closes the menu. A second press within 0.4 s is ignored, so a fast double tap never opens two things.
 
 ## Feel contract (any framework)
 
@@ -47,7 +47,7 @@ Section (+ art lanes) < MM dim < strip chrome < rows / focus bar < mini player <
 | Mini player shift | rows +120 px down while media plays |
 
 ### Art
-Rows: label in caps; focused row = bar with "›" on MUSIC / MOVIES / TV and the pill label + dots; SETTINGS = flat bar. Divider line above ADD-ONS.
+Rows: label in caps; focused row = bar with "›" on MUSIC / MOVIES / TV and the pill label + dots; SETTINGS = flat bar. Divider line above ADD-ONS. MANAGE ART = plain row (Select only, no pills), right after SETTINGS (12 rows; MEDIA SOURCES and POWER moved down one).
 
 ### Input
 | Action | Result |
@@ -98,6 +98,7 @@ Open / close ≤ 300 ms; destination fade within ≤ 0.6 s.
 | PICTURES | pictures | `pictures` |
 | ADD-ONS | addons (`div=1`) | `addonbrowser` |
 | SETTINGS | settings | `Settings` (via 1130) |
+| MANAGE ART | manageart | `bz_setopen` latch, clear nav → `ActivateWindow(1133)` ([manage-art](manage-art.md), 5.33.477) |
 | MEDIA SOURCES | mediasources | clear nav props → `ActivateWindow(1117)` |
 | POWER | power | `ActivateWindow(1118)` |
 | Up (first row) | `Player.HasVideo` → 6966; `$EXP[bz_mpup]` → 6958; else `SetFocus(6996,12,absolute)` (clamps to POWER) |
