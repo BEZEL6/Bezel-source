@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 5.33.477 MANAGEART shell (Rob: MANAGE ART, one screen, MM row after SETTINGS). Same Warm-strip dialog pattern as Settings 1130 / Sources 1117:
+     strip chrome + title + one row, left panel = the art / info area (empty in the shell). Back = MM (bz_nav), like 1130. Plan: project doc MEDIA_MANAGER_PLAN.md -->
+<window type="dialog" id="1133">
+	<defaultcontrol always="true">9133</defaultcontrol>
+	<include>BezelSecFadeInDialog</include>
+	<controls>
+		<!-- left panel: art + details area (shell: frame only) -->
+		<control type="group"><left>bz_stage_x</left><top>120</top>
+			<control type="image"><left>0</left><top>0</top><width>540</width><height>900</height><texture colordiffuse="66000000">bezel/white.png</texture></control>
+			<control type="label"><left>30</left><top>30</top><width>480</width><height>44</height><aligny>center</aligny><font>bz_mm28</font><textcolor>FFFFFFFF</textcolor><label>MANAGE ART</label></control>
+			<control type="label"><left>30</left><top>84</top><width>480</width><height>60</height><wrapmultiline>true</wrapmultiline><font>bz_b18</font><textcolor>99FFFFFF</textcolor><label>Artwork and library info for the artist picked on the right. Browsing and editing arrive in the next builds.</label></control>
+		</control>
+		<control type="group"><left>bz_strip_x</left><top>120</top>
+			<control type="image"><left>bz_strip_nx</left><top>-120</top><width>1920</width><height>1080</height><texture colordiffuse="8C000000">bezel/white.png</texture></control><!-- dim the section under; Warm art stays visible -->
+			<include content="BezelMMStripChrome"><param name="box" value="true"/></include>
+			<control type="label"><left>34</left><top>34</top><width>340</width><height>44</height><aligny>center</aligny><font>bz_mm34</font><textcolor>FFFFFFFF</textcolor><label>MANAGE ART</label></control>
+			<control type="label"><left>36</left><top>78</top><width>340</width><height>24</height><aligny>center</aligny><font>bz_b12</font><textcolor>AAFFFFFF</textcolor><label>KODI · LIBRARY · ARTISTS</label></control>
+			<control type="list" id="9133"><left>0</left><top>112</top><width>bz_strip_w</width><height>708</height><orientation>vertical</orientation><scrolltime tween="cubic" easing="out">150</scrolltime>
+				<onup>9133</onup><ondown>9133</ondown>
+				<onback>SetProperty(bz_setret,1,home)</onback><onback>SetProperty(bz_nav,true,home)</onback><onback>AlarmClock(bz_setmm,SetProperty(bz_nav,true,home),00:01,silent)</onback><onback>Dialog.Close(1133)</onback>
+				<itemlayout height="48" width="390"><control type="label"><left>34</left><top>0</top><width>320</width><height>48</height><aligny>center</aligny><font>bz_mm22</font><textcolor>FFFFFFFF</textcolor><label>$INFO[ListItem.Label]</label></control></itemlayout>
+				<focusedlayout height="48" width="390"><control type="image"><left>0</left><top>0</top><width>bz_strip_w</width><height>48</height><texture colordiffuse="$VAR[BzATHiCol]">$VAR[BzATHiTex]</texture><visible>Control.HasFocus(9133)</visible></control><control type="label"><left>34</left><top>0</top><width>320</width><height>48</height><aligny>center</aligny><font>bz_mm22</font><textcolor>$VAR[BzATHiText]</textcolor><label>$INFO[ListItem.Label]</label></control></focusedlayout>
+				<content><item><label>ARTISTS (coming next)</label></item></content>
+			</control>
+		</control>
+		<include content="BezelLogoButton"><param name="col" value="FFFFFFFF"/></include>
+	</controls>
+</window>

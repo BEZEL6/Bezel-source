@@ -351,7 +351,7 @@ if home.getProperty('bz_flip_running') != 'true':
     # modal / busy / info dialog is up (Container(60) reads empty from a script then), so the stage never blanks.
     # 5.33.389 Rob t2725 SETTINGS TREE: mirror of Includes_Bezel bz_set_hub/kodi/tools -> bz_setkids (verify: scripts/bz_tree_check.py)
     SETTINGS_TREE = (
-        ('hub',   ('1130', '1131', '1117', 'addonbrowser')),
+        ('hub',   ('1130', '1131', '1117', '1133', 'addonbrowser')),
         ('kodi',  ('settings', 'systemsettings', 'servicesettings', 'playersettings', 'mediasettings', 'interfacesettings', 'profiles', 'skinsettings')),
         ('tools', ('systeminfo', 'eventlog', 'filemanager')),
     )
